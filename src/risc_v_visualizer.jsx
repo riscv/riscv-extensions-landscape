@@ -1042,7 +1042,6 @@ const RISCVExplorer = () => {
       'Ssu64xl',
 
       // Hypervisor bundle
-      'Sha',
       'H',
     ],
 

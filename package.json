@@ -6,6 +6,7 @@
   "homepage": "https://rpsene.github.io/riscv-extensions-landscape/",
 "scripts": {
   "build": "webpack",
+  "validate:profiles": "node scripts/validate_profiles.mjs",
   "predeploy": "npm run build",
   "deploy": "gh-pages -d dist --branch gh-pages --dotfiles",
   "test": "echo \"Error: no test specified\" && exit 1"
