@@ -5,7 +5,7 @@ module.exports = {
   mode: 'production',
   entry: './src/main.jsx',
   output: {
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
   module: {
@@ -28,6 +28,11 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.jsx']
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
