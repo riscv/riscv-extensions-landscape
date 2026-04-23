@@ -98,6 +98,95 @@ function buildExtensionIndex(extensionsCatalog) {
   return index;
 }
 
+function normalizeId(value) {
+  return String(value).toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function toCatalogStyleId(value) {
+  if (!value) return value;
+  const text = String(value);
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function buildNormalizedCatalogIndex(extIndex) {
+  const normalized = new Map();
+  for (const extId of extIndex.keys()) {
+    const key = normalizeId(extId);
+    const list = normalized.get(key) ?? [];
+    list.push(extId);
+    normalized.set(key, list);
+  }
+  return normalized;
+}
+
+function buildTagCandidates(tag) {
+  const raw = String(tag).trim().toLowerCase();
+  const noPrefix = raw.replace(/^rv(?:32|64|128)_/, '').replace(/^rv_/, '');
+  const tokens = noPrefix.split('_').filter(Boolean);
+  const candidates = new Set();
+
+  if (noPrefix) candidates.add(toCatalogStyleId(noPrefix));
+
+  for (const token of tokens) {
+    if (token === 'i') {
+      candidates.add('RV32I');
+      candidates.add('RV64I');
+      candidates.add('RV128I');
+      continue;
+    }
+    if (token === 'e') {
+      candidates.add('RV32E');
+      candidates.add('RV64E');
+      continue;
+    }
+    candidates.add(toCatalogStyleId(token));
+  }
+
+  return Array.from(candidates);
+}
+
+function mapOpcodeTagToCatalogIds(tag, normalizedCatalogIndex) {
+  const candidates = buildTagCandidates(tag);
+  const matchedIds = new Set();
+  const ambiguousCandidates = [];
+
+  for (const candidate of candidates) {
+    const matches = normalizedCatalogIndex.get(normalizeId(candidate)) ?? [];
+    if (matches.length > 1) ambiguousCandidates.push({ candidate, matches: [...matches] });
+    for (const match of matches) matchedIds.add(match);
+  }
+
+  return {
+    tag,
+    candidates,
+    matchedIds: Array.from(matchedIds).sort(),
+    ambiguousCandidates
+  };
+}
+
+function analyzeOpcodeTags(instrDict, normalizedCatalogIndex) {
+  const tags = new Set();
+  for (const details of Object.values(instrDict)) {
+    if (!details || !Array.isArray(details.extension)) continue;
+    for (const tag of details.extension) tags.add(tag);
+  }
+
+  const analyses = Array.from(tags)
+    .sort()
+    .map((tag) => mapOpcodeTagToCatalogIds(tag, normalizedCatalogIndex));
+
+  const linked = analyses.filter((entry) => entry.matchedIds.length > 0);
+  const unresolved = analyses.filter((entry) => entry.matchedIds.length === 0);
+  const ambiguous = analyses.filter((entry) => entry.ambiguousCandidates.length > 0);
+
+  return {
+    total: analyses.length,
+    linked,
+    unresolved,
+    ambiguous
+  };
+}
+
 function mnemonicToInstrDictKey(mnemonic) {
   return String(mnemonic).trim().toLowerCase().replaceAll('.', '_');
 }
@@ -113,6 +202,8 @@ const visualizerSource = fs.readFileSync(visualizerPath, 'utf8');
 
 const extensionInstructions = extractExtensionInstructions(visualizerSource);
 const extIndex = buildExtensionIndex(extensionsCatalog);
+const normalizedCatalogIndex = buildNormalizedCatalogIndex(extIndex);
+const opcodeTagReport = analyzeOpcodeTags(instrDict, normalizedCatalogIndex);
 
 const missingExtensions = new Set();
 const missingInstructions = new Map();
@@ -153,5 +244,24 @@ if (missingInstructions.size) {
   console.warn('Instructions missing from instr_dict.json (by extension):');
   for (const [extId, list] of sorted) {
     console.warn(`- ${extId}: ${list.length}`);
+  }
+}
+
+console.log(
+  `Opcode tag mapping summary: seen=${opcodeTagReport.total}, linked=${opcodeTagReport.linked.length}, unresolved=${opcodeTagReport.unresolved.length}, ambiguous=${opcodeTagReport.ambiguous.length}`
+);
+if (opcodeTagReport.unresolved.length) {
+  console.warn('Unresolved opcode tags (instr_dict -> catalog IDs):');
+  for (const entry of opcodeTagReport.unresolved) {
+    const candidateText = entry.candidates.length ? entry.candidates.join(', ') : '(no candidates)';
+    console.warn(`- ${entry.tag} (candidates: ${candidateText})`);
+  }
+}
+if (opcodeTagReport.ambiguous.length) {
+  console.warn('Ambiguous opcode tag candidates (candidate maps to multiple catalog IDs):');
+  for (const entry of opcodeTagReport.ambiguous) {
+    for (const candidate of entry.ambiguousCandidates) {
+      console.warn(`- ${entry.tag}: ${candidate.candidate} -> ${candidate.matches.join(', ')}`);
+    }
   }
 }
