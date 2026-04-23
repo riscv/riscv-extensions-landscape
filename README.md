@@ -37,6 +37,26 @@ Open `http://localhost:8080`.
   - `src/risc_v_visualizer.jsx` (`extensionInstructions`)
 - Sync script (merges `instr_dict.json` into `riscv_extensions.json`):
   - `scripts/sync_instructions.mjs`
+- Coverage report script (mapped/unmapped + group-wise summary):
+  - `scripts/generate_coverage_report.mjs`
+
+## Coverage report
+
+Run the report:
+
+```bash
+npm run coverage:extensions
+```
+
+Generate machine-readable JSON:
+
+```bash
+npm run coverage:extensions:json
+```
+
+Coverage rule used by the report:
+- mapped: `instructions` is an object with at least one key
+- unmapped: `instructions` missing, not an object, or empty
 
 ## Add a new extension (step-by-step)
 
