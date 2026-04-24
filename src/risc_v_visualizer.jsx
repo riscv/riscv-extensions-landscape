@@ -1922,6 +1922,23 @@ const RISCVExplorer = () => {
       'SFENCE.VMA',
       'WFI',
     ],
+    Sv32: [
+      'SFENCE.VMA',
+    ],
+    Sv39: [
+      'SFENCE.VMA',
+    ],
+    Sv48: [
+      'SFENCE.VMA',
+    ],
+    Sv57: [
+      'SFENCE.VMA',
+    ],
+    Svinval: [
+      'SINVAL.VMA',
+      'SFENCE.W.INVAL',
+      'SFENCE.INVAL.IR',
+    ],
     U: [
       // User-level environment instructions (Volume II)
       // Note: U-mode mostly reuses unprivileged ISA, so only traps/syscalls are distinct

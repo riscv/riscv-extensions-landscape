@@ -20561,6 +20561,20 @@
       "name": "Sv32",
       "desc": "Virtual Memory, 32-bit",
       "use": "2-level page tables (RV32 Linux)",
+      "instructions": {
+        "SFENCE.VMA": {
+          "encoding": "0001001----------000000001110011",
+          "variable_fields": [
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_s"
+          ],
+          "match": "0x12000073",
+          "mask": "0xfe007fff"
+        }
+      },
       "url": "https://github.com/riscv/riscv-isa-manual"
     },
     {
@@ -20568,6 +20582,20 @@
       "name": "Sv39",
       "desc": "Virtual Memory, 39-bit VA",
       "use": "3-level page tables (RV64 Linux)",
+      "instructions": {
+        "SFENCE.VMA": {
+          "encoding": "0001001----------000000001110011",
+          "variable_fields": [
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_s"
+          ],
+          "match": "0x12000073",
+          "mask": "0xfe007fff"
+        }
+      },
       "url": "https://github.com/riscv/riscv-isa-manual"
     },
     {
@@ -20575,6 +20603,20 @@
       "name": "Sv48",
       "desc": "Virtual Memory, 48-bit VA",
       "use": "4-level page tables",
+      "instructions": {
+        "SFENCE.VMA": {
+          "encoding": "0001001----------000000001110011",
+          "variable_fields": [
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_s"
+          ],
+          "match": "0x12000073",
+          "mask": "0xfe007fff"
+        }
+      },
       "url": "https://github.com/riscv/riscv-isa-manual"
     },
     {
@@ -20582,6 +20624,20 @@
       "name": "Sv57",
       "desc": "Virtual Memory, 57-bit VA",
       "use": "5-level page tables",
+      "instructions": {
+        "SFENCE.VMA": {
+          "encoding": "0001001----------000000001110011",
+          "variable_fields": [
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_s"
+          ],
+          "match": "0x12000073",
+          "mask": "0xfe007fff"
+        }
+      },
       "url": "https://github.com/riscv/riscv-isa-manual"
     },
     {
@@ -20610,6 +20666,38 @@
       "name": "Svinval",
       "desc": "Fine-Grained TLB Invalidate",
       "use": "Fine-grain TLB shootdown instructions",
+      "instructions": {
+        "SINVAL.VMA": {
+          "encoding": "0001011----------000000001110011",
+          "variable_fields": [
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_svinval"
+          ],
+          "match": "0x16000073",
+          "mask": "0xfe007fff"
+        },
+        "SFENCE.W.INVAL": {
+          "encoding": "00011000000000000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_svinval"
+          ],
+          "match": "0x18000073",
+          "mask": "0xffffffff"
+        },
+        "SFENCE.INVAL.IR": {
+          "encoding": "00011000000100000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_svinval"
+          ],
+          "match": "0x18100073",
+          "mask": "0xffffffff"
+        }
+      },
       "url": "https://github.com/riscv/riscv-isa-manual"
     },
     {
