@@ -119,6 +119,17 @@ Then:
 - Open Selected Details → Instruction Details
 - Use the Copy button to copy a formatted block for email/docs
 
+## Coverage audit
+
+Check how many extensions have populated instruction maps:
+
+```bash
+node scripts/audit_coverage.mjs          # human-readable table
+node scripts/audit_coverage.mjs --json   # machine-readable JSON
+```
+
+The report shows per-category coverage, lists extensions missing instruction data, and flags any JSX mnemonic mappings that reference extensions absent from the catalog.
+
 ## Encoder Validator (conflict checking)
 
 Use the **Encoder Validator** button in the header to check a proposed instruction encoding against the current instruction database.
