@@ -1521,16 +1521,61 @@
     "match": "0x4002",
     "mask": "0xe003"
   },
-  "c_mop_N": {
-    "encoding": "----------------01100---10000001",
-    "variable_fields": [
-      "c_mop_t"
-    ],
-    "extension": [
-      "rv_zcmop"
-    ],
-    "match": "0x6081",
-    "mask": "0xf8ff"
+  "c_mop_1": {
+    "encoding": "----------------0110000110000001",
+    "variable_fields": [],
+    "extension": ["rv_zcmop"],
+    "match": "0x6181",
+    "mask": "0xffff"
+  },
+  "c_mop_3": {
+    "encoding": "----------------0110001110000001",
+    "variable_fields": [],
+    "extension": ["rv_zcmop"],
+    "match": "0x6381",
+    "mask": "0xffff"
+  },
+  "c_mop_5": {
+    "encoding": "----------------0110010110000001",
+    "variable_fields": [],
+    "extension": ["rv_zcmop"],
+    "match": "0x6581",
+    "mask": "0xffff"
+  },
+  "c_mop_7": {
+    "encoding": "----------------0110011110000001",
+    "variable_fields": [],
+    "extension": ["rv_zcmop"],
+    "match": "0x6781",
+    "mask": "0xffff"
+  },
+  "c_mop_9": {
+    "encoding": "----------------0110100110000001",
+    "variable_fields": [],
+    "extension": ["rv_zcmop"],
+    "match": "0x6981",
+    "mask": "0xffff"
+  },
+  "c_mop_11": {
+    "encoding": "----------------0110101110000001",
+    "variable_fields": [],
+    "extension": ["rv_zcmop"],
+    "match": "0x6b81",
+    "mask": "0xffff"
+  },
+  "c_mop_13": {
+    "encoding": "----------------0110110110000001",
+    "variable_fields": [],
+    "extension": ["rv_zcmop"],
+    "match": "0x6d81",
+    "mask": "0xffff"
+  },
+  "c_mop_15": {
+    "encoding": "----------------0110111110000001",
+    "variable_fields": [],
+    "extension": ["rv_zcmop"],
+    "match": "0x6f81",
+    "mask": "0xffff"
   },
   "c_mul": {
     "encoding": "----------------100111---10---01",

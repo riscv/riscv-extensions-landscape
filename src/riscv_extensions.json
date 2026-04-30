@@ -13895,7 +13895,80 @@
       "desc": "Compressed May-Be-Ops",
       "use": "Reserved 16-bit NOP/future ops",
       "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
+      "instructions": {
+        "C.MOP.1": {
+          "encoding": "----------------0110000110000001",
+          "variable_fields": [],
+          "extension": [
+            "rv_zcmop"
+          ],
+          "match": "0x6181",
+          "mask": "0xffff"
+        },
+        "C.MOP.3": {
+          "encoding": "----------------0110001110000001",
+          "variable_fields": [],
+          "extension": [
+            "rv_zcmop"
+          ],
+          "match": "0x6381",
+          "mask": "0xffff"
+        },
+        "C.MOP.5": {
+          "encoding": "----------------0110010110000001",
+          "variable_fields": [],
+          "extension": [
+            "rv_zcmop"
+          ],
+          "match": "0x6581",
+          "mask": "0xffff"
+        },
+        "C.MOP.7": {
+          "encoding": "----------------0110011110000001",
+          "variable_fields": [],
+          "extension": [
+            "rv_zcmop"
+          ],
+          "match": "0x6781",
+          "mask": "0xffff"
+        },
+        "C.MOP.9": {
+          "encoding": "----------------0110100110000001",
+          "variable_fields": [],
+          "extension": [
+            "rv_zcmop"
+          ],
+          "match": "0x6981",
+          "mask": "0xffff"
+        },
+        "C.MOP.11": {
+          "encoding": "----------------0110101110000001",
+          "variable_fields": [],
+          "extension": [
+            "rv_zcmop"
+          ],
+          "match": "0x6b81",
+          "mask": "0xffff"
+        },
+        "C.MOP.13": {
+          "encoding": "----------------0110110110000001",
+          "variable_fields": [],
+          "extension": [
+            "rv_zcmop"
+          ],
+          "match": "0x6d81",
+          "mask": "0xffff"
+        },
+        "C.MOP.15": {
+          "encoding": "----------------0110111110000001",
+          "variable_fields": [],
+          "extension": [
+            "rv_zcmop"
+          ],
+          "match": "0x6f81",
+          "mask": "0xffff"
+        }
+      }
     },
     {
       "id": "Zclsd",
