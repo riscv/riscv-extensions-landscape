@@ -1929,6 +1929,11 @@ const RISCVExplorer = () => {
       'ECALL',
       'EBREAK',
     ],
+    Svinval: [
+      // Fine-grained TLB invalidation (Svinval extension)
+      'SINVAL.VMA',
+      'SFENCE.W.INVAL', 'SFENCE.INVAL.IR',
+    ],
   };
 
   const extensionCsrs = {

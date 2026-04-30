@@ -20610,7 +20610,39 @@
       "name": "Svinval",
       "desc": "Fine-Grained TLB Invalidate",
       "use": "Fine-grain TLB shootdown instructions",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {
+        "SINVAL.VMA": {
+          "encoding": "0001011----------000000001110011",
+          "variable_fields": [
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_svinval"
+          ],
+          "match": "0x16000073",
+          "mask": "0xfe007fff"
+        },
+        "SFENCE.W.INVAL": {
+          "encoding": "00011000000000000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_svinval"
+          ],
+          "match": "0x18000073",
+          "mask": "0xffffffff"
+        },
+        "SFENCE.INVAL.IR": {
+          "encoding": "00011000000100000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_svinval"
+          ],
+          "match": "0x18100073",
+          "mask": "0xffffffff"
+        }
+      }
     },
     {
       "id": "Svade",
