@@ -5003,35 +5003,285 @@
     "match": "0x70200073",
     "mask": "0xffffffff"
   },
-  "mop_r_N": {
-    "encoding": "1-00--0111-------100-----1110011",
-    "variable_fields": [
-      "mop_r_t_30",
-      "mop_r_t_27_26",
-      "mop_r_t_21_20",
-      "rd",
-      "rs1"
-    ],
-    "extension": [
-      "rv_zimop"
-    ],
+  "mop_r_0": {
+    "encoding": "100000011100-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
     "match": "0x81c04073",
-    "mask": "0xb3c0707f"
+    "mask": "0xfff0707f"
   },
-  "mop_rr_N": {
-    "encoding": "1-00--1----------100-----1110011",
-    "variable_fields": [
-      "mop_rr_t_30",
-      "mop_rr_t_27_26",
-      "rd",
-      "rs1",
-      "rs2"
-    ],
-    "extension": [
-      "rv_zimop"
-    ],
+  "mop_r_1": {
+    "encoding": "100000011101-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0x81d04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_2": {
+    "encoding": "100000011110-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0x81e04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_3": {
+    "encoding": "100000011111-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0x81f04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_4": {
+    "encoding": "100001011100-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0x85c04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_5": {
+    "encoding": "100001011101-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0x85d04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_6": {
+    "encoding": "100001011110-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0x85e04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_7": {
+    "encoding": "100001011111-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0x85f04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_8": {
+    "encoding": "100010011100-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0x89c04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_9": {
+    "encoding": "100010011101-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0x89d04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_10": {
+    "encoding": "100010011110-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0x89e04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_11": {
+    "encoding": "100010011111-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0x89f04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_12": {
+    "encoding": "100011011100-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0x8dc04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_13": {
+    "encoding": "100011011101-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0x8dd04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_14": {
+    "encoding": "100011011110-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0x8de04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_15": {
+    "encoding": "100011011111-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0x8df04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_16": {
+    "encoding": "110000011100-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0xc1c04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_17": {
+    "encoding": "110000011101-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0xc1d04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_18": {
+    "encoding": "110000011110-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0xc1e04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_19": {
+    "encoding": "110000011111-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0xc1f04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_20": {
+    "encoding": "110001011100-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0xc5c04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_21": {
+    "encoding": "110001011101-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0xc5d04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_22": {
+    "encoding": "110001011110-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0xc5e04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_23": {
+    "encoding": "110001011111-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0xc5f04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_24": {
+    "encoding": "110010011100-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0xc9c04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_25": {
+    "encoding": "110010011101-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0xc9d04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_26": {
+    "encoding": "110010011110-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0xc9e04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_27": {
+    "encoding": "110010011111-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0xc9f04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_28": {
+    "encoding": "110011011100-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0xcdc04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_29": {
+    "encoding": "110011011101-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0xcdd04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_30": {
+    "encoding": "110011011110-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0xcde04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_r_31": {
+    "encoding": "110011011111-----100-----1110011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zimop"],
+    "match": "0xcdf04073",
+    "mask": "0xfff0707f"
+  },
+  "mop_rr_0": {
+    "encoding": "1000001----------100-----1110011",
+    "variable_fields": ["rd", "rs1", "rs2"],
+    "extension": ["rv_zimop"],
     "match": "0x82004073",
-    "mask": "0xb200707f"
+    "mask": "0xfe00707f"
+  },
+  "mop_rr_1": {
+    "encoding": "1000011----------100-----1110011",
+    "variable_fields": ["rd", "rs1", "rs2"],
+    "extension": ["rv_zimop"],
+    "match": "0x86004073",
+    "mask": "0xfe00707f"
+  },
+  "mop_rr_2": {
+    "encoding": "1000101----------100-----1110011",
+    "variable_fields": ["rd", "rs1", "rs2"],
+    "extension": ["rv_zimop"],
+    "match": "0x8a004073",
+    "mask": "0xfe00707f"
+  },
+  "mop_rr_3": {
+    "encoding": "1000111----------100-----1110011",
+    "variable_fields": ["rd", "rs1", "rs2"],
+    "extension": ["rv_zimop"],
+    "match": "0x8e004073",
+    "mask": "0xfe00707f"
+  },
+  "mop_rr_4": {
+    "encoding": "1100001----------100-----1110011",
+    "variable_fields": ["rd", "rs1", "rs2"],
+    "extension": ["rv_zimop"],
+    "match": "0xc2004073",
+    "mask": "0xfe00707f"
+  },
+  "mop_rr_5": {
+    "encoding": "1100011----------100-----1110011",
+    "variable_fields": ["rd", "rs1", "rs2"],
+    "extension": ["rv_zimop"],
+    "match": "0xc6004073",
+    "mask": "0xfe00707f"
+  },
+  "mop_rr_6": {
+    "encoding": "1100101----------100-----1110011",
+    "variable_fields": ["rd", "rs1", "rs2"],
+    "extension": ["rv_zimop"],
+    "match": "0xca004073",
+    "mask": "0xfe00707f"
+  },
+  "mop_rr_7": {
+    "encoding": "1100111----------100-----1110011",
+    "variable_fields": ["rd", "rs1", "rs2"],
+    "extension": ["rv_zimop"],
+    "match": "0xce004073",
+    "mask": "0xfe00707f"
   },
   "mret": {
     "encoding": "00110000001000000000000001110011",
