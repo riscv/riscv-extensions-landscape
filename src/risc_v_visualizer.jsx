@@ -1247,6 +1247,9 @@ const RISCVExplorer = () => {
       // Instruction-fetch fence
       'FENCE.I',
     ],
+    Zihintpause: [    
+      'PAUSE',        
+    ],
     Zicbom: [
       // Cache-block management
       'CBO.CLEAN', 'CBO.FLUSH', 'CBO.INVAL',
