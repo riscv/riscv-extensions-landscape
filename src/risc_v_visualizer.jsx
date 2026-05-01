@@ -2233,6 +2233,8 @@ const RISCVExplorer = () => {
       const maskParsed = parseHexToBigInt(proposedMaskInput);
       if (matchParsed == null) errors.push('Match must be a hex value like 0x1234.');
       if (maskParsed == null) errors.push('Mask must be a hex value like 0x707f.');
+      if (matchParsed != null && matchParsed > BIT_MASK_32) errors.push('Match exceeds 32 bits.');
+      if (maskParsed != null && maskParsed > BIT_MASK_32) errors.push('Mask exceeds 32 bits.');
 
       if (matchParsed != null && maskParsed != null) {
         const matchNorm = matchParsed & BIT_MASK_32;
