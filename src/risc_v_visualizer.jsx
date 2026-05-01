@@ -2514,6 +2514,11 @@ const RISCVExplorer = () => {
         }
 	        lastScrolledKeyRef.current = key;
 	      }
+	    } else {
+	      setSelectedExt(null);
+	      setSelectedInstruction(null);
+	      setSearchMatches(null);
+	      lastScrolledKeyRef.current = null;
 	    }
 	  }, [searchQuery, extensionSearchIndexById]);
 
