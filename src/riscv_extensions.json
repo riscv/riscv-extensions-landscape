@@ -16991,7 +16991,496 @@
       "desc": "May-Be-Ops (NOP family)",
       "use": "Reserved NOP encodings for future",
       "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
+      "instructions": {
+        "MOP.R.0": {
+          "encoding": "100000011100-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x81c04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.1": {
+          "encoding": "100000011101-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x81d04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.2": {
+          "encoding": "100000011110-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x81e04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.3": {
+          "encoding": "100000011111-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x81f04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.4": {
+          "encoding": "100001011100-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x85c04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.5": {
+          "encoding": "100001011101-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x85d04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.6": {
+          "encoding": "100001011110-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x85e04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.7": {
+          "encoding": "100001011111-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x85f04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.8": {
+          "encoding": "100010011100-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x89c04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.9": {
+          "encoding": "100010011101-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x89d04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.10": {
+          "encoding": "100010011110-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x89e04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.11": {
+          "encoding": "100010011111-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x89f04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.12": {
+          "encoding": "100011011100-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x8dc04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.13": {
+          "encoding": "100011011101-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x8dd04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.14": {
+          "encoding": "100011011110-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x8de04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.15": {
+          "encoding": "100011011111-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x8df04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.16": {
+          "encoding": "110000011100-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xc1c04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.17": {
+          "encoding": "110000011101-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xc1d04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.18": {
+          "encoding": "110000011110-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xc1e04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.19": {
+          "encoding": "110000011111-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xc1f04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.20": {
+          "encoding": "110001011100-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xc5c04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.21": {
+          "encoding": "110001011101-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xc5d04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.22": {
+          "encoding": "110001011110-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xc5e04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.23": {
+          "encoding": "110001011111-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xc5f04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.24": {
+          "encoding": "110010011100-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xc9c04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.25": {
+          "encoding": "110010011101-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xc9d04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.26": {
+          "encoding": "110010011110-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xc9e04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.27": {
+          "encoding": "110010011111-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xc9f04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.28": {
+          "encoding": "110011011100-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xcdc04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.29": {
+          "encoding": "110011011101-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xcdd04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.30": {
+          "encoding": "110011011110-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xcde04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.R.31": {
+          "encoding": "110011011111-----100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xcdf04073",
+          "mask": "0xfff0707f"
+        },
+        "MOP.RR.0": {
+          "encoding": "1000001----------100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x82004073",
+          "mask": "0xfe00707f"
+        },
+        "MOP.RR.1": {
+          "encoding": "1000011----------100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x86004073",
+          "mask": "0xfe00707f"
+        },
+        "MOP.RR.2": {
+          "encoding": "1000101----------100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x8a004073",
+          "mask": "0xfe00707f"
+        },
+        "MOP.RR.3": {
+          "encoding": "1000111----------100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x8e004073",
+          "mask": "0xfe00707f"
+        },
+        "MOP.RR.4": {
+          "encoding": "1100001----------100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xc2004073",
+          "mask": "0xfe00707f"
+        },
+        "MOP.RR.5": {
+          "encoding": "1100011----------100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xc6004073",
+          "mask": "0xfe00707f"
+        },
+        "MOP.RR.6": {
+          "encoding": "1100101----------100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xca004073",
+          "mask": "0xfe00707f"
+        },
+        "MOP.RR.7": {
+          "encoding": "1100111----------100-----1110011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0xce004073",
+          "mask": "0xfe00707f"
+        }
+      }
     }
   ],
   "z_crypto": [

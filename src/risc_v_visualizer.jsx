@@ -1261,7 +1261,15 @@ const RISCVExplorer = () => {
     ],
     Zimop: [
       // May-be operations (reserved NOPs)
-      // Note: MOP.R.N, MOP.RR.N have encoding but naming mismatch in dictionary
+      'MOP.R.0', 'MOP.R.1', 'MOP.R.2', 'MOP.R.3', 'MOP.R.4',
+      'MOP.R.5', 'MOP.R.6', 'MOP.R.7', 'MOP.R.8', 'MOP.R.9',
+      'MOP.R.10', 'MOP.R.11', 'MOP.R.12', 'MOP.R.13', 'MOP.R.14',
+      'MOP.R.15', 'MOP.R.16', 'MOP.R.17', 'MOP.R.18', 'MOP.R.19',
+      'MOP.R.20', 'MOP.R.21', 'MOP.R.22', 'MOP.R.23', 'MOP.R.24',
+      'MOP.R.25', 'MOP.R.26', 'MOP.R.27', 'MOP.R.28', 'MOP.R.29',
+      'MOP.R.30', 'MOP.R.31',
+      'MOP.RR.0', 'MOP.RR.1', 'MOP.RR.2', 'MOP.RR.3',
+      'MOP.RR.4', 'MOP.RR.5', 'MOP.RR.6', 'MOP.RR.7',
     ],
     F: [
       // Load/Store
