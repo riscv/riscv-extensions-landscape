@@ -3021,7 +3021,7 @@ const RISCVExplorer = () => {
 	                      </div>
 	                    )}
 
-	                  {extensionInstructions[selectedExt.id] && (
+	                  {extensionInstructions[selectedExt.id] ? (
 	                    <div className="bg-slate-900 p-3 rounded border border-slate-700">
 	                      <h4 className="text-[10px] uppercase tracking-wider text-emerald-400 font-bold mb-2">
 	                        Instruction Set Snapshot ({extensionInstructions[selectedExt.id].length})
@@ -3083,7 +3083,16 @@ const RISCVExplorer = () => {
 	                        })}
 	                      </div>
 	                    </div>
-	                  )}
+	                  ): (
+                      <div className="bg-slate-900 p-3 rounded border border-slate-700">
+                        <h4 className="text-[10px] uppercase tracking-wider text-emerald-400 font-bold mb-2">
+                          Instruction Set Snapshot
+                        </h4>
+                        <p className="text-[11px] text-slate-400 italic">
+                          No instruction data available for this extension yet.
+                        </p>
+                      </div>
+                    )}
 
                     {extensionCsrs[selectedExt.id] && (
                       <div className="bg-slate-900 p-3 rounded border border-slate-700">
