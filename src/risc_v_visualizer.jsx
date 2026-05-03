@@ -917,7 +917,7 @@ const RISCVExplorer = () => {
   // ---------------------------------------------------------------------------
   // Profile Definitions – mandatory sets (U64+S64) for RVA20/22/23/RVB23
   // ---------------------------------------------------------------------------
-  const profiles = {
+  const profiles = React.useMemo(() => ({
     // RVA20U64 + RVA20S64 – baseline “RV64GC-like” profile
     RVA20: [
       'RV64I',
@@ -1095,12 +1095,12 @@ const RISCVExplorer = () => {
       'Sscofpmf',
       'Ssu64xl',
     ],
-  };
+  }), []);
 
   // ---------------------------------------------------------------------------
   // Instruction lists per extension (used in the details sidebar)
   // ---------------------------------------------------------------------------
-  const extensionInstructions = {
+  const extensionInstructions = React.useMemo(() => ({
     RV32I: [
       'LUI', 'AUIPC',
       'JAL', 'JALR',
@@ -1929,9 +1929,9 @@ const RISCVExplorer = () => {
       'ECALL',
       'EBREAK',
     ],
-  };
+  }), []);
 
-  const extensionCsrs = {
+  const extensionCsrs = React.useMemo(() => ({
     S: [
       'SSTATUS',
       'SIE', 'SIP',
@@ -1951,12 +1951,12 @@ const RISCVExplorer = () => {
       'UCAUSE',
       'UTVAL',
     ],
-  };
+  }), []);
 
-  const extensionCsrLabels = {
+  const extensionCsrLabels = React.useMemo(() => ({
     S: 'Supervisor CSRs',
     U: 'User CSRs',
-  };
+  }), []);
 
   // ---------------------------------------------------------------------------
   // Derived helpers
