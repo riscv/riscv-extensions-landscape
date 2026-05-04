@@ -107,6 +107,8 @@ node scripts/sync_instructions.mjs
 
 This updates `src/riscv_extensions.json` by populating `instructions` maps under each extension (keyed by mnemonic, e.g. `"SC.W": { ... }`).
 
+**Note:** The sync script will fail with a non-zero exit code if any extension references or instruction mnemonics cannot be fully resolved. This prevents incomplete catalog data from being committed. Fix any missing mappings in `src/instr_dict.json` or the extension instruction lists in `src/risc_v_visualizer.jsx`, then re-run the sync.
+
 ### 4) Verify
 
 ```bash

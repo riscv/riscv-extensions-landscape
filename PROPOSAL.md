@@ -315,7 +315,11 @@ to the clipboard.
    ```
 
    The script reports statistics: how many instructions were added, and any
-   missing extensions or instructions that could not be resolved.
+   missing extensions or instructions that could not be resolved. **Important:**
+   The script will fail (non-zero exit code) if any extension or instruction
+   mapping is incomplete, preventing partial catalog commits. Resolve any missing
+   mnemonics in `src/instr_dict.json` or the extension lists in the visualizer,
+   then re-run.
 
 4. **Build and verify:**
 
