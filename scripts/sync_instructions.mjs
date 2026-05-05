@@ -102,6 +102,72 @@ function mnemonicToInstrDictKey(mnemonic) {
   return String(mnemonic).trim().toLowerCase().replaceAll('.', '_');
 }
 
+// Prints a full coverage breakdown: overall %, per-category progress bars,
+// and a list of every extension still missing instruction data with a
+// diagnosis of why (no JSX list vs. instrs absent from instr_dict.json).
+// Triggered by passing --report on the command line.
+function printCoverageReport(extensionsCatalog, extensionInstructions) {
+  const totalPerCat = {};
+  const filledPerCat = {};
+  let grandTotal = 0;
+  let grandFilled = 0;
+
+  for (const [category, entries] of Object.entries(extensionsCatalog)) {
+    if (!Array.isArray(entries)) continue;
+    for (const entry of entries) {
+      if (!entry || typeof entry !== 'object') continue;
+      grandTotal += 1;
+      totalPerCat[category] = (totalPerCat[category] ?? 0) + 1;
+      const count = Object.keys(entry.instructions ?? {}).length;
+      if (count > 0) {
+        grandFilled += 1;
+        filledPerCat[category] = (filledPerCat[category] ?? 0) + 1;
+      }
+    }
+  }
+
+  const pct = grandTotal > 0 ? ((grandFilled / grandTotal) * 100).toFixed(1) : '0.0';
+  console.log('');
+  console.log('=== RISC-V Extensions Landscape — Coverage Report ===');
+  console.log('');
+  console.log(`  Overall: ${grandFilled}/${grandTotal} extensions with instruction data (${pct}%)`);
+  console.log('');
+  console.log('  Category breakdown:');
+
+  const BAR_WIDTH = 20;
+  for (const category of Object.keys(totalPerCat)) {
+    const total = totalPerCat[category] ?? 0;
+    const filled = filledPerCat[category] ?? 0;
+    const catPct = total > 0 ? filled / total : 0;
+    const bar = '#'.repeat(Math.round(catPct * BAR_WIDTH)).padEnd(BAR_WIDTH, '.');
+    const catPctStr = (catPct * 100).toFixed(0).padStart(3);
+    console.log(`    ${category.padEnd(22)} [${bar}] ${String(filled).padStart(3)}/${total} (${catPctStr}%)`);
+  }
+
+  console.log('');
+  console.log('  Extensions without instruction data:');
+
+  const jsxIds = new Set(Object.keys(extensionInstructions));
+  for (const [category, entries] of Object.entries(extensionsCatalog)) {
+    if (!Array.isArray(entries)) continue;
+    for (const entry of entries) {
+      if (!entry || typeof entry !== 'object') continue;
+      const count = Object.keys(entry.instructions ?? {}).length;
+      if (count === 0) {
+        const diagnosis = jsxIds.has(entry.id)
+          ? '(has JSX list, instrs missing from instr_dict)'
+          : '(no JSX list)';
+        console.log(`    - ${entry.id.padEnd(25)} [${category}]  ${diagnosis}`);
+      }
+    }
+  }
+  console.log('');
+}
+
+// ---- main ------------------------------------------------------------------
+
+const showReport = process.argv.includes('--report');
+
 const workspaceRoot = process.cwd();
 const instrDictPath = path.join(workspaceRoot, 'src', 'instr_dict.json');
 const catalogPath = path.join(workspaceRoot, 'src', 'riscv_extensions.json');
@@ -146,12 +212,16 @@ fs.writeFileSync(catalogPath, `${JSON.stringify(extensionsCatalog, null, 2)}\n`)
 
 console.log(`Updated ${path.relative(workspaceRoot, catalogPath)} with ${addedCount} instruction entries.`);
 if (missingExtensions.size) {
-  console.warn(`Extensions referenced in JSX but not found in YAML: ${Array.from(missingExtensions).sort().join(', ')}`);
+  console.warn(`Extensions referenced in JSX but not found in catalog: ${Array.from(missingExtensions).sort().join(', ')}`);
 }
 if (missingInstructions.size) {
   const sorted = Array.from(missingInstructions.entries()).sort(([a], [b]) => a.localeCompare(b));
-  console.warn('Instructions missing from instr_dict.json (by extension):');
+  console.warn('Instructions listed in JSX but missing from instr_dict.json (by extension):');
   for (const [extId, list] of sorted) {
-    console.warn(`- ${extId}: ${list.length}`);
+    console.warn(`  - ${extId}: ${list.length} missing`);
   }
+}
+
+if (showReport) {
+  printCoverageReport(extensionsCatalog, extensionInstructions);
 }
