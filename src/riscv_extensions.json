@@ -16045,36 +16045,36 @@
     {
       "id": "Zve32x",
       "name": "Zve32x",
-      "desc": "Embedded vector integer subset (ELEN=32)",
-      "use": "Defines a constrained RVV profile; no additional opcodes beyond the vector base ISA",
+      "desc": "Vec Int (32-bit, embedded)",
+      "use": "Int-only embedded vectors",
       "url": "https://github.com/riscv/riscv-isa-manual"
     },
     {
       "id": "Zve32f",
       "name": "Zve32f",
-      "desc": "Embedded vector subset with FP32 support",
-      "use": "Signals FP32 capability in embedded RVV profiles; no extension-specific instruction encodings",
+      "desc": "Vec FP32 (embedded)",
+      "use": "Embedded FP32 vector compute",
       "url": "https://github.com/riscv/riscv-isa-manual"
     },
     {
       "id": "Zve64x",
       "name": "Zve64x",
-      "desc": "Embedded vector integer subset (ELEN=64)",
-      "use": "Defines embedded RVV capability bounds for integer element width; no unique opcodes",
+      "desc": "Vec Int (64-bit, embedded)",
+      "use": "64-bit int embedded vectors",
       "url": "https://github.com/riscv/riscv-isa-manual"
     },
     {
       "id": "Zve64f",
       "name": "Zve64f",
-      "desc": "Embedded vector subset with ELEN=64 and FP32",
-      "use": "Marks an embedded vector capability level; instructions are inherited from RVV base/vector FP subsets",
+      "desc": "Vec FP32+Int (64-bit, embedded)",
+      "use": "FP32 + 64-bit int vectors",
       "url": "https://github.com/riscv/riscv-isa-manual"
     },
     {
       "id": "Zve64d",
       "name": "Zve64d",
-      "desc": "Embedded vector subset with ELEN=64 and FP64",
-      "use": "Represents embedded RVV with FP64 support; does not introduce new standalone instruction encodings",
+      "desc": "Vec FP64+FP32+Int",
+      "use": "Full FP64 embedded vectors",
       "url": "https://github.com/riscv/riscv-isa-manual"
     },
     {
@@ -16087,43 +16087,43 @@
     {
       "id": "Zvl32b",
       "name": "Zvl32b",
-      "desc": "Vector length constraint: VLEN >= 32 bits",
-      "use": "Capability marker for minimum vector register length; no extension-specific instructions",
+      "desc": "Min VLEN ≥ 32b",
+      "use": "Vector length capability",
       "url": "https://github.com/riscv/riscv-isa-manual"
     },
     {
       "id": "Zvl64b",
       "name": "Zvl64b",
-      "desc": "Vector length constraint: VLEN >= 64 bits",
-      "use": "Capability marker for minimum vector register length; no extension-specific instructions",
+      "desc": "Min VLEN ≥ 64b",
+      "use": "Vector length capability",
       "url": "https://github.com/riscv/riscv-isa-manual"
     },
     {
       "id": "Zvl128b",
       "name": "Zvl128b",
-      "desc": "Vector length constraint: VLEN >= 128 bits",
-      "use": "Capability marker for minimum vector register length; no extension-specific instructions",
+      "desc": "Min VLEN ≥ 128b",
+      "use": "Vector length capability",
       "url": "https://github.com/riscv/riscv-isa-manual"
     },
     {
       "id": "Zvl256b",
       "name": "Zvl256b",
-      "desc": "Vector length constraint: VLEN >= 256 bits",
-      "use": "Capability marker for minimum vector register length; no extension-specific instructions",
+      "desc": "Min VLEN ≥ 256b",
+      "use": "Vector length capability",
       "url": "https://github.com/riscv/riscv-isa-manual"
     },
     {
       "id": "Zvl512b",
       "name": "Zvl512b",
-      "desc": "Vector length constraint: VLEN >= 512 bits",
-      "use": "Capability marker for minimum vector register length; no extension-specific instructions",
+      "desc": "Min VLEN ≥ 512b",
+      "use": "Vector length capability",
       "url": "https://github.com/riscv/riscv-isa-manual"
     },
     {
       "id": "Zvl1024b",
       "name": "Zvl1024b",
-      "desc": "Vector length constraint: VLEN >= 1024 bits",
-      "use": "Capability marker for minimum vector register length; no extension-specific instructions",
+      "desc": "Min VLEN ≥ 1024b",
+      "use": "Vector length capability",
       "url": "https://github.com/riscv/riscv-isa-manual"
     },
     {
@@ -20369,14 +20369,16 @@
       "name": "Zihintntl",
       "desc": "Non-Temporal Locality Hints",
       "use": "NT load/store hints",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {}
     },
     {
       "id": "Zihintpause",
       "name": "Zihintpause",
       "desc": "Pause Hint",
       "use": "Power-friendly spin-wait",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {}
     },
     {
       "id": "Zihpm",
@@ -20453,7 +20455,8 @@
       "name": "Ztso",
       "desc": "Total Store Ordering",
       "use": "x86-style TSO memory model",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {}
     }
   ],
   "z_caches": [
