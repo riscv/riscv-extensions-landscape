@@ -1924,10 +1924,63 @@ const RISCVExplorer = () => {
     ],
     U: [
       // User-level environment instructions (Volume II)
-      // Note: U-mode mostly reuses unprivileged ISA, so only traps/syscalls are distinct
+      // Note: U-mode mostly reuses unprivileged ISA, so only traps/yscalls are distinct
       'URET',
       'ECALL',
       'EBREAK',
+    ],
+
+    // Supervisor-level extensions
+    Svinval: [
+      // Fine-grained address-translation cache invalidation
+      'SINVAL.VMA',
+      'SFENCE.W.INVAL',
+      'SFENCE.INVAL.IR',
+    ],
+    Sdext: [
+      // Debug mode return
+      'DRET',
+    ],
+    Smrnmi: [
+      // Resumable non-maskable interrupts
+      'MNRET',
+    ],
+    Ssctr: [
+      // Control-transfer records supervisor clear
+      'SCTRCLR',
+    ],
+
+    // Integer extensions
+    Zibi: [
+      // Immediate branch instructions
+      'BEQI',
+      'BNEI',
+    ],
+
+    // Vector extensions
+    Zvabd: [
+      // Vector absolute difference
+      'VABD.VV', 'VABDU.VV', 'VABS.V',
+      'VWABDA.VV', 'VWABDAU.VV',
+    ],
+    Zvfofp8min: [
+      // Vector FP8 narrowing conversions
+      'VFNCVT.F.F.Q', 'VFNCVT.SAT.F.F.Q', 'VFNCVTBF16.SAT.F.F.W',
+    ],
+    Zvkn: [
+      // Vector cryptography: NIST suite (AES + SHA-2 + Zvbb)
+      'VAESDF.VS', 'VAESDF.VV', 'VAESDM.VS', 'VAESDM.VV',
+      'VAESEF.VS', 'VAESEF.VV', 'VAESEM.VS', 'VAESEM.VV',
+      'VAESKF1.VI', 'VAESKF2.VI', 'VAESZ.VS',
+      'VSHA2CH.VV', 'VSHA2CL.VV', 'VSHA2MS.VV',
+      'VANDN.VV', 'VANDN.VX', 'VBREV8.V', 'VREV8.V',
+      'VROL.VV', 'VROL.VX', 'VROR.VI', 'VROR.VV', 'VROR.VX',
+    ],
+    Zvks: [
+      // Vector cryptography: ShangMi suite (SM3 + SM4 + Zvbb)
+      'VSM3C.VI', 'VSM3ME.VV', 'VSM4K.VI', 'VSM4R.VS', 'VSM4R.VV',
+      'VANDN.VV', 'VANDN.VX', 'VBREV8.V', 'VREV8.V',
+      'VROL.VV', 'VROL.VX', 'VROR.VI', 'VROR.VV', 'VROR.VX',
     ],
   };
 
