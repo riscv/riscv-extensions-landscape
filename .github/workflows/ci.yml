@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production bundle
+        run: npm run build
+
+  sync-check:
+    name: Sync Integrity Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run sync script
+        run: node scripts/sync_instructions.mjs
+
+      - name: Check for uncommitted sync changes
+        run: |
+          if git diff --quiet src/riscv_extensions.json; then
+            echo "Catalog is in sync."
+          else
+            echo "::error::src/riscv_extensions.json is out of sync. Run 'node scripts/sync_instructions.mjs' and commit the result."
+            git diff --stat src/riscv_extensions.json
+            exit 1
+          fi
+
+  validate-json:
+    name: Validate JSON Files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate instr_dict.json
+        run: python3 -c "import json; json.load(open('src/instr_dict.json'))" && echo "instr_dict.json is valid"
+
+      - name: Validate riscv_extensions.json
+        run: python3 -c "import json; json.load(open('src/riscv_extensions.json'))" && echo "riscv_extensions.json is valid"
+
+      - name: Check for duplicate extension IDs
+        run: |
+          python3 -c "
+          import json, sys
+          with open('src/riscv_extensions.json') as f:
+              catalog = json.load(f)
+          ids = []
+          for cat, entries in catalog.items():
+              if not isinstance(entries, list): continue
+              for ext in entries:
+                  if isinstance(ext, dict):
+                      ids.append(ext.get('id', ''))
+          from collections import Counter
+          dupes = {k: v for k, v in Counter(ids).items() if v > 1}
+          if dupes:
+              print(f'::error::Duplicate extension IDs found: {dupes}')
+              sys.exit(1)
+          else:
+              print(f'No duplicates among {len(ids)} extensions.')
+          "
