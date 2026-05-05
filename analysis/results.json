@@ -1,0 +1,726 @@
+{
+  "generated_at": "2026-05-05T21:57:48.973078+00:00",
+  "methodology": {
+    "normalization_rules": [
+      "strip_rv_prefix",
+      "strip_rv32_prefix",
+      "strip_rv64_prefix",
+      "lowercase_normalization",
+      "underscore_tokenization",
+      "alias_expansion_g_extension"
+    ],
+    "fuzzy_threshold": 0.8,
+    "confidence_policy": {
+      "exact": 1.0,
+      "normalized": 0.95,
+      "fuzzy_range": [
+        0.7,
+        0.9
+      ]
+    }
+  },
+  "summary": {
+    "total_opcodes_tags": 114,
+    "total_catalog_extensions": 220,
+    "fully_reconciled": 98,
+    "needs_review": 8,
+    "unmatched": 8
+  },
+  "fully_reconciled": [
+    {
+      "opcodes_tag": "rv32_c",
+      "catalog_name": "C",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv32_c_f",
+      "catalog_name": "C",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv32_d_zfa",
+      "catalog_name": "D",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv32_zk",
+      "catalog_name": "Zk",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv32_zkn",
+      "catalog_name": "Zkn",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv32_zknd",
+      "catalog_name": "Zknd",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv32_zkne",
+      "catalog_name": "Zkne",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv32_zknh",
+      "catalog_name": "Zknh",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_a",
+      "catalog_name": "A",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_c",
+      "catalog_name": "C",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_d",
+      "catalog_name": "D",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_f",
+      "catalog_name": "F",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_h",
+      "catalog_name": "H",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_m",
+      "catalog_name": "M",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_q",
+      "catalog_name": "Q",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_q_zfa",
+      "catalog_name": "Q",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_zacas",
+      "catalog_name": "Zacas",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_zba",
+      "catalog_name": "Zba",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_zbb",
+      "catalog_name": "Zbb",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_zbkb",
+      "catalog_name": "Zbkb",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_zbs",
+      "catalog_name": "Zbs",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_zcb",
+      "catalog_name": "Zcb",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_zfh",
+      "catalog_name": "Zfh",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_zk",
+      "catalog_name": "Zk",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_zkn",
+      "catalog_name": "Zkn",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_zknd",
+      "catalog_name": "Zknd",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_zkne",
+      "catalog_name": "Zkne",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_zknh",
+      "catalog_name": "Zknh",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_zkr",
+      "catalog_name": "Zkr",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv64_zks",
+      "catalog_name": "Zks",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_a",
+      "catalog_name": "A",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_c",
+      "catalog_name": "C",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_c_d",
+      "catalog_name": "C",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_d",
+      "catalog_name": "D",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_d_zfa",
+      "catalog_name": "D",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_d_zfhmin",
+      "catalog_name": "D",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_f",
+      "catalog_name": "F",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_f_zfa",
+      "catalog_name": "F",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_h",
+      "catalog_name": "H",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_m",
+      "catalog_name": "M",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_q",
+      "catalog_name": "Q",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_q_zfa",
+      "catalog_name": "Q",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_q_zfhmin",
+      "catalog_name": "Q",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_s",
+      "catalog_name": "S",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_sdext",
+      "catalog_name": "Sdext",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_smrnmi",
+      "catalog_name": "Smrnmi",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_ssctr",
+      "catalog_name": "Ssctr",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_svinval",
+      "catalog_name": "Svinval",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_svinval_h",
+      "catalog_name": "H",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_u",
+      "catalog_name": "U",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_v",
+      "catalog_name": "V",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zabha",
+      "catalog_name": "Zabha",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zabha_zacas",
+      "catalog_name": "Zabha",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zacas",
+      "catalog_name": "Zacas",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zalasr",
+      "catalog_name": "Zalasr",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zawrs",
+      "catalog_name": "Zawrs",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zba",
+      "catalog_name": "Zba",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zbb",
+      "catalog_name": "Zbb",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zbc",
+      "catalog_name": "Zbc",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zbkb",
+      "catalog_name": "Zbkb",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zbkc",
+      "catalog_name": "Zbkc",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zbkx",
+      "catalog_name": "Zbkx",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zbs",
+      "catalog_name": "Zbs",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zcb",
+      "catalog_name": "Zcb",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zcmop",
+      "catalog_name": "Zcmop",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zcmp",
+      "catalog_name": "Zcmp",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zcmt",
+      "catalog_name": "Zcmt",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zfbfmin",
+      "catalog_name": "Zfbfmin",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zfh",
+      "catalog_name": "Zfh",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zfh_zfa",
+      "catalog_name": "Zfa",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zfhmin",
+      "catalog_name": "Zfhmin",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zibi",
+      "catalog_name": "Zibi",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zicfiss",
+      "catalog_name": "Zicfiss",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zicond",
+      "catalog_name": "Zicond",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zicsr",
+      "catalog_name": "Zicsr",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zifencei",
+      "catalog_name": "Zifencei",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zimop",
+      "catalog_name": "Zimop",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zk",
+      "catalog_name": "Zk",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zkn",
+      "catalog_name": "Zkn",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zknh",
+      "catalog_name": "Zknh",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zkr",
+      "catalog_name": "Zkr",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zks",
+      "catalog_name": "Zks",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zksed",
+      "catalog_name": "Zksed",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zksh",
+      "catalog_name": "Zksh",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zvabd",
+      "catalog_name": "Zvabd",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zvbb",
+      "catalog_name": "Zvbb",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zvbc",
+      "catalog_name": "Zvbc",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zvfbfmin",
+      "catalog_name": "Zvfbfmin",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zvfbfwma",
+      "catalog_name": "Zvfbfwma",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zvfofp8min",
+      "catalog_name": "Zvfofp8min",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zvkg",
+      "catalog_name": "Zvkg",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zvkn",
+      "catalog_name": "Zvkn",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zvkned",
+      "catalog_name": "Zvkned",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zvknha",
+      "catalog_name": "Zvknha",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zvknhb",
+      "catalog_name": "Zvknhb",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zvks",
+      "catalog_name": "Zvks",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zvksed",
+      "catalog_name": "Zvksed",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    },
+    {
+      "opcodes_tag": "rv_zvksh",
+      "catalog_name": "Zvksh",
+      "confidence": 0.95,
+      "reason": "normalized match"
+    }
+  ],
+  "needs_review": [
+    {
+      "opcodes_tag": "rv64_zbp",
+      "suggested_catalog": "Zba",
+      "confidence": 0.833,
+      "reason": "fuzzy match"
+    },
+    {
+      "opcodes_tag": "rv_zbp",
+      "suggested_catalog": "Zba",
+      "confidence": 0.833,
+      "reason": "fuzzy match"
+    },
+    {
+      "opcodes_tag": "rv_zicbo",
+      "suggested_catalog": "Zicbom",
+      "confidence": 0.867,
+      "reason": "fuzzy match"
+    },
+    {
+      "opcodes_tag": "rv_zvfbdot32f",
+      "suggested_catalog": "Zvbdota",
+      "confidence": 0.82,
+      "reason": "fuzzy match"
+    },
+    {
+      "opcodes_tag": "rv_zvfofp4min",
+      "suggested_catalog": "Zvfofp8min",
+      "confidence": 0.88,
+      "reason": "fuzzy match"
+    },
+    {
+      "opcodes_tag": "rv_zvfqbdot8f",
+      "suggested_catalog": "Zvbdota",
+      "confidence": 0.82,
+      "reason": "fuzzy match"
+    },
+    {
+      "opcodes_tag": "rv_zvqbdot8i",
+      "suggested_catalog": "Zvbdota",
+      "confidence": 0.833,
+      "reason": "fuzzy match"
+    },
+    {
+      "opcodes_tag": "rv_zvqdotq",
+      "suggested_catalog": "Zvbdota",
+      "confidence": 0.843,
+      "reason": "fuzzy match"
+    }
+  ],
+  "unmatched": [
+    {
+      "opcodes_tag": "rv64_i",
+      "issue": "base ISA alias requires explicit RV32I/RV64I policy mapping",
+      "confidence": 0.0,
+      "reason": "no match found"
+    },
+    {
+      "opcodes_tag": "rv_i",
+      "issue": "base ISA alias requires explicit RV32I/RV64I policy mapping",
+      "confidence": 0.0,
+      "reason": "no match found"
+    },
+    {
+      "opcodes_tag": "rv_system",
+      "issue": "umbrella/system meta-tag has no direct catalog extension",
+      "confidence": 0.0,
+      "reason": "no match found"
+    },
+    {
+      "opcodes_tag": "rv_zvfqldot8f",
+      "issue": "no confident catalog equivalent after normalization/fuzzy matching",
+      "confidence": 0.0,
+      "reason": "no match found"
+    },
+    {
+      "opcodes_tag": "rv_zvfwbdot16bf",
+      "issue": "no confident catalog equivalent after normalization/fuzzy matching",
+      "confidence": 0.0,
+      "reason": "no match found"
+    },
+    {
+      "opcodes_tag": "rv_zvfwldot16bf",
+      "issue": "no confident catalog equivalent after normalization/fuzzy matching",
+      "confidence": 0.0,
+      "reason": "no match found"
+    },
+    {
+      "opcodes_tag": "rv_zvqldot8i",
+      "issue": "no confident catalog equivalent after normalization/fuzzy matching",
+      "confidence": 0.0,
+      "reason": "no match found"
+    },
+    {
+      "opcodes_tag": "rv_zvzip",
+      "issue": "no confident catalog equivalent after normalization/fuzzy matching",
+      "confidence": 0.0,
+      "reason": "no match found"
+    }
+  ],
+  "statistics": {
+    "current_mapped_extensions": 71,
+    "current_coverage_percent": 32.27,
+    "projected_mapped_extensions_if_fully_reconciled_applied": 83,
+    "projected_coverage_percent_if_fully_reconciled_applied": 37.73,
+    "additional_unmapped_extensions_unblocked": 12
+  }
+}
