@@ -126,7 +126,9 @@ for (const [extId, mnemonics] of Object.entries(extensionInstructions)) {
   }
 
   for (const { entry } of locations) {
-    if (!entry.instructions || typeof entry.instructions !== 'object') entry.instructions = {};
+    // Rebuild per-extension instruction map on each sync run so removed mnemonics
+    // do not persist as stale entries in riscv_extensions.json.
+    const nextInstructions = {};
     for (const mnemonic of mnemonics) {
       const key = mnemonicToInstrDictKey(mnemonic);
       const details = instrDict[key];
@@ -136,9 +138,10 @@ for (const [extId, mnemonics] of Object.entries(extensionInstructions)) {
         missingInstructions.set(extId, missing);
         continue;
       }
-      entry.instructions[mnemonic] = details;
+      nextInstructions[mnemonic] = details;
       addedCount += 1;
     }
+    entry.instructions = nextInstructions;
   }
 }
 
