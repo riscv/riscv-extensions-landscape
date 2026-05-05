@@ -1733,6 +1733,11 @@ const RISCVExplorer = () => {
       'VCLMUL.VV', 'VCLMUL.VX',
       'VCLMULH.VV', 'VCLMULH.VX',
     ],
+    Zvabd: [
+      // Vector absolute-difference
+      'VABD.VV', 'VABDU.VV', 'VABS.V',
+      'VWABDA.VV', 'VWABDAU.VV',
+    ],
     Zvkg: [
       // Vector GCM/GMAC
       'VGHSH.VV', 'VGMUL.VV',
@@ -1761,6 +1766,26 @@ const RISCVExplorer = () => {
     Zvksh: [
       // Vector SM3
       'VSM3C.VI', 'VSM3ME.VV',
+    ],
+    Zvkn: [
+      // Vector NIST crypto suite (combines Zvkned + Zvknha/b + Zvbb + Zvkt)
+      'VAESDF.VS', 'VAESDF.VV', 'VAESDM.VS', 'VAESDM.VV',
+      'VAESEF.VS', 'VAESEF.VV', 'VAESEM.VS', 'VAESEM.VV',
+      'VAESKF1.VI', 'VAESKF2.VI', 'VAESZ.VS',
+      'VANDN.VV', 'VANDN.VX', 'VBREV8.V', 'VREV8.V',
+      'VROL.VV', 'VROL.VX', 'VROR.VI', 'VROR.VV', 'VROR.VX',
+      'VSHA2CH.VV', 'VSHA2CL.VV', 'VSHA2MS.VV',
+    ],
+    Zvks: [
+      // Vector ShangMi crypto suite (combines Zvksed + Zvksh + Zvbb + Zvkt)
+      'VANDN.VV', 'VANDN.VX', 'VBREV8.V', 'VREV8.V',
+      'VROL.VV', 'VROL.VX', 'VROR.VI', 'VROR.VV', 'VROR.VX',
+      'VSM3C.VI', 'VSM3ME.VV',
+      'VSM4K.VI', 'VSM4R.VS', 'VSM4R.VV',
+    ],
+    Zvfofp8min: [
+      // Minimal FP8 vector conversions
+      'VFNCVT.F.F.Q', 'VFNCVT.SAT.F.F.Q', 'VFNCVTBF16.SAT.F.F.W',
     ],
 
     // Scalar Cryptography Extensions
@@ -1921,6 +1946,26 @@ const RISCVExplorer = () => {
       'SRET',
       'SFENCE.VMA',
       'WFI',
+    ],
+    Svinval: [
+      // Fine-grained address-translation cache invalidation
+      'SFENCE.INVAL.IR', 'SFENCE.W.INVAL', 'SINVAL.VMA',
+    ],
+    Ssctr: [
+      // Counter clear for supervisor
+      'SCTRCLR',
+    ],
+    Smrnmi: [
+      // Resumable non-maskable interrupt return
+      'MNRET',
+    ],
+    Sdext: [
+      // Debug extension return
+      'DRET',
+    ],
+    Zibi: [
+      // Interruptible branch-immediate
+      'BEQI', 'BNEI',
     ],
     U: [
       // User-level environment instructions (Volume II)

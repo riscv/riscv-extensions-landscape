@@ -16582,14 +16582,126 @@
       "name": "Zvfofp8min",
       "desc": "Vector FP8 Minimal",
       "use": "Minimal FP8 vector support",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {
+        "VFNCVT.F.F.Q": {
+          "encoding": "010010------11001001-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvfofp8min"
+          ],
+          "match": "0x480c9057",
+          "mask": "0xfc0ff07f"
+        },
+        "VFNCVT.SAT.F.F.Q": {
+          "encoding": "010010------11011001-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvfofp8min"
+          ],
+          "match": "0x480d9057",
+          "mask": "0xfc0ff07f"
+        },
+        "VFNCVTBF16.SAT.F.F.W": {
+          "encoding": "010010------11111001-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvfofp8min"
+          ],
+          "match": "0x480f9057",
+          "mask": "0xfc0ff07f"
+        }
+      }
     },
     {
       "id": "Zvabd",
       "name": "Zvabd",
       "desc": "Vector Abs-Diff",
       "use": "Absolute-difference operations",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {
+        "VABD.VV": {
+          "encoding": "010001-----------010-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvabd"
+          ],
+          "match": "0x44002057",
+          "mask": "0xfc00707f"
+        },
+        "VABDU.VV": {
+          "encoding": "010011-----------010-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvabd"
+          ],
+          "match": "0x4c002057",
+          "mask": "0xfc00707f"
+        },
+        "VABS.V": {
+          "encoding": "010010------10000010-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvabd"
+          ],
+          "match": "0x48082057",
+          "mask": "0xfc0ff07f"
+        },
+        "VWABDA.VV": {
+          "encoding": "010101-----------010-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvabd"
+          ],
+          "match": "0x54002057",
+          "mask": "0xfc00707f"
+        },
+        "VWABDAU.VV": {
+          "encoding": "010110-----------010-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvabd"
+          ],
+          "match": "0x58002057",
+          "mask": "0xfc00707f"
+        }
+      }
     },
     {
       "id": "Zvbb",
@@ -19499,7 +19611,342 @@
       "name": "Zvkn",
       "desc": "Vector NIST Suite",
       "use": "Vector AES/SHA suite",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {
+        "VAESDF.VS": {
+          "encoding": "1010011-----00001010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvkned",
+            "rv_zvkn"
+          ],
+          "match": "0xa600a077",
+          "mask": "0xfe0ff07f"
+        },
+        "VAESDF.VV": {
+          "encoding": "1010001-----00001010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvkned",
+            "rv_zvkn"
+          ],
+          "match": "0xa200a077",
+          "mask": "0xfe0ff07f"
+        },
+        "VAESDM.VS": {
+          "encoding": "1010011-----00000010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvkned",
+            "rv_zvkn"
+          ],
+          "match": "0xa6002077",
+          "mask": "0xfe0ff07f"
+        },
+        "VAESDM.VV": {
+          "encoding": "1010001-----00000010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvkned",
+            "rv_zvkn"
+          ],
+          "match": "0xa2002077",
+          "mask": "0xfe0ff07f"
+        },
+        "VAESEF.VS": {
+          "encoding": "1010011-----00011010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvkned",
+            "rv_zvkn"
+          ],
+          "match": "0xa601a077",
+          "mask": "0xfe0ff07f"
+        },
+        "VAESEF.VV": {
+          "encoding": "1010001-----00011010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvkned",
+            "rv_zvkn"
+          ],
+          "match": "0xa201a077",
+          "mask": "0xfe0ff07f"
+        },
+        "VAESEM.VS": {
+          "encoding": "1010011-----00010010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvkned",
+            "rv_zvkn"
+          ],
+          "match": "0xa6012077",
+          "mask": "0xfe0ff07f"
+        },
+        "VAESEM.VV": {
+          "encoding": "1010001-----00010010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvkned",
+            "rv_zvkn"
+          ],
+          "match": "0xa2012077",
+          "mask": "0xfe0ff07f"
+        },
+        "VAESKF1.VI": {
+          "encoding": "1000101----------010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "zimm5",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvkned",
+            "rv_zvkn"
+          ],
+          "match": "0x8a002077",
+          "mask": "0xfe00707f"
+        },
+        "VAESKF2.VI": {
+          "encoding": "1010101----------010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "zimm5",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvkned",
+            "rv_zvkn"
+          ],
+          "match": "0xaa002077",
+          "mask": "0xfe00707f"
+        },
+        "VAESZ.VS": {
+          "encoding": "1010011-----00111010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvkned",
+            "rv_zvkn"
+          ],
+          "match": "0xa603a077",
+          "mask": "0xfe0ff07f"
+        },
+        "VANDN.VV": {
+          "encoding": "000001-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x4000057",
+          "mask": "0xfc00707f"
+        },
+        "VANDN.VX": {
+          "encoding": "000001-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x4004057",
+          "mask": "0xfc00707f"
+        },
+        "VBREV8.V": {
+          "encoding": "010010------01000010-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x48042057",
+          "mask": "0xfc0ff07f"
+        },
+        "VREV8.V": {
+          "encoding": "010010------01001010-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x4804a057",
+          "mask": "0xfc0ff07f"
+        },
+        "VROL.VV": {
+          "encoding": "010101-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x54000057",
+          "mask": "0xfc00707f"
+        },
+        "VROL.VX": {
+          "encoding": "010101-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x54004057",
+          "mask": "0xfc00707f"
+        },
+        "VROR.VI": {
+          "encoding": "01010------------011-----1010111",
+          "variable_fields": [
+            "zimm6hi",
+            "vm",
+            "vs2",
+            "zimm6lo",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x50003057",
+          "mask": "0xf800707f"
+        },
+        "VROR.VV": {
+          "encoding": "010100-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x50000057",
+          "mask": "0xfc00707f"
+        },
+        "VROR.VX": {
+          "encoding": "010100-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x50004057",
+          "mask": "0xfc00707f"
+        },
+        "VSHA2CH.VV": {
+          "encoding": "1011101----------010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvknha",
+            "rv_zvknhb",
+            "rv_zvkn"
+          ],
+          "match": "0xba002077",
+          "mask": "0xfe00707f"
+        },
+        "VSHA2CL.VV": {
+          "encoding": "1011111----------010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvknha",
+            "rv_zvknhb",
+            "rv_zvkn"
+          ],
+          "match": "0xbe002077",
+          "mask": "0xfe00707f"
+        },
+        "VSHA2MS.VV": {
+          "encoding": "1011011----------010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvknha",
+            "rv_zvknhb",
+            "rv_zvkn"
+          ],
+          "match": "0xb6002077",
+          "mask": "0xfe00707f"
+        }
+      }
     },
     {
       "id": "Zvknc",
@@ -19789,7 +20236,220 @@
       "name": "Zvks",
       "desc": "Vector ShangMi Suite",
       "use": "Vector SMx algorithms",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {
+        "VANDN.VV": {
+          "encoding": "000001-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x4000057",
+          "mask": "0xfc00707f"
+        },
+        "VANDN.VX": {
+          "encoding": "000001-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x4004057",
+          "mask": "0xfc00707f"
+        },
+        "VBREV8.V": {
+          "encoding": "010010------01000010-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x48042057",
+          "mask": "0xfc0ff07f"
+        },
+        "VREV8.V": {
+          "encoding": "010010------01001010-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x4804a057",
+          "mask": "0xfc0ff07f"
+        },
+        "VROL.VV": {
+          "encoding": "010101-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x54000057",
+          "mask": "0xfc00707f"
+        },
+        "VROL.VX": {
+          "encoding": "010101-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x54004057",
+          "mask": "0xfc00707f"
+        },
+        "VROR.VI": {
+          "encoding": "01010------------011-----1010111",
+          "variable_fields": [
+            "zimm6hi",
+            "vm",
+            "vs2",
+            "zimm6lo",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x50003057",
+          "mask": "0xf800707f"
+        },
+        "VROR.VV": {
+          "encoding": "010100-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x50000057",
+          "mask": "0xfc00707f"
+        },
+        "VROR.VX": {
+          "encoding": "010100-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvbb",
+            "rv_zvks",
+            "rv_zvkn"
+          ],
+          "match": "0x50004057",
+          "mask": "0xfc00707f"
+        },
+        "VSM3C.VI": {
+          "encoding": "1010111----------010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "zimm5",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvksh",
+            "rv_zvks"
+          ],
+          "match": "0xae002077",
+          "mask": "0xfe00707f"
+        },
+        "VSM3ME.VV": {
+          "encoding": "1000001----------010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvksh",
+            "rv_zvks"
+          ],
+          "match": "0x82002077",
+          "mask": "0xfe00707f"
+        },
+        "VSM4K.VI": {
+          "encoding": "1000011----------010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "zimm5",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvksed",
+            "rv_zvks"
+          ],
+          "match": "0x86002077",
+          "mask": "0xfe00707f"
+        },
+        "VSM4R.VS": {
+          "encoding": "1010011-----10000010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvksed",
+            "rv_zvks"
+          ],
+          "match": "0xa6082077",
+          "mask": "0xfe0ff07f"
+        },
+        "VSM4R.VV": {
+          "encoding": "1010001-----10000010-----1110111",
+          "variable_fields": [
+            "vs2",
+            "vd"
+          ],
+          "extension": [
+            "rv_zvksed",
+            "rv_zvks"
+          ],
+          "match": "0xa2082077",
+          "mask": "0xfe0ff07f"
+        }
+      }
     },
     {
       "id": "Zvksc",
@@ -20239,7 +20899,35 @@
       "name": "Zibi",
       "desc": "Interruptible Mem Ops",
       "use": "Interruptible load/store semantics",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {
+        "BEQI": {
+          "encoding": "-----------------010-----1100011",
+          "variable_fields": [
+            "imm12hi",
+            "imm5",
+            "imm12lo"
+          ],
+          "extension": [
+            "rv_zibi"
+          ],
+          "match": "0x2063",
+          "mask": "0x707f"
+        },
+        "BNEI": {
+          "encoding": "-----------------011-----1100011",
+          "variable_fields": [
+            "imm12hi",
+            "imm5",
+            "imm12lo"
+          ],
+          "extension": [
+            "rv_zibi"
+          ],
+          "match": "0x3063",
+          "mask": "0x707f"
+        }
+      }
     },
     {
       "id": "Zicntr",
@@ -20610,7 +21298,39 @@
       "name": "Svinval",
       "desc": "Fine-Grained TLB Invalidate",
       "use": "Fine-grain TLB shootdown instructions",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {
+        "SFENCE.INVAL.IR": {
+          "encoding": "00011000000100000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_svinval"
+          ],
+          "match": "0x18100073",
+          "mask": "0xffffffff"
+        },
+        "SFENCE.W.INVAL": {
+          "encoding": "00011000000000000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_svinval"
+          ],
+          "match": "0x18000073",
+          "mask": "0xffffffff"
+        },
+        "SINVAL.VMA": {
+          "encoding": "0001011----------000000001110011",
+          "variable_fields": [
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_svinval"
+          ],
+          "match": "0x16000073",
+          "mask": "0xfe007fff"
+        }
+      }
     },
     {
       "id": "Svade",
@@ -20801,7 +21521,18 @@
       "name": "Smrnmi",
       "desc": "Resumable NMI",
       "use": "Restartable non-maskable interrupts",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {
+        "MNRET": {
+          "encoding": "01110000001000000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_smrnmi"
+          ],
+          "match": "0x70200073",
+          "mask": "0xffffffff"
+        }
+      }
     }
   ],
   "s_trap": [
@@ -20810,7 +21541,18 @@
       "name": "Sdext",
       "desc": "External Debug",
       "use": "External debug architecture",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {
+        "DRET": {
+          "encoding": "01111011001000000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_sdext"
+          ],
+          "match": "0x7b200073",
+          "mask": "0xffffffff"
+        }
+      }
     },
     {
       "id": "Sdtrig",
@@ -20859,7 +21601,18 @@
       "name": "Ssctr",
       "desc": "Control Transfer Records (S)",
       "use": "Hardware CFI logs (S)",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {
+        "SCTRCLR": {
+          "encoding": "00010000010000000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_ssctr"
+          ],
+          "match": "0x10400073",
+          "mask": "0xffffffff"
+        }
+      }
     },
     {
       "id": "Sddbltrp",
