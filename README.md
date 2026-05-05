@@ -132,3 +132,21 @@ How it works:
 - For each conflict, the report includes a plain-language reason, common mask, and an example word that matches both patterns.
 
 You can use **Copy report** in the modal to copy a full conflict report for sharing.
+
+
+## Automated Coverage Reporting
+
+The sync workflow can generate a Markdown coverage report that highlights mapping gaps by category and extension group.
+
+### Usage
+
+```bash
+node scripts/sync_instructions.mjs --coverage-report coverage.md
+```
+
+### Output Includes
+
+- Overall mapped / partially-mapped / unmapped counts
+- Category-level coverage (supervisor, vector, vector-crypto, atomics, etc.)
+- Group-level coverage table
+- Explicit unmapped extension list with expected vs populated instruction counts

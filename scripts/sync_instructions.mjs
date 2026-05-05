@@ -1,10 +1,34 @@
-import fs from 'node:fs';
+﻿import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
+
+import { formatMarkdownReport, generateCoverageReport } from './lib/coverage_reporter.mjs';
 
 function die(message) {
   console.error(message);
   process.exit(1);
+}
+
+function parseArgs(argv) {
+  const args = { coverageReportPath: null };
+
+  for (let i = 2; i < argv.length; i += 1) {
+    const token = argv[i];
+    if (token.startsWith('--coverage-report=')) {
+      args.coverageReportPath = token.split('=')[1] || null;
+      continue;
+    }
+    if (token === '--coverage-report') {
+      const next = argv[i + 1];
+      if (!next || next.startsWith('--')) {
+        die('Expected output path after --coverage-report');
+      }
+      args.coverageReportPath = next;
+      i += 1;
+    }
+  }
+
+  return args;
 }
 
 function findMatchingBrace(text, openIndex) {
@@ -22,7 +46,7 @@ function findMatchingBrace(text, openIndex) {
       continue;
     }
 
-    if (ch === '\\\\') {
+    if (ch === '\\') {
       if (inSingle || inDouble || inTemplate) escape = true;
       continue;
     }
@@ -102,6 +126,7 @@ function mnemonicToInstrDictKey(mnemonic) {
   return String(mnemonic).trim().toLowerCase().replaceAll('.', '_');
 }
 
+const options = parseArgs(process.argv);
 const workspaceRoot = process.cwd();
 const instrDictPath = path.join(workspaceRoot, 'src', 'instr_dict.json');
 const catalogPath = path.join(workspaceRoot, 'src', 'riscv_extensions.json');
@@ -154,4 +179,12 @@ if (missingInstructions.size) {
   for (const [extId, list] of sorted) {
     console.warn(`- ${extId}: ${list.length}`);
   }
+}
+
+if (options.coverageReportPath) {
+  const stats = generateCoverageReport(extensionsCatalog, instrDict);
+  const report = formatMarkdownReport(stats);
+  const resolved = path.resolve(workspaceRoot, options.coverageReportPath);
+  fs.writeFileSync(resolved, report, 'utf8');
+  console.log(`Coverage report written to ${resolved}`);
 }
