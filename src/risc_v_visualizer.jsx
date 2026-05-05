@@ -1762,6 +1762,51 @@ const RISCVExplorer = () => {
       // Vector SM3
       'VSM3C.VI', 'VSM3ME.VV',
     ],
+    // Vector crypto bundles (union of sub-extensions)
+    Zvkb: [
+      // Zvbb subset
+      'VANDN.VV', 'VANDN.VX', 'VBREV8.V', 'VREV8.V',
+      'VROL.VV', 'VROL.VX', 'VROR.VI', 'VROR.VV', 'VROR.VX',
+      'VBREV.V', 'VCLZ.V', 'VCTZ.V', 'VCPOP.V',
+      'VWSLL.VI', 'VWSLL.VV', 'VWSLL.VX',
+      // Zvbc subset
+      'VCLMUL.VV', 'VCLMUL.VX', 'VCLMULH.VV', 'VCLMULH.VX',
+    ],
+    Zvkng: [
+      // Zvkn subset
+      'VAESDF.VS', 'VAESDF.VV', 'VAESDM.VS', 'VAESDM.VV',
+      'VAESEF.VS', 'VAESEF.VV', 'VAESEM.VS', 'VAESEM.VV',
+      'VAESKF1.VI', 'VAESKF2.VI', 'VAESZ.VS',
+      'VSHA2CH.VV', 'VSHA2CL.VV', 'VSHA2MS.VV',
+      'VANDN.VV', 'VANDN.VX', 'VBREV8.V', 'VREV8.V',
+      'VROL.VV', 'VROL.VX', 'VROR.VI', 'VROR.VV', 'VROR.VX',
+      // Zvkg subset
+      'VGHSH.VV', 'VGMUL.VV',
+    ],
+    Zvknc: [
+      // Zvkn + Zvbc
+      'VAESDF.VS', 'VAESDF.VV', 'VAESDM.VS', 'VAESDM.VV',
+      'VAESEF.VS', 'VAESEF.VV', 'VAESEM.VS', 'VAESEM.VV',
+      'VAESKF1.VI', 'VAESKF2.VI', 'VAESZ.VS',
+      'VSHA2CH.VV', 'VSHA2CL.VV', 'VSHA2MS.VV',
+      'VANDN.VV', 'VANDN.VX', 'VBREV8.V', 'VREV8.V',
+      'VROL.VV', 'VROL.VX', 'VROR.VI', 'VROR.VV', 'VROR.VX',
+      'VCLMUL.VV', 'VCLMUL.VX', 'VCLMULH.VV', 'VCLMULH.VX',
+    ],
+    Zvksg: [
+      // Zvks + Zvkg
+      'VSM3C.VI', 'VSM3ME.VV', 'VSM4K.VI', 'VSM4R.VS', 'VSM4R.VV',
+      'VANDN.VV', 'VANDN.VX', 'VBREV8.V', 'VREV8.V',
+      'VROL.VV', 'VROL.VX', 'VROR.VI', 'VROR.VV', 'VROR.VX',
+      'VGHSH.VV', 'VGMUL.VV',
+    ],
+    Zvksc: [
+      // Zvks + Zvbc
+      'VSM3C.VI', 'VSM3ME.VV', 'VSM4K.VI', 'VSM4R.VS', 'VSM4R.VV',
+      'VANDN.VV', 'VANDN.VX', 'VBREV8.V', 'VREV8.V',
+      'VROL.VV', 'VROL.VX', 'VROR.VI', 'VROR.VV', 'VROR.VX',
+      'VCLMUL.VV', 'VCLMUL.VX', 'VCLMULH.VV', 'VCLMULH.VX',
+    ],
 
     // Scalar Cryptography Extensions
     Zbkb: [
