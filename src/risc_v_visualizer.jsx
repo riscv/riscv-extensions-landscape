@@ -9,8 +9,13 @@ import {
   Copy,
   ChevronLeft,
   ChevronRight,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import extensions from './riscv_extensions.json';
+import { useTheme, TILE_COLORS, THEME_CLASSES } from './theme';
+
+const tc = { ...TILE_COLORS, ...THEME_CLASSES };
 
 const BIT_WIDTH = 32n;
 const BIT_MASK_32 = (1n << BIT_WIDTH) - 1n;
@@ -374,7 +379,7 @@ const EncodingDiagram = ({ encoding }) => {
   const normalized = String(encoding || '').replace(/\s+/g, '');
   if (normalized.length !== 32) {
     return (
-      <div className="font-mono text-[11px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded px-2 py-1 break-all">
+      <div className="font-mono text-[11px] text-slate-800 dark:text-slate-100 bg-slate-100 dark:bg-slate-800/70 border border-slate-300 dark:border-slate-700 rounded px-2 py-1 break-all">
         {encoding}
       </div>
     );
@@ -437,10 +442,10 @@ const EncodingDiagram = ({ encoding }) => {
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+        <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-slate-500 dark:text-slate-500 font-bold">
           <span>Bits</span>
           {canScroll && (
-            <span className="inline-flex items-center gap-1 text-yellow-200/80 font-mono normal-case tracking-normal">
+            <span className="inline-flex items-center gap-1 text-amber-600 dark:text-yellow-200/80 font-mono normal-case tracking-normal">
               scroll <ArrowRight size={12} />
             </span>
           )}
@@ -449,7 +454,7 @@ const EncodingDiagram = ({ encoding }) => {
         <div className="flex items-center gap-1">
           <button
             type="button"
-            className="p-1 rounded border border-slate-600 bg-slate-800 text-slate-100 disabled:opacity-30"
+            className="p-1 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-100 disabled:opacity-30"
             onClick={() => scrollRef.current?.scrollBy({ left: -220, behavior: 'smooth' })}
             disabled={!canScroll || atLeft}
             title="Scroll left"
@@ -458,7 +463,7 @@ const EncodingDiagram = ({ encoding }) => {
           </button>
           <button
             type="button"
-            className="p-1 rounded border border-slate-600 bg-slate-800 text-slate-100 disabled:opacity-30"
+            className="p-1 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-100 disabled:opacity-30"
             onClick={() => scrollRef.current?.scrollBy({ left: 220, behavior: 'smooth' })}
             disabled={!canScroll || atRight}
             title="Scroll right"
@@ -470,7 +475,7 @@ const EncodingDiagram = ({ encoding }) => {
 
       <div ref={scrollRef} className="overflow-x-auto">
         <div className="inline-block pr-2">
-          <div className="inline-grid grid-flow-col auto-cols-[18px] rounded border border-slate-700 bg-slate-900/40">
+          <div className="inline-grid grid-flow-col auto-cols-[18px] rounded border border-slate-300 dark:border-slate-700 bg-slate-100/60 dark:bg-slate-900/40">
             {normalized.split('').map((bit, i) => {
               const isVar = bit === '-';
               const isGroupEnd = (i + 1) % 4 === 0 && i !== 31;
@@ -483,13 +488,13 @@ const EncodingDiagram = ({ encoding }) => {
                     i === 0 ? 'rounded-l' : '',
                     i === 31 ? 'rounded-r' : '',
                     isVar
-                      ? 'bg-slate-800/60 text-purple-100'
-                      : 'bg-slate-700/40 text-slate-100',
+                      ? 'bg-slate-200/80 dark:bg-slate-800/60 text-purple-700 dark:text-purple-100'
+                      : 'bg-slate-300/40 dark:bg-slate-700/40 text-slate-700 dark:text-slate-100',
                     i === 31
                       ? ''
                       : isGroupEnd
-                          ? 'border-r-2 border-slate-600'
-                          : 'border-r border-slate-700',
+                        ? 'border-r-2 border-slate-300 dark:border-slate-600'
+                        : 'border-r border-slate-200 dark:border-slate-700',
                   ].join(' ')}
                   title={`bit ${31 - i}`}
                 >
@@ -581,6 +586,19 @@ const RISCVExplorer = () => {
   const [encoderValidatorResult, setEncoderValidatorResult] = useState(null);
   const [encoderValidatorCopyStatus, setEncoderValidatorCopyStatus] = useState(null);
   const lastScrolledKeyRef = React.useRef(null);
+
+  // ---------------------------------------------------------------------------
+  // Light / Dark theme – persisted in localStorage, defaults to system pref
+  // ---------------------------------------------------------------------------
+  const [isDark, setIsDark] = useState(() => {
+    const stored = typeof window !== 'undefined' && localStorage.getItem('riscv-theme');
+    if (stored) return stored === 'dark';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
+
+  React.useEffect(() => {
+    localStorage.setItem('riscv-theme', isDark ? 'dark' : 'light');
+  }, [isDark]);
 
   // ---------------------------------------------------------------------------
   // Extension Catalog – loaded from `src/riscv_extensions.json`
@@ -2072,8 +2090,8 @@ const RISCVExplorer = () => {
     Boolean(standardEquivalentMnemonic) && instructionIndex.get(standardEquivalentMnemonic)?.length;
   const compressedEquivalents = selectedInstruction
     ? (COMPRESSED_BY_STANDARD[normalizeMnemonicKey(selectedInstruction.mnemonic)] || []).filter((entry) =>
-        instructionIndex.has(normalizeMnemonicKey(entry.mnemonic))
-      )
+      instructionIndex.has(normalizeMnemonicKey(entry.mnemonic))
+    )
     : [];
 
   const formatInstructionForClipboard = React.useCallback((ext, instr) => {
@@ -2400,43 +2418,39 @@ const RISCVExplorer = () => {
     const isSelected = selectedExt?.id === data.id;
     const highlighted = isHighlighted(data.id) || matchesSearch || isSelected;
     const baseColor = isDiscontinued
-      ? 'bg-slate-700 border-slate-500 text-slate-200'
+      ? 'bg-slate-200 border-slate-400 text-slate-700 dark:bg-slate-700 dark:border-slate-500 dark:text-slate-200'
       : colorClass;
 
-	    return (
-	      <div
-	        id={`ext-${data.id}`}
-	        onClick={() =>
-	          setSelectedExt((current) => {
-	            const next = current?.id === data.id ? null : data;
-	            setSelectedInstruction(null);
-	            setSearchMatches(null);
-	            return next;
-	          })
-	        }
-	        className={`
+    return (
+      <div
+        id={`ext-${data.id}`}
+        onClick={() =>
+          setSelectedExt((current) => {
+            const next = current?.id === data.id ? null : data;
+            setSelectedInstruction(null);
+            setSearchMatches(null);
+            return next;
+          })
+        }
+        className={`
 	          relative p-2 rounded border cursor-pointer transition-all duration-200
-	          ${
-            highlighted
-              ? 'ring-2 ring-yellow-400 bg-slate-800 scale-105 shadow-lg shadow-yellow-900/20'
-              : ''
-          }
-          ${
-            isDimmed(data.id) && !matchesSearch && !isSelected
-              ? 'opacity-20 grayscale'
-              : `${baseColor} hover:brightness-110`
+	          ${isDimmed(data.id) && !matchesSearch && !isSelected
+            ? `opacity-20 grayscale ${baseColor}`
+            : highlighted
+              ? `ring-2 ring-yellow-400 scale-105 shadow-lg bg-yellow-50 border-yellow-400 text-slate-900 shadow-yellow-200/60 dark:bg-slate-800 dark:border-yellow-400/50 dark:text-slate-100 dark:shadow-yellow-900/20`
+              : `${baseColor} ${tc.tilehover}`
           }
           ${isSelected ? 'z-20 shadow-xl shadow-yellow-900/40' : 'z-10'}
 	        `}
-	      >
-	        {isDiscontinued && (
-	          <span className="absolute top-1 right-1 px-1.5 py-0.5 rounded border border-red-600/60 bg-red-950/40 text-[8px] font-mono uppercase tracking-tight text-red-200">
-	            Discontinued
-	          </span>
-	        )}
-	        <div className="flex items-center justify-between mb-0.5">
-	          <span className="font-bold text-xs">{data.name}</span>
-	        </div>
+      >
+        {isDiscontinued && (
+          <span className="absolute top-1 right-1 px-1.5 py-0.5 rounded border text-[8px] font-mono uppercase tracking-tight border-red-500 bg-red-100 text-red-700 dark:border-red-600/60 dark:bg-red-950/40 dark:text-red-200">
+            Discontinued
+          </span>
+        )}
+        <div className="flex items-center justify-between mb-0.5">
+          <span className="font-bold text-xs">{data.name}</span>
+        </div>
         <div className="text-[9px] leading-tight opacity-80 truncate">
           {data.desc}
         </div>
@@ -2447,82 +2461,84 @@ const RISCVExplorer = () => {
   // Scroll to extension tile when search matches an extension ID or instruction mnemonic,
   // and automatically open the Selected Details panel. Use a ref to avoid re-scrolling
   // on every render while the query stays the same.
-	  React.useEffect(() => {
-	    const q = searchQuery.trim().toLowerCase();
+  React.useEffect(() => {
+    const q = searchQuery.trim().toLowerCase();
 
-	    if (!q) {
-	      // Reset tracking when query is cleared
-	      lastScrolledKeyRef.current = null;
-	      setSearchMatches(null);
-	      return;
-	    }
+    if (!q) {
+      // Reset tracking when query is cleared
+      lastScrolledKeyRef.current = null;
+      setSearchMatches(null);
+      return;
+    }
 
-	    const allExts = Object.values(extensions).flat();
-	    let matchedMnemonic = null;
-	    let matchedDetails = null;
+    const allExts = Object.values(extensions).flat();
+    let matchedMnemonic = null;
+    let matchedDetails = null;
 
-	    // First, try an exact extension ID match
-	    let targetExt = allExts.find((ext) => ext.id.toLowerCase() === q);
+    // First, try an exact extension ID match
+    let targetExt = allExts.find((ext) => ext.id.toLowerCase() === q);
 
-	    // If no exact extension ID match, try to match an instruction mnemonic
-	    if (!targetExt) {
-	      const matchEntry = Object.entries(extensionInstructions).find(([, mnemonics]) =>
-	        mnemonics.some((m) => m.toLowerCase() === q)
-	      );
+    // If no exact extension ID match, try to match an instruction mnemonic
+    if (!targetExt) {
+      const matchEntry = Object.entries(extensionInstructions).find(([, mnemonics]) =>
+        mnemonics.some((m) => m.toLowerCase() === q)
+      );
 
-	      if (matchEntry) {
-	        const [extId, mnemonics] = matchEntry;
-	        targetExt = allExts.find((ext) => ext.id === extId) || null;
-	        matchedMnemonic = mnemonics.find((m) => m.toLowerCase() === q) || null;
-	        matchedDetails = targetExt?.instructions?.[matchedMnemonic] || null;
-	      }
-	    }
+      if (matchEntry) {
+        const [extId, mnemonics] = matchEntry;
+        targetExt = allExts.find((ext) => ext.id === extId) || null;
+        matchedMnemonic = mnemonics.find((m) => m.toLowerCase() === q) || null;
+        matchedDetails = targetExt?.instructions?.[matchedMnemonic] || null;
+      }
+    }
 
-	    // If still no match, try a deep search against indexed extension+instruction details
-	    if (!targetExt) {
-	      targetExt =
-	        allExts.find((ext) => (extensionSearchIndexById.get(ext.id) || '').includes(q)) ||
-	        null;
-	    }
+    // If still no match, try a deep search against indexed extension+instruction details
+    if (!targetExt) {
+      targetExt =
+        allExts.find((ext) => (extensionSearchIndexById.get(ext.id) || '').includes(q)) ||
+        null;
+    }
 
-	    if (targetExt) {
-	      const hits = [];
-	      if (targetExt.instructions && typeof targetExt.instructions === 'object') {
-	        for (const [mnemonic, details] of Object.entries(targetExt.instructions)) {
-	          if (instructionMatchesQuery(mnemonic, details, q)) {
-	            hits.push(mnemonic);
-	          }
-	        }
-	      }
+    if (targetExt) {
+      const hits = [];
+      if (targetExt.instructions && typeof targetExt.instructions === 'object') {
+        for (const [mnemonic, details] of Object.entries(targetExt.instructions)) {
+          if (instructionMatchesQuery(mnemonic, details, q)) {
+            hits.push(mnemonic);
+          }
+        }
+      }
 
-	      if (matchedMnemonic && !hits.includes(matchedMnemonic)) hits.unshift(matchedMnemonic);
-	      if (!matchedMnemonic && hits.length) matchedMnemonic = hits[0];
-	      matchedDetails = matchedMnemonic ? targetExt?.instructions?.[matchedMnemonic] : null;
+      if (matchedMnemonic && !hits.includes(matchedMnemonic)) hits.unshift(matchedMnemonic);
+      if (!matchedMnemonic && hits.length) matchedMnemonic = hits[0];
+      matchedDetails = matchedMnemonic ? targetExt?.instructions?.[matchedMnemonic] : null;
 
-	      // Always open/update the Selected Details panel for the matched extension
-	      setSelectedExt(targetExt);
-	      setSearchMatches(hits.length ? { extId: targetExt.id, query: q, mnemonics: hits, index: 0 } : null);
-	      setSelectedInstruction(matchedMnemonic && matchedDetails ? { mnemonic: matchedMnemonic, ...matchedDetails } : null);
+      // Always open/update the Selected Details panel for the matched extension
+      setSelectedExt(targetExt);
+      setSearchMatches(hits.length ? { extId: targetExt.id, query: q, mnemonics: hits, index: 0 } : null);
+      setSelectedInstruction(matchedMnemonic && matchedDetails ? { mnemonic: matchedMnemonic, ...matchedDetails } : null);
 
-	      const key = `${targetExt.id}:${q}`;
+      const key = `${targetExt.id}:${q}`;
 
-	      // Only auto-scroll once per unique (extension, query) pair
-	      if (lastScrolledKeyRef.current !== key) {
+      // Only auto-scroll once per unique (extension, query) pair
+      if (lastScrolledKeyRef.current !== key) {
         const el = document.getElementById(`ext-${targetExt.id}`);
         if (el) {
           el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-	        lastScrolledKeyRef.current = key;
-	      }
-	    }
-	  }, [searchQuery, extensionSearchIndexById]);
+        lastScrolledKeyRef.current = key;
+      }
+    }
+  }, [searchQuery, extensionSearchIndexById]);
+
+  // Tile color palette — entirely CSS-driven based on the unified 'tc' object
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-50 p-2 md:p-6 font-sans">
-	      <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-	        {/* Header */}
-	        <div className="lg:col-span-12 flex flex-col md:flex-row justify-between items-start md:items-end border-b border-slate-700 pb-4 mb-2">
-	          <div>
+    <div className="min-h-screen p-2 md:p-6 font-sans bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-50">
+      <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Header */}
+        <div className={`lg:col-span-12 flex flex-col md:flex-row justify-between items-start md:items-end border-b ${tc.headerBorder} pb-4 mb-2`}>
+          <div>
             <h1 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500">
               RISC-V Extension Landscape
             </h1>
@@ -2531,110 +2547,122 @@ const RISCVExplorer = () => {
             </p>
           </div>
 
-	          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 md:mt-0">
-	            <div className="flex items-center gap-2">
-	              <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
-	                Profiles
-	              </span>
-	              <div className="flex gap-2">
-	                {Object.keys(profiles).map((profile) => (
-	                  <button
-	                    key={profile}
-	                    onClick={() =>
-	                      setActiveProfile((current) => {
-	                        setSelectedExt(null);
-	                        setSelectedInstruction(null);
-	                        setSearchMatches(null);
-	                        return current === profile ? null : profile;
-	                      })
-	                    }
-	                    className={`
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 md:mt-0">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+                Profiles
+              </span>
+              <div className="flex gap-2">
+                {Object.keys(profiles).map((profile) => (
+                  <button
+                    key={profile}
+                    onClick={() =>
+                      setActiveProfile((current) => {
+                        setSelectedExt(null);
+                        setSelectedInstruction(null);
+                        setSearchMatches(null);
+                        return current === profile ? null : profile;
+                      })
+                    }
+                    className={`
 	                      px-3 py-1 rounded text-xs font-bold border transition-all
-	                      ${
-		                        activeProfile === profile
-		                          ? 'bg-yellow-500/20 border-yellow-500 text-yellow-200'
-		                          : 'bg-slate-800 border-slate-600 text-slate-200 hover:border-slate-500'
-	                      }
+	                      ${activeProfile === profile
+                        ? 'bg-yellow-500/20 border-yellow-500 text-yellow-600'
+                        : tc.btn
+                      }
 	                    `}
-	                  >
-	                    {profile}
-	                  </button>
-	                ))}
-	              </div>
-	            </div>
+                  >
+                    {profile}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-	            <div className="hidden md:block h-7 w-px bg-slate-800" />
+            <div className={`hidden md:block h-7 w-px ${tc.divider}`} />
 
-		            <div className="flex items-center gap-2">
-		              <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
-		                Volumes
-		              </span>
-	              <div className="flex gap-2">
-	                {['I', 'II'].map((vol) => (
-	                  <button
-	                    key={vol}
-	                    onClick={() =>
-	                      setActiveVolume((current) => {
-	                        setSelectedExt(null);
-	                        setSelectedInstruction(null);
-	                        setSearchMatches(null);
-	                        return current === vol ? null : vol;
-	                      })
-	                    }
-	                    className={`
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+                Volumes
+              </span>
+              <div className="flex gap-2">
+                {['I', 'II'].map((vol) => (
+                  <button
+                    key={vol}
+                    onClick={() =>
+                      setActiveVolume((current) => {
+                        setSelectedExt(null);
+                        setSelectedInstruction(null);
+                        setSearchMatches(null);
+                        return current === vol ? null : vol;
+                      })
+                    }
+                    className={`
 	                      px-3 py-1 rounded text-xs font-bold border transition-all
-	                      ${
-		                        activeVolume === vol
-		                          ? 'bg-yellow-500/20 border-yellow-500 text-yellow-200'
-		                          : 'bg-slate-800 border-slate-600 text-slate-200 hover:border-slate-500'
-	                      }
+	                      ${activeVolume === vol
+                        ? 'bg-yellow-500/20 border-yellow-500 text-yellow-700 dark:text-yellow-200'
+                        : tc.btn
+                      }
 	                    `}
-	                  >
-	                    Vol {vol}
-	                  </button>
-	                ))}
-		              </div>
-		            </div>
+                  >
+                    Vol {vol}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-		            <div className="hidden md:block h-7 w-px bg-slate-700" />
+            <div className={`hidden md:block h-7 w-px ${tc.divider}`} />
 
-		            <button
-		              type="button"
-		              onClick={() => {
-		                setEncoderValidatorOpen(true);
-		                setEncoderValidatorResult(null);
-		                setEncoderValidatorCopyStatus(null);
-		              }}
-		              className="inline-flex items-center gap-2 px-3 py-1 rounded text-xs font-bold border transition-all bg-slate-800 border-slate-600 text-slate-100 hover:border-slate-500"
-		              title="Validate a proposed instruction encoding against existing instructions"
-		            >
-		              <ScanSearch size={16} />
-		              Encoder Validator
-		            </button>
-		          </div>
-		        </div>
+            <button
+              type="button"
+              onClick={() => {
+                setEncoderValidatorOpen(true);
+                setEncoderValidatorResult(null);
+                setEncoderValidatorCopyStatus(null);
+              }}
+              className={`inline-flex items-center gap-2 px-3 py-1 rounded text-xs font-bold border transition-all ${tc.btn}`}
+              title="Validate a proposed instruction encoding against existing instructions"
+            >
+              <ScanSearch size={16} />
+              Encoder Validator
+            </button>
 
-	        {/* Main Grid */}
-	        <div className="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-min">
-	          {/* Search Bar – centered, before Base Architectures */}
-		          <div className="col-span-full flex justify-center mb-3 -mt-1">
-		            <div className="w-full max-w-lg">
-		              <input
-		                type="text"
-		                value={searchQuery}
-		                onChange={(e) => setSearchQuery(e.target.value)}
-		                placeholder="Search extensions by ID, name, or description..."
-		                className="w-full px-4 py-2.5 rounded-lg bg-slate-800 border border-yellow-200/40 text-sm text-slate-100 placeholder-slate-400 shadow-sm shadow-yellow-900/10 focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300"
-		              />
-		              <p className="mt-1 text-[10px] text-center text-slate-500">
-		                Typing here will highlight matching tiles in yellow (case-insensitive).
-		              </p>
-		            </div>
-		          </div>
+            {/* Theme Toggle */}
+            <button
+              type="button"
+              onClick={() => setIsDark((d) => !d)}
+              className={`p-1.5 rounded border transition-all ${isDark
+                ? 'bg-slate-800 border-slate-600 text-yellow-300 hover:border-yellow-400'
+                : 'bg-white border-slate-300 text-slate-600 hover:border-slate-400'
+                }`}
+              title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            >
+              {isDark ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Main Grid */}
+        <div className="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-min">
+          {/* Search Bar – centered, before Base Architectures */}
+          <div className="col-span-full flex justify-center mb-3 -mt-1">
+            <div className="w-full max-w-lg">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search extensions by ID, name, or description..."
+                className={`w-full px-4 py-2.5 rounded-lg border text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300 ${tc.searchBar}`}
+              />
+              <p className="mt-1 text-[10px] text-center text-slate-500">
+                Typing here will highlight matching tiles in yellow (case-insensitive).
+              </p>
+            </div>
+          </div>
 
           {/* 1. Base */}
           <div className="space-y-2 col-span-full">
-            <h3 className="text-blue-400 text-xs font-bold uppercase flex items-center gap-2">
+            <h3 className={`${tc.hBase} text-xs font-bold uppercase flex items-center gap-2`}>
               Base ISA
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
@@ -2643,82 +2671,82 @@ const RISCVExplorer = () => {
                   key={item.id}
                   data={item}
                   searchQuery={searchQuery}
-                  colorClass="bg-blue-950 border-blue-800 text-blue-100"
+                  colorClass={tc.base}
                 />
               ))}
             </div>
           </div>
 
-	          {/* 2. Single-Letter Extensions */}
-	          <div className="space-y-2 col-span-full">
-	            <h3 className="text-emerald-400 text-xs font-bold uppercase flex items-center gap-2">
-	              Single-Letter Extensions
-	            </h3>
-	            <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
-	              {extensions.standard.map((item) => (
-	                <ExtensionBlock
+          {/* 2. Single-Letter Extensions */}
+          <div className="space-y-2 col-span-full">
+            <h3 className={`${tc.hStandard} text-xs font-bold uppercase flex items-center gap-2`}>
+              Single-Letter Extensions
+            </h3>
+            <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
+              {extensions.standard.map((item) => (
+                <ExtensionBlock
                   key={item.id}
                   data={item}
                   searchQuery={searchQuery}
-                  colorClass="bg-emerald-950 border-emerald-800 text-emerald-100"
+                  colorClass={tc.standard}
                 />
               ))}
             </div>
           </div>
 
           {/* 3. Z-Extensions (User Mode) */}
-	          <div className="col-span-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 pt-4 border-t border-slate-700">
-	            <div className="space-y-2">
-	              <h3 className="text-purple-400 text-xs font-bold uppercase flex items-center gap-2">
-	                Bit Manipulation (Zb)
-	              </h3>
-	              <div className="grid grid-cols-2 gap-2">
-	                {extensions.z_bit.map((item) => (
-	                  <ExtensionBlock
+          <div className={`col-span-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 pt-4 border-t ${tc.headerBorder}`}>
+            <div className="space-y-2">
+              <h3 className={`${tc.hBit} text-xs font-bold uppercase flex items-center gap-2`}>
+                Bit Manipulation (Zb)
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_bit.map((item) => (
+                  <ExtensionBlock
                     key={item.id}
                     data={item}
                     searchQuery={searchQuery}
-                    colorClass="bg-purple-950/50 border-purple-800/50 text-purple-100"
+                    colorClass={tc.bit}
                   />
                 ))}
-	              </div>
-	            </div>
+              </div>
+            </div>
 
-	            <div className="space-y-2">
-	              <h3 className="text-amber-400 text-xs font-bold uppercase flex items-center gap-2">
-	                Atomics (Za/Zic*)
-	              </h3>
-	              <div className="grid grid-cols-2 gap-2">
-	                {extensions.z_atomics.map((item) => (
-	                  <ExtensionBlock
-	                    key={item.id}
-	                    data={item}
-	                    searchQuery={searchQuery}
-	                    colorClass="bg-amber-950/40 border-amber-800/50 text-amber-100"
-	                  />
-	                ))}
-	              </div>
-	            </div>
-
-		            <div className="space-y-2">
-		              <h3 className="text-indigo-400 text-xs font-bold uppercase flex items-center gap-2">
-		                Compressed Instructions (Zc)
-		              </h3>
-		              <div className="grid grid-cols-2 gap-2">
-	                {extensions.z_compress.map((item) => (
-	                  <ExtensionBlock
-	                    key={item.id}
+            <div className="space-y-2">
+              <h3 className={`${tc.hAtomics} text-xs font-bold uppercase flex items-center gap-2`}>
+                Atomics (Za/Zic*)
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_atomics.map((item) => (
+                  <ExtensionBlock
+                    key={item.id}
                     data={item}
                     searchQuery={searchQuery}
-                    colorClass="bg-indigo-950/50 border-indigo-800/50 text-indigo-100"
+                    colorClass={tc.atomics}
                   />
                 ))}
-	              </div>
-	            </div>
+              </div>
+            </div>
 
-	            <div className="space-y-2">
-	              <h3 className="text-pink-400 text-xs font-bold uppercase flex items-center gap-2">
-	                Float & Numerics (Zf/Za)
+            <div className="space-y-2">
+              <h3 className={`${tc.hCompress} text-xs font-bold uppercase flex items-center gap-2`}>
+                Compressed Instructions (Zc)
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_compress.map((item) => (
+                  <ExtensionBlock
+                    key={item.id}
+                    data={item}
+                    searchQuery={searchQuery}
+                    colorClass={tc.compress}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className={`${tc.hFloat} text-xs font-bold uppercase flex items-center gap-2`}>
+                Float & Numerics (Zf/Za)
               </h3>
               <div className="grid grid-cols-2 gap-2">
                 {extensions.z_float.map((item) => (
@@ -2726,144 +2754,144 @@ const RISCVExplorer = () => {
                     key={item.id}
                     data={item}
                     searchQuery={searchQuery}
-                    colorClass="bg-pink-950/50 border-pink-800/50 text-pink-100"
+                    colorClass={tc.float}
                   />
                 ))}
-	              </div>
-	            </div>
+              </div>
+            </div>
 
-		            <div className="space-y-2">
-		              <h3 className="text-sky-400 text-xs font-bold uppercase flex items-center gap-2">
-		                Load/Store
-		              </h3>
-		              <div className="grid grid-cols-2 gap-2">
-		                {extensions.z_load_store.map((item) => (
-		                  <ExtensionBlock
-		                    key={item.id}
-		                    data={item}
-		                    searchQuery={searchQuery}
-		                    colorClass="bg-sky-950/40 border-sky-800/40 text-sky-100"
-		                  />
-		                ))}
-		              </div>
-		            </div>
+            <div className="space-y-2">
+              <h3 className={`${tc.hVector} text-xs font-bold uppercase flex items-center gap-2`}>
+                Load/Store
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_load_store.map((item) => (
+                  <ExtensionBlock
+                    key={item.id}
+                    data={item}
+                    searchQuery={searchQuery}
+                    colorClass={tc.vector}
+                  />
+                ))}
+              </div>
+            </div>
 
-		            <div className="space-y-2">
-		              <h3 className="text-fuchsia-300 text-xs font-bold uppercase flex items-center gap-2">
-		                Integer
-		              </h3>
-		              <div className="grid grid-cols-2 gap-2">
-		                {extensions.z_integer.map((item) => (
-		                  <ExtensionBlock
-		                    key={item.id}
-		                    data={item}
-		                    searchQuery={searchQuery}
-		                    colorClass="bg-fuchsia-950/40 border-fuchsia-800/40 text-fuchsia-100"
-		                  />
-		                ))}
-		              </div>
-		            </div>
+            <div className="space-y-2">
+              <h3 className={`${tc.hInteger} text-xs font-bold uppercase flex items-center gap-2`}>
+                Integer
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_integer.map((item) => (
+                  <ExtensionBlock
+                    key={item.id}
+                    data={item}
+                    searchQuery={searchQuery}
+                    colorClass={tc.security}
+                  />
+                ))}
+              </div>
+            </div>
 
-	            <div className="space-y-2">
-	              <h3 className="text-teal-400 text-xs font-bold uppercase flex items-center gap-2">
-	                Vector Subsets (Zv/Zve)
-	              </h3>
+            <div className="space-y-2">
+              <h3 className={`${tc.hVectorCrypto} text-xs font-bold uppercase flex items-center gap-2`}>
+                Vector Subsets (Zv/Zve)
+              </h3>
               <div className="grid grid-cols-2 gap-2">
                 {extensions.z_vector.map((item) => (
                   <ExtensionBlock
                     key={item.id}
                     data={item}
                     searchQuery={searchQuery}
-                    colorClass="bg-teal-950/50 border-teal-800/50 text-teal-100"
+                    colorClass={tc.crypto}
                   />
                 ))}
               </div>
             </div>
 
-	            <div className="space-y-2">
-	              <h3 className="text-red-400 text-xs font-bold uppercase flex items-center gap-2">
-	                Security (Zi)
-	              </h3>
-	              <div className="grid grid-cols-2 gap-2">
-	                {extensions.z_security.map((item) => (
-	                  <ExtensionBlock
+            <div className="space-y-2">
+              <h3 className={`${tc.hSecurity} text-xs font-bold uppercase flex items-center gap-2`}>
+                Security (Zi)
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_security.map((item) => (
+                  <ExtensionBlock
                     key={item.id}
                     data={item}
                     searchQuery={searchQuery}
-                    colorClass="bg-red-950/50 border-red-800/50 text-red-100"
+                    colorClass={tc.system}
                   />
                 ))}
               </div>
             </div>
 
-	            <div className="space-y-2">
-	              <h3 className="text-slate-400 text-xs font-bold uppercase flex items-center gap-2">
-	                Cryptography (Zk)
-	              </h3>
-	              <div className="grid grid-cols-2 gap-2">
-	                {extensions.z_crypto.map((item) => (
-	                  <ExtensionBlock
+            <div className="space-y-2">
+              <h3 className={`${tc.hCrypto} text-xs font-bold uppercase flex items-center gap-2`}>
+                Cryptography (Zk)
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_crypto.map((item) => (
+                  <ExtensionBlock
                     key={item.id}
                     data={item}
                     searchQuery={searchQuery}
-                    colorClass="bg-slate-800 border-slate-600 text-slate-300"
+                    colorClass={tc.smem}
                   />
                 ))}
-	              </div>
-	            </div>
+              </div>
+            </div>
 
-	            <div className="space-y-2">
-	              <h3 className="text-violet-300 text-xs font-bold uppercase flex items-center gap-2">
-	                Vector Cryptography (Zvk)
-	              </h3>
-	              <div className="grid grid-cols-2 gap-2">
-	                {extensions.z_vector_crypto.map((item) => (
-	                  <ExtensionBlock
-	                    key={item.id}
-	                    data={item}
-	                    searchQuery={searchQuery}
-	                    colorClass="bg-violet-950/40 border-violet-800/40 text-violet-100"
-	                  />
-	                ))}
-	              </div>
-	            </div>
+            <div className="space-y-2">
+              <h3 className={`${tc.hVCrypto} text-xs font-bold uppercase flex items-center gap-2`}>
+                Vector Cryptography (Zvk)
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_vector_crypto.map((item) => (
+                  <ExtensionBlock
+                    key={item.id}
+                    data={item}
+                    searchQuery={searchQuery}
+                    colorClass={tc.sint}
+                  />
+                ))}
+              </div>
+            </div>
 
-	            <div className="space-y-2">
-	              <h3 className="text-orange-400 text-xs font-bold uppercase flex items-center gap-2">
-	                System
-	              </h3>
-	              <div className="grid grid-cols-2 gap-2">
-	                {extensions.z_system.map((item) => (
-	                  <ExtensionBlock
-	                    key={item.id}
-	                    data={item}
-	                    searchQuery={searchQuery}
-	                    colorClass="bg-orange-950/50 border-orange-800/50 text-orange-100"
-	                  />
-	                ))}
-	              </div>
-	            </div>
+            <div className="space-y-2">
+              <h3 className={`${tc.hSystem} text-xs font-bold uppercase flex items-center gap-2`}>
+                System
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_system.map((item) => (
+                  <ExtensionBlock
+                    key={item.id}
+                    data={item}
+                    searchQuery={searchQuery}
+                    colorClass={tc.strap1}
+                  />
+                ))}
+              </div>
+            </div>
 
-	            <div className="space-y-2">
-	              <h3 className="text-orange-200 text-xs font-bold uppercase flex items-center gap-2">
-	                Caches
-	              </h3>
-	              <div className="grid grid-cols-2 gap-2">
-	                {extensions.z_caches.map((item) => (
-	                  <ExtensionBlock
-	                    key={item.id}
-	                    data={item}
-	                    searchQuery={searchQuery}
-	                    colorClass="bg-orange-950/30 border-orange-700/30 text-orange-100"
-	                  />
-	                ))}
-	              </div>
-	            </div>
-	          </div>
+            <div className="space-y-2">
+              <h3 className={`${tc.hCaches} text-xs font-bold uppercase flex items-center gap-2`}>
+                Caches
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_caches.map((item) => (
+                  <ExtensionBlock
+                    key={item.id}
+                    data={item}
+                    searchQuery={searchQuery}
+                    colorClass={tc.strap2}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
 
           {/* 4. S-Extensions (Privileged) */}
-	          <div className="col-span-full pt-4 border-t border-slate-700">
-            <h3 className="text-cyan-400 text-xs font-bold uppercase flex items-center gap-2 mb-3">
+          <div className={`col-span-full pt-4 border-t ${tc.headerBorder}`}>
+            <h3 className={`${tc.hS} text-xs font-bold uppercase flex items-center gap-2 mb-3`}>
               S & Sv Extensions (Privileged)
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -2875,7 +2903,7 @@ const RISCVExplorer = () => {
                       key={item.id}
                       data={item}
                       searchQuery={searchQuery}
-                      colorClass="bg-cyan-950/30 border-cyan-800/30 text-cyan-100"
+                      colorClass={tc.svmem}
                     />
                   ))}
                 </div>
@@ -2888,7 +2916,7 @@ const RISCVExplorer = () => {
                       key={item.id}
                       data={item}
                       searchQuery={searchQuery}
-                      colorClass="bg-cyan-950/30 border-cyan-800/30 text-cyan-100"
+                      colorClass={tc.sint}
                     />
                   ))}
                 </div>
@@ -2903,7 +2931,7 @@ const RISCVExplorer = () => {
                       key={item.id}
                       data={item}
                       searchQuery={searchQuery}
-                      colorClass="bg-cyan-950/30 border-cyan-800/30 text-cyan-100"
+                      colorClass={tc.strap1}
                     />
                   ))}
                 </div>
@@ -2912,179 +2940,178 @@ const RISCVExplorer = () => {
           </div>
         </div>
 
-	        {/* Sidebar Info Panel */}
-		        <div className="lg:col-span-3 mt-6 lg:mt-0">
-		          <div className="sticky top-6 bg-slate-800/80 border border-slate-700 backdrop-blur-sm rounded-xl shadow-2xl min-h-[400px] max-h-[calc(100vh-3rem)] flex flex-col overflow-hidden">
-		            <div className="p-4 pb-3 border-b border-slate-700/60">
-	              <h2 className="text-sm font-bold text-slate-400 flex items-center gap-2 uppercase tracking-wide">
-	                <Info size={16} /> Selected Details
-	              </h2>
-	            </div>
+        {/* Sidebar Info Panel */}
+        <div className="lg:col-span-3 mt-6 lg:mt-0">
+          <div className={`sticky top-6 ${tc.sidebar} border rounded-xl shadow-2xl min-h-[400px] max-h-[calc(100vh-3rem)] flex flex-col overflow-hidden`}>
+            <div className={`p-4 pb-3 border-b ${tc.sidebarHeader}`}>
+              <h2 className={`text-sm font-bold ${tc.sidebarHeading} flex items-center gap-2 uppercase tracking-wide`}>
+                <Info size={16} /> Selected Details
+              </h2>
+            </div>
 
-	            <div className="flex-1 overflow-y-auto overscroll-contain p-4 pt-3">
-	              {selectedExt ? (
-	                <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-	                <div className="mb-6 flex items-start justify-between gap-3">
-	                  <div className="min-w-0">
-	                    <a
-	                      href={selectedExt.url || 'https://github.com/riscv/riscv-isa-manual'}
-	                      target="_blank"
-	                      rel="noreferrer"
-	                      className="inline-flex items-start gap-1 text-3xl font-black text-white tracking-tight break-words hover:text-purple-300"
-	                      title="Open reference link"
-	                    >
-	                      <span>{selectedExt.name}</span>
-	                      <ArrowUpRight size={18} className="mt-1 shrink-0 opacity-80" />
-	                    </a>
+            <div className="flex-1 overflow-y-auto overscroll-contain p-4 pt-3">
+              {selectedExt ? (
+                <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                  <div className="mb-6 flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <a
+                        href={selectedExt.url || 'https://github.com/riscv/riscv-isa-manual'}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={`inline-flex items-start gap-1 text-3xl font-black ${tc.titleText} tracking-tight break-words hover:text-purple-700 dark:hover:text-purple-300`}
+                        title="Open reference link"
+                      >
+                        <span>{selectedExt.name}</span>
+                        <ArrowUpRight size={18} className="mt-1 shrink-0 opacity-80" />
+                      </a>
+                    </div>
+
+                    {selectedExt.discontinued === 1 && (
+                      <span className="shrink-0 px-2 py-1 rounded-md text-[10px] font-mono uppercase tracking-wide border bg-red-950/40 text-red-200 border-red-600/60">
+                        Discontinued
+                      </span>
+                    )}
                   </div>
 
-                  {selectedExt.discontinued === 1 && (
-                    <span className="shrink-0 px-2 py-1 rounded-md text-[10px] font-mono uppercase tracking-wide border bg-red-950/40 text-red-200 border-red-600/60">
-                      Discontinued
-                    </span>
-                  )}
-                </div>
+                  <div className="space-y-6">
+                    <div>
+                      <h4 className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                        Description
+                      </h4>
+                      <p className={`${tc.bodyText} leading-snug`}>{selectedExt.desc}</p>
+                    </div>
 
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-                      Description
-                    </h4>
-                    <p className="text-slate-200 leading-snug">{selectedExt.desc}</p>
-                  </div>
+                    <div className={`${tc.card} p-3 rounded border`}>
+                      <h4 className={`text-[10px] uppercase tracking-wider ${tc.hBase} font-bold mb-2 flex items-center gap-1`}>
+                        <ArrowRight size={10} /> Use Case
+                      </h4>
+                      <p className={`${tc.mutedText} text-sm italic`}>{selectedExt.use}</p>
+                    </div>
 
-                  <div className="bg-slate-900 p-3 rounded border border-slate-700">
-                    <h4 className="text-[10px] uppercase tracking-wider text-blue-400 font-bold mb-2 flex items-center gap-1">
-                      <ArrowRight size={10} /> Use Case
-                    </h4>
-                    <p className="text-slate-400 text-sm italic">{selectedExt.use}</p>
-                  </div>
+                    {/* Instruction list, when available */}
+                    {searchMatches &&
+                      searchMatches.extId === selectedExt.id &&
+                      searchMatches.query === searchQuery.trim().toLowerCase() &&
+                      searchMatches.mnemonics.length > 0 && (
+                        <div className={`${tc.card} p-3 rounded border`}>
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0">
+                              <div className="text-[10px] uppercase tracking-wider text-yellow-300 font-bold mb-0.5">
+                                Search Hits ({searchMatches.mnemonics.length})
+                              </div>
+                              <div className="text-[11px] font-mono text-slate-200 truncate">
+                                {searchMatches.mnemonics[searchMatches.index] || ''}
+                                <span className="ml-2 text-slate-500">
+                                  ({searchMatches.index + 1}/{searchMatches.mnemonics.length})
+                                </span>
+                              </div>
+                            </div>
 
-	                  {/* Instruction list, when available */}
-	                  {searchMatches &&
-	                    searchMatches.extId === selectedExt.id &&
-	                    searchMatches.query === searchQuery.trim().toLowerCase() &&
-	                    searchMatches.mnemonics.length > 0 && (
-	                      <div className="bg-slate-900 p-3 rounded border border-slate-700">
-	                        <div className="flex items-center justify-between gap-3">
-	                          <div className="min-w-0">
-	                            <div className="text-[10px] uppercase tracking-wider text-yellow-300 font-bold mb-0.5">
-	                              Search Hits ({searchMatches.mnemonics.length})
-	                            </div>
-	                            <div className="text-[11px] font-mono text-slate-200 truncate">
-	                              {searchMatches.mnemonics[searchMatches.index] || ''}
-	                              <span className="ml-2 text-slate-500">
-	                                ({searchMatches.index + 1}/{searchMatches.mnemonics.length})
-	                              </span>
-	                            </div>
-	                          </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <button
+                                type="button"
+                                className={`px-2 py-1 rounded border text-[10px] font-mono disabled:opacity-40 ${tc.monoBtn}`}
+                                onClick={() => {
+                                  setSearchMatches((current) => {
+                                    if (!current || current.extId !== selectedExt.id) return current;
+                                    const nextIndex =
+                                      (current.index - 1 + current.mnemonics.length) % current.mnemonics.length;
+                                    const mnemonic = current.mnemonics[nextIndex];
+                                    selectInstructionByMnemonic(selectedExt, mnemonic);
+                                    return { ...current, index: nextIndex };
+                                  });
+                                }}
+                                disabled={searchMatches.mnemonics.length < 2}
+                              >
+                                Prev
+                              </button>
+                              <button
+                                type="button"
+                                className={`px-2 py-1 rounded border text-[10px] font-mono disabled:opacity-40 ${tc.monoBtn}`}
+                                onClick={() => {
+                                  setSearchMatches((current) => {
+                                    if (!current || current.extId !== selectedExt.id) return current;
+                                    const nextIndex = (current.index + 1) % current.mnemonics.length;
+                                    const mnemonic = current.mnemonics[nextIndex];
+                                    selectInstructionByMnemonic(selectedExt, mnemonic);
+                                    return { ...current, index: nextIndex };
+                                  });
+                                }}
+                                disabled={searchMatches.mnemonics.length < 2}
+                              >
+                                Next
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
-	                          <div className="flex items-center gap-2 shrink-0">
-	                            <button
-	                              type="button"
-	                              className="px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[10px] font-mono text-slate-100 disabled:opacity-40"
-	                              onClick={() => {
-	                                setSearchMatches((current) => {
-	                                  if (!current || current.extId !== selectedExt.id) return current;
-	                                  const nextIndex =
-	                                    (current.index - 1 + current.mnemonics.length) % current.mnemonics.length;
-	                                  const mnemonic = current.mnemonics[nextIndex];
-	                                  selectInstructionByMnemonic(selectedExt, mnemonic);
-	                                  return { ...current, index: nextIndex };
-	                                });
-	                              }}
-	                              disabled={searchMatches.mnemonics.length < 2}
-	                            >
-	                              Prev
-	                            </button>
-	                            <button
-	                              type="button"
-	                              className="px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[10px] font-mono text-slate-100 disabled:opacity-40"
-	                              onClick={() => {
-	                                setSearchMatches((current) => {
-	                                  if (!current || current.extId !== selectedExt.id) return current;
-	                                  const nextIndex = (current.index + 1) % current.mnemonics.length;
-	                                  const mnemonic = current.mnemonics[nextIndex];
-	                                  selectInstructionByMnemonic(selectedExt, mnemonic);
-	                                  return { ...current, index: nextIndex };
-	                                });
-	                              }}
-	                              disabled={searchMatches.mnemonics.length < 2}
-	                            >
-	                              Next
-	                            </button>
-	                          </div>
-	                        </div>
-	                      </div>
-	                    )}
-
-	                  {extensionInstructions[selectedExt.id] && (
-	                    <div className="bg-slate-900 p-3 rounded border border-slate-700">
-	                      <h4 className="text-[10px] uppercase tracking-wider text-emerald-400 font-bold mb-2">
-	                        Instruction Set Snapshot ({extensionInstructions[selectedExt.id].length})
-	                      </h4>
-	                      <div className="flex flex-wrap gap-1">
-		                        {extensionInstructions[selectedExt.id].map((mnemonic) => {
-		                          const q = searchQuery.trim().toLowerCase();
-		                          const instructionDetails = selectedExt.instructions?.[mnemonic];
-		                          const isHit =
-		                            q.length &&
-		                            (mnemonic.toLowerCase().includes(q) ||
-		                              instructionMatchesQuery(mnemonic, instructionDetails, q));
-		                          const isActive = selectedInstruction?.mnemonic === mnemonic;
-		                          const isClickable = Boolean(instructionDetails);
-		                          const isDeprecated = Boolean(instructionDetails?.deprecated);
-		                          return (
-	                            <button
-	                              key={mnemonic}
-	                              type="button"
-		                              onClick={() => {
-		                                if (!isClickable) return;
-		                                setSelectedInstruction(
-		                                  isActive ? null : { mnemonic, ...instructionDetails }
-		                                );
-		                                setSearchMatches((current) => {
-		                                  if (
-		                                    !current ||
-		                                    current.extId !== selectedExt.id ||
-		                                    current.query !== searchQuery.trim().toLowerCase()
-		                                  ) {
-		                                    return current;
-		                                  }
-		                                  const idx = current.mnemonics.indexOf(mnemonic);
-		                                  if (idx === -1) return current;
-		                                  return { ...current, index: idx };
-		                                });
-		                              }}
-	                              className={`px-1.5 py-0.5 rounded border text-[10px] font-mono tracking-tight ${
-	                                isActive
-	                                  ? isDeprecated
-	                                      ? 'border-red-400 bg-red-500/10 text-red-200'
-	                                      : 'border-emerald-400 bg-emerald-500/10 text-emerald-200'
-	                                  : isHit
-	                                      ? 'border-yellow-400 bg-yellow-500/10 text-yellow-200'
-	                                      : isDeprecated
-	                                          ? 'border-red-500/60 bg-red-500/5 text-red-200'
-	                                          : 'border-slate-700 bg-slate-800/70'
-	                              }`}
-	                              title={
-	                                isClickable
-	                                  ? `View details for ${mnemonic}`
-	                                  : `${mnemonic} (no details yet)`
-	                              }
-	                              disabled={!isClickable}
-	                            >
-	                              {mnemonic}
-	                            </button>
-	                          );
-	                        })}
-	                      </div>
-	                    </div>
-	                  )}
+                    {extensionInstructions[selectedExt.id] && (
+                      <div className={`${tc.card} p-3 rounded border`}>
+                        <h4 className={`text-[10px] uppercase tracking-wider ${tc.hStandard} font-bold mb-2`}>
+                          Instruction Set Snapshot ({extensionInstructions[selectedExt.id].length})
+                        </h4>
+                        <div className="flex flex-wrap gap-1">
+                          {extensionInstructions[selectedExt.id].map((mnemonic) => {
+                            const q = searchQuery.trim().toLowerCase();
+                            const instructionDetails = selectedExt.instructions?.[mnemonic];
+                            const isHit =
+                              q.length &&
+                              (mnemonic.toLowerCase().includes(q) ||
+                                instructionMatchesQuery(mnemonic, instructionDetails, q));
+                            const isActive = selectedInstruction?.mnemonic === mnemonic;
+                            const isClickable = Boolean(instructionDetails);
+                            const isDeprecated = Boolean(instructionDetails?.deprecated);
+                            return (
+                              <button
+                                key={mnemonic}
+                                type="button"
+                                onClick={() => {
+                                  if (!isClickable) return;
+                                  setSelectedInstruction(
+                                    isActive ? null : { mnemonic, ...instructionDetails }
+                                  );
+                                  setSearchMatches((current) => {
+                                    if (
+                                      !current ||
+                                      current.extId !== selectedExt.id ||
+                                      current.query !== searchQuery.trim().toLowerCase()
+                                    ) {
+                                      return current;
+                                    }
+                                    const idx = current.mnemonics.indexOf(mnemonic);
+                                    if (idx === -1) return current;
+                                    return { ...current, index: idx };
+                                  });
+                                }}
+                                className={`px-1.5 py-0.5 rounded border text-[10px] font-mono tracking-tight ${isActive
+                                  ? isDeprecated
+                                    ? 'border-red-500 bg-red-100 text-red-700 dark:border-red-400 dark:bg-red-500/10 dark:text-red-200'
+                                    : 'border-emerald-500 bg-emerald-100 text-emerald-800 dark:border-emerald-400 dark:bg-emerald-500/10 dark:text-emerald-200'
+                                  : isHit
+                                    ? 'border-yellow-500 bg-yellow-100 text-yellow-800 dark:border-yellow-400 dark:bg-yellow-500/10 dark:text-yellow-200'
+                                    : isDeprecated
+                                      ? 'border-red-400 bg-red-50 text-red-600 dark:border-red-500/60 dark:bg-red-500/5 dark:text-red-200'
+                                      : 'border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-200'
+                                  }`}
+                                title={
+                                  isClickable
+                                    ? `View details for ${mnemonic}`
+                                    : `${mnemonic} (no details yet)`
+                                }
+                                disabled={!isClickable}
+                              >
+                                {mnemonic}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
 
                     {extensionCsrs[selectedExt.id] && (
-                      <div className="bg-slate-900 p-3 rounded border border-slate-700">
-                        <h4 className="text-[10px] uppercase tracking-wider text-sky-300 font-bold mb-2">
+                      <div className={`${tc.card} p-3 rounded border`}>
+                        <h4 className="text-[10px] uppercase tracking-wider text-sky-700 dark:text-sky-300 font-bold mb-2">
                           {(extensionCsrLabels[selectedExt.id] || 'CSRs')}{' '}
                           ({extensionCsrs[selectedExt.id].length})
                         </h4>
@@ -3092,7 +3119,7 @@ const RISCVExplorer = () => {
                           {extensionCsrs[selectedExt.id].map((csr) => (
                             <span
                               key={csr}
-                              className="px-1.5 py-0.5 rounded border border-slate-700 bg-slate-800/70 text-[10px] font-mono text-slate-200"
+                              className={`px-1.5 py-0.5 rounded border text-[10px] font-mono ${tc.mono}`}
                             >
                               {csr}
                             </span>
@@ -3101,493 +3128,490 @@ const RISCVExplorer = () => {
                       </div>
                     )}
 
-		                  {selectedInstruction && (
-		                    <div className="bg-slate-900 p-3 rounded border border-slate-700">
-		                      <div className="flex items-start justify-between gap-3 mb-2">
-		                        <h4 className="text-[10px] uppercase tracking-wider text-purple-300 font-bold flex items-center gap-1">
-		                          <ArrowRight size={10} /> Instruction Details
-		                        </h4>
-		                        <div className="flex items-center gap-2">
-		                          <button
-		                            type="button"
-		                            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[10px] font-mono text-slate-100 hover:border-slate-500"
-		                            onClick={async () => {
-		                              const text = formatInstructionForClipboard(selectedExt, selectedInstruction);
-		                              const ok = await copyTextToClipboard(text);
-		                              setCopyStatus(ok ? 'copied' : 'failed');
-		                              window.setTimeout(() => setCopyStatus(null), 1500);
-		                            }}
-		                            title="Copy extension + instruction details"
-		                          >
-		                            <Copy size={12} />
-		                            {copyStatus === 'copied'
-		                              ? 'Copied'
-		                              : copyStatus === 'failed'
-		                                  ? 'Copy failed'
-		                                  : 'Copy'}
-		                          </button>
-		                          <button
-		                            type="button"
-		                            className="text-[10px] font-mono text-slate-500 hover:text-slate-300"
-		                            onClick={() => setSelectedInstruction(null)}
-		                          >
-		                            Close
-		                          </button>
-		                        </div>
-		                      </div>
+                    {selectedInstruction && (
+                      <div className={`${tc.card} p-3 rounded border`}>
+                        <div className="flex items-start justify-between gap-3 mb-2">
+                          <h4 className="text-[10px] uppercase tracking-wider text-purple-700 dark:text-purple-300 font-bold flex items-center gap-1">
+                            <ArrowRight size={10} /> Instruction Details
+                          </h4>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              className={`inline-flex items-center gap-1 px-2 py-1 rounded border text-[10px] font-mono ${tc.monoBtn}`}
+                              onClick={async () => {
+                                const text = formatInstructionForClipboard(selectedExt, selectedInstruction);
+                                const ok = await copyTextToClipboard(text);
+                                setCopyStatus(ok ? 'copied' : 'failed');
+                                window.setTimeout(() => setCopyStatus(null), 1500);
+                              }}
+                              title="Copy extension + instruction details"
+                            >
+                              <Copy size={12} />
+                              {copyStatus === 'copied'
+                                ? 'Copied'
+                                : copyStatus === 'failed'
+                                  ? 'Copy failed'
+                                  : 'Copy'}
+                            </button>
+                            <button
+                              type="button"
+                              className={`text-[10px] font-mono ${tc.dimText} hover:text-slate-700 dark:hover:text-slate-300`}
+                              onClick={() => setSelectedInstruction(null)}
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </div>
 
-	                      <div className="mb-3 flex items-start justify-between gap-2">
-	                        <div className="text-white font-black tracking-tight text-xl">
-	                          {selectedInstruction.mnemonic}
-	                        </div>
-	                        {selectedInstruction.deprecated && (
-	                          <span className="shrink-0 px-2 py-1 rounded-md text-[10px] font-mono uppercase tracking-wide border bg-red-950/40 text-red-200 border-red-600/60">
-	                            Discontinued
-	                          </span>
-	                        )}
-	                      </div>
+                        <div className="mb-3 flex items-start justify-between gap-2">
+                          <div className={`${tc.titleText} font-black tracking-tight text-xl`}>
+                            {selectedInstruction.mnemonic}
+                          </div>
+                          {selectedInstruction.deprecated && (
+                            <span className="shrink-0 px-2 py-1 rounded-md text-[10px] font-mono uppercase tracking-wide border bg-red-950/40 text-red-200 border-red-600/60">
+                              Discontinued
+                            </span>
+                          )}
+                        </div>
 
-	                      <div className="space-y-3">
-	                        <div>
-	                          <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-	                            Encoding
-	                          </div>
-	                          <EncodingDiagram encoding={selectedInstruction.encoding} />
-	                          <div className="mt-1 text-[10px] text-slate-500">
-	                            Fixed bits are <span className="font-mono">0/1</span>, variable bits are{' '}
-	                            <span className="font-mono">x</span>.
-	                          </div>
-	                        </div>
-
-	                        <div>
-	                          <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-	                            Variable Fields
-	                          </div>
-	                          <div className="flex flex-wrap gap-1">
-	                            {(selectedInstruction.variable_fields || []).map((field) => (
-	                              <span
-	                                key={field}
-	                                className="px-1.5 py-0.5 rounded border border-slate-700 bg-slate-800/70 text-[10px] font-mono text-slate-200"
-	                              >
-	                                {field}
-	                              </span>
-	                            ))}
-	                          </div>
-	                        </div>
-
-		                        <div className="grid grid-cols-2 gap-2">
-		                          <div>
-		                            <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-		                              Match
-		                            </div>
-		                            <div
-		                              className={`font-mono text-[11px] text-slate-100 bg-slate-800/70 border rounded px-2 py-1 ${
-		                                searchQuery.trim().length &&
-		                                String(selectedInstruction.match || '')
-		                                  .toLowerCase()
-		                                  .includes(searchQuery.trim().toLowerCase())
-		                                  ? 'border-yellow-400 bg-yellow-500/10'
-		                                  : 'border-slate-700'
-		                              }`}
-		                            >
-		                              {selectedInstruction.match}
-		                            </div>
-		                          </div>
-		                          <div>
-		                            <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-		                              Mask
-		                            </div>
-		                            <div
-		                              className={`font-mono text-[11px] text-slate-100 bg-slate-800/70 border rounded px-2 py-1 ${
-		                                searchQuery.trim().length &&
-		                                String(selectedInstruction.mask || '')
-		                                  .toLowerCase()
-		                                  .includes(searchQuery.trim().toLowerCase())
-		                                  ? 'border-yellow-400 bg-yellow-500/10'
-		                                  : 'border-slate-700'
-		                              }`}
-		                            >
-		                              {selectedInstruction.mask}
-		                            </div>
-		                          </div>
-		                        </div>
-
-                        {compressedMapping && (
-                          <div className="rounded border border-slate-700 bg-slate-950/50 p-3">
-                            <div className="text-[10px] uppercase tracking-wider text-cyan-300 font-bold mb-2">
-                              Compressed Mapping
+                        <div className="space-y-3">
+                          <div>
+                            <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                              Encoding
                             </div>
-                            <div className="space-y-2">
-                              <div>
-                                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-                                  Compressed
-                                </div>
-                                <div className="font-mono text-[11px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded px-2 py-1">
-                                  {compressedMapping.compressed}
-                                </div>
-                              </div>
-                              <div>
-                                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-                                  Standard Equivalent
-                                </div>
-                                {hasStandardEquivalent ? (
-                                  <button
-                                    type="button"
-                                    className="w-full text-left font-mono text-[11px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded px-2 py-1 hover:border-cyan-400/60"
-                                    onClick={() => selectStandardEquivalent(standardEquivalentMnemonic)}
-                                    title="Open standard instruction details"
-                                  >
-                                    <span className="inline-flex items-center gap-1">
-                                      {compressedMapping.standard}
-                                      <ArrowUpRight size={12} className="opacity-70" />
-                                    </span>
-                                  </button>
-                                ) : (
-                                  <div className="font-mono text-[11px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded px-2 py-1">
-                                    {compressedMapping.standard}
-                                  </div>
-                                )}
-                              </div>
-                              <div>
-                                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-                                  Equivalent Instruction
-                                </div>
-                                {standardEquivalentMnemonic ? (
-                                  hasStandardEquivalent ? (
-                                    <button
-                                      type="button"
-                                      className="inline-flex items-center gap-1 text-[11px] font-mono text-cyan-200 hover:text-cyan-100 underline"
-                                      onClick={() => selectStandardEquivalent(standardEquivalentMnemonic)}
-                                      title="Open standard instruction details"
-                                    >
-                                      {standardEquivalentMnemonic}
-                                      <ArrowUpRight size={12} className="opacity-70" />
-                                    </button>
-                                  ) : (
-                                    <div className="text-[11px] text-slate-500 font-mono">
-                                      {standardEquivalentMnemonic}
-                                    </div>
-                                  )
-                                ) : (
-                                  <div className="text-[11px] text-slate-500">Unavailable</div>
-                                )}
-                              </div>
-                              <div>
-                                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-                                  Description
-                                </div>
-                                <div className="text-[11px] text-slate-200">{compressedMapping.description}</div>
-                              </div>
+                            <EncodingDiagram encoding={selectedInstruction.encoding} />
+                            <div className="mt-1 text-[10px] text-slate-500">
+                              Fixed bits are <span className="font-mono">0/1</span>, variable bits are{' '}
+                              <span className="font-mono">x</span>.
                             </div>
                           </div>
-                        )}
 
-                        {compressedEquivalents.length > 0 && (
-                          <div className="rounded border border-slate-700 bg-slate-950/40 p-3">
-                            <div className="text-[10px] uppercase tracking-wider text-emerald-300 font-bold mb-2">
-                              Compressed Equivalents
+                          <div>
+                            <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                              Variable Fields
                             </div>
-                            <div className="space-y-2">
-                              {compressedEquivalents.map((entry) => (
-                                <button
-                                  key={entry.mnemonic}
-                                  type="button"
-                                  className="w-full text-left rounded border border-slate-700 bg-slate-900/60 px-2 py-1.5 hover:border-emerald-400/60"
-                                  onClick={() => selectCompressedEquivalent(entry.mnemonic)}
-                                  title={`Open ${entry.mnemonic} details`}
+                            <div className="flex flex-wrap gap-1">
+                              {(selectedInstruction.variable_fields || []).map((field) => (
+                                <span
+                                  key={field}
+                                  className={`px-1.5 py-0.5 rounded border text-[10px] font-mono ${tc.mono}`}
                                 >
-                                  <div className="flex items-center gap-1 text-[11px] font-mono text-emerald-200">
-                                    {normalizeMnemonicKey(entry.mnemonic)}
-                                    <ArrowUpRight size={12} className="opacity-70" />
-                                  </div>
-                                  <div className="text-[10px] font-mono text-slate-400">{entry.compressed}</div>
-                                </button>
+                                  {field}
+                                </span>
                               ))}
                             </div>
                           </div>
-                        )}
 
-		                      </div>
-		                    </div>
-		                  )}
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                Match
+                              </div>
+                              <div
+                                className={`font-mono text-[11px] border rounded px-2 py-1 ${tc.mono} ${searchQuery.trim().length &&
+                                  String(selectedInstruction.match || '')
+                                    .toLowerCase()
+                                    .includes(searchQuery.trim().toLowerCase())
+                                  ? 'border-yellow-500 bg-yellow-100 dark:border-yellow-400 dark:bg-yellow-500/10'
+                                  : ''
+                                  }`}
+                              >
+                                {selectedInstruction.match}
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                Mask
+                              </div>
+                              <div
+                                className={`font-mono text-[11px] border rounded px-2 py-1 ${tc.mono} ${searchQuery.trim().length &&
+                                  String(selectedInstruction.mask || '')
+                                    .toLowerCase()
+                                    .includes(searchQuery.trim().toLowerCase())
+                                  ? 'border-yellow-500 bg-yellow-100 dark:border-yellow-400 dark:bg-yellow-500/10'
+                                  : ''
+                                  }`}
+                              >
+                                {selectedInstruction.mask}
+                              </div>
+                            </div>
+                          </div>
 
-                  {activeProfile && (
-                    <div
-                      className={`
+                          {compressedMapping && (
+                            <div className={`rounded border ${tc.card} p-3`}>
+                              <div className="text-[10px] uppercase tracking-wider text-cyan-700 dark:text-cyan-300 font-bold mb-2">
+                                Compressed Mapping
+                              </div>
+                              <div className="space-y-2">
+                                <div>
+                                  <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                    Compressed
+                                  </div>
+                                  <div className={`font-mono text-[11px] border rounded px-2 py-1 ${tc.mono}`}>
+                                    {compressedMapping.compressed}
+                                  </div>
+                                </div>
+                                <div>
+                                  <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                    Standard Equivalent
+                                  </div>
+                                  {hasStandardEquivalent ? (
+                                    <button
+                                      type="button"
+                                      className={`w-full text-left font-mono text-[11px] border rounded px-2 py-1 hover:border-cyan-400/60 ${tc.mono}`}
+                                      onClick={() => selectStandardEquivalent(standardEquivalentMnemonic)}
+                                      title="Open standard instruction details"
+                                    >
+                                      <span className="inline-flex items-center gap-1">
+                                        {compressedMapping.standard}
+                                        <ArrowUpRight size={12} className="opacity-70" />
+                                      </span>
+                                    </button>
+                                  ) : (
+                                    <div className={`font-mono text-[11px] border rounded px-2 py-1 ${tc.mono}`}>
+                                      {compressedMapping.standard}
+                                    </div>
+                                  )}
+                                </div>
+                                <div>
+                                  <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                    Equivalent Instruction
+                                  </div>
+                                  {standardEquivalentMnemonic ? (
+                                    hasStandardEquivalent ? (
+                                      <button
+                                        type="button"
+                                        className="inline-flex items-center gap-1 text-[11px] font-mono text-cyan-200 hover:text-cyan-100 underline"
+                                        onClick={() => selectStandardEquivalent(standardEquivalentMnemonic)}
+                                        title="Open standard instruction details"
+                                      >
+                                        {standardEquivalentMnemonic}
+                                        <ArrowUpRight size={12} className="opacity-70" />
+                                      </button>
+                                    ) : (
+                                      <div className="text-[11px] text-slate-500 font-mono">
+                                        {standardEquivalentMnemonic}
+                                      </div>
+                                    )
+                                  ) : (
+                                    <div className="text-[11px] text-slate-500">Unavailable</div>
+                                  )}
+                                </div>
+                                <div>
+                                  <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                    Description
+                                  </div>
+                                  <div className={`text-[11px] ${tc.bodyText}`}>{compressedMapping.description}</div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {compressedEquivalents.length > 0 && (
+                            <div className={`rounded border ${tc.card} p-3`}>
+                              <div className="text-[10px] uppercase tracking-wider text-emerald-700 dark:text-emerald-300 font-bold mb-2">
+                                Compressed Equivalents
+                              </div>
+                              <div className="space-y-2">
+                                {compressedEquivalents.map((entry) => (
+                                  <button
+                                    key={entry.mnemonic}
+                                    type="button"
+                                    className={`w-full text-left rounded border px-2 py-1.5 hover:border-emerald-400/60 ${tc.cardAlt}`}
+                                    onClick={() => selectCompressedEquivalent(entry.mnemonic)}
+                                    title={`Open ${entry.mnemonic} details`}
+                                  >
+                                    <div className="flex items-center gap-1 text-[11px] font-mono text-emerald-700 dark:text-emerald-200">
+                                      {normalizeMnemonicKey(entry.mnemonic)}
+                                      <ArrowUpRight size={12} className="opacity-70" />
+                                    </div>
+                                    <div className={`text-[10px] font-mono ${tc.mutedText}`}>{entry.compressed}</div>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                        </div>
+                      </div>
+                    )}
+
+                    {activeProfile && (
+                      <div
+                        className={`
                       mt-4 p-3 rounded text-xs flex items-center gap-2 border
-                      ${
-                        isHighlighted(selectedExt.id)
-                          ? 'bg-yellow-900/20 border-yellow-700/30 text-yellow-200'
-                          : 'bg-slate-800 border-slate-700 text-slate-500'
-                      }
+                      ${isHighlighted(selectedExt.id)
+                            ? tc.profileBoxYes
+                            : tc.profileBoxNo
+                          }
                     `}
+                      >
+                        {isHighlighted(selectedExt.id) ? (
+                          <>
+                            <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
+                            Required in <strong>{activeProfile}</strong>
+                          </>
+                        ) : (
+                          <>
+                            <div className={`w-1.5 h-1.5 rounded-full ${tc.dotBg}`} />
+                            Not required in {activeProfile}
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className={`h-[300px] flex flex-col items-center justify-center ${tc.dimText} text-center space-y-4`}>
+                  <LayoutGrid size={32} className="opacity-50" />
+                  <p className="text-xs max-w-[150px]">
+                    Click any block on the left to view technical specifications and use cases.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {encoderValidatorOpen && (
+        <div className="fixed inset-0 z-50">
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setEncoderValidatorOpen(false)}
+            role="presentation"
+          />
+
+          <div className="absolute inset-0 p-3 md:p-8 flex items-start justify-center overflow-y-auto">
+            <div className={`w-full max-w-3xl ${tc.modal} border rounded-xl shadow-2xl overflow-hidden`}>
+              <div className={`p-4 border-b ${tc.sidebarHeader} flex items-start justify-between gap-3`}>
+                <div className="min-w-0">
+                  <h3 className={`text-sm font-bold ${tc.sidebarHeading} uppercase tracking-wide flex items-center gap-2`}>
+                    <ScanSearch size={16} /> Encoder Validator
+                  </h3>
+                  <p className={`text-xs ${tc.dimText} mt-1`}>
+                    Provide either a 32-bit Encoding pattern (0/1/-), or Match+Mask (hex). The validator lists any
+                    existing instructions that overlap.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  className={`p-2 rounded border ${tc.monoBtn}`}
+                  onClick={() => setEncoderValidatorOpen(false)}
+                  title="Close"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <div>
+                    <div className={`text-[10px] uppercase tracking-wider ${tc.label} font-bold mb-1`}>
+                      Proposed mnemonic (optional)
+                    </div>
+                    <input
+                      type="text"
+                      value={encoderValidatorInput.mnemonic}
+                      onChange={(e) =>
+                        setEncoderValidatorInput((prev) => ({ ...prev, mnemonic: e.target.value }))
+                      }
+                      placeholder="e.g. MYOP"
+                      className={`w-full px-3 py-2 rounded border text-sm font-mono focus:outline-none focus:ring-2 ${tc.focusRing} ${tc.modalInput}`}
+                    />
+                  </div>
+
+                  <div>
+                    <div className={`text-[10px] uppercase tracking-wider ${tc.label} font-bold mb-1`}>
+                      Encoding (required if no match/mask)
+                    </div>
+                    <input
+                      type="text"
+                      value={encoderValidatorInput.encoding}
+                      onChange={(e) =>
+                        setEncoderValidatorInput((prev) => ({ ...prev, encoding: e.target.value }))
+                      }
+                      placeholder="-----------------000-----1100111"
+                      className={`w-full px-3 py-2 rounded border text-sm font-mono focus:outline-none focus:ring-2 ${tc.focusRing} ${tc.modalInput}`}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <div className={`text-[10px] uppercase tracking-wider ${tc.label} font-bold mb-1`}>
+                        Match (hex)
+                      </div>
+                      <input
+                        type="text"
+                        value={encoderValidatorInput.match}
+                        onChange={(e) =>
+                          setEncoderValidatorInput((prev) => ({ ...prev, match: e.target.value }))
+                        }
+                        placeholder="0x67"
+                        className={`w-full px-3 py-2 rounded border text-sm font-mono focus:outline-none focus:ring-2 ${tc.focusRing} ${tc.modalInput}`}
+                      />
+                    </div>
+                    <div>
+                      <div className={`text-[10px] uppercase tracking-wider ${tc.label} font-bold mb-1`}>
+                        Mask (hex)
+                      </div>
+                      <input
+                        type="text"
+                        value={encoderValidatorInput.mask}
+                        onChange={(e) =>
+                          setEncoderValidatorInput((prev) => ({ ...prev, mask: e.target.value }))
+                        }
+                        placeholder="0x707f"
+                        className={`w-full px-3 py-2 rounded border text-sm font-mono focus:outline-none focus:ring-2 ${tc.focusRing} ${tc.modalInput}`}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={runEncoderValidation}
+                      className={`inline-flex items-center gap-2 px-3 py-2 rounded border text-xs font-bold ${tc.validateBtn}`}
                     >
-                      {isHighlighted(selectedExt.id) ? (
-                        <>
-                          <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
-                          Required in <strong>{activeProfile}</strong>
-                        </>
-                      ) : (
-                        <>
-                          <div className="w-1.5 h-1.5 rounded-full bg-slate-600" />
-                          Not required in {activeProfile}
-                        </>
-	                      )}
-	                    </div>
-	                  )}
-	                </div>
-	                </div>
-	              ) : (
-	                <div className="h-[300px] flex flex-col items-center justify-center text-slate-600 text-center space-y-4">
-	                  <LayoutGrid size={32} className="opacity-50" />
-	                  <p className="text-xs max-w-[150px]">
-	                    Click any block on the left to view technical specifications and use cases.
-	                  </p>
-	                </div>
-	              )}
-	            </div>
-		          </div>
-		        </div>
-	      </div>
+                      <ScanSearch size={16} />
+                      Validate
+                    </button>
 
-	      {encoderValidatorOpen && (
-	        <div className="fixed inset-0 z-50">
-	          <div
-	            className="absolute inset-0 bg-black/60"
-	            onClick={() => setEncoderValidatorOpen(false)}
-	            role="presentation"
-	          />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEncoderValidatorInput({ mnemonic: '', encoding: '', match: '', mask: '' });
+                        setEncoderValidatorResult(null);
+                        setEncoderValidatorCopyStatus(null);
+                      }}
+                      className={`px-3 py-2 rounded border text-xs font-bold ${tc.modalBtn}`}
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </div>
 
-	          <div className="absolute inset-0 p-3 md:p-8 flex items-start justify-center overflow-y-auto">
-	            <div className="w-full max-w-3xl bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden">
-	              <div className="p-4 border-b border-slate-700 flex items-start justify-between gap-3">
-	                <div className="min-w-0">
-	                  <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wide flex items-center gap-2">
-	                    <ScanSearch size={16} /> Encoder Validator
-	                  </h3>
-	                  <p className="text-xs text-slate-500 mt-1">
-	                    Provide either a 32-bit Encoding pattern (0/1/-), or Match+Mask (hex). The validator lists any
-	                    existing instructions that overlap.
-	                  </p>
-	                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className={`text-[10px] uppercase tracking-wider ${tc.label} font-bold`}>
+                      Results
+                    </div>
+                    <button
+                      type="button"
+                      disabled={!encoderValidatorResult?.proposed}
+                      onClick={async () => {
+                        if (!encoderValidatorResult?.proposed) return;
+                        const report = formatEncoderValidatorReport(
+                          encoderValidatorResult.proposed,
+                          encoderValidatorResult
+                        );
+                        const ok = await copyTextToClipboard(report);
+                        setEncoderValidatorCopyStatus(ok ? 'copied' : 'failed');
+                        window.setTimeout(() => setEncoderValidatorCopyStatus(null), 1500);
+                      }}
+                      className={`inline-flex items-center gap-2 px-3 py-2 rounded border text-xs font-bold disabled:opacity-30 ${tc.modalBtn}`}
+                      title="Copy validation report"
+                    >
+                      <Copy size={14} />
+                      {encoderValidatorCopyStatus === 'copied'
+                        ? 'Copied'
+                        : encoderValidatorCopyStatus === 'failed'
+                          ? 'Copy failed'
+                          : 'Copy report'}
+                    </button>
+                  </div>
 
-	                <button
-	                  type="button"
-	                  className="p-2 rounded border border-slate-600 bg-slate-800 text-slate-100 hover:border-slate-500"
-	                  onClick={() => setEncoderValidatorOpen(false)}
-	                  title="Close"
-	                >
-	                  <X size={16} />
-	                </button>
-	              </div>
+                  {!encoderValidatorResult ? (
+                    <div className={`text-xs border rounded p-3 ${tc.emptyPanel}`}>
+                      Enter a proposed encoding and click Validate.
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {encoderValidatorResult.errors.length > 0 && (
+                        <div className={`border ${tc.errorPanel} rounded p-3`}>
+                          <div className={`text-[10px] uppercase tracking-wider ${tc.errorText} font-bold mb-2`}>
+                            Errors
+                          </div>
+                          <ul className={`text-xs ${tc.errorText} space-y-1 list-disc pl-4`}>
+                            {encoderValidatorResult.errors.map((err) => (
+                              <li key={err}>{err}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
 
-	              <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-	                <div className="space-y-3">
-	                  <div>
-	                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-	                      Proposed mnemonic (optional)
-	                    </div>
-	                    <input
-	                      type="text"
-	                      value={encoderValidatorInput.mnemonic}
-	                      onChange={(e) =>
-	                        setEncoderValidatorInput((prev) => ({ ...prev, mnemonic: e.target.value }))
-	                      }
-	                      placeholder="e.g. MYOP"
-	                      className="w-full px-3 py-2 rounded bg-slate-800 border border-slate-700 text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300"
-	                    />
-	                  </div>
+                      {encoderValidatorResult.proposed && (
+                        <div className={`border rounded p-3 ${tc.proposalPanel}`}>
+                          <div className={`text-[10px] uppercase tracking-wider ${tc.dimText} font-bold mb-2`}>
+                            Normalized Proposal
+                          </div>
+                          <div className="space-y-2">
+                            <div className={`font-mono text-[11px] break-all ${tc.bodyText}`}>
+                              Encoding: {encoderValidatorResult.proposed.encoding}
+                            </div>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className={`font-mono text-[11px] ${tc.bodyText}`}>Match: {encoderValidatorResult.proposed.match}</div>
+                              <div className={`font-mono text-[11px] ${tc.bodyText}`}>Mask: {encoderValidatorResult.proposed.mask}</div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
-	                  <div>
-	                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-	                      Encoding (required if no match/mask)
-	                    </div>
-	                    <input
-	                      type="text"
-	                      value={encoderValidatorInput.encoding}
-	                      onChange={(e) =>
-	                        setEncoderValidatorInput((prev) => ({ ...prev, encoding: e.target.value }))
-	                      }
-	                      placeholder="-----------------000-----1100111"
-	                      className="w-full px-3 py-2 rounded bg-slate-800 border border-slate-700 text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300"
-	                    />
-	                  </div>
+                      {encoderValidatorResult.proposed && (
+                        <div className={`border rounded p-3 ${tc.proposalPanel}`}>
+                          <div className={`text-[10px] uppercase tracking-wider ${tc.dimText} font-bold mb-2`}>
+                            Conflicts ({encoderValidatorResult.conflicts.length})
+                          </div>
+                          {encoderValidatorResult.conflicts.length === 0 ? (
+                            <div className={`text-xs ${tc.successText}`}>
+                              No overlaps found within the current instruction set database.
+                            </div>
+                          ) : (
+                            <div className="space-y-2 max-h-[340px] overflow-y-auto overscroll-contain pr-1">
+                              {encoderValidatorResult.conflicts.map((conflict) => (
+                                <div
+                                  key={`${conflict.other.extId}:${conflict.other.mnemonic}:${conflict.type}`}
+                                  className={`border rounded p-2 ${tc.conflictRow}`}
+                                >
+                                  <div className="flex items-start justify-between gap-2">
+                                    <div className="min-w-0">
+                                      <div className={`font-mono text-xs break-words ${tc.bodyText}`}>
+                                        {conflict.other.mnemonic}{' '}
+                                        <span className={tc.dimText}>({conflict.other.extId})</span>
+                                      </div>
+                                      <div className={`text-[11px] ${tc.dimText}`}>{conflict.other.extName}</div>
+                                    </div>
+                                    <span className={`shrink-0 px-2 py-1 rounded text-[10px] font-mono uppercase tracking-wide border ${tc.conflictBadge}`}>
+                                      {conflict.type}
+                                    </span>
+                                  </div>
 
-	                  <div className="grid grid-cols-2 gap-3">
-	                    <div>
-	                      <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-	                        Match (hex)
-	                      </div>
-	                      <input
-	                        type="text"
-	                        value={encoderValidatorInput.match}
-	                        onChange={(e) =>
-	                          setEncoderValidatorInput((prev) => ({ ...prev, match: e.target.value }))
-	                        }
-	                        placeholder="0x67"
-	                        className="w-full px-3 py-2 rounded bg-slate-800 border border-slate-700 text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300"
-	                      />
-	                    </div>
-	                    <div>
-	                      <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-	                        Mask (hex)
-	                      </div>
-	                      <input
-	                        type="text"
-	                        value={encoderValidatorInput.mask}
-	                        onChange={(e) =>
-	                          setEncoderValidatorInput((prev) => ({ ...prev, mask: e.target.value }))
-	                        }
-	                        placeholder="0x707f"
-	                        className="w-full px-3 py-2 rounded bg-slate-800 border border-slate-700 text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300"
-	                      />
-	                    </div>
-	                  </div>
-
-	                  <div className="flex items-center gap-2 pt-1">
-	                    <button
-	                      type="button"
-	                      onClick={runEncoderValidation}
-	                      className="inline-flex items-center gap-2 px-3 py-2 rounded border border-yellow-500/50 bg-yellow-500/10 text-yellow-200 text-xs font-bold hover:border-yellow-400"
-	                    >
-	                      <ScanSearch size={16} />
-	                      Validate
-	                    </button>
-
-	                    <button
-	                      type="button"
-	                      onClick={() => {
-	                        setEncoderValidatorInput({ mnemonic: '', encoding: '', match: '', mask: '' });
-	                        setEncoderValidatorResult(null);
-	                        setEncoderValidatorCopyStatus(null);
-	                      }}
-	                      className="px-3 py-2 rounded border border-slate-600 bg-slate-800 text-xs font-bold text-slate-100 hover:border-slate-500"
-	                    >
-	                      Reset
-	                    </button>
-	                  </div>
-	                </div>
-
-	                <div className="space-y-3">
-	                  <div className="flex items-center justify-between gap-2">
-	                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
-	                      Results
-	                    </div>
-	                    <button
-	                      type="button"
-	                      disabled={!encoderValidatorResult?.proposed}
-	                      onClick={async () => {
-	                        if (!encoderValidatorResult?.proposed) return;
-	                        const report = formatEncoderValidatorReport(
-	                          encoderValidatorResult.proposed,
-	                          encoderValidatorResult
-	                        );
-	                        const ok = await copyTextToClipboard(report);
-	                        setEncoderValidatorCopyStatus(ok ? 'copied' : 'failed');
-	                        window.setTimeout(() => setEncoderValidatorCopyStatus(null), 1500);
-	                      }}
-	                      className="inline-flex items-center gap-2 px-3 py-2 rounded border border-slate-600 bg-slate-800 text-xs font-bold text-slate-100 hover:border-slate-500 disabled:opacity-30"
-	                      title="Copy validation report"
-	                    >
-	                      <Copy size={14} />
-	                      {encoderValidatorCopyStatus === 'copied'
-	                        ? 'Copied'
-	                        : encoderValidatorCopyStatus === 'failed'
-	                          ? 'Copy failed'
-	                          : 'Copy report'}
-	                    </button>
-	                  </div>
-
-	                  {!encoderValidatorResult ? (
-	                    <div className="text-xs text-slate-400 border border-slate-700 rounded p-3 bg-slate-800/50">
-	                      Enter a proposed encoding and click Validate.
-	                    </div>
-	                  ) : (
-	                    <div className="space-y-3">
-	                      {encoderValidatorResult.errors.length > 0 && (
-	                        <div className="border border-red-800/40 bg-red-950/30 rounded p-3">
-	                          <div className="text-[10px] uppercase tracking-wider text-red-200 font-bold mb-2">
-	                            Errors
-	                          </div>
-	                          <ul className="text-xs text-red-100 space-y-1 list-disc pl-4">
-	                            {encoderValidatorResult.errors.map((err) => (
-	                              <li key={err}>{err}</li>
-	                            ))}
-	                          </ul>
-	                        </div>
-	                      )}
-
-	                      {encoderValidatorResult.proposed && (
-	                        <div className="border border-slate-700 rounded p-3 bg-slate-800/50">
-	                          <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-2">
-	                            Normalized Proposal
-	                          </div>
-	                          <div className="space-y-2">
-	                            <div className="font-mono text-[11px] text-slate-200 break-all">
-	                              Encoding: {encoderValidatorResult.proposed.encoding}
-	                            </div>
-	                            <div className="grid grid-cols-2 gap-2">
-	                              <div className="font-mono text-[11px] text-slate-200">Match: {encoderValidatorResult.proposed.match}</div>
-	                              <div className="font-mono text-[11px] text-slate-200">Mask: {encoderValidatorResult.proposed.mask}</div>
-	                            </div>
-	                          </div>
-	                        </div>
-	                      )}
-
-	                      {encoderValidatorResult.proposed && (
-	                        <div className="border border-slate-700 rounded p-3 bg-slate-800/50">
-	                          <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-2">
-	                            Conflicts ({encoderValidatorResult.conflicts.length})
-	                          </div>
-	                          {encoderValidatorResult.conflicts.length === 0 ? (
-	                            <div className="text-xs text-emerald-200">
-	                              No overlaps found within the current instruction set database.
-	                            </div>
-	                          ) : (
-	                            <div className="space-y-2 max-h-[340px] overflow-y-auto overscroll-contain pr-1">
-	                              {encoderValidatorResult.conflicts.map((conflict) => (
-	                                <div
-	                                  key={`${conflict.other.extId}:${conflict.other.mnemonic}:${conflict.type}`}
-	                                  className="border border-slate-700 rounded p-2 bg-slate-900/50"
-	                                >
-	                                  <div className="flex items-start justify-between gap-2">
-	                                    <div className="min-w-0">
-	                                      <div className="font-mono text-xs text-slate-200 break-words">
-	                                        {conflict.other.mnemonic}{' '}
-	                                        <span className="text-slate-500">({conflict.other.extId})</span>
-	                                      </div>
-	                                      <div className="text-[11px] text-slate-500">{conflict.other.extName}</div>
-	                                    </div>
-	                                    <span className="shrink-0 px-2 py-1 rounded text-[10px] font-mono uppercase tracking-wide border bg-slate-800 text-slate-100 border-slate-600">
-	                                      {conflict.type}
-	                                    </span>
-	                                  </div>
-
-	                                  <div className="mt-2 text-xs text-slate-300">{conflict.why}</div>
-	                                  <div className="mt-2 grid grid-cols-2 gap-2">
-	                                    <div className="font-mono text-[10px] text-slate-400">
-	                                      Common mask: {conflict.commonMask}
-	                                    </div>
-	                                    <div className="font-mono text-[10px] text-slate-400">
-	                                      Example word: {conflict.exampleWord}
-	                                    </div>
-	                                  </div>
-	                                </div>
-	                              ))}
-	                            </div>
-	                          )}
-	                        </div>
-	                      )}
-	                    </div>
-	                  )}
-	                </div>
-	              </div>
-	            </div>
-	          </div>
-	        </div>
-	      )}
-	    </div>
-	  );
-	};
+                                  <div className={`mt-2 text-xs ${tc.conflictText}`}>{conflict.why}</div>
+                                  <div className="mt-2 grid grid-cols-2 gap-2">
+                                    <div className={`font-mono text-[10px] ${tc.conflictMeta}`}>
+                                      Common mask: {conflict.commonMask}
+                                    </div>
+                                    <div className={`font-mono text-[10px] ${tc.conflictMeta}`}>
+                                      Example word: {conflict.exampleWord}
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default RISCVExplorer;
