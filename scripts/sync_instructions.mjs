@@ -2,6 +2,59 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 
+// ---------------------------------------------------------------------------
+// TAG_ALIASES: maps riscv-opcodes extension tags (used in instr_dict.json)
+// to their canonical catalog IDs (used in riscv_extensions.json).
+//
+// The upstream riscv-opcodes project names extension tags with prefixes like
+// rv_, rv32_, rv64_, and sometimes combines two extension names with an
+// underscore (e.g. rv_f_zfa = "Zfa instructions that also require F").
+// These do not match the catalog's CamelCase IDs, so the sync script cannot
+// link them automatically. This table bridges that gap.
+//
+// How to add an entry:
+//   "<instr_dict tag>": "<catalog extension ID>",
+//
+// Guidelines:
+//   - Use the catalog ID exactly as it appears in riscv_extensions.json.
+//   - For cross-extension tags (e.g. rv_f_zfa = Zfa instructions that also
+//     need F), map to the extension that *defines* those instructions.
+//   - Leave a comment explaining the mapping when it is non-obvious.
+// ---------------------------------------------------------------------------
+const TAG_ALIASES = {
+  // Base integer: rv_i / rv64_i cover the core RV64I instruction set
+  rv_i:              'RV64I',
+  rv64_i:            'RV64I',
+
+  // Supervisor / machine system instructions
+  rv_system:         'S',        // MRET, WFI live under the S (supervisor) group
+
+  // Compressed floating-point subsets
+  rv_c_d:            'Zcd',      // C+D double-precision loads/stores (RV64)
+  rv32_c_f:          'Zcf',      // C+F single-precision loads/stores (RV32 only)
+
+  // Svinval H-mode variant — HINVAL.GVMA / HINVAL.VVMA belong with Svinval
+  rv_svinval_h:      'Svinval',
+
+  // Zicbom: the upstream tag is rv_zicbo (no trailing 'm')
+  rv_zicbo:          'Zicbom',
+
+  // Zfa: additional floating-point instructions spread across F/D/H/Q tags
+  rv_f_zfa:          'Zfa',
+  rv_d_zfa:          'Zfa',
+  rv32_d_zfa:        'Zfa',
+  rv_q_zfa:          'Zfa',
+  rv64_q_zfa:        'Zfa',
+  rv_zfh_zfa:        'Zfa',      // Zfa instructions that also need Zfh
+
+  // Zfhmin: half-precision min subset — conversions between H and D/Q
+  rv_d_zfhmin:       'Zfhmin',
+  rv_q_zfhmin:       'Zfhmin',
+
+  // Zabha: byte/halfword atomics that require Zacas
+  rv_zabha_zacas:    'Zabha',
+};
+
 function die(message) {
   console.error(message);
   process.exit(1);
@@ -102,6 +155,25 @@ function mnemonicToInstrDictKey(mnemonic) {
   return String(mnemonic).trim().toLowerCase().replaceAll('.', '_');
 }
 
+// Reads instr_dict.json and groups instructions by catalog ID using TAG_ALIASES.
+// Returns Map<catalogId, Map<mnemonic, details>>.
+function buildAliasInstructions(instrDict) {
+  const result = new Map();
+
+  for (const [tag, catalogId] of Object.entries(TAG_ALIASES)) {
+    for (const [key, details] of Object.entries(instrDict)) {
+      if (!details.extension || !details.extension.includes(tag)) continue;
+      // Best-effort mnemonic: uppercase the key and replace _ with .
+      const mnemonic = key.toUpperCase().replaceAll('_', '.');
+      const bucket = result.get(catalogId) ?? new Map();
+      bucket.set(mnemonic, details);
+      result.set(catalogId, bucket);
+    }
+  }
+
+  return result;
+}
+
 // Prints a full coverage breakdown: overall %, per-category progress bars,
 // and a list of every extension still missing instruction data with a
 // diagnosis of why (no JSX list vs. instrs absent from instr_dict.json).
@@ -180,10 +252,14 @@ const visualizerSource = fs.readFileSync(visualizerPath, 'utf8');
 const extensionInstructions = extractExtensionInstructions(visualizerSource);
 const extIndex = buildExtensionIndex(extensionsCatalog);
 
+// Build alias-derived instructions from TAG_ALIASES
+const aliasInstructions = buildAliasInstructions(instrDict);
+
 const missingExtensions = new Set();
 const missingInstructions = new Map();
 let addedCount = 0;
 
+// --- Pass 1: JSX mnemonic lists (original behaviour) -----------------------
 for (const [extId, mnemonics] of Object.entries(extensionInstructions)) {
   const locations = extIndex.get(extId);
   if (!locations || locations.length === 0) {
@@ -208,9 +284,30 @@ for (const [extId, mnemonics] of Object.entries(extensionInstructions)) {
   }
 }
 
+// --- Pass 2: TAG_ALIASES — auto-populate from instr_dict tags --------------
+// Runs after Pass 1 so JSX-listed mnemonics always take priority.
+let aliasAddedCount = 0;
+for (const [catalogId, mnemonicMap] of aliasInstructions) {
+  const locations = extIndex.get(catalogId);
+  if (!locations || locations.length === 0) continue;
+
+  for (const { entry } of locations) {
+    if (!entry.instructions || typeof entry.instructions !== 'object') entry.instructions = {};
+    for (const [mnemonic, details] of mnemonicMap) {
+      if (entry.instructions[mnemonic]) continue; // already set by Pass 1
+      entry.instructions[mnemonic] = details;
+      aliasAddedCount += 1;
+      addedCount += 1;
+    }
+  }
+}
+
 fs.writeFileSync(catalogPath, `${JSON.stringify(extensionsCatalog, null, 2)}\n`);
 
 console.log(`Updated ${path.relative(workspaceRoot, catalogPath)} with ${addedCount} instruction entries.`);
+if (aliasAddedCount > 0) {
+  console.log(`  (${aliasAddedCount} of those came from TAG_ALIASES in sync_instructions.mjs)`);
+}
 if (missingExtensions.size) {
   console.warn(`Extensions referenced in JSX but not found in catalog: ${Array.from(missingExtensions).sort().join(', ')}`);
 }
