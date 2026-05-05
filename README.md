@@ -132,3 +132,26 @@ How it works:
 - For each conflict, the report includes a plain-language reason, common mask, and an example word that matches both patterns.
 
 You can use **Copy report** in the modal to copy a full conflict report for sharing.
+
+
+## Extension Tag Normalization
+
+The sync script supports canonical tag normalization to bridge naming differences between `riscv-opcodes` and the landscape catalog.
+
+### Supported Conventions
+
+- `riscv-opcodes`: `rv_zba`, `rv64_zba`, `rv_zicsr`
+- landscape catalog: `Zba`, `Zicsr`
+- manual overrides for known tag-family mismatches (for example `rv_zicbo` -> `zicbom`)
+
+### Usage
+
+```bash
+node scripts/sync_instructions.mjs --use-normalizer
+```
+
+### What `--use-normalizer` Adds
+
+- Normalized extension ID fallback when direct catalog ID lookup fails.
+- Tag reconciliation diagnostics across `instr_dict.json` extension tags.
+- Explicit unmatched-tag warnings for follow-up mapping work.
