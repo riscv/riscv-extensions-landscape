@@ -144,9 +144,13 @@ for (const [extId, mnemonics] of Object.entries(extensionInstructions)) {
 
 fs.writeFileSync(catalogPath, `${JSON.stringify(extensionsCatalog, null, 2)}\n`);
 
-console.log(`Updated ${path.relative(workspaceRoot, catalogPath)} with ${addedCount} instruction entries.`);
+console.log(
+  `Updated ${path.relative(workspaceRoot, catalogPath)} with ${addedCount} instruction entries.`,
+);
 if (missingExtensions.size) {
-  console.warn(`Extensions referenced in JSX but not found in YAML: ${Array.from(missingExtensions).sort().join(', ')}`);
+  console.warn(
+    `Extensions referenced in JSX but not found in YAML: ${Array.from(missingExtensions).sort().join(', ')}`,
+  );
 }
 if (missingInstructions.size) {
   const sorted = Array.from(missingInstructions.entries()).sort(([a], [b]) => a.localeCompare(b));

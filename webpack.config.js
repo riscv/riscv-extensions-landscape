@@ -16,23 +16,23 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-react']
-          }
-        }
+            presets: ['@babel/preset-react'],
+          },
+        },
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader', 'postcss-loader']
-      }
-    ]
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
+      },
+    ],
   },
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx'],
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
-      filename: 'index.html'
-    })
-  ]
+      filename: 'index.html',
+    }),
+  ],
 };

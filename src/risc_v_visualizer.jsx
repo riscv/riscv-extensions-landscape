@@ -15,7 +15,11 @@ import extensions from './riscv_extensions.json';
 const BIT_WIDTH = 32n;
 const BIT_MASK_32 = (1n << BIT_WIDTH) - 1n;
 
-const normalizeMnemonicKey = (value) => String(value ?? '').trim().toUpperCase().split(/\s+/)[0];
+const normalizeMnemonicKey = (value) =>
+  String(value ?? '')
+    .trim()
+    .toUpperCase()
+    .split(/\s+/)[0];
 
 const COMPRESSED_INSTRUCTION_MAPPINGS = [
   {
@@ -114,42 +118,42 @@ const COMPRESSED_INSTRUCTION_MAPPINGS = [
     compressed: "C.AND rd', rs2'",
     standard: "and rd', rd', rs2'",
     description: 'AND Register',
-    notes: "Operands restricted to x8-x15.",
+    notes: 'Operands restricted to x8-x15.',
   },
   {
     mnemonic: 'C.OR',
     compressed: "C.OR rd', rs2'",
     standard: "or rd', rd', rs2'",
     description: 'OR Register',
-    notes: "Operands restricted to x8-x15.",
+    notes: 'Operands restricted to x8-x15.',
   },
   {
     mnemonic: 'C.XOR',
     compressed: "C.XOR rd', rs2'",
     standard: "xor rd', rd', rs2'",
     description: 'XOR Register',
-    notes: "Operands restricted to x8-x15.",
+    notes: 'Operands restricted to x8-x15.',
   },
   {
     mnemonic: 'C.SUB',
     compressed: "C.SUB rd', rs2'",
     standard: "sub rd', rd', rs2'",
     description: 'Subtract Register',
-    notes: "Operands restricted to x8-x15.",
+    notes: 'Operands restricted to x8-x15.',
   },
   {
     mnemonic: 'C.SUBW',
     compressed: "C.SUBW rd', rs2'",
     standard: "subw rd', rd', rs2'",
     description: 'Subtract Word',
-    notes: "RV64/128 Only. Operands restricted to x8-x15.",
+    notes: 'RV64/128 Only. Operands restricted to x8-x15.',
   },
   {
     mnemonic: 'C.ADDW',
     compressed: "C.ADDW rd', rs2'",
     standard: "addw rd', rd', rs2'",
     description: 'Add Word',
-    notes: "RV64/128 Only. Operands restricted to x8-x15.",
+    notes: 'RV64/128 Only. Operands restricted to x8-x15.',
   },
   {
     mnemonic: 'C.LW',
@@ -305,7 +309,11 @@ const encodingToMatchMask = (encoding) => {
   const normalized = normalizeEncodingString(encoding);
   if (!normalized) return { match: null, mask: null, error: 'Provide an encoding or match/mask.' };
   if (normalized.length !== 32) {
-    return { match: null, mask: null, error: `Encoding must be 32 characters (got ${normalized.length}).` };
+    return {
+      match: null,
+      mask: null,
+      error: `Encoding must be 32 characters (got ${normalized.length}).`,
+    };
   }
   if (!/^[01-]{32}$/.test(normalized)) {
     return { match: null, mask: null, error: 'Encoding may only contain 0, 1, and -.' };
@@ -336,8 +344,8 @@ const matchMaskToEncoding = (match, mask) => {
 };
 
 const patternsOverlap = (aMatch, aMask, bMatch, bMask) => {
-  const commonMask = (aMask & bMask) & BIT_MASK_32;
-  const diff = ((aMatch ^ bMatch) & commonMask) & BIT_MASK_32;
+  const commonMask = aMask & bMask & BIT_MASK_32;
+  const diff = (aMatch ^ bMatch) & commonMask & BIT_MASK_32;
   return diff === 0n;
 };
 
@@ -482,14 +490,12 @@ const EncodingDiagram = ({ encoding }) => {
                     'h-7 flex items-center justify-center font-mono text-[11px]',
                     i === 0 ? 'rounded-l' : '',
                     i === 31 ? 'rounded-r' : '',
-                    isVar
-                      ? 'bg-slate-800/60 text-purple-100'
-                      : 'bg-slate-700/40 text-slate-100',
+                    isVar ? 'bg-slate-800/60 text-purple-100' : 'bg-slate-700/40 text-slate-100',
                     i === 31
                       ? ''
                       : isGroupEnd
-                          ? 'border-r-2 border-slate-600'
-                          : 'border-r border-slate-700',
+                        ? 'border-r-2 border-slate-600'
+                        : 'border-r border-slate-700',
                   ].join(' ')}
                   title={`bit ${31 - i}`}
                 >
@@ -1102,146 +1108,426 @@ const RISCVExplorer = () => {
   // ---------------------------------------------------------------------------
   const extensionInstructions = {
     RV32I: [
-      'LUI', 'AUIPC',
-      'JAL', 'JALR',
-      'BEQ', 'BNE', 'BLT', 'BGE', 'BLTU', 'BGEU',
-      'LB', 'LH', 'LW', 'LBU', 'LHU',
-      'SB', 'SH', 'SW',
-      'ADDI', 'SLTI', 'SLTIU', 'XORI', 'ORI', 'ANDI',
-      'SLLI', 'SRLI', 'SRAI',
-      'ADD', 'SUB', 'SLL', 'SLT', 'SLTU', 'XOR', 'SRL', 'SRA', 'OR', 'AND',
-      'FENCE', 'FENCE.I',
-      'ECALL', 'EBREAK',
-      'CSRRW', 'CSRRS', 'CSRRC', 'CSRRWI', 'CSRRSI', 'CSRRCI',
+      'LUI',
+      'AUIPC',
+      'JAL',
+      'JALR',
+      'BEQ',
+      'BNE',
+      'BLT',
+      'BGE',
+      'BLTU',
+      'BGEU',
+      'LB',
+      'LH',
+      'LW',
+      'LBU',
+      'LHU',
+      'SB',
+      'SH',
+      'SW',
+      'ADDI',
+      'SLTI',
+      'SLTIU',
+      'XORI',
+      'ORI',
+      'ANDI',
+      'SLLI',
+      'SRLI',
+      'SRAI',
+      'ADD',
+      'SUB',
+      'SLL',
+      'SLT',
+      'SLTU',
+      'XOR',
+      'SRL',
+      'SRA',
+      'OR',
+      'AND',
+      'FENCE',
+      'FENCE.I',
+      'ECALL',
+      'EBREAK',
+      'CSRRW',
+      'CSRRS',
+      'CSRRC',
+      'CSRRWI',
+      'CSRRSI',
+      'CSRRCI',
     ],
     RV32E: [
-      'LUI', 'AUIPC',
-      'JAL', 'JALR',
-      'BEQ', 'BNE', 'BLT', 'BGE', 'BLTU', 'BGEU',
-      'LB', 'LH', 'LW', 'LBU', 'LHU',
-      'SB', 'SH', 'SW',
-      'ADDI', 'SLTI', 'SLTIU', 'XORI', 'ORI', 'ANDI',
-      'SLLI', 'SRLI', 'SRAI',
-      'ADD', 'SUB', 'SLL', 'SLT', 'SLTU', 'XOR', 'SRL', 'SRA', 'OR', 'AND',
-      'FENCE', 'FENCE.I',
-      'ECALL', 'EBREAK',
-      'CSRRW', 'CSRRS', 'CSRRC', 'CSRRWI', 'CSRRSI', 'CSRRCI',
+      'LUI',
+      'AUIPC',
+      'JAL',
+      'JALR',
+      'BEQ',
+      'BNE',
+      'BLT',
+      'BGE',
+      'BLTU',
+      'BGEU',
+      'LB',
+      'LH',
+      'LW',
+      'LBU',
+      'LHU',
+      'SB',
+      'SH',
+      'SW',
+      'ADDI',
+      'SLTI',
+      'SLTIU',
+      'XORI',
+      'ORI',
+      'ANDI',
+      'SLLI',
+      'SRLI',
+      'SRAI',
+      'ADD',
+      'SUB',
+      'SLL',
+      'SLT',
+      'SLTU',
+      'XOR',
+      'SRL',
+      'SRA',
+      'OR',
+      'AND',
+      'FENCE',
+      'FENCE.I',
+      'ECALL',
+      'EBREAK',
+      'CSRRW',
+      'CSRRS',
+      'CSRRC',
+      'CSRRWI',
+      'CSRRSI',
+      'CSRRCI',
     ],
     RV64I: [
-      'LUI', 'AUIPC',
-      'JAL', 'JALR',
-      'BEQ', 'BNE', 'BLT', 'BGE', 'BLTU', 'BGEU',
-      'LB', 'LH', 'LW', 'LBU', 'LHU', 'LWU', 'LD',
-      'SB', 'SH', 'SW', 'SD',
-      'ADDI', 'SLTI', 'SLTIU', 'XORI', 'ORI', 'ANDI',
-      'SLLI', 'SRLI', 'SRAI',
-      'ADD', 'SUB', 'SLL', 'SLT', 'SLTU', 'XOR', 'SRL', 'SRA', 'OR', 'AND',
-      'ADDIW', 'SLLIW', 'SRLIW', 'SRAIW',
-      'ADDW', 'SUBW', 'SLLW', 'SRLW', 'SRAW',
-      'FENCE', 'FENCE.I',
-      'ECALL', 'EBREAK',
-      'CSRRW', 'CSRRS', 'CSRRC', 'CSRRWI', 'CSRRSI', 'CSRRCI',
+      'LUI',
+      'AUIPC',
+      'JAL',
+      'JALR',
+      'BEQ',
+      'BNE',
+      'BLT',
+      'BGE',
+      'BLTU',
+      'BGEU',
+      'LB',
+      'LH',
+      'LW',
+      'LBU',
+      'LHU',
+      'LWU',
+      'LD',
+      'SB',
+      'SH',
+      'SW',
+      'SD',
+      'ADDI',
+      'SLTI',
+      'SLTIU',
+      'XORI',
+      'ORI',
+      'ANDI',
+      'SLLI',
+      'SRLI',
+      'SRAI',
+      'ADD',
+      'SUB',
+      'SLL',
+      'SLT',
+      'SLTU',
+      'XOR',
+      'SRL',
+      'SRA',
+      'OR',
+      'AND',
+      'ADDIW',
+      'SLLIW',
+      'SRLIW',
+      'SRAIW',
+      'ADDW',
+      'SUBW',
+      'SLLW',
+      'SRLW',
+      'SRAW',
+      'FENCE',
+      'FENCE.I',
+      'ECALL',
+      'EBREAK',
+      'CSRRW',
+      'CSRRS',
+      'CSRRC',
+      'CSRRWI',
+      'CSRRSI',
+      'CSRRCI',
     ],
     RV64E: [
-      'LUI', 'AUIPC',
-      'JAL', 'JALR',
-      'BEQ', 'BNE', 'BLT', 'BGE', 'BLTU', 'BGEU',
-      'LB', 'LH', 'LW', 'LBU', 'LHU', 'LWU', 'LD',
-      'SB', 'SH', 'SW', 'SD',
-      'ADDI', 'SLTI', 'SLTIU', 'XORI', 'ORI', 'ANDI',
-      'SLLI', 'SRLI', 'SRAI',
-      'ADD', 'SUB', 'SLL', 'SLT', 'SLTU', 'XOR', 'SRL', 'SRA', 'OR', 'AND',
-      'ADDIW', 'SLLIW', 'SRLIW', 'SRAIW',
-      'ADDW', 'SUBW', 'SLLW', 'SRLW', 'SRAW',
-      'FENCE', 'FENCE.I',
-      'ECALL', 'EBREAK',
-      'CSRRW', 'CSRRS', 'CSRRC', 'CSRRWI', 'CSRRSI', 'CSRRCI',
+      'LUI',
+      'AUIPC',
+      'JAL',
+      'JALR',
+      'BEQ',
+      'BNE',
+      'BLT',
+      'BGE',
+      'BLTU',
+      'BGEU',
+      'LB',
+      'LH',
+      'LW',
+      'LBU',
+      'LHU',
+      'LWU',
+      'LD',
+      'SB',
+      'SH',
+      'SW',
+      'SD',
+      'ADDI',
+      'SLTI',
+      'SLTIU',
+      'XORI',
+      'ORI',
+      'ANDI',
+      'SLLI',
+      'SRLI',
+      'SRAI',
+      'ADD',
+      'SUB',
+      'SLL',
+      'SLT',
+      'SLTU',
+      'XOR',
+      'SRL',
+      'SRA',
+      'OR',
+      'AND',
+      'ADDIW',
+      'SLLIW',
+      'SRLIW',
+      'SRAIW',
+      'ADDW',
+      'SUBW',
+      'SLLW',
+      'SRLW',
+      'SRAW',
+      'FENCE',
+      'FENCE.I',
+      'ECALL',
+      'EBREAK',
+      'CSRRW',
+      'CSRRS',
+      'CSRRC',
+      'CSRRWI',
+      'CSRRSI',
+      'CSRRCI',
     ],
     RV128I: [
-      'LUI', 'AUIPC',
-      'JAL', 'JALR',
-      'BEQ', 'BNE', 'BLT', 'BGE', 'BLTU', 'BGEU',
-      'LB', 'LH', 'LW', 'LBU', 'LHU', 'LWU', 'LD',
-      'SB', 'SH', 'SW', 'SD',
-      'ADDI', 'SLTI', 'SLTIU', 'XORI', 'ORI', 'ANDI',
-      'SLLI', 'SRLI', 'SRAI',
-      'ADD', 'SUB', 'SLL', 'SLT', 'SLTU', 'XOR', 'SRL', 'SRA', 'OR', 'AND',
-      'ADDIW', 'SLLIW', 'SRLIW', 'SRAIW',
-      'ADDW', 'SUBW', 'SLLW', 'SRLW', 'SRAW',
-      'FENCE', 'FENCE.I',
-      'ECALL', 'EBREAK',
-      'CSRRW', 'CSRRS', 'CSRRC', 'CSRRWI', 'CSRRSI', 'CSRRCI',
+      'LUI',
+      'AUIPC',
+      'JAL',
+      'JALR',
+      'BEQ',
+      'BNE',
+      'BLT',
+      'BGE',
+      'BLTU',
+      'BGEU',
+      'LB',
+      'LH',
+      'LW',
+      'LBU',
+      'LHU',
+      'LWU',
+      'LD',
+      'SB',
+      'SH',
+      'SW',
+      'SD',
+      'ADDI',
+      'SLTI',
+      'SLTIU',
+      'XORI',
+      'ORI',
+      'ANDI',
+      'SLLI',
+      'SRLI',
+      'SRAI',
+      'ADD',
+      'SUB',
+      'SLL',
+      'SLT',
+      'SLTU',
+      'XOR',
+      'SRL',
+      'SRA',
+      'OR',
+      'AND',
+      'ADDIW',
+      'SLLIW',
+      'SRLIW',
+      'SRAIW',
+      'ADDW',
+      'SUBW',
+      'SLLW',
+      'SRLW',
+      'SRAW',
+      'FENCE',
+      'FENCE.I',
+      'ECALL',
+      'EBREAK',
+      'CSRRW',
+      'CSRRS',
+      'CSRRC',
+      'CSRRWI',
+      'CSRRSI',
+      'CSRRCI',
     ],
     M: [
       // Multiply
-      'MUL', 'MULH', 'MULHSU', 'MULHU',
+      'MUL',
+      'MULH',
+      'MULHSU',
+      'MULHU',
       // Divide
-      'DIV', 'DIVU', 'REM', 'REMU',
+      'DIV',
+      'DIVU',
+      'REM',
+      'REMU',
       // RV64 word variants
-      'MULW', 'DIVW', 'DIVUW', 'REMW', 'REMUW',
+      'MULW',
+      'DIVW',
+      'DIVUW',
+      'REMW',
+      'REMUW',
     ],
     A: [
       // Load-Reserved / Store-Conditional
-      'LR.W', 'SC.W',
+      'LR.W',
+      'SC.W',
       // RV64 LR/SC
-      'LR.D', 'SC.D',
+      'LR.D',
+      'SC.D',
       // Word AMO operations
-      'AMOSWAP.W', 'AMOADD.W', 'AMOXOR.W', 'AMOOR.W', 'AMOAND.W',
-      'AMOMIN.W', 'AMOMAX.W', 'AMOMINU.W', 'AMOMAXU.W',
+      'AMOSWAP.W',
+      'AMOADD.W',
+      'AMOXOR.W',
+      'AMOOR.W',
+      'AMOAND.W',
+      'AMOMIN.W',
+      'AMOMAX.W',
+      'AMOMINU.W',
+      'AMOMAXU.W',
       // RV64 Doubleword AMO operations
-      'AMOSWAP.D', 'AMOADD.D', 'AMOXOR.D', 'AMOOR.D', 'AMOAND.D',
-      'AMOMIN.D', 'AMOMAX.D', 'AMOMINU.D', 'AMOMAXU.D',
+      'AMOSWAP.D',
+      'AMOADD.D',
+      'AMOXOR.D',
+      'AMOOR.D',
+      'AMOAND.D',
+      'AMOMIN.D',
+      'AMOMAX.D',
+      'AMOMINU.D',
+      'AMOMAXU.D',
     ],
     Zaamo: [
       // Atomic Memory Operations (AMO only, no LR/SC)
       // Word AMOs
-      'AMOSWAP.W', 'AMOADD.W', 'AMOXOR.W', 'AMOOR.W', 'AMOAND.W',
-      'AMOMIN.W', 'AMOMAX.W', 'AMOMINU.W', 'AMOMAXU.W',
+      'AMOSWAP.W',
+      'AMOADD.W',
+      'AMOXOR.W',
+      'AMOOR.W',
+      'AMOAND.W',
+      'AMOMIN.W',
+      'AMOMAX.W',
+      'AMOMINU.W',
+      'AMOMAXU.W',
       // RV64 Doubleword AMOs
-      'AMOSWAP.D', 'AMOADD.D', 'AMOXOR.D', 'AMOOR.D', 'AMOAND.D',
-      'AMOMIN.D', 'AMOMAX.D', 'AMOMINU.D', 'AMOMAXU.D',
+      'AMOSWAP.D',
+      'AMOADD.D',
+      'AMOXOR.D',
+      'AMOOR.D',
+      'AMOAND.D',
+      'AMOMIN.D',
+      'AMOMAX.D',
+      'AMOMINU.D',
+      'AMOMAXU.D',
     ],
     Zalrsc: [
       // Load-Reserved / Store-Conditional
-      'LR.W', 'SC.W',
+      'LR.W',
+      'SC.W',
       // RV64
-      'LR.D', 'SC.D',
+      'LR.D',
+      'SC.D',
     ],
     Zacas: [
       // Atomic Compare-and-Swap
-      'AMOCAS.W', 'AMOCAS.D',
+      'AMOCAS.W',
+      'AMOCAS.D',
       // RV64 quadword
       'AMOCAS.Q',
       // With Zabha (byte/halfword)
-      'AMOCAS.B', 'AMOCAS.H',
+      'AMOCAS.B',
+      'AMOCAS.H',
     ],
     Zabha: [
       // Byte AMO operations
-      'AMOSWAP.B', 'AMOADD.B', 'AMOXOR.B', 'AMOOR.B', 'AMOAND.B',
-      'AMOMIN.B', 'AMOMAX.B', 'AMOMINU.B', 'AMOMAXU.B',
+      'AMOSWAP.B',
+      'AMOADD.B',
+      'AMOXOR.B',
+      'AMOOR.B',
+      'AMOAND.B',
+      'AMOMIN.B',
+      'AMOMAX.B',
+      'AMOMINU.B',
+      'AMOMAXU.B',
       // Halfword AMO operations
-      'AMOSWAP.H', 'AMOADD.H', 'AMOXOR.H', 'AMOOR.H', 'AMOAND.H',
-      'AMOMIN.H', 'AMOMAX.H', 'AMOMINU.H', 'AMOMAXU.H',
+      'AMOSWAP.H',
+      'AMOADD.H',
+      'AMOXOR.H',
+      'AMOOR.H',
+      'AMOAND.H',
+      'AMOMIN.H',
+      'AMOMAX.H',
+      'AMOMINU.H',
+      'AMOMAXU.H',
     ],
     Zawrs: [
       // Wait-on-Reservation-Set
-      'WRS.NTO', 'WRS.STO',
+      'WRS.NTO',
+      'WRS.STO',
     ],
     Zalasr: [
       // Load-Acquire
-      'LB.AQ', 'LH.AQ', 'LW.AQ', 'LD.AQ',
+      'LB.AQ',
+      'LH.AQ',
+      'LW.AQ',
+      'LD.AQ',
       // Store-Release
-      'SB.RL', 'SH.RL', 'SW.RL', 'SD.RL',
+      'SB.RL',
+      'SH.RL',
+      'SW.RL',
+      'SD.RL',
     ],
     Zicsr: [
       // CSR read-write
-      'CSRRW', 'CSRRS', 'CSRRC',
+      'CSRRW',
+      'CSRRS',
+      'CSRRC',
       // CSR immediate
-      'CSRRWI', 'CSRRSI', 'CSRRCI',
+      'CSRRWI',
+      'CSRRSI',
+      'CSRRCI',
     ],
     Zicond: [
       // Conditional zero
-      'CZERO.EQZ', 'CZERO.NEZ',
+      'CZERO.EQZ',
+      'CZERO.NEZ',
     ],
     Zifencei: [
       // Instruction-fetch fence
@@ -1249,7 +1535,9 @@ const RISCVExplorer = () => {
     ],
     Zicbom: [
       // Cache-block management
-      'CBO.CLEAN', 'CBO.FLUSH', 'CBO.INVAL',
+      'CBO.CLEAN',
+      'CBO.FLUSH',
+      'CBO.INVAL',
     ],
     Zicboz: [
       // Cache-block zero
@@ -1257,7 +1545,8 @@ const RISCVExplorer = () => {
     ],
     Zicfiss: [
       // Shadow stack atomic swap
-      'SSAMOSWAP.W', 'SSAMOSWAP.D',
+      'SSAMOSWAP.W',
+      'SSAMOSWAP.D',
     ],
     Zimop: [
       // May-be operations (reserved NOPs)
@@ -1265,232 +1554,465 @@ const RISCVExplorer = () => {
     ],
     F: [
       // Load/Store
-      'FLW', 'FSW',
+      'FLW',
+      'FSW',
       // Fused multiply-add
-      'FMADD.S', 'FMSUB.S', 'FNMADD.S', 'FNMSUB.S',
+      'FMADD.S',
+      'FMSUB.S',
+      'FNMADD.S',
+      'FNMSUB.S',
       // Arithmetic
-      'FADD.S', 'FSUB.S', 'FMUL.S', 'FDIV.S', 'FSQRT.S',
+      'FADD.S',
+      'FSUB.S',
+      'FMUL.S',
+      'FDIV.S',
+      'FSQRT.S',
       // Sign-inject
-      'FSGNJ.S', 'FSGNJN.S', 'FSGNJX.S',
+      'FSGNJ.S',
+      'FSGNJN.S',
+      'FSGNJX.S',
       // Min/Max
-      'FMIN.S', 'FMAX.S',
+      'FMIN.S',
+      'FMAX.S',
       // Compare
-      'FEQ.S', 'FLT.S', 'FLE.S',
+      'FEQ.S',
+      'FLT.S',
+      'FLE.S',
       // Convert to/from integer (RV32)
-      'FCVT.W.S', 'FCVT.WU.S', 'FCVT.S.W', 'FCVT.S.WU',
+      'FCVT.W.S',
+      'FCVT.WU.S',
+      'FCVT.S.W',
+      'FCVT.S.WU',
       // RV64 conversions
-      'FCVT.L.S', 'FCVT.LU.S', 'FCVT.S.L', 'FCVT.S.LU',
+      'FCVT.L.S',
+      'FCVT.LU.S',
+      'FCVT.S.L',
+      'FCVT.S.LU',
       // Move
-      'FMV.X.W', 'FMV.W.X',
+      'FMV.X.W',
+      'FMV.W.X',
       // Classify
       'FCLASS.S',
     ],
     D: [
       // Load/Store
-      'FLD', 'FSD',
+      'FLD',
+      'FSD',
       // Fused multiply-add
-      'FMADD.D', 'FMSUB.D', 'FNMADD.D', 'FNMSUB.D',
+      'FMADD.D',
+      'FMSUB.D',
+      'FNMADD.D',
+      'FNMSUB.D',
       // Arithmetic
-      'FADD.D', 'FSUB.D', 'FMUL.D', 'FDIV.D', 'FSQRT.D',
+      'FADD.D',
+      'FSUB.D',
+      'FMUL.D',
+      'FDIV.D',
+      'FSQRT.D',
       // Sign-inject
-      'FSGNJ.D', 'FSGNJN.D', 'FSGNJX.D',
+      'FSGNJ.D',
+      'FSGNJN.D',
+      'FSGNJX.D',
       // Min/Max
-      'FMIN.D', 'FMAX.D',
+      'FMIN.D',
+      'FMAX.D',
       // Compare
-      'FEQ.D', 'FLT.D', 'FLE.D',
+      'FEQ.D',
+      'FLT.D',
+      'FLE.D',
       // Convert to/from integer (RV32)
-      'FCVT.W.D', 'FCVT.WU.D', 'FCVT.D.W', 'FCVT.D.WU',
+      'FCVT.W.D',
+      'FCVT.WU.D',
+      'FCVT.D.W',
+      'FCVT.D.WU',
       // RV64 conversions
-      'FCVT.L.D', 'FCVT.LU.D', 'FCVT.D.L', 'FCVT.D.LU',
+      'FCVT.L.D',
+      'FCVT.LU.D',
+      'FCVT.D.L',
+      'FCVT.D.LU',
       // Convert to/from single
-      'FCVT.S.D', 'FCVT.D.S',
+      'FCVT.S.D',
+      'FCVT.D.S',
       // Move (RV64)
-      'FMV.X.D', 'FMV.D.X',
+      'FMV.X.D',
+      'FMV.D.X',
       // Classify
       'FCLASS.D',
     ],
     Q: [
       // Load/Store
-      'FLQ', 'FSQ',
+      'FLQ',
+      'FSQ',
       // Fused multiply-add
-      'FMADD.Q', 'FMSUB.Q', 'FNMADD.Q', 'FNMSUB.Q',
+      'FMADD.Q',
+      'FMSUB.Q',
+      'FNMADD.Q',
+      'FNMSUB.Q',
       // Arithmetic
-      'FADD.Q', 'FSUB.Q', 'FMUL.Q', 'FDIV.Q', 'FSQRT.Q',
+      'FADD.Q',
+      'FSUB.Q',
+      'FMUL.Q',
+      'FDIV.Q',
+      'FSQRT.Q',
       // Sign-inject
-      'FSGNJ.Q', 'FSGNJN.Q', 'FSGNJX.Q',
+      'FSGNJ.Q',
+      'FSGNJN.Q',
+      'FSGNJX.Q',
       // Min/Max
-      'FMIN.Q', 'FMAX.Q',
+      'FMIN.Q',
+      'FMAX.Q',
       // Compare
-      'FEQ.Q', 'FLT.Q', 'FLE.Q',
+      'FEQ.Q',
+      'FLT.Q',
+      'FLE.Q',
       // Convert to/from integer
-      'FCVT.W.Q', 'FCVT.WU.Q', 'FCVT.Q.W', 'FCVT.Q.WU',
+      'FCVT.W.Q',
+      'FCVT.WU.Q',
+      'FCVT.Q.W',
+      'FCVT.Q.WU',
       // RV64 conversions
-      'FCVT.L.Q', 'FCVT.LU.Q', 'FCVT.Q.L', 'FCVT.Q.LU',
+      'FCVT.L.Q',
+      'FCVT.LU.Q',
+      'FCVT.Q.L',
+      'FCVT.Q.LU',
       // Convert to/from other FP formats
-      'FCVT.S.Q', 'FCVT.Q.S', 'FCVT.D.Q', 'FCVT.Q.D',
+      'FCVT.S.Q',
+      'FCVT.Q.S',
+      'FCVT.D.Q',
+      'FCVT.Q.D',
       // Move
-      'FMV.X.Q', 'FMV.Q.X',
+      'FMV.X.Q',
+      'FMV.Q.X',
       // Classify
       'FCLASS.Q',
     ],
     Zfh: [
       // Half-precision floating-point
       // Load/Store
-      'FLH', 'FSH',
+      'FLH',
+      'FSH',
       // Fused multiply-add
-      'FMADD.H', 'FMSUB.H', 'FNMADD.H', 'FNMSUB.H',
+      'FMADD.H',
+      'FMSUB.H',
+      'FNMADD.H',
+      'FNMSUB.H',
       // Arithmetic
-      'FADD.H', 'FSUB.H', 'FMUL.H', 'FDIV.H', 'FSQRT.H',
+      'FADD.H',
+      'FSUB.H',
+      'FMUL.H',
+      'FDIV.H',
+      'FSQRT.H',
       // Sign-inject
-      'FSGNJ.H', 'FSGNJN.H', 'FSGNJX.H',
+      'FSGNJ.H',
+      'FSGNJN.H',
+      'FSGNJX.H',
       // Min/Max
-      'FMIN.H', 'FMAX.H',
+      'FMIN.H',
+      'FMAX.H',
       // Compare
-      'FEQ.H', 'FLT.H', 'FLE.H',
+      'FEQ.H',
+      'FLT.H',
+      'FLE.H',
       // Convert to/from integer
-      'FCVT.W.H', 'FCVT.WU.H', 'FCVT.H.W', 'FCVT.H.WU',
+      'FCVT.W.H',
+      'FCVT.WU.H',
+      'FCVT.H.W',
+      'FCVT.H.WU',
       // RV64 conversions
-      'FCVT.L.H', 'FCVT.LU.H', 'FCVT.H.L', 'FCVT.H.LU',
+      'FCVT.L.H',
+      'FCVT.LU.H',
+      'FCVT.H.L',
+      'FCVT.H.LU',
       // Convert to/from single
-      'FCVT.S.H', 'FCVT.H.S',
+      'FCVT.S.H',
+      'FCVT.H.S',
       // Convert to/from double
-      'FCVT.D.H', 'FCVT.H.D',
+      'FCVT.D.H',
+      'FCVT.H.D',
       // Convert to/from quad
-      'FCVT.Q.H', 'FCVT.H.Q',
+      'FCVT.Q.H',
+      'FCVT.H.Q',
       // Move
-      'FMV.X.H', 'FMV.H.X',
+      'FMV.X.H',
+      'FMV.H.X',
       // Classify
       'FCLASS.H',
     ],
     Zfhmin: [
       // Minimal half-precision (conversions only)
-      'FCVT.S.H', 'FCVT.H.S',
+      'FCVT.S.H',
+      'FCVT.H.S',
     ],
     Zfa: [
       // Additional FP instructions
       // Load immediate
-      'FLI.S', 'FLI.D', 'FLI.H', 'FLI.Q',
+      'FLI.S',
+      'FLI.D',
+      'FLI.H',
+      'FLI.Q',
       // Min/Max magnitude
-      'FMINM.S', 'FMAXM.S', 'FMINM.D', 'FMAXM.D',
-      'FMINM.H', 'FMAXM.H', 'FMINM.Q', 'FMAXM.Q',
+      'FMINM.S',
+      'FMAXM.S',
+      'FMINM.D',
+      'FMAXM.D',
+      'FMINM.H',
+      'FMAXM.H',
+      'FMINM.Q',
+      'FMAXM.Q',
       // Quiet compare
-      'FLEQ.S', 'FLTQ.S', 'FLEQ.D', 'FLTQ.D',
-      'FLEQ.H', 'FLTQ.H', 'FLEQ.Q', 'FLTQ.Q',
+      'FLEQ.S',
+      'FLTQ.S',
+      'FLEQ.D',
+      'FLTQ.D',
+      'FLEQ.H',
+      'FLTQ.H',
+      'FLEQ.Q',
+      'FLTQ.Q',
       // Round to integer
-      'FROUND.S', 'FROUNDNX.S', 'FROUND.D', 'FROUNDNX.D',
-      'FROUND.H', 'FROUNDNX.H', 'FROUND.Q', 'FROUNDNX.Q',
+      'FROUND.S',
+      'FROUNDNX.S',
+      'FROUND.D',
+      'FROUNDNX.D',
+      'FROUND.H',
+      'FROUNDNX.H',
+      'FROUND.Q',
+      'FROUNDNX.Q',
       // Modular conversion (D only)
       'FCVTMOD.W.D',
       // High/pair move (RV32 with D)
-      'FMVH.X.D', 'FMVP.D.X',
+      'FMVH.X.D',
+      'FMVP.D.X',
       // High/pair move (RV32/64 with Q)
-      'FMVH.X.Q', 'FMVP.Q.X',
+      'FMVH.X.Q',
+      'FMVP.Q.X',
     ],
     Zfbfmin: [
       // BF16 conversions
-      'FCVT.BF16.S', 'FCVT.S.BF16',
+      'FCVT.BF16.S',
+      'FCVT.S.BF16',
     ],
     Zfinx: [
       // Single-precision FP in integer registers
       // Same operations as F but use x registers
-      'FADD.S', 'FSUB.S', 'FMUL.S', 'FDIV.S', 'FSQRT.S',
-      'FMADD.S', 'FMSUB.S', 'FNMADD.S', 'FNMSUB.S',
-      'FSGNJ.S', 'FSGNJN.S', 'FSGNJX.S',
-      'FMIN.S', 'FMAX.S',
-      'FEQ.S', 'FLT.S', 'FLE.S',
-      'FCVT.W.S', 'FCVT.WU.S', 'FCVT.S.W', 'FCVT.S.WU',
+      'FADD.S',
+      'FSUB.S',
+      'FMUL.S',
+      'FDIV.S',
+      'FSQRT.S',
+      'FMADD.S',
+      'FMSUB.S',
+      'FNMADD.S',
+      'FNMSUB.S',
+      'FSGNJ.S',
+      'FSGNJN.S',
+      'FSGNJX.S',
+      'FMIN.S',
+      'FMAX.S',
+      'FEQ.S',
+      'FLT.S',
+      'FLE.S',
+      'FCVT.W.S',
+      'FCVT.WU.S',
+      'FCVT.S.W',
+      'FCVT.S.WU',
       'FCLASS.S',
     ],
     Zdinx: [
       // Double-precision FP in integer registers
-      'FADD.D', 'FSUB.D', 'FMUL.D', 'FDIV.D', 'FSQRT.D',
-      'FMADD.D', 'FMSUB.D', 'FNMADD.D', 'FNMSUB.D',
-      'FSGNJ.D', 'FSGNJN.D', 'FSGNJX.D',
-      'FMIN.D', 'FMAX.D',
-      'FEQ.D', 'FLT.D', 'FLE.D',
-      'FCVT.W.D', 'FCVT.WU.D', 'FCVT.D.W', 'FCVT.D.WU',
-      'FCVT.S.D', 'FCVT.D.S',
+      'FADD.D',
+      'FSUB.D',
+      'FMUL.D',
+      'FDIV.D',
+      'FSQRT.D',
+      'FMADD.D',
+      'FMSUB.D',
+      'FNMADD.D',
+      'FNMSUB.D',
+      'FSGNJ.D',
+      'FSGNJN.D',
+      'FSGNJX.D',
+      'FMIN.D',
+      'FMAX.D',
+      'FEQ.D',
+      'FLT.D',
+      'FLE.D',
+      'FCVT.W.D',
+      'FCVT.WU.D',
+      'FCVT.D.W',
+      'FCVT.D.WU',
+      'FCVT.S.D',
+      'FCVT.D.S',
       'FCLASS.D',
     ],
     Zhinx: [
       // Half-precision FP in integer registers
-      'FADD.H', 'FSUB.H', 'FMUL.H', 'FDIV.H', 'FSQRT.H',
-      'FMADD.H', 'FMSUB.H', 'FNMADD.H', 'FNMSUB.H',
-      'FSGNJ.H', 'FSGNJN.H', 'FSGNJX.H',
-      'FMIN.H', 'FMAX.H',
-      'FEQ.H', 'FLT.H', 'FLE.H',
-      'FCVT.W.H', 'FCVT.WU.H', 'FCVT.H.W', 'FCVT.H.WU',
-      'FCVT.S.H', 'FCVT.H.S',
+      'FADD.H',
+      'FSUB.H',
+      'FMUL.H',
+      'FDIV.H',
+      'FSQRT.H',
+      'FMADD.H',
+      'FMSUB.H',
+      'FNMADD.H',
+      'FNMSUB.H',
+      'FSGNJ.H',
+      'FSGNJN.H',
+      'FSGNJX.H',
+      'FMIN.H',
+      'FMAX.H',
+      'FEQ.H',
+      'FLT.H',
+      'FLE.H',
+      'FCVT.W.H',
+      'FCVT.WU.H',
+      'FCVT.H.W',
+      'FCVT.H.WU',
+      'FCVT.S.H',
+      'FCVT.H.S',
       'FCLASS.H',
     ],
     Zhinxmin: [
       // Minimal half-precision in integer registers
-      'FCVT.S.H', 'FCVT.H.S',
+      'FCVT.S.H',
+      'FCVT.H.S',
     ],
     Zmmul: [
       // Multiply-only (no division)
-      'MUL', 'MULH', 'MULHSU', 'MULHU',
+      'MUL',
+      'MULH',
+      'MULHSU',
+      'MULHU',
       // RV64
       'MULW',
     ],
     C: [
       // Integer compressed (base)
-      'C.ADDI4SPN', 'C.LW', 'C.SW',
-      'C.NOP', 'C.ADDI', 'C.LI',
-      'C.ADDI16SP', 'C.LUI',
-      'C.SRLI', 'C.SRAI', 'C.ANDI',
-      'C.SUB', 'C.XOR', 'C.OR', 'C.AND', 'C.ADD',
-      'C.J', 'C.BEQZ', 'C.BNEZ',
-      'C.SLLI', 'C.LWSP', 'C.SWSP',
-      'C.JR', 'C.MV', 'C.EBREAK', 'C.JALR',
+      'C.ADDI4SPN',
+      'C.LW',
+      'C.SW',
+      'C.NOP',
+      'C.ADDI',
+      'C.LI',
+      'C.ADDI16SP',
+      'C.LUI',
+      'C.SRLI',
+      'C.SRAI',
+      'C.ANDI',
+      'C.SUB',
+      'C.XOR',
+      'C.OR',
+      'C.AND',
+      'C.ADD',
+      'C.J',
+      'C.BEQZ',
+      'C.BNEZ',
+      'C.SLLI',
+      'C.LWSP',
+      'C.SWSP',
+      'C.JR',
+      'C.MV',
+      'C.EBREAK',
+      'C.JALR',
       // RV32 only
       'C.JAL',
       // RV64 only
-      'C.LD', 'C.SD', 'C.LDSP', 'C.SDSP',
-      'C.ADDIW', 'C.ADDW', 'C.SUBW',
+      'C.LD',
+      'C.SD',
+      'C.LDSP',
+      'C.SDSP',
+      'C.ADDIW',
+      'C.ADDW',
+      'C.SUBW',
       // FP compressed (Zcf - RV32 with F)
-      'C.FLW', 'C.FSW', 'C.FLWSP', 'C.FSWSP',
+      'C.FLW',
+      'C.FSW',
+      'C.FLWSP',
+      'C.FSWSP',
       // FP compressed (Zcd - with D)
-      'C.FLD', 'C.FSD', 'C.FLDSP', 'C.FSDSP',
+      'C.FLD',
+      'C.FSD',
+      'C.FLDSP',
+      'C.FSDSP',
     ],
     Zca: [
       // Base compressed integer (no FP)
-      'C.ADDI4SPN', 'C.LW', 'C.SW',
-      'C.NOP', 'C.ADDI', 'C.LI',
-      'C.ADDI16SP', 'C.LUI',
-      'C.SRLI', 'C.SRAI', 'C.ANDI',
-      'C.SUB', 'C.XOR', 'C.OR', 'C.AND', 'C.ADD',
-      'C.J', 'C.BEQZ', 'C.BNEZ',
-      'C.SLLI', 'C.LWSP', 'C.SWSP',
-      'C.JR', 'C.MV', 'C.EBREAK', 'C.JALR',
+      'C.ADDI4SPN',
+      'C.LW',
+      'C.SW',
+      'C.NOP',
+      'C.ADDI',
+      'C.LI',
+      'C.ADDI16SP',
+      'C.LUI',
+      'C.SRLI',
+      'C.SRAI',
+      'C.ANDI',
+      'C.SUB',
+      'C.XOR',
+      'C.OR',
+      'C.AND',
+      'C.ADD',
+      'C.J',
+      'C.BEQZ',
+      'C.BNEZ',
+      'C.SLLI',
+      'C.LWSP',
+      'C.SWSP',
+      'C.JR',
+      'C.MV',
+      'C.EBREAK',
+      'C.JALR',
       // RV32 only
       'C.JAL',
       // RV64 only
-      'C.LD', 'C.SD', 'C.LDSP', 'C.SDSP',
-      'C.ADDIW', 'C.ADDW', 'C.SUBW',
+      'C.LD',
+      'C.SD',
+      'C.LDSP',
+      'C.SDSP',
+      'C.ADDIW',
+      'C.ADDW',
+      'C.SUBW',
     ],
     Zcb: [
       // Byte/halfword load/store
-      'C.LBU', 'C.LH', 'C.LHU', 'C.SB', 'C.SH',
+      'C.LBU',
+      'C.LH',
+      'C.LHU',
+      'C.SB',
+      'C.SH',
       // Zero/sign extension
-      'C.ZEXT.B', 'C.ZEXT.H', 'C.ZEXT.W',
-      'C.SEXT.B', 'C.SEXT.H',
+      'C.ZEXT.B',
+      'C.ZEXT.H',
+      'C.ZEXT.W',
+      'C.SEXT.B',
+      'C.SEXT.H',
       // Logical/arithmetic
-      'C.NOT', 'C.MUL',
+      'C.NOT',
+      'C.MUL',
     ],
     Zcf: [
       // Compressed single-precision float (RV32 with F)
-      'C.FLW', 'C.FSW', 'C.FLWSP', 'C.FSWSP',
+      'C.FLW',
+      'C.FSW',
+      'C.FLWSP',
+      'C.FSWSP',
     ],
     Zcd: [
       // Compressed double-precision float (with D)
-      'C.FLD', 'C.FSD', 'C.FLDSP', 'C.FSDSP',
+      'C.FLD',
+      'C.FSD',
+      'C.FLDSP',
+      'C.FSDSP',
     ],
     Zcmp: [
       // Push/pop
-      'CM.PUSH', 'CM.POP', 'CM.POPRET', 'CM.POPRETZ',
+      'CM.PUSH',
+      'CM.POP',
+      'CM.POPRET',
+      'CM.POPRETZ',
       // Register move
-      'CM.MVA01S', 'CM.MVSA01',
+      'CM.MVA01S',
+      'CM.MVSA01',
     ],
     Zcmt: [
       // Table jump
@@ -1504,319 +2026,688 @@ const RISCVExplorer = () => {
       // Aggregates Zba + Zbb + Zbc + Zbs
 
       // Zba: Address-generation helpers
-      'SH1ADD', 'SH2ADD', 'SH3ADD',
-      'ADD.UW', 'SLLI.UW',
-      'SH1ADD.UW', 'SH2ADD.UW', 'SH3ADD.UW',
+      'SH1ADD',
+      'SH2ADD',
+      'SH3ADD',
+      'ADD.UW',
+      'SLLI.UW',
+      'SH1ADD.UW',
+      'SH2ADD.UW',
+      'SH3ADD.UW',
 
       // Zbb: Logical operations
-      'ANDN', 'ORN', 'XNOR',
+      'ANDN',
+      'ORN',
+      'XNOR',
       // Zbb: Count leading/trailing zeros and population count
-      'CLZ', 'CTZ', 'CPOP',
-      'CLZW', 'CTZW', 'CPOPW',
+      'CLZ',
+      'CTZ',
+      'CPOP',
+      'CLZW',
+      'CTZW',
+      'CPOPW',
       // Zbb: Min/Max
-      'MIN', 'MINU', 'MAX', 'MAXU',
+      'MIN',
+      'MINU',
+      'MAX',
+      'MAXU',
       // Zbb: Sign/zero extension
-      'SEXT.B', 'SEXT.H', 'ZEXT.H',
+      'SEXT.B',
+      'SEXT.H',
+      'ZEXT.H',
       // Zbb: Rotate
-      'ROL', 'ROR', 'RORI',
-      'ROLW', 'RORW', 'RORIW',
+      'ROL',
+      'ROR',
+      'RORI',
+      'ROLW',
+      'RORW',
+      'RORIW',
 
       // Zbc: Carry-less multiply
-      'CLMUL', 'CLMULH', 'CLMULR',
+      'CLMUL',
+      'CLMULH',
+      'CLMULR',
 
       // Zbs: Single-bit operations
-      'BSET', 'BSETI',
-      'BCLR', 'BCLRI',
-      'BINV', 'BINVI',
-      'BEXT', 'BEXTI',
+      'BSET',
+      'BSETI',
+      'BCLR',
+      'BCLRI',
+      'BINV',
+      'BINVI',
+      'BEXT',
+      'BEXTI',
     ],
     Zba: [
       // Address-generation helpers
-      'SH1ADD', 'SH2ADD', 'SH3ADD',
+      'SH1ADD',
+      'SH2ADD',
+      'SH3ADD',
       // RV64 only
-      'ADD.UW', 'SLLI.UW',
-      'SH1ADD.UW', 'SH2ADD.UW', 'SH3ADD.UW',
+      'ADD.UW',
+      'SLLI.UW',
+      'SH1ADD.UW',
+      'SH2ADD.UW',
+      'SH3ADD.UW',
     ],
     Zbb: [
       // Logical operations
-      'ANDN', 'ORN', 'XNOR',
+      'ANDN',
+      'ORN',
+      'XNOR',
       // Count leading/trailing zeros and population count
-      'CLZ', 'CTZ', 'CPOP',
+      'CLZ',
+      'CTZ',
+      'CPOP',
       // RV64 word variants
-      'CLZW', 'CTZW', 'CPOPW',
+      'CLZW',
+      'CTZW',
+      'CPOPW',
       // Min/Max
-      'MIN', 'MINU', 'MAX', 'MAXU',
+      'MIN',
+      'MINU',
+      'MAX',
+      'MAXU',
       // Sign/zero extension
-      'SEXT.B', 'SEXT.H', 'ZEXT.H',
+      'SEXT.B',
+      'SEXT.H',
+      'ZEXT.H',
       // Rotate
-      'ROL', 'ROR', 'RORI',
+      'ROL',
+      'ROR',
+      'RORI',
       // RV64 rotate variants
-      'ROLW', 'RORW', 'RORIW',
+      'ROLW',
+      'RORW',
+      'RORIW',
     ],
     Zbc: [
       // Carry-less multiply
-      'CLMUL', 'CLMULH', 'CLMULR',
+      'CLMUL',
+      'CLMULH',
+      'CLMULR',
     ],
     Zbs: [
       // Single-bit set
-      'BSET', 'BSETI',
+      'BSET',
+      'BSETI',
       // Single-bit clear
-      'BCLR', 'BCLRI',
+      'BCLR',
+      'BCLRI',
       // Single-bit invert
-      'BINV', 'BINVI',
+      'BINV',
+      'BINVI',
       // Single-bit extract
-      'BEXT', 'BEXTI',
+      'BEXT',
+      'BEXTI',
     ],
     V: [
       // Configuration
-      'VSETVL', 'VSETVLI', 'VSETIVLI',
+      'VSETVL',
+      'VSETVLI',
+      'VSETIVLI',
 
       // Unit-stride loads
-      'VLE8.V', 'VLE16.V', 'VLE32.V', 'VLE64.V',
+      'VLE8.V',
+      'VLE16.V',
+      'VLE32.V',
+      'VLE64.V',
       'VLM.V',
       // Unit-stride stores
-      'VSE8.V', 'VSE16.V', 'VSE32.V', 'VSE64.V',
+      'VSE8.V',
+      'VSE16.V',
+      'VSE32.V',
+      'VSE64.V',
       'VSM.V',
       // Strided loads/stores
-      'VLSE8.V', 'VLSE16.V', 'VLSE32.V', 'VLSE64.V',
-      'VSSE8.V', 'VSSE16.V', 'VSSE32.V', 'VSSE64.V',
+      'VLSE8.V',
+      'VLSE16.V',
+      'VLSE32.V',
+      'VLSE64.V',
+      'VSSE8.V',
+      'VSSE16.V',
+      'VSSE32.V',
+      'VSSE64.V',
       // Indexed loads/stores
-      'VLUXEI8.V', 'VLUXEI16.V', 'VLUXEI32.V', 'VLUXEI64.V',
-      'VLOXEI8.V', 'VLOXEI16.V', 'VLOXEI32.V', 'VLOXEI64.V',
-      'VSUXEI8.V', 'VSUXEI16.V', 'VSUXEI32.V', 'VSUXEI64.V',
-      'VSOXEI8.V', 'VSOXEI16.V', 'VSOXEI32.V', 'VSOXEI64.V',
+      'VLUXEI8.V',
+      'VLUXEI16.V',
+      'VLUXEI32.V',
+      'VLUXEI64.V',
+      'VLOXEI8.V',
+      'VLOXEI16.V',
+      'VLOXEI32.V',
+      'VLOXEI64.V',
+      'VSUXEI8.V',
+      'VSUXEI16.V',
+      'VSUXEI32.V',
+      'VSUXEI64.V',
+      'VSOXEI8.V',
+      'VSOXEI16.V',
+      'VSOXEI32.V',
+      'VSOXEI64.V',
       // Whole register loads/stores
-      'VL1RE8.V', 'VL1RE16.V', 'VL1RE32.V', 'VL1RE64.V',
-      'VL2RE8.V', 'VL2RE16.V', 'VL2RE32.V', 'VL2RE64.V',
-      'VL4RE8.V', 'VL4RE16.V', 'VL4RE32.V', 'VL4RE64.V',
-      'VL8RE8.V', 'VL8RE16.V', 'VL8RE32.V', 'VL8RE64.V',
-      'VS1R.V', 'VS2R.V', 'VS4R.V', 'VS8R.V',
+      'VL1RE8.V',
+      'VL1RE16.V',
+      'VL1RE32.V',
+      'VL1RE64.V',
+      'VL2RE8.V',
+      'VL2RE16.V',
+      'VL2RE32.V',
+      'VL2RE64.V',
+      'VL4RE8.V',
+      'VL4RE16.V',
+      'VL4RE32.V',
+      'VL4RE64.V',
+      'VL8RE8.V',
+      'VL8RE16.V',
+      'VL8RE32.V',
+      'VL8RE64.V',
+      'VS1R.V',
+      'VS2R.V',
+      'VS4R.V',
+      'VS8R.V',
 
       // Integer arithmetic
-      'VADD.VV', 'VADD.VX', 'VADD.VI',
-      'VSUB.VV', 'VSUB.VX',
-      'VRSUB.VX', 'VRSUB.VI',
-      'VWADDU.VV', 'VWADDU.VX', 'VWSUBU.VV', 'VWSUBU.VX',
-      'VWADD.VV', 'VWADD.VX', 'VWSUB.VV', 'VWSUB.VX',
-      'VADC.VVM', 'VADC.VXM', 'VADC.VIM',
-      'VMADC.VVM', 'VMADC.VXM', 'VMADC.VIM',
-      'VSBC.VVM', 'VSBC.VXM',
-      'VMSBC.VVM', 'VMSBC.VXM',
+      'VADD.VV',
+      'VADD.VX',
+      'VADD.VI',
+      'VSUB.VV',
+      'VSUB.VX',
+      'VRSUB.VX',
+      'VRSUB.VI',
+      'VWADDU.VV',
+      'VWADDU.VX',
+      'VWSUBU.VV',
+      'VWSUBU.VX',
+      'VWADD.VV',
+      'VWADD.VX',
+      'VWSUB.VV',
+      'VWSUB.VX',
+      'VADC.VVM',
+      'VADC.VXM',
+      'VADC.VIM',
+      'VMADC.VVM',
+      'VMADC.VXM',
+      'VMADC.VIM',
+      'VSBC.VVM',
+      'VSBC.VXM',
+      'VMSBC.VVM',
+      'VMSBC.VXM',
       // Bitwise
-      'VAND.VV', 'VAND.VX', 'VAND.VI',
-      'VOR.VV', 'VOR.VX', 'VOR.VI',
-      'VXOR.VV', 'VXOR.VX', 'VXOR.VI',
+      'VAND.VV',
+      'VAND.VX',
+      'VAND.VI',
+      'VOR.VV',
+      'VOR.VX',
+      'VOR.VI',
+      'VXOR.VV',
+      'VXOR.VX',
+      'VXOR.VI',
       // Shifts
-      'VSLL.VV', 'VSLL.VX', 'VSLL.VI',
-      'VSRL.VV', 'VSRL.VX', 'VSRL.VI',
-      'VSRA.VV', 'VSRA.VX', 'VSRA.VI',
-      'VNSRL.WV', 'VNSRL.WX', 'VNSRL.WI',
-      'VNSRA.WV', 'VNSRA.WX', 'VNSRA.WI',
+      'VSLL.VV',
+      'VSLL.VX',
+      'VSLL.VI',
+      'VSRL.VV',
+      'VSRL.VX',
+      'VSRL.VI',
+      'VSRA.VV',
+      'VSRA.VX',
+      'VSRA.VI',
+      'VNSRL.WV',
+      'VNSRL.WX',
+      'VNSRL.WI',
+      'VNSRA.WV',
+      'VNSRA.WX',
+      'VNSRA.WI',
       // Comparisons
-      'VMSEQ.VV', 'VMSEQ.VX', 'VMSEQ.VI',
-      'VMSNE.VV', 'VMSNE.VX', 'VMSNE.VI',
-      'VMSLTU.VV', 'VMSLTU.VX', 'VMSLT.VV', 'VMSLT.VX',
-      'VMSLEU.VV', 'VMSLEU.VX', 'VMSLEU.VI',
-      'VMSLE.VV', 'VMSLE.VX', 'VMSLE.VI',
-      'VMSGTU.VX', 'VMSGTU.VI', 'VMSGT.VX', 'VMSGT.VI',
+      'VMSEQ.VV',
+      'VMSEQ.VX',
+      'VMSEQ.VI',
+      'VMSNE.VV',
+      'VMSNE.VX',
+      'VMSNE.VI',
+      'VMSLTU.VV',
+      'VMSLTU.VX',
+      'VMSLT.VV',
+      'VMSLT.VX',
+      'VMSLEU.VV',
+      'VMSLEU.VX',
+      'VMSLEU.VI',
+      'VMSLE.VV',
+      'VMSLE.VX',
+      'VMSLE.VI',
+      'VMSGTU.VX',
+      'VMSGTU.VI',
+      'VMSGT.VX',
+      'VMSGT.VI',
       // Min/Max
-      'VMINU.VV', 'VMINU.VX', 'VMIN.VV', 'VMIN.VX',
-      'VMAXU.VV', 'VMAXU.VX', 'VMAX.VV', 'VMAX.VX',
+      'VMINU.VV',
+      'VMINU.VX',
+      'VMIN.VV',
+      'VMIN.VX',
+      'VMAXU.VV',
+      'VMAXU.VX',
+      'VMAX.VV',
+      'VMAX.VX',
       // Multiply
-      'VMUL.VV', 'VMUL.VX',
-      'VMULH.VV', 'VMULH.VX', 'VMULHU.VV', 'VMULHU.VX', 'VMULHSU.VV', 'VMULHSU.VX',
-      'VWMUL.VV', 'VWMUL.VX', 'VWMULU.VV', 'VWMULU.VX', 'VWMULSU.VV', 'VWMULSU.VX',
+      'VMUL.VV',
+      'VMUL.VX',
+      'VMULH.VV',
+      'VMULH.VX',
+      'VMULHU.VV',
+      'VMULHU.VX',
+      'VMULHSU.VV',
+      'VMULHSU.VX',
+      'VWMUL.VV',
+      'VWMUL.VX',
+      'VWMULU.VV',
+      'VWMULU.VX',
+      'VWMULSU.VV',
+      'VWMULSU.VX',
       // Divide
-      'VDIVU.VV', 'VDIVU.VX', 'VDIV.VV', 'VDIV.VX',
-      'VREMU.VV', 'VREMU.VX', 'VREM.VV', 'VREM.VX',
+      'VDIVU.VV',
+      'VDIVU.VX',
+      'VDIV.VV',
+      'VDIV.VX',
+      'VREMU.VV',
+      'VREMU.VX',
+      'VREM.VV',
+      'VREM.VX',
       // Multiply-accumulate
-      'VMACC.VV', 'VMACC.VX', 'VNMSAC.VV', 'VNMSAC.VX',
-      'VMADD.VV', 'VMADD.VX', 'VNMSUB.VV', 'VNMSUB.VX',
-      'VWMACCU.VV', 'VWMACCU.VX', 'VWMACC.VV', 'VWMACC.VX',
-      'VWMACCSU.VV', 'VWMACCSU.VX', 'VWMACCUS.VX',
+      'VMACC.VV',
+      'VMACC.VX',
+      'VNMSAC.VV',
+      'VNMSAC.VX',
+      'VMADD.VV',
+      'VMADD.VX',
+      'VNMSUB.VV',
+      'VNMSUB.VX',
+      'VWMACCU.VV',
+      'VWMACCU.VX',
+      'VWMACC.VV',
+      'VWMACC.VX',
+      'VWMACCSU.VV',
+      'VWMACCSU.VX',
+      'VWMACCUS.VX',
       // Merge/Move
-      'VMERGE.VVM', 'VMERGE.VXM', 'VMERGE.VIM',
-      'VMV.V.V', 'VMV.V.X', 'VMV.V.I',
+      'VMERGE.VVM',
+      'VMERGE.VXM',
+      'VMERGE.VIM',
+      'VMV.V.V',
+      'VMV.V.X',
+      'VMV.V.I',
       // Fixed-point
-      'VSADDU.VV', 'VSADDU.VX', 'VSADDU.VI',
-      'VSADD.VV', 'VSADD.VX', 'VSADD.VI',
-      'VSSUBU.VV', 'VSSUBU.VX', 'VSSUB.VV', 'VSSUB.VX',
-      'VSMUL.VV', 'VSMUL.VX',
-      'VSSRL.VV', 'VSSRL.VX', 'VSSRL.VI',
-      'VSSRA.VV', 'VSSRA.VX', 'VSSRA.VI',
-      'VNCLIPU.WV', 'VNCLIPU.WX', 'VNCLIPU.WI',
-      'VNCLIP.WV', 'VNCLIP.WX', 'VNCLIP.WI',
+      'VSADDU.VV',
+      'VSADDU.VX',
+      'VSADDU.VI',
+      'VSADD.VV',
+      'VSADD.VX',
+      'VSADD.VI',
+      'VSSUBU.VV',
+      'VSSUBU.VX',
+      'VSSUB.VV',
+      'VSSUB.VX',
+      'VSMUL.VV',
+      'VSMUL.VX',
+      'VSSRL.VV',
+      'VSSRL.VX',
+      'VSSRL.VI',
+      'VSSRA.VV',
+      'VSSRA.VX',
+      'VSSRA.VI',
+      'VNCLIPU.WV',
+      'VNCLIPU.WX',
+      'VNCLIPU.WI',
+      'VNCLIP.WV',
+      'VNCLIP.WX',
+      'VNCLIP.WI',
 
       // FP arithmetic
-      'VFADD.VV', 'VFADD.VF', 'VFSUB.VV', 'VFSUB.VF', 'VFRSUB.VF',
-      'VFWADD.VV', 'VFWADD.VF', 'VFWSUB.VV', 'VFWSUB.VF',
-      'VFWADD.WV', 'VFWADD.WF', 'VFWSUB.WV', 'VFWSUB.WF',
-      'VFMUL.VV', 'VFMUL.VF', 'VFDIV.VV', 'VFDIV.VF', 'VFRDIV.VF',
-      'VFWMUL.VV', 'VFWMUL.VF',
-      'VFMACC.VV', 'VFMACC.VF', 'VFNMACC.VV', 'VFNMACC.VF',
-      'VFMSAC.VV', 'VFMSAC.VF', 'VFNMSAC.VV', 'VFNMSAC.VF',
-      'VFMADD.VV', 'VFMADD.VF', 'VFNMADD.VV', 'VFNMADD.VF',
-      'VFMSUB.VV', 'VFMSUB.VF', 'VFNMSUB.VV', 'VFNMSUB.VF',
-      'VFWMACC.VV', 'VFWMACC.VF', 'VFWNMACC.VV', 'VFWNMACC.VF',
-      'VFWMSAC.VV', 'VFWMSAC.VF', 'VFWNMSAC.VV', 'VFWNMSAC.VF',
-      'VFSQRT.V', 'VFRSQRT7.V', 'VFREC7.V',
-      'VFMIN.VV', 'VFMIN.VF', 'VFMAX.VV', 'VFMAX.VF',
-      'VFSGNJ.VV', 'VFSGNJ.VF', 'VFSGNJN.VV', 'VFSGNJN.VF', 'VFSGNJX.VV', 'VFSGNJX.VF',
+      'VFADD.VV',
+      'VFADD.VF',
+      'VFSUB.VV',
+      'VFSUB.VF',
+      'VFRSUB.VF',
+      'VFWADD.VV',
+      'VFWADD.VF',
+      'VFWSUB.VV',
+      'VFWSUB.VF',
+      'VFWADD.WV',
+      'VFWADD.WF',
+      'VFWSUB.WV',
+      'VFWSUB.WF',
+      'VFMUL.VV',
+      'VFMUL.VF',
+      'VFDIV.VV',
+      'VFDIV.VF',
+      'VFRDIV.VF',
+      'VFWMUL.VV',
+      'VFWMUL.VF',
+      'VFMACC.VV',
+      'VFMACC.VF',
+      'VFNMACC.VV',
+      'VFNMACC.VF',
+      'VFMSAC.VV',
+      'VFMSAC.VF',
+      'VFNMSAC.VV',
+      'VFNMSAC.VF',
+      'VFMADD.VV',
+      'VFMADD.VF',
+      'VFNMADD.VV',
+      'VFNMADD.VF',
+      'VFMSUB.VV',
+      'VFMSUB.VF',
+      'VFNMSUB.VV',
+      'VFNMSUB.VF',
+      'VFWMACC.VV',
+      'VFWMACC.VF',
+      'VFWNMACC.VV',
+      'VFWNMACC.VF',
+      'VFWMSAC.VV',
+      'VFWMSAC.VF',
+      'VFWNMSAC.VV',
+      'VFWNMSAC.VF',
+      'VFSQRT.V',
+      'VFRSQRT7.V',
+      'VFREC7.V',
+      'VFMIN.VV',
+      'VFMIN.VF',
+      'VFMAX.VV',
+      'VFMAX.VF',
+      'VFSGNJ.VV',
+      'VFSGNJ.VF',
+      'VFSGNJN.VV',
+      'VFSGNJN.VF',
+      'VFSGNJX.VV',
+      'VFSGNJX.VF',
       // FP compare
-      'VMFEQ.VV', 'VMFEQ.VF', 'VMFNE.VV', 'VMFNE.VF',
-      'VMFLT.VV', 'VMFLT.VF', 'VMFLE.VV', 'VMFLE.VF',
-      'VMFGT.VF', 'VMFGE.VF',
+      'VMFEQ.VV',
+      'VMFEQ.VF',
+      'VMFNE.VV',
+      'VMFNE.VF',
+      'VMFLT.VV',
+      'VMFLT.VF',
+      'VMFLE.VV',
+      'VMFLE.VF',
+      'VMFGT.VF',
+      'VMFGE.VF',
       'VFCLASS.V',
-      'VFMERGE.VFM', 'VFMV.V.F',
+      'VFMERGE.VFM',
+      'VFMV.V.F',
       // FP conversions
-      'VFCVT.XU.F.V', 'VFCVT.X.F.V', 'VFCVT.RTZ.XU.F.V', 'VFCVT.RTZ.X.F.V',
-      'VFCVT.F.XU.V', 'VFCVT.F.X.V',
-      'VFWCVT.XU.F.V', 'VFWCVT.X.F.V', 'VFWCVT.RTZ.XU.F.V', 'VFWCVT.RTZ.X.F.V',
-      'VFWCVT.F.XU.V', 'VFWCVT.F.X.V', 'VFWCVT.F.F.V',
-      'VFNCVT.XU.F.W', 'VFNCVT.X.F.W', 'VFNCVT.RTZ.XU.F.W', 'VFNCVT.RTZ.X.F.W',
-      'VFNCVT.F.XU.W', 'VFNCVT.F.X.W', 'VFNCVT.F.F.W', 'VFNCVT.ROD.F.F.W',
+      'VFCVT.XU.F.V',
+      'VFCVT.X.F.V',
+      'VFCVT.RTZ.XU.F.V',
+      'VFCVT.RTZ.X.F.V',
+      'VFCVT.F.XU.V',
+      'VFCVT.F.X.V',
+      'VFWCVT.XU.F.V',
+      'VFWCVT.X.F.V',
+      'VFWCVT.RTZ.XU.F.V',
+      'VFWCVT.RTZ.X.F.V',
+      'VFWCVT.F.XU.V',
+      'VFWCVT.F.X.V',
+      'VFWCVT.F.F.V',
+      'VFNCVT.XU.F.W',
+      'VFNCVT.X.F.W',
+      'VFNCVT.RTZ.XU.F.W',
+      'VFNCVT.RTZ.X.F.W',
+      'VFNCVT.F.XU.W',
+      'VFNCVT.F.X.W',
+      'VFNCVT.F.F.W',
+      'VFNCVT.ROD.F.F.W',
 
       // Reductions
-      'VREDSUM.VS', 'VREDMAXU.VS', 'VREDMAX.VS', 'VREDMINU.VS', 'VREDMIN.VS',
-      'VREDAND.VS', 'VREDOR.VS', 'VREDXOR.VS',
-      'VWREDSUMU.VS', 'VWREDSUM.VS',
-      'VFREDUSUM.VS', 'VFREDOSUM.VS', 'VFREDMAX.VS', 'VFREDMIN.VS',
-      'VFWREDUSUM.VS', 'VFWREDOSUM.VS',
+      'VREDSUM.VS',
+      'VREDMAXU.VS',
+      'VREDMAX.VS',
+      'VREDMINU.VS',
+      'VREDMIN.VS',
+      'VREDAND.VS',
+      'VREDOR.VS',
+      'VREDXOR.VS',
+      'VWREDSUMU.VS',
+      'VWREDSUM.VS',
+      'VFREDUSUM.VS',
+      'VFREDOSUM.VS',
+      'VFREDMAX.VS',
+      'VFREDMIN.VS',
+      'VFWREDUSUM.VS',
+      'VFWREDOSUM.VS',
 
       // Mask operations
-      'VMAND.MM', 'VMNAND.MM', 'VMANDN.MM',
-      'VMXOR.MM', 'VMOR.MM', 'VMNOR.MM', 'VMORN.MM', 'VMXNOR.MM',
-      'VCPOP.M', 'VFIRST.M',
-      'VMSBF.M', 'VMSIF.M', 'VMSOF.M',
-      'VIOTA.M', 'VID.V',
+      'VMAND.MM',
+      'VMNAND.MM',
+      'VMANDN.MM',
+      'VMXOR.MM',
+      'VMOR.MM',
+      'VMNOR.MM',
+      'VMORN.MM',
+      'VMXNOR.MM',
+      'VCPOP.M',
+      'VFIRST.M',
+      'VMSBF.M',
+      'VMSIF.M',
+      'VMSOF.M',
+      'VIOTA.M',
+      'VID.V',
 
       // Permutation
-      'VMV.X.S', 'VMV.S.X', 'VFMV.F.S', 'VFMV.S.F',
-      'VSLIDEUP.VX', 'VSLIDEUP.VI', 'VSLIDEDOWN.VX', 'VSLIDEDOWN.VI',
-      'VSLIDE1UP.VX', 'VFSLIDE1UP.VF', 'VSLIDE1DOWN.VX', 'VFSLIDE1DOWN.VF',
-      'VRGATHER.VV', 'VRGATHER.VX', 'VRGATHER.VI', 'VRGATHEREI16.VV',
+      'VMV.X.S',
+      'VMV.S.X',
+      'VFMV.F.S',
+      'VFMV.S.F',
+      'VSLIDEUP.VX',
+      'VSLIDEUP.VI',
+      'VSLIDEDOWN.VX',
+      'VSLIDEDOWN.VI',
+      'VSLIDE1UP.VX',
+      'VFSLIDE1UP.VF',
+      'VSLIDE1DOWN.VX',
+      'VFSLIDE1DOWN.VF',
+      'VRGATHER.VV',
+      'VRGATHER.VX',
+      'VRGATHER.VI',
+      'VRGATHEREI16.VV',
       'VCOMPRESS.VM',
       // Whole register move
-      'VMV1R.V', 'VMV2R.V', 'VMV4R.V', 'VMV8R.V',
+      'VMV1R.V',
+      'VMV2R.V',
+      'VMV4R.V',
+      'VMV8R.V',
     ],
     Zvfh: [
       // Vector half-precision FP
-      'VFADD.VV', 'VFADD.VF', 'VFSUB.VV', 'VFSUB.VF',
-      'VFMUL.VV', 'VFMUL.VF', 'VFDIV.VV', 'VFDIV.VF',
-      'VFMACC.VV', 'VFMACC.VF', 'VFNMACC.VV', 'VFNMACC.VF',
-      'VFMSAC.VV', 'VFMSAC.VF', 'VFNMSAC.VV', 'VFNMSAC.VF',
-      'VFSQRT.V', 'VFMIN.VV', 'VFMAX.VV',
-      'VMFEQ.VV', 'VMFNE.VV', 'VMFLT.VV', 'VMFLE.VV',
+      'VFADD.VV',
+      'VFADD.VF',
+      'VFSUB.VV',
+      'VFSUB.VF',
+      'VFMUL.VV',
+      'VFMUL.VF',
+      'VFDIV.VV',
+      'VFDIV.VF',
+      'VFMACC.VV',
+      'VFMACC.VF',
+      'VFNMACC.VV',
+      'VFNMACC.VF',
+      'VFMSAC.VV',
+      'VFMSAC.VF',
+      'VFNMSAC.VV',
+      'VFNMSAC.VF',
+      'VFSQRT.V',
+      'VFMIN.VV',
+      'VFMAX.VV',
+      'VMFEQ.VV',
+      'VMFNE.VV',
+      'VMFLT.VV',
+      'VMFLE.VV',
     ],
     Zvfhmin: [
       // Vector half-precision minimal (conversions)
-      'VFWCVT.F.F.V', 'VFNCVT.F.F.W',
+      'VFWCVT.F.F.V',
+      'VFNCVT.F.F.W',
     ],
     Zvfbfmin: [
       // Vector BF16 conversions
-      'VFNCVTBF16.F.F.W', 'VFWCVTBF16.F.F.V',
+      'VFNCVTBF16.F.F.W',
+      'VFWCVTBF16.F.F.V',
     ],
     Zvfbfwma: [
       // Vector BF16 widening multiply-accumulate
-      'VFWMACCBF16.VV', 'VFWMACCBF16.VF',
+      'VFWMACCBF16.VV',
+      'VFWMACCBF16.VF',
     ],
     Zvbb: [
       // Vector bitmanip base
-      'VANDN.VV', 'VANDN.VX',
-      'VBREV.V', 'VBREV8.V', 'VREV8.V',
-      'VCLZ.V', 'VCTZ.V', 'VCPOP.V',
-      'VROL.VV', 'VROL.VX', 'VROR.VV', 'VROR.VX', 'VROR.VI',
-      'VWSLL.VV', 'VWSLL.VX', 'VWSLL.VI',
+      'VANDN.VV',
+      'VANDN.VX',
+      'VBREV.V',
+      'VBREV8.V',
+      'VREV8.V',
+      'VCLZ.V',
+      'VCTZ.V',
+      'VCPOP.V',
+      'VROL.VV',
+      'VROL.VX',
+      'VROR.VV',
+      'VROR.VX',
+      'VROR.VI',
+      'VWSLL.VV',
+      'VWSLL.VX',
+      'VWSLL.VI',
     ],
     Zvbc: [
       // Vector carryless multiply
-      'VCLMUL.VV', 'VCLMUL.VX',
-      'VCLMULH.VV', 'VCLMULH.VX',
+      'VCLMUL.VV',
+      'VCLMUL.VX',
+      'VCLMULH.VV',
+      'VCLMULH.VX',
     ],
     Zvkg: [
       // Vector GCM/GMAC
-      'VGHSH.VV', 'VGMUL.VV',
+      'VGHSH.VV',
+      'VGMUL.VV',
     ],
     Zvkned: [
       // Vector AES
-      'VAESDF.VV', 'VAESDF.VS',
-      'VAESDM.VV', 'VAESDM.VS',
-      'VAESEF.VV', 'VAESEF.VS',
-      'VAESEM.VV', 'VAESEM.VS',
-      'VAESKF1.VI', 'VAESKF2.VI',
+      'VAESDF.VV',
+      'VAESDF.VS',
+      'VAESDM.VV',
+      'VAESDM.VS',
+      'VAESEF.VV',
+      'VAESEF.VS',
+      'VAESEM.VV',
+      'VAESEM.VS',
+      'VAESKF1.VI',
+      'VAESKF2.VI',
       'VAESZ.VS',
     ],
     Zvknha: [
       // Vector SHA-256
-      'VSHA2MS.VV', 'VSHA2CH.VV', 'VSHA2CL.VV',
+      'VSHA2MS.VV',
+      'VSHA2CH.VV',
+      'VSHA2CL.VV',
     ],
     Zvknhb: [
       // Vector SHA-256/512
-      'VSHA2MS.VV', 'VSHA2CH.VV', 'VSHA2CL.VV',
+      'VSHA2MS.VV',
+      'VSHA2CH.VV',
+      'VSHA2CL.VV',
     ],
     Zvksed: [
       // Vector SM4
-      'VSM4K.VI', 'VSM4R.VV', 'VSM4R.VS',
+      'VSM4K.VI',
+      'VSM4R.VV',
+      'VSM4R.VS',
     ],
     Zvksh: [
       // Vector SM3
-      'VSM3C.VI', 'VSM3ME.VV',
+      'VSM3C.VI',
+      'VSM3ME.VV',
     ],
 
     // Scalar Cryptography Extensions
     Zbkb: [
       // Crypto bitmanip (byte operations)
-      'PACK', 'PACKH',
+      'PACK',
+      'PACKH',
       // RV64
       'PACKW',
       // Also includes from Zbb
-      'ROL', 'ROR', 'RORI',
-      'ANDN', 'ORN', 'XNOR',
+      'ROL',
+      'ROR',
+      'RORI',
+      'ANDN',
+      'ORN',
+      'XNOR',
       // RV64
-      'ROLW', 'RORW', 'RORIW',
+      'ROLW',
+      'RORW',
+      'RORIW',
       // Note: REV8, BREV8, ZIP, UNZIP not in dictionary
     ],
     Zbkc: [
       // Crypto carryless multiply
-      'CLMUL', 'CLMULH',
+      'CLMUL',
+      'CLMULH',
     ],
     Zbkx: [
       // Crypto crossbar permutation
-      'XPERM4', 'XPERM8',
+      'XPERM4',
+      'XPERM8',
     ],
     Zknd: [
       // AES decryption
       // RV32
-      'AES32DSI', 'AES32DSMI',
+      'AES32DSI',
+      'AES32DSMI',
       // RV64
-      'AES64DS', 'AES64DSM', 'AES64IM',
-      'AES64KS1I', 'AES64KS2',
+      'AES64DS',
+      'AES64DSM',
+      'AES64IM',
+      'AES64KS1I',
+      'AES64KS2',
     ],
     Zkne: [
       // AES encryption
       // RV32
-      'AES32ESI', 'AES32ESMI',
+      'AES32ESI',
+      'AES32ESMI',
       // RV64
-      'AES64ES', 'AES64ESM',
-      'AES64KS1I', 'AES64KS2',
+      'AES64ES',
+      'AES64ESM',
+      'AES64KS1I',
+      'AES64KS2',
     ],
     Zknh: [
       // SHA-2 hash
       // SHA-256
-      'SHA256SIG0', 'SHA256SIG1', 'SHA256SUM0', 'SHA256SUM1',
+      'SHA256SIG0',
+      'SHA256SIG1',
+      'SHA256SUM0',
+      'SHA256SUM1',
       // SHA-512 (RV32)
-      'SHA512SIG0H', 'SHA512SIG0L', 'SHA512SIG1H', 'SHA512SIG1L',
-      'SHA512SUM0R', 'SHA512SUM1R',
+      'SHA512SIG0H',
+      'SHA512SIG0L',
+      'SHA512SIG1H',
+      'SHA512SIG1L',
+      'SHA512SUM0R',
+      'SHA512SUM1R',
       // SHA-512 (RV64)
-      'SHA512SIG0', 'SHA512SIG1', 'SHA512SUM0', 'SHA512SUM1',
+      'SHA512SIG0',
+      'SHA512SIG1',
+      'SHA512SUM0',
+      'SHA512SUM1',
     ],
     Zksed: [
       // SM4 block cipher
-      'SM4ED', 'SM4KS',
+      'SM4ED',
+      'SM4KS',
     ],
     Zksh: [
       // SM3 hash
-      'SM3P0', 'SM3P1',
+      'SM3P0',
+      'SM3P1',
     ],
     Zkr: [
       // Entropy source (CSR access, no new instructions)
@@ -1825,65 +2716,141 @@ const RISCVExplorer = () => {
     Zkn: [
       // NIST crypto suite (combines Zbkb + Zbkc + Zbkx + Zkne + Zknd + Zknh)
       // Zbkb
-      'PACK', 'PACKH', 'PACKW',
-      'ROL', 'ROR', 'RORI', 'ROLW', 'RORW', 'RORIW',
-      'ANDN', 'ORN', 'XNOR',
+      'PACK',
+      'PACKH',
+      'PACKW',
+      'ROL',
+      'ROR',
+      'RORI',
+      'ROLW',
+      'RORW',
+      'RORIW',
+      'ANDN',
+      'ORN',
+      'XNOR',
       // Zbkc
-      'CLMUL', 'CLMULH',
+      'CLMUL',
+      'CLMULH',
       // Zbkx
-      'XPERM4', 'XPERM8',
+      'XPERM4',
+      'XPERM8',
       // Zkne
-      'AES32ESI', 'AES32ESMI', 'AES64ES', 'AES64ESM',
-      'AES64KS1I', 'AES64KS2',
+      'AES32ESI',
+      'AES32ESMI',
+      'AES64ES',
+      'AES64ESM',
+      'AES64KS1I',
+      'AES64KS2',
       // Zknd
-      'AES32DSI', 'AES32DSMI', 'AES64DS', 'AES64DSM', 'AES64IM',
+      'AES32DSI',
+      'AES32DSMI',
+      'AES64DS',
+      'AES64DSM',
+      'AES64IM',
       // Zknh
-      'SHA256SIG0', 'SHA256SIG1', 'SHA256SUM0', 'SHA256SUM1',
-      'SHA512SIG0H', 'SHA512SIG0L', 'SHA512SIG1H', 'SHA512SIG1L',
-      'SHA512SUM0R', 'SHA512SUM1R',
-      'SHA512SIG0', 'SHA512SIG1', 'SHA512SUM0', 'SHA512SUM1',
+      'SHA256SIG0',
+      'SHA256SIG1',
+      'SHA256SUM0',
+      'SHA256SUM1',
+      'SHA512SIG0H',
+      'SHA512SIG0L',
+      'SHA512SIG1H',
+      'SHA512SIG1L',
+      'SHA512SUM0R',
+      'SHA512SUM1R',
+      'SHA512SIG0',
+      'SHA512SIG1',
+      'SHA512SUM0',
+      'SHA512SUM1',
     ],
     Zks: [
       // ShangMi crypto suite (combines Zbkb + Zbkc + Zbkx + Zksed + Zksh)
       // Zbkb
-      'PACK', 'PACKH', 'PACKW',
-      'ROL', 'ROR', 'RORI', 'ROLW', 'RORW', 'RORIW',
-      'ANDN', 'ORN', 'XNOR',
+      'PACK',
+      'PACKH',
+      'PACKW',
+      'ROL',
+      'ROR',
+      'RORI',
+      'ROLW',
+      'RORW',
+      'RORIW',
+      'ANDN',
+      'ORN',
+      'XNOR',
       // Zbkc
-      'CLMUL', 'CLMULH',
+      'CLMUL',
+      'CLMULH',
       // Zbkx
-      'XPERM4', 'XPERM8',
+      'XPERM4',
+      'XPERM8',
       // Zksed
-      'SM4ED', 'SM4KS',
+      'SM4ED',
+      'SM4KS',
       // Zksh
-      'SM3P0', 'SM3P1',
+      'SM3P0',
+      'SM3P1',
     ],
     Zk: [
       // Scalar crypto base (combines Zkn + Zkr + Zkt)
       // All Zkn instructions
-      'PACK', 'PACKH', 'PACKW',
-      'ROL', 'ROR', 'RORI', 'ROLW', 'RORW', 'RORIW',
-      'ANDN', 'ORN', 'XNOR',
-      'CLMUL', 'CLMULH',
-      'XPERM4', 'XPERM8',
-      'AES32ESI', 'AES32ESMI', 'AES64ES', 'AES64ESM',
-      'AES64KS1I', 'AES64KS2',
-      'AES32DSI', 'AES32DSMI', 'AES64DS', 'AES64DSM', 'AES64IM',
-      'SHA256SIG0', 'SHA256SIG1', 'SHA256SUM0', 'SHA256SUM1',
-      'SHA512SIG0H', 'SHA512SIG0L', 'SHA512SIG1H', 'SHA512SIG1L',
-      'SHA512SUM0R', 'SHA512SUM1R',
-      'SHA512SIG0', 'SHA512SIG1', 'SHA512SUM0', 'SHA512SUM1',
+      'PACK',
+      'PACKH',
+      'PACKW',
+      'ROL',
+      'ROR',
+      'RORI',
+      'ROLW',
+      'RORW',
+      'RORIW',
+      'ANDN',
+      'ORN',
+      'XNOR',
+      'CLMUL',
+      'CLMULH',
+      'XPERM4',
+      'XPERM8',
+      'AES32ESI',
+      'AES32ESMI',
+      'AES64ES',
+      'AES64ESM',
+      'AES64KS1I',
+      'AES64KS2',
+      'AES32DSI',
+      'AES32DSMI',
+      'AES64DS',
+      'AES64DSM',
+      'AES64IM',
+      'SHA256SIG0',
+      'SHA256SIG1',
+      'SHA256SUM0',
+      'SHA256SUM1',
+      'SHA512SIG0H',
+      'SHA512SIG0L',
+      'SHA512SIG1H',
+      'SHA512SIG1L',
+      'SHA512SUM0R',
+      'SHA512SUM1R',
+      'SHA512SIG0',
+      'SHA512SIG1',
+      'SHA512SUM0',
+      'SHA512SUM1',
     ],
 
     H: [
       // Hypervisor control & fences
-      'HFENCE.VVMA', 'HFENCE.GVMA',
-      'HINVAL.VVMA', 'HINVAL.GVMA',
+      'HFENCE.VVMA',
+      'HFENCE.GVMA',
+      'HINVAL.VVMA',
+      'HINVAL.GVMA',
 
       // Hypervisor guest memory access loads
-      'HLV.B', 'HLV.BU',
-      'HLV.H', 'HLV.HU',
-      'HLV.W', 'HLV.WU',
+      'HLV.B',
+      'HLV.BU',
+      'HLV.H',
+      'HLV.HU',
+      'HLV.W',
+      'HLV.WU',
       'HLV.D',
 
       // Hypervisor guest memory access stores
@@ -1893,7 +2860,8 @@ const RISCVExplorer = () => {
       'HSV.D',
 
       // Hypervisor execute-from-guest helpers
-      'HLVX.HU', 'HLVX.WU',
+      'HLVX.HU',
+      'HLVX.WU',
 
       // Hypervisor return
       'HRET',
@@ -1901,20 +2869,29 @@ const RISCVExplorer = () => {
 
     K: [
       // AES round / mixcolumn (representative NIST scalar crypto ops)
-      'AES32ESMI', 'AES32ESI',
-      'AES32DSMI', 'AES32DSI',
-      'AES64ES', 'AES64ESM',
-      'AES64DS', 'AES64DSM',
+      'AES32ESMI',
+      'AES32ESI',
+      'AES32DSMI',
+      'AES32DSI',
+      'AES64ES',
+      'AES64ESM',
+      'AES64DS',
+      'AES64DSM',
       'AES64IM',
 
       // SHA-2 helpers (scalar)
-      'SHA256SIG0', 'SHA256SIG1',
-      'SHA256SUM0', 'SHA256SUM1',
-      'SHA512SIG0', 'SHA512SIG1',
-      'SHA512SUM0', 'SHA512SUM1',
+      'SHA256SIG0',
+      'SHA256SIG1',
+      'SHA256SUM0',
+      'SHA256SUM1',
+      'SHA512SIG0',
+      'SHA512SIG1',
+      'SHA512SUM0',
+      'SHA512SUM1',
 
       // Entropy / random source (representative)
-      'CSRRAND', 'CSRRAND64',
+      'CSRRAND',
+      'CSRRAND64',
     ],
     S: [
       // Supervisor return and fences
@@ -1932,25 +2909,8 @@ const RISCVExplorer = () => {
   };
 
   const extensionCsrs = {
-    S: [
-      'SSTATUS',
-      'SIE', 'SIP',
-      'STVEC',
-      'SSCRATCH',
-      'SEPC',
-      'SCAUSE',
-      'STVAL',
-      'SATP',
-    ],
-    U: [
-      'USTATUS',
-      'UIE', 'UIP',
-      'UTVEC',
-      'USCRATCH',
-      'UEPC',
-      'UCAUSE',
-      'UTVAL',
-    ],
+    S: ['SSTATUS', 'SIE', 'SIP', 'STVEC', 'SSCRATCH', 'SEPC', 'SCAUSE', 'STVAL', 'SATP'],
+    U: ['USTATUS', 'UIE', 'UIP', 'UTVEC', 'USCRATCH', 'UEPC', 'UCAUSE', 'UTVAL'],
   };
 
   const extensionCsrLabels = {
@@ -1966,7 +2926,7 @@ const RISCVExplorer = () => {
       Object.values(extensions)
         .flat()
         .filter(Boolean)
-        .map((ext) => ext.id)
+        .map((ext) => ext.id),
     );
 
     const vol2Ids = new Set();
@@ -1986,7 +2946,9 @@ const RISCVExplorer = () => {
   }, []);
 
   const instructionMatchesQuery = (mnemonic, details, q) => {
-    const needle = String(q || '').trim().toLowerCase();
+    const needle = String(q || '')
+      .trim()
+      .toLowerCase();
     if (!needle) return false;
 
     if (mnemonic && String(mnemonic).toLowerCase().includes(needle)) return true;
@@ -2049,17 +3011,17 @@ const RISCVExplorer = () => {
       setSearchMatches(null);
       return true;
     },
-    [instructionIndex, selectedExt]
+    [instructionIndex, selectedExt],
   );
 
   const selectStandardEquivalent = React.useCallback(
     (mnemonic) => selectInstructionByMnemonicKey(mnemonic, STANDARD_EQUIVALENT_PRIORITY),
-    [selectInstructionByMnemonicKey]
+    [selectInstructionByMnemonicKey],
   );
 
   const selectCompressedEquivalent = React.useCallback(
     (mnemonic) => selectInstructionByMnemonicKey(mnemonic, ['C']),
-    [selectInstructionByMnemonicKey]
+    [selectInstructionByMnemonicKey],
   );
 
   const compressedMapping = selectedInstruction
@@ -2071,8 +3033,8 @@ const RISCVExplorer = () => {
   const hasStandardEquivalent =
     Boolean(standardEquivalentMnemonic) && instructionIndex.get(standardEquivalentMnemonic)?.length;
   const compressedEquivalents = selectedInstruction
-    ? (COMPRESSED_BY_STANDARD[normalizeMnemonicKey(selectedInstruction.mnemonic)] || []).filter((entry) =>
-        instructionIndex.has(normalizeMnemonicKey(entry.mnemonic))
+    ? (COMPRESSED_BY_STANDARD[normalizeMnemonicKey(selectedInstruction.mnemonic)] || []).filter(
+        (entry) => instructionIndex.has(normalizeMnemonicKey(entry.mnemonic)),
       )
     : [];
 
@@ -2265,7 +3227,8 @@ const RISCVExplorer = () => {
 
     const proposed = {
       mnemonic: proposedMnemonic,
-      encoding: normalizeEncodingString(normalizedEncoding) || matchMaskToEncoding(matchNorm, maskNorm),
+      encoding:
+        normalizeEncodingString(normalizedEncoding) || matchMaskToEncoding(matchNorm, maskNorm),
       match: toHex32(matchNorm),
       mask: toHex32(maskNorm),
       matchValue: matchNorm,
@@ -2277,7 +3240,7 @@ const RISCVExplorer = () => {
       const overlaps = patternsOverlap(matchNorm, maskNorm, other.match, other.mask);
       if (!overlaps) continue;
 
-      const commonMask = (maskNorm & other.mask) & BIT_MASK_32;
+      const commonMask = maskNorm & other.mask & BIT_MASK_32;
       const type =
         matchNorm === other.match && maskNorm === other.mask
           ? 'identical'
@@ -2287,7 +3250,8 @@ const RISCVExplorer = () => {
               ? 'existing_subset_of_proposed'
               : 'partial_overlap';
 
-      let why = 'Overlapping decode space (there exist instruction words that satisfy both patterns).';
+      let why =
+        'Overlapping decode space (there exist instruction words that satisfy both patterns).';
       if (type === 'identical') {
         why = 'Exact same match/mask pattern.';
       } else if (type === 'proposed_subset_of_existing') {
@@ -2399,28 +3363,26 @@ const RISCVExplorer = () => {
 
     const isSelected = selectedExt?.id === data.id;
     const highlighted = isHighlighted(data.id) || matchesSearch || isSelected;
-    const baseColor = isDiscontinued
-      ? 'bg-slate-700 border-slate-500 text-slate-200'
-      : colorClass;
+    const baseColor = isDiscontinued ? 'bg-slate-700 border-slate-500 text-slate-200' : colorClass;
 
-	    return (
-	      <div
-	        id={`ext-${data.id}`}
-	        onClick={() =>
-	          setSelectedExt((current) => {
-	            const next = current?.id === data.id ? null : data;
-	            setSelectedInstruction(null);
-	            setSearchMatches(null);
-	            return next;
-	          })
-	        }
-	        className={`
+    return (
+      <div
+        id={`ext-${data.id}`}
+        onClick={() =>
+          setSelectedExt((current) => {
+            const next = current?.id === data.id ? null : data;
+            setSelectedInstruction(null);
+            setSearchMatches(null);
+            return next;
+          })
+        }
+        className={`
 	          relative p-2 rounded border cursor-pointer transition-all duration-200
 	          ${
-            highlighted
-              ? 'ring-2 ring-yellow-400 bg-slate-800 scale-105 shadow-lg shadow-yellow-900/20'
-              : ''
-          }
+              highlighted
+                ? 'ring-2 ring-yellow-400 bg-slate-800 scale-105 shadow-lg shadow-yellow-900/20'
+                : ''
+            }
           ${
             isDimmed(data.id) && !matchesSearch && !isSelected
               ? 'opacity-20 grayscale'
@@ -2428,18 +3390,16 @@ const RISCVExplorer = () => {
           }
           ${isSelected ? 'z-20 shadow-xl shadow-yellow-900/40' : 'z-10'}
 	        `}
-	      >
-	        {isDiscontinued && (
-	          <span className="absolute top-1 right-1 px-1.5 py-0.5 rounded border border-red-600/60 bg-red-950/40 text-[8px] font-mono uppercase tracking-tight text-red-200">
-	            Discontinued
-	          </span>
-	        )}
-	        <div className="flex items-center justify-between mb-0.5">
-	          <span className="font-bold text-xs">{data.name}</span>
-	        </div>
-        <div className="text-[9px] leading-tight opacity-80 truncate">
-          {data.desc}
+      >
+        {isDiscontinued && (
+          <span className="absolute top-1 right-1 px-1.5 py-0.5 rounded border border-red-600/60 bg-red-950/40 text-[8px] font-mono uppercase tracking-tight text-red-200">
+            Discontinued
+          </span>
+        )}
+        <div className="flex items-center justify-between mb-0.5">
+          <span className="font-bold text-xs">{data.name}</span>
         </div>
+        <div className="text-[9px] leading-tight opacity-80 truncate">{data.desc}</div>
       </div>
     );
   };
@@ -2447,82 +3407,85 @@ const RISCVExplorer = () => {
   // Scroll to extension tile when search matches an extension ID or instruction mnemonic,
   // and automatically open the Selected Details panel. Use a ref to avoid re-scrolling
   // on every render while the query stays the same.
-	  React.useEffect(() => {
-	    const q = searchQuery.trim().toLowerCase();
+  React.useEffect(() => {
+    const q = searchQuery.trim().toLowerCase();
 
-	    if (!q) {
-	      // Reset tracking when query is cleared
-	      lastScrolledKeyRef.current = null;
-	      setSearchMatches(null);
-	      return;
-	    }
+    if (!q) {
+      // Reset tracking when query is cleared
+      lastScrolledKeyRef.current = null;
+      setSearchMatches(null);
+      return;
+    }
 
-	    const allExts = Object.values(extensions).flat();
-	    let matchedMnemonic = null;
-	    let matchedDetails = null;
+    const allExts = Object.values(extensions).flat();
+    let matchedMnemonic = null;
+    let matchedDetails = null;
 
-	    // First, try an exact extension ID match
-	    let targetExt = allExts.find((ext) => ext.id.toLowerCase() === q);
+    // First, try an exact extension ID match
+    let targetExt = allExts.find((ext) => ext.id.toLowerCase() === q);
 
-	    // If no exact extension ID match, try to match an instruction mnemonic
-	    if (!targetExt) {
-	      const matchEntry = Object.entries(extensionInstructions).find(([, mnemonics]) =>
-	        mnemonics.some((m) => m.toLowerCase() === q)
-	      );
+    // If no exact extension ID match, try to match an instruction mnemonic
+    if (!targetExt) {
+      const matchEntry = Object.entries(extensionInstructions).find(([, mnemonics]) =>
+        mnemonics.some((m) => m.toLowerCase() === q),
+      );
 
-	      if (matchEntry) {
-	        const [extId, mnemonics] = matchEntry;
-	        targetExt = allExts.find((ext) => ext.id === extId) || null;
-	        matchedMnemonic = mnemonics.find((m) => m.toLowerCase() === q) || null;
-	        matchedDetails = targetExt?.instructions?.[matchedMnemonic] || null;
-	      }
-	    }
+      if (matchEntry) {
+        const [extId, mnemonics] = matchEntry;
+        targetExt = allExts.find((ext) => ext.id === extId) || null;
+        matchedMnemonic = mnemonics.find((m) => m.toLowerCase() === q) || null;
+        matchedDetails = targetExt?.instructions?.[matchedMnemonic] || null;
+      }
+    }
 
-	    // If still no match, try a deep search against indexed extension+instruction details
-	    if (!targetExt) {
-	      targetExt =
-	        allExts.find((ext) => (extensionSearchIndexById.get(ext.id) || '').includes(q)) ||
-	        null;
-	    }
+    // If still no match, try a deep search against indexed extension+instruction details
+    if (!targetExt) {
+      targetExt =
+        allExts.find((ext) => (extensionSearchIndexById.get(ext.id) || '').includes(q)) || null;
+    }
 
-	    if (targetExt) {
-	      const hits = [];
-	      if (targetExt.instructions && typeof targetExt.instructions === 'object') {
-	        for (const [mnemonic, details] of Object.entries(targetExt.instructions)) {
-	          if (instructionMatchesQuery(mnemonic, details, q)) {
-	            hits.push(mnemonic);
-	          }
-	        }
-	      }
+    if (targetExt) {
+      const hits = [];
+      if (targetExt.instructions && typeof targetExt.instructions === 'object') {
+        for (const [mnemonic, details] of Object.entries(targetExt.instructions)) {
+          if (instructionMatchesQuery(mnemonic, details, q)) {
+            hits.push(mnemonic);
+          }
+        }
+      }
 
-	      if (matchedMnemonic && !hits.includes(matchedMnemonic)) hits.unshift(matchedMnemonic);
-	      if (!matchedMnemonic && hits.length) matchedMnemonic = hits[0];
-	      matchedDetails = matchedMnemonic ? targetExt?.instructions?.[matchedMnemonic] : null;
+      if (matchedMnemonic && !hits.includes(matchedMnemonic)) hits.unshift(matchedMnemonic);
+      if (!matchedMnemonic && hits.length) matchedMnemonic = hits[0];
+      matchedDetails = matchedMnemonic ? targetExt?.instructions?.[matchedMnemonic] : null;
 
-	      // Always open/update the Selected Details panel for the matched extension
-	      setSelectedExt(targetExt);
-	      setSearchMatches(hits.length ? { extId: targetExt.id, query: q, mnemonics: hits, index: 0 } : null);
-	      setSelectedInstruction(matchedMnemonic && matchedDetails ? { mnemonic: matchedMnemonic, ...matchedDetails } : null);
+      // Always open/update the Selected Details panel for the matched extension
+      setSelectedExt(targetExt);
+      setSearchMatches(
+        hits.length ? { extId: targetExt.id, query: q, mnemonics: hits, index: 0 } : null,
+      );
+      setSelectedInstruction(
+        matchedMnemonic && matchedDetails ? { mnemonic: matchedMnemonic, ...matchedDetails } : null,
+      );
 
-	      const key = `${targetExt.id}:${q}`;
+      const key = `${targetExt.id}:${q}`;
 
-	      // Only auto-scroll once per unique (extension, query) pair
-	      if (lastScrolledKeyRef.current !== key) {
+      // Only auto-scroll once per unique (extension, query) pair
+      if (lastScrolledKeyRef.current !== key) {
         const el = document.getElementById(`ext-${targetExt.id}`);
         if (el) {
           el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-	        lastScrolledKeyRef.current = key;
-	      }
-	    }
-	  }, [searchQuery, extensionSearchIndexById]);
+        lastScrolledKeyRef.current = key;
+      }
+    }
+  }, [searchQuery, extensionSearchIndexById]);
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-50 p-2 md:p-6 font-sans">
-	      <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
-	        {/* Header */}
-	        <div className="lg:col-span-12 flex flex-col md:flex-row justify-between items-start md:items-end border-b border-slate-700 pb-4 mb-2">
-	          <div>
+      <div className="max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Header */}
+        <div className="lg:col-span-12 flex flex-col md:flex-row justify-between items-start md:items-end border-b border-slate-700 pb-4 mb-2">
+          <div>
             <h1 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500">
               RISC-V Extension Landscape
             </h1>
@@ -2531,106 +3494,106 @@ const RISCVExplorer = () => {
             </p>
           </div>
 
-	          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 md:mt-0">
-	            <div className="flex items-center gap-2">
-	              <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
-	                Profiles
-	              </span>
-	              <div className="flex gap-2">
-	                {Object.keys(profiles).map((profile) => (
-	                  <button
-	                    key={profile}
-	                    onClick={() =>
-	                      setActiveProfile((current) => {
-	                        setSelectedExt(null);
-	                        setSelectedInstruction(null);
-	                        setSearchMatches(null);
-	                        return current === profile ? null : profile;
-	                      })
-	                    }
-	                    className={`
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 md:mt-0">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+                Profiles
+              </span>
+              <div className="flex gap-2">
+                {Object.keys(profiles).map((profile) => (
+                  <button
+                    key={profile}
+                    onClick={() =>
+                      setActiveProfile((current) => {
+                        setSelectedExt(null);
+                        setSelectedInstruction(null);
+                        setSearchMatches(null);
+                        return current === profile ? null : profile;
+                      })
+                    }
+                    className={`
 	                      px-3 py-1 rounded text-xs font-bold border transition-all
 	                      ${
-		                        activeProfile === profile
-		                          ? 'bg-yellow-500/20 border-yellow-500 text-yellow-200'
-		                          : 'bg-slate-800 border-slate-600 text-slate-200 hover:border-slate-500'
-	                      }
+                          activeProfile === profile
+                            ? 'bg-yellow-500/20 border-yellow-500 text-yellow-200'
+                            : 'bg-slate-800 border-slate-600 text-slate-200 hover:border-slate-500'
+                        }
 	                    `}
-	                  >
-	                    {profile}
-	                  </button>
-	                ))}
-	              </div>
-	            </div>
+                  >
+                    {profile}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-	            <div className="hidden md:block h-7 w-px bg-slate-800" />
+            <div className="hidden md:block h-7 w-px bg-slate-800" />
 
-		            <div className="flex items-center gap-2">
-		              <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
-		                Volumes
-		              </span>
-	              <div className="flex gap-2">
-	                {['I', 'II'].map((vol) => (
-	                  <button
-	                    key={vol}
-	                    onClick={() =>
-	                      setActiveVolume((current) => {
-	                        setSelectedExt(null);
-	                        setSelectedInstruction(null);
-	                        setSearchMatches(null);
-	                        return current === vol ? null : vol;
-	                      })
-	                    }
-	                    className={`
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+                Volumes
+              </span>
+              <div className="flex gap-2">
+                {['I', 'II'].map((vol) => (
+                  <button
+                    key={vol}
+                    onClick={() =>
+                      setActiveVolume((current) => {
+                        setSelectedExt(null);
+                        setSelectedInstruction(null);
+                        setSearchMatches(null);
+                        return current === vol ? null : vol;
+                      })
+                    }
+                    className={`
 	                      px-3 py-1 rounded text-xs font-bold border transition-all
 	                      ${
-		                        activeVolume === vol
-		                          ? 'bg-yellow-500/20 border-yellow-500 text-yellow-200'
-		                          : 'bg-slate-800 border-slate-600 text-slate-200 hover:border-slate-500'
-	                      }
+                          activeVolume === vol
+                            ? 'bg-yellow-500/20 border-yellow-500 text-yellow-200'
+                            : 'bg-slate-800 border-slate-600 text-slate-200 hover:border-slate-500'
+                        }
 	                    `}
-	                  >
-	                    Vol {vol}
-	                  </button>
-	                ))}
-		              </div>
-		            </div>
+                  >
+                    Vol {vol}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-		            <div className="hidden md:block h-7 w-px bg-slate-700" />
+            <div className="hidden md:block h-7 w-px bg-slate-700" />
 
-		            <button
-		              type="button"
-		              onClick={() => {
-		                setEncoderValidatorOpen(true);
-		                setEncoderValidatorResult(null);
-		                setEncoderValidatorCopyStatus(null);
-		              }}
-		              className="inline-flex items-center gap-2 px-3 py-1 rounded text-xs font-bold border transition-all bg-slate-800 border-slate-600 text-slate-100 hover:border-slate-500"
-		              title="Validate a proposed instruction encoding against existing instructions"
-		            >
-		              <ScanSearch size={16} />
-		              Encoder Validator
-		            </button>
-		          </div>
-		        </div>
+            <button
+              type="button"
+              onClick={() => {
+                setEncoderValidatorOpen(true);
+                setEncoderValidatorResult(null);
+                setEncoderValidatorCopyStatus(null);
+              }}
+              className="inline-flex items-center gap-2 px-3 py-1 rounded text-xs font-bold border transition-all bg-slate-800 border-slate-600 text-slate-100 hover:border-slate-500"
+              title="Validate a proposed instruction encoding against existing instructions"
+            >
+              <ScanSearch size={16} />
+              Encoder Validator
+            </button>
+          </div>
+        </div>
 
-	        {/* Main Grid */}
-	        <div className="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-min">
-	          {/* Search Bar – centered, before Base Architectures */}
-		          <div className="col-span-full flex justify-center mb-3 -mt-1">
-		            <div className="w-full max-w-lg">
-		              <input
-		                type="text"
-		                value={searchQuery}
-		                onChange={(e) => setSearchQuery(e.target.value)}
-		                placeholder="Search extensions by ID, name, or description..."
-		                className="w-full px-4 py-2.5 rounded-lg bg-slate-800 border border-yellow-200/40 text-sm text-slate-100 placeholder-slate-400 shadow-sm shadow-yellow-900/10 focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300"
-		              />
-		              <p className="mt-1 text-[10px] text-center text-slate-500">
-		                Typing here will highlight matching tiles in yellow (case-insensitive).
-		              </p>
-		            </div>
-		          </div>
+        {/* Main Grid */}
+        <div className="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-min">
+          {/* Search Bar – centered, before Base Architectures */}
+          <div className="col-span-full flex justify-center mb-3 -mt-1">
+            <div className="w-full max-w-lg">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search extensions by ID, name, or description..."
+                className="w-full px-4 py-2.5 rounded-lg bg-slate-800 border border-yellow-200/40 text-sm text-slate-100 placeholder-slate-400 shadow-sm shadow-yellow-900/10 focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300"
+              />
+              <p className="mt-1 text-[10px] text-center text-slate-500">
+                Typing here will highlight matching tiles in yellow (case-insensitive).
+              </p>
+            </div>
+          </div>
 
           {/* 1. Base */}
           <div className="space-y-2 col-span-full">
@@ -2649,14 +3612,14 @@ const RISCVExplorer = () => {
             </div>
           </div>
 
-	          {/* 2. Single-Letter Extensions */}
-	          <div className="space-y-2 col-span-full">
-	            <h3 className="text-emerald-400 text-xs font-bold uppercase flex items-center gap-2">
-	              Single-Letter Extensions
-	            </h3>
-	            <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
-	              {extensions.standard.map((item) => (
-	                <ExtensionBlock
+          {/* 2. Single-Letter Extensions */}
+          <div className="space-y-2 col-span-full">
+            <h3 className="text-emerald-400 text-xs font-bold uppercase flex items-center gap-2">
+              Single-Letter Extensions
+            </h3>
+            <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
+              {extensions.standard.map((item) => (
+                <ExtensionBlock
                   key={item.id}
                   data={item}
                   searchQuery={searchQuery}
@@ -2667,58 +3630,58 @@ const RISCVExplorer = () => {
           </div>
 
           {/* 3. Z-Extensions (User Mode) */}
-	          <div className="col-span-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 pt-4 border-t border-slate-700">
-	            <div className="space-y-2">
-	              <h3 className="text-purple-400 text-xs font-bold uppercase flex items-center gap-2">
-	                Bit Manipulation (Zb)
-	              </h3>
-	              <div className="grid grid-cols-2 gap-2">
-	                {extensions.z_bit.map((item) => (
-	                  <ExtensionBlock
+          <div className="col-span-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 pt-4 border-t border-slate-700">
+            <div className="space-y-2">
+              <h3 className="text-purple-400 text-xs font-bold uppercase flex items-center gap-2">
+                Bit Manipulation (Zb)
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_bit.map((item) => (
+                  <ExtensionBlock
                     key={item.id}
                     data={item}
                     searchQuery={searchQuery}
                     colorClass="bg-purple-950/50 border-purple-800/50 text-purple-100"
                   />
                 ))}
-	              </div>
-	            </div>
+              </div>
+            </div>
 
-	            <div className="space-y-2">
-	              <h3 className="text-amber-400 text-xs font-bold uppercase flex items-center gap-2">
-	                Atomics (Za/Zic*)
-	              </h3>
-	              <div className="grid grid-cols-2 gap-2">
-	                {extensions.z_atomics.map((item) => (
-	                  <ExtensionBlock
-	                    key={item.id}
-	                    data={item}
-	                    searchQuery={searchQuery}
-	                    colorClass="bg-amber-950/40 border-amber-800/50 text-amber-100"
-	                  />
-	                ))}
-	              </div>
-	            </div>
+            <div className="space-y-2">
+              <h3 className="text-amber-400 text-xs font-bold uppercase flex items-center gap-2">
+                Atomics (Za/Zic*)
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_atomics.map((item) => (
+                  <ExtensionBlock
+                    key={item.id}
+                    data={item}
+                    searchQuery={searchQuery}
+                    colorClass="bg-amber-950/40 border-amber-800/50 text-amber-100"
+                  />
+                ))}
+              </div>
+            </div>
 
-		            <div className="space-y-2">
-		              <h3 className="text-indigo-400 text-xs font-bold uppercase flex items-center gap-2">
-		                Compressed Instructions (Zc)
-		              </h3>
-		              <div className="grid grid-cols-2 gap-2">
-	                {extensions.z_compress.map((item) => (
-	                  <ExtensionBlock
-	                    key={item.id}
+            <div className="space-y-2">
+              <h3 className="text-indigo-400 text-xs font-bold uppercase flex items-center gap-2">
+                Compressed Instructions (Zc)
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_compress.map((item) => (
+                  <ExtensionBlock
+                    key={item.id}
                     data={item}
                     searchQuery={searchQuery}
                     colorClass="bg-indigo-950/50 border-indigo-800/50 text-indigo-100"
                   />
                 ))}
-	              </div>
-	            </div>
+              </div>
+            </div>
 
-	            <div className="space-y-2">
-	              <h3 className="text-pink-400 text-xs font-bold uppercase flex items-center gap-2">
-	                Float & Numerics (Zf/Za)
+            <div className="space-y-2">
+              <h3 className="text-pink-400 text-xs font-bold uppercase flex items-center gap-2">
+                Float & Numerics (Zf/Za)
               </h3>
               <div className="grid grid-cols-2 gap-2">
                 {extensions.z_float.map((item) => (
@@ -2729,45 +3692,45 @@ const RISCVExplorer = () => {
                     colorClass="bg-pink-950/50 border-pink-800/50 text-pink-100"
                   />
                 ))}
-	              </div>
-	            </div>
+              </div>
+            </div>
 
-		            <div className="space-y-2">
-		              <h3 className="text-sky-400 text-xs font-bold uppercase flex items-center gap-2">
-		                Load/Store
-		              </h3>
-		              <div className="grid grid-cols-2 gap-2">
-		                {extensions.z_load_store.map((item) => (
-		                  <ExtensionBlock
-		                    key={item.id}
-		                    data={item}
-		                    searchQuery={searchQuery}
-		                    colorClass="bg-sky-950/40 border-sky-800/40 text-sky-100"
-		                  />
-		                ))}
-		              </div>
-		            </div>
+            <div className="space-y-2">
+              <h3 className="text-sky-400 text-xs font-bold uppercase flex items-center gap-2">
+                Load/Store
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_load_store.map((item) => (
+                  <ExtensionBlock
+                    key={item.id}
+                    data={item}
+                    searchQuery={searchQuery}
+                    colorClass="bg-sky-950/40 border-sky-800/40 text-sky-100"
+                  />
+                ))}
+              </div>
+            </div>
 
-		            <div className="space-y-2">
-		              <h3 className="text-fuchsia-300 text-xs font-bold uppercase flex items-center gap-2">
-		                Integer
-		              </h3>
-		              <div className="grid grid-cols-2 gap-2">
-		                {extensions.z_integer.map((item) => (
-		                  <ExtensionBlock
-		                    key={item.id}
-		                    data={item}
-		                    searchQuery={searchQuery}
-		                    colorClass="bg-fuchsia-950/40 border-fuchsia-800/40 text-fuchsia-100"
-		                  />
-		                ))}
-		              </div>
-		            </div>
+            <div className="space-y-2">
+              <h3 className="text-fuchsia-300 text-xs font-bold uppercase flex items-center gap-2">
+                Integer
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_integer.map((item) => (
+                  <ExtensionBlock
+                    key={item.id}
+                    data={item}
+                    searchQuery={searchQuery}
+                    colorClass="bg-fuchsia-950/40 border-fuchsia-800/40 text-fuchsia-100"
+                  />
+                ))}
+              </div>
+            </div>
 
-	            <div className="space-y-2">
-	              <h3 className="text-teal-400 text-xs font-bold uppercase flex items-center gap-2">
-	                Vector Subsets (Zv/Zve)
-	              </h3>
+            <div className="space-y-2">
+              <h3 className="text-teal-400 text-xs font-bold uppercase flex items-center gap-2">
+                Vector Subsets (Zv/Zve)
+              </h3>
               <div className="grid grid-cols-2 gap-2">
                 {extensions.z_vector.map((item) => (
                   <ExtensionBlock
@@ -2780,13 +3743,13 @@ const RISCVExplorer = () => {
               </div>
             </div>
 
-	            <div className="space-y-2">
-	              <h3 className="text-red-400 text-xs font-bold uppercase flex items-center gap-2">
-	                Security (Zi)
-	              </h3>
-	              <div className="grid grid-cols-2 gap-2">
-	                {extensions.z_security.map((item) => (
-	                  <ExtensionBlock
+            <div className="space-y-2">
+              <h3 className="text-red-400 text-xs font-bold uppercase flex items-center gap-2">
+                Security (Zi)
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_security.map((item) => (
+                  <ExtensionBlock
                     key={item.id}
                     data={item}
                     searchQuery={searchQuery}
@@ -2796,73 +3759,73 @@ const RISCVExplorer = () => {
               </div>
             </div>
 
-	            <div className="space-y-2">
-	              <h3 className="text-slate-400 text-xs font-bold uppercase flex items-center gap-2">
-	                Cryptography (Zk)
-	              </h3>
-	              <div className="grid grid-cols-2 gap-2">
-	                {extensions.z_crypto.map((item) => (
-	                  <ExtensionBlock
+            <div className="space-y-2">
+              <h3 className="text-slate-400 text-xs font-bold uppercase flex items-center gap-2">
+                Cryptography (Zk)
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_crypto.map((item) => (
+                  <ExtensionBlock
                     key={item.id}
                     data={item}
                     searchQuery={searchQuery}
                     colorClass="bg-slate-800 border-slate-600 text-slate-300"
                   />
                 ))}
-	              </div>
-	            </div>
+              </div>
+            </div>
 
-	            <div className="space-y-2">
-	              <h3 className="text-violet-300 text-xs font-bold uppercase flex items-center gap-2">
-	                Vector Cryptography (Zvk)
-	              </h3>
-	              <div className="grid grid-cols-2 gap-2">
-	                {extensions.z_vector_crypto.map((item) => (
-	                  <ExtensionBlock
-	                    key={item.id}
-	                    data={item}
-	                    searchQuery={searchQuery}
-	                    colorClass="bg-violet-950/40 border-violet-800/40 text-violet-100"
-	                  />
-	                ))}
-	              </div>
-	            </div>
+            <div className="space-y-2">
+              <h3 className="text-violet-300 text-xs font-bold uppercase flex items-center gap-2">
+                Vector Cryptography (Zvk)
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_vector_crypto.map((item) => (
+                  <ExtensionBlock
+                    key={item.id}
+                    data={item}
+                    searchQuery={searchQuery}
+                    colorClass="bg-violet-950/40 border-violet-800/40 text-violet-100"
+                  />
+                ))}
+              </div>
+            </div>
 
-	            <div className="space-y-2">
-	              <h3 className="text-orange-400 text-xs font-bold uppercase flex items-center gap-2">
-	                System
-	              </h3>
-	              <div className="grid grid-cols-2 gap-2">
-	                {extensions.z_system.map((item) => (
-	                  <ExtensionBlock
-	                    key={item.id}
-	                    data={item}
-	                    searchQuery={searchQuery}
-	                    colorClass="bg-orange-950/50 border-orange-800/50 text-orange-100"
-	                  />
-	                ))}
-	              </div>
-	            </div>
+            <div className="space-y-2">
+              <h3 className="text-orange-400 text-xs font-bold uppercase flex items-center gap-2">
+                System
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_system.map((item) => (
+                  <ExtensionBlock
+                    key={item.id}
+                    data={item}
+                    searchQuery={searchQuery}
+                    colorClass="bg-orange-950/50 border-orange-800/50 text-orange-100"
+                  />
+                ))}
+              </div>
+            </div>
 
-	            <div className="space-y-2">
-	              <h3 className="text-orange-200 text-xs font-bold uppercase flex items-center gap-2">
-	                Caches
-	              </h3>
-	              <div className="grid grid-cols-2 gap-2">
-	                {extensions.z_caches.map((item) => (
-	                  <ExtensionBlock
-	                    key={item.id}
-	                    data={item}
-	                    searchQuery={searchQuery}
-	                    colorClass="bg-orange-950/30 border-orange-700/30 text-orange-100"
-	                  />
-	                ))}
-	              </div>
-	            </div>
-	          </div>
+            <div className="space-y-2">
+              <h3 className="text-orange-200 text-xs font-bold uppercase flex items-center gap-2">
+                Caches
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {extensions.z_caches.map((item) => (
+                  <ExtensionBlock
+                    key={item.id}
+                    data={item}
+                    searchQuery={searchQuery}
+                    colorClass="bg-orange-950/30 border-orange-700/30 text-orange-100"
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
 
           {/* 4. S-Extensions (Privileged) */}
-	          <div className="col-span-full pt-4 border-t border-slate-700">
+          <div className="col-span-full pt-4 border-t border-slate-700">
             <h3 className="text-cyan-400 text-xs font-bold uppercase flex items-center gap-2 mb-3">
               S & Sv Extensions (Privileged)
             </h3>
@@ -2881,7 +3844,9 @@ const RISCVExplorer = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <h4 className="text-[10px] uppercase text-slate-500 font-bold">Interrupts (Sm/Ss)</h4>
+                <h4 className="text-[10px] uppercase text-slate-500 font-bold">
+                  Interrupts (Sm/Ss)
+                </h4>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.s_interrupt.map((item) => (
                     <ExtensionBlock
@@ -2912,181 +3877,185 @@ const RISCVExplorer = () => {
           </div>
         </div>
 
-	        {/* Sidebar Info Panel */}
-		        <div className="lg:col-span-3 mt-6 lg:mt-0">
-		          <div className="sticky top-6 bg-slate-800/80 border border-slate-700 backdrop-blur-sm rounded-xl shadow-2xl min-h-[400px] max-h-[calc(100vh-3rem)] flex flex-col overflow-hidden">
-		            <div className="p-4 pb-3 border-b border-slate-700/60">
-	              <h2 className="text-sm font-bold text-slate-400 flex items-center gap-2 uppercase tracking-wide">
-	                <Info size={16} /> Selected Details
-	              </h2>
-	            </div>
+        {/* Sidebar Info Panel */}
+        <div className="lg:col-span-3 mt-6 lg:mt-0">
+          <div className="sticky top-6 bg-slate-800/80 border border-slate-700 backdrop-blur-sm rounded-xl shadow-2xl min-h-[400px] max-h-[calc(100vh-3rem)] flex flex-col overflow-hidden">
+            <div className="p-4 pb-3 border-b border-slate-700/60">
+              <h2 className="text-sm font-bold text-slate-400 flex items-center gap-2 uppercase tracking-wide">
+                <Info size={16} /> Selected Details
+              </h2>
+            </div>
 
-	            <div className="flex-1 overflow-y-auto overscroll-contain p-4 pt-3">
-	              {selectedExt ? (
-	                <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-	                <div className="mb-6 flex items-start justify-between gap-3">
-	                  <div className="min-w-0">
-	                    <a
-	                      href={selectedExt.url || 'https://github.com/riscv/riscv-isa-manual'}
-	                      target="_blank"
-	                      rel="noreferrer"
-	                      className="inline-flex items-start gap-1 text-3xl font-black text-white tracking-tight break-words hover:text-purple-300"
-	                      title="Open reference link"
-	                    >
-	                      <span>{selectedExt.name}</span>
-	                      <ArrowUpRight size={18} className="mt-1 shrink-0 opacity-80" />
-	                    </a>
+            <div className="flex-1 overflow-y-auto overscroll-contain p-4 pt-3">
+              {selectedExt ? (
+                <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                  <div className="mb-6 flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <a
+                        href={selectedExt.url || 'https://github.com/riscv/riscv-isa-manual'}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-start gap-1 text-3xl font-black text-white tracking-tight break-words hover:text-purple-300"
+                        title="Open reference link"
+                      >
+                        <span>{selectedExt.name}</span>
+                        <ArrowUpRight size={18} className="mt-1 shrink-0 opacity-80" />
+                      </a>
+                    </div>
+
+                    {selectedExt.discontinued === 1 && (
+                      <span className="shrink-0 px-2 py-1 rounded-md text-[10px] font-mono uppercase tracking-wide border bg-red-950/40 text-red-200 border-red-600/60">
+                        Discontinued
+                      </span>
+                    )}
                   </div>
 
-                  {selectedExt.discontinued === 1 && (
-                    <span className="shrink-0 px-2 py-1 rounded-md text-[10px] font-mono uppercase tracking-wide border bg-red-950/40 text-red-200 border-red-600/60">
-                      Discontinued
-                    </span>
-                  )}
-                </div>
+                  <div className="space-y-6">
+                    <div>
+                      <h4 className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                        Description
+                      </h4>
+                      <p className="text-slate-200 leading-snug">{selectedExt.desc}</p>
+                    </div>
 
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-                      Description
-                    </h4>
-                    <p className="text-slate-200 leading-snug">{selectedExt.desc}</p>
-                  </div>
+                    <div className="bg-slate-900 p-3 rounded border border-slate-700">
+                      <h4 className="text-[10px] uppercase tracking-wider text-blue-400 font-bold mb-2 flex items-center gap-1">
+                        <ArrowRight size={10} /> Use Case
+                      </h4>
+                      <p className="text-slate-400 text-sm italic">{selectedExt.use}</p>
+                    </div>
 
-                  <div className="bg-slate-900 p-3 rounded border border-slate-700">
-                    <h4 className="text-[10px] uppercase tracking-wider text-blue-400 font-bold mb-2 flex items-center gap-1">
-                      <ArrowRight size={10} /> Use Case
-                    </h4>
-                    <p className="text-slate-400 text-sm italic">{selectedExt.use}</p>
-                  </div>
+                    {/* Instruction list, when available */}
+                    {searchMatches &&
+                      searchMatches.extId === selectedExt.id &&
+                      searchMatches.query === searchQuery.trim().toLowerCase() &&
+                      searchMatches.mnemonics.length > 0 && (
+                        <div className="bg-slate-900 p-3 rounded border border-slate-700">
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0">
+                              <div className="text-[10px] uppercase tracking-wider text-yellow-300 font-bold mb-0.5">
+                                Search Hits ({searchMatches.mnemonics.length})
+                              </div>
+                              <div className="text-[11px] font-mono text-slate-200 truncate">
+                                {searchMatches.mnemonics[searchMatches.index] || ''}
+                                <span className="ml-2 text-slate-500">
+                                  ({searchMatches.index + 1}/{searchMatches.mnemonics.length})
+                                </span>
+                              </div>
+                            </div>
 
-	                  {/* Instruction list, when available */}
-	                  {searchMatches &&
-	                    searchMatches.extId === selectedExt.id &&
-	                    searchMatches.query === searchQuery.trim().toLowerCase() &&
-	                    searchMatches.mnemonics.length > 0 && (
-	                      <div className="bg-slate-900 p-3 rounded border border-slate-700">
-	                        <div className="flex items-center justify-between gap-3">
-	                          <div className="min-w-0">
-	                            <div className="text-[10px] uppercase tracking-wider text-yellow-300 font-bold mb-0.5">
-	                              Search Hits ({searchMatches.mnemonics.length})
-	                            </div>
-	                            <div className="text-[11px] font-mono text-slate-200 truncate">
-	                              {searchMatches.mnemonics[searchMatches.index] || ''}
-	                              <span className="ml-2 text-slate-500">
-	                                ({searchMatches.index + 1}/{searchMatches.mnemonics.length})
-	                              </span>
-	                            </div>
-	                          </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <button
+                                type="button"
+                                className="px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[10px] font-mono text-slate-100 disabled:opacity-40"
+                                onClick={() => {
+                                  setSearchMatches((current) => {
+                                    if (!current || current.extId !== selectedExt.id)
+                                      return current;
+                                    const nextIndex =
+                                      (current.index - 1 + current.mnemonics.length) %
+                                      current.mnemonics.length;
+                                    const mnemonic = current.mnemonics[nextIndex];
+                                    selectInstructionByMnemonic(selectedExt, mnemonic);
+                                    return { ...current, index: nextIndex };
+                                  });
+                                }}
+                                disabled={searchMatches.mnemonics.length < 2}
+                              >
+                                Prev
+                              </button>
+                              <button
+                                type="button"
+                                className="px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[10px] font-mono text-slate-100 disabled:opacity-40"
+                                onClick={() => {
+                                  setSearchMatches((current) => {
+                                    if (!current || current.extId !== selectedExt.id)
+                                      return current;
+                                    const nextIndex =
+                                      (current.index + 1) % current.mnemonics.length;
+                                    const mnemonic = current.mnemonics[nextIndex];
+                                    selectInstructionByMnemonic(selectedExt, mnemonic);
+                                    return { ...current, index: nextIndex };
+                                  });
+                                }}
+                                disabled={searchMatches.mnemonics.length < 2}
+                              >
+                                Next
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
-	                          <div className="flex items-center gap-2 shrink-0">
-	                            <button
-	                              type="button"
-	                              className="px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[10px] font-mono text-slate-100 disabled:opacity-40"
-	                              onClick={() => {
-	                                setSearchMatches((current) => {
-	                                  if (!current || current.extId !== selectedExt.id) return current;
-	                                  const nextIndex =
-	                                    (current.index - 1 + current.mnemonics.length) % current.mnemonics.length;
-	                                  const mnemonic = current.mnemonics[nextIndex];
-	                                  selectInstructionByMnemonic(selectedExt, mnemonic);
-	                                  return { ...current, index: nextIndex };
-	                                });
-	                              }}
-	                              disabled={searchMatches.mnemonics.length < 2}
-	                            >
-	                              Prev
-	                            </button>
-	                            <button
-	                              type="button"
-	                              className="px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[10px] font-mono text-slate-100 disabled:opacity-40"
-	                              onClick={() => {
-	                                setSearchMatches((current) => {
-	                                  if (!current || current.extId !== selectedExt.id) return current;
-	                                  const nextIndex = (current.index + 1) % current.mnemonics.length;
-	                                  const mnemonic = current.mnemonics[nextIndex];
-	                                  selectInstructionByMnemonic(selectedExt, mnemonic);
-	                                  return { ...current, index: nextIndex };
-	                                });
-	                              }}
-	                              disabled={searchMatches.mnemonics.length < 2}
-	                            >
-	                              Next
-	                            </button>
-	                          </div>
-	                        </div>
-	                      </div>
-	                    )}
-
-	                  {extensionInstructions[selectedExt.id] && (
-	                    <div className="bg-slate-900 p-3 rounded border border-slate-700">
-	                      <h4 className="text-[10px] uppercase tracking-wider text-emerald-400 font-bold mb-2">
-	                        Instruction Set Snapshot ({extensionInstructions[selectedExt.id].length})
-	                      </h4>
-	                      <div className="flex flex-wrap gap-1">
-		                        {extensionInstructions[selectedExt.id].map((mnemonic) => {
-		                          const q = searchQuery.trim().toLowerCase();
-		                          const instructionDetails = selectedExt.instructions?.[mnemonic];
-		                          const isHit =
-		                            q.length &&
-		                            (mnemonic.toLowerCase().includes(q) ||
-		                              instructionMatchesQuery(mnemonic, instructionDetails, q));
-		                          const isActive = selectedInstruction?.mnemonic === mnemonic;
-		                          const isClickable = Boolean(instructionDetails);
-		                          const isDeprecated = Boolean(instructionDetails?.deprecated);
-		                          return (
-	                            <button
-	                              key={mnemonic}
-	                              type="button"
-		                              onClick={() => {
-		                                if (!isClickable) return;
-		                                setSelectedInstruction(
-		                                  isActive ? null : { mnemonic, ...instructionDetails }
-		                                );
-		                                setSearchMatches((current) => {
-		                                  if (
-		                                    !current ||
-		                                    current.extId !== selectedExt.id ||
-		                                    current.query !== searchQuery.trim().toLowerCase()
-		                                  ) {
-		                                    return current;
-		                                  }
-		                                  const idx = current.mnemonics.indexOf(mnemonic);
-		                                  if (idx === -1) return current;
-		                                  return { ...current, index: idx };
-		                                });
-		                              }}
-	                              className={`px-1.5 py-0.5 rounded border text-[10px] font-mono tracking-tight ${
-	                                isActive
-	                                  ? isDeprecated
-	                                      ? 'border-red-400 bg-red-500/10 text-red-200'
-	                                      : 'border-emerald-400 bg-emerald-500/10 text-emerald-200'
-	                                  : isHit
-	                                      ? 'border-yellow-400 bg-yellow-500/10 text-yellow-200'
-	                                      : isDeprecated
-	                                          ? 'border-red-500/60 bg-red-500/5 text-red-200'
-	                                          : 'border-slate-700 bg-slate-800/70'
-	                              }`}
-	                              title={
-	                                isClickable
-	                                  ? `View details for ${mnemonic}`
-	                                  : `${mnemonic} (no details yet)`
-	                              }
-	                              disabled={!isClickable}
-	                            >
-	                              {mnemonic}
-	                            </button>
-	                          );
-	                        })}
-	                      </div>
-	                    </div>
-	                  )}
+                    {extensionInstructions[selectedExt.id] && (
+                      <div className="bg-slate-900 p-3 rounded border border-slate-700">
+                        <h4 className="text-[10px] uppercase tracking-wider text-emerald-400 font-bold mb-2">
+                          Instruction Set Snapshot ({extensionInstructions[selectedExt.id].length})
+                        </h4>
+                        <div className="flex flex-wrap gap-1">
+                          {extensionInstructions[selectedExt.id].map((mnemonic) => {
+                            const q = searchQuery.trim().toLowerCase();
+                            const instructionDetails = selectedExt.instructions?.[mnemonic];
+                            const isHit =
+                              q.length &&
+                              (mnemonic.toLowerCase().includes(q) ||
+                                instructionMatchesQuery(mnemonic, instructionDetails, q));
+                            const isActive = selectedInstruction?.mnemonic === mnemonic;
+                            const isClickable = Boolean(instructionDetails);
+                            const isDeprecated = Boolean(instructionDetails?.deprecated);
+                            return (
+                              <button
+                                key={mnemonic}
+                                type="button"
+                                onClick={() => {
+                                  if (!isClickable) return;
+                                  setSelectedInstruction(
+                                    isActive ? null : { mnemonic, ...instructionDetails },
+                                  );
+                                  setSearchMatches((current) => {
+                                    if (
+                                      !current ||
+                                      current.extId !== selectedExt.id ||
+                                      current.query !== searchQuery.trim().toLowerCase()
+                                    ) {
+                                      return current;
+                                    }
+                                    const idx = current.mnemonics.indexOf(mnemonic);
+                                    if (idx === -1) return current;
+                                    return { ...current, index: idx };
+                                  });
+                                }}
+                                className={`px-1.5 py-0.5 rounded border text-[10px] font-mono tracking-tight ${
+                                  isActive
+                                    ? isDeprecated
+                                      ? 'border-red-400 bg-red-500/10 text-red-200'
+                                      : 'border-emerald-400 bg-emerald-500/10 text-emerald-200'
+                                    : isHit
+                                      ? 'border-yellow-400 bg-yellow-500/10 text-yellow-200'
+                                      : isDeprecated
+                                        ? 'border-red-500/60 bg-red-500/5 text-red-200'
+                                        : 'border-slate-700 bg-slate-800/70'
+                                }`}
+                                title={
+                                  isClickable
+                                    ? `View details for ${mnemonic}`
+                                    : `${mnemonic} (no details yet)`
+                                }
+                                disabled={!isClickable}
+                              >
+                                {mnemonic}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
 
                     {extensionCsrs[selectedExt.id] && (
                       <div className="bg-slate-900 p-3 rounded border border-slate-700">
                         <h4 className="text-[10px] uppercase tracking-wider text-sky-300 font-bold mb-2">
-                          {(extensionCsrLabels[selectedExt.id] || 'CSRs')}{' '}
-                          ({extensionCsrs[selectedExt.id].length})
+                          {extensionCsrLabels[selectedExt.id] || 'CSRs'} (
+                          {extensionCsrs[selectedExt.id].length})
                         </h4>
                         <div className="flex flex-wrap gap-1">
                           {extensionCsrs[selectedExt.id].map((csr) => (
@@ -3101,219 +4070,229 @@ const RISCVExplorer = () => {
                       </div>
                     )}
 
-		                  {selectedInstruction && (
-		                    <div className="bg-slate-900 p-3 rounded border border-slate-700">
-		                      <div className="flex items-start justify-between gap-3 mb-2">
-		                        <h4 className="text-[10px] uppercase tracking-wider text-purple-300 font-bold flex items-center gap-1">
-		                          <ArrowRight size={10} /> Instruction Details
-		                        </h4>
-		                        <div className="flex items-center gap-2">
-		                          <button
-		                            type="button"
-		                            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[10px] font-mono text-slate-100 hover:border-slate-500"
-		                            onClick={async () => {
-		                              const text = formatInstructionForClipboard(selectedExt, selectedInstruction);
-		                              const ok = await copyTextToClipboard(text);
-		                              setCopyStatus(ok ? 'copied' : 'failed');
-		                              window.setTimeout(() => setCopyStatus(null), 1500);
-		                            }}
-		                            title="Copy extension + instruction details"
-		                          >
-		                            <Copy size={12} />
-		                            {copyStatus === 'copied'
-		                              ? 'Copied'
-		                              : copyStatus === 'failed'
-		                                  ? 'Copy failed'
-		                                  : 'Copy'}
-		                          </button>
-		                          <button
-		                            type="button"
-		                            className="text-[10px] font-mono text-slate-500 hover:text-slate-300"
-		                            onClick={() => setSelectedInstruction(null)}
-		                          >
-		                            Close
-		                          </button>
-		                        </div>
-		                      </div>
+                    {selectedInstruction && (
+                      <div className="bg-slate-900 p-3 rounded border border-slate-700">
+                        <div className="flex items-start justify-between gap-3 mb-2">
+                          <h4 className="text-[10px] uppercase tracking-wider text-purple-300 font-bold flex items-center gap-1">
+                            <ArrowRight size={10} /> Instruction Details
+                          </h4>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[10px] font-mono text-slate-100 hover:border-slate-500"
+                              onClick={async () => {
+                                const text = formatInstructionForClipboard(
+                                  selectedExt,
+                                  selectedInstruction,
+                                );
+                                const ok = await copyTextToClipboard(text);
+                                setCopyStatus(ok ? 'copied' : 'failed');
+                                window.setTimeout(() => setCopyStatus(null), 1500);
+                              }}
+                              title="Copy extension + instruction details"
+                            >
+                              <Copy size={12} />
+                              {copyStatus === 'copied'
+                                ? 'Copied'
+                                : copyStatus === 'failed'
+                                  ? 'Copy failed'
+                                  : 'Copy'}
+                            </button>
+                            <button
+                              type="button"
+                              className="text-[10px] font-mono text-slate-500 hover:text-slate-300"
+                              onClick={() => setSelectedInstruction(null)}
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </div>
 
-	                      <div className="mb-3 flex items-start justify-between gap-2">
-	                        <div className="text-white font-black tracking-tight text-xl">
-	                          {selectedInstruction.mnemonic}
-	                        </div>
-	                        {selectedInstruction.deprecated && (
-	                          <span className="shrink-0 px-2 py-1 rounded-md text-[10px] font-mono uppercase tracking-wide border bg-red-950/40 text-red-200 border-red-600/60">
-	                            Discontinued
-	                          </span>
-	                        )}
-	                      </div>
+                        <div className="mb-3 flex items-start justify-between gap-2">
+                          <div className="text-white font-black tracking-tight text-xl">
+                            {selectedInstruction.mnemonic}
+                          </div>
+                          {selectedInstruction.deprecated && (
+                            <span className="shrink-0 px-2 py-1 rounded-md text-[10px] font-mono uppercase tracking-wide border bg-red-950/40 text-red-200 border-red-600/60">
+                              Discontinued
+                            </span>
+                          )}
+                        </div>
 
-	                      <div className="space-y-3">
-	                        <div>
-	                          <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-	                            Encoding
-	                          </div>
-	                          <EncodingDiagram encoding={selectedInstruction.encoding} />
-	                          <div className="mt-1 text-[10px] text-slate-500">
-	                            Fixed bits are <span className="font-mono">0/1</span>, variable bits are{' '}
-	                            <span className="font-mono">x</span>.
-	                          </div>
-	                        </div>
-
-	                        <div>
-	                          <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-	                            Variable Fields
-	                          </div>
-	                          <div className="flex flex-wrap gap-1">
-	                            {(selectedInstruction.variable_fields || []).map((field) => (
-	                              <span
-	                                key={field}
-	                                className="px-1.5 py-0.5 rounded border border-slate-700 bg-slate-800/70 text-[10px] font-mono text-slate-200"
-	                              >
-	                                {field}
-	                              </span>
-	                            ))}
-	                          </div>
-	                        </div>
-
-		                        <div className="grid grid-cols-2 gap-2">
-		                          <div>
-		                            <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-		                              Match
-		                            </div>
-		                            <div
-		                              className={`font-mono text-[11px] text-slate-100 bg-slate-800/70 border rounded px-2 py-1 ${
-		                                searchQuery.trim().length &&
-		                                String(selectedInstruction.match || '')
-		                                  .toLowerCase()
-		                                  .includes(searchQuery.trim().toLowerCase())
-		                                  ? 'border-yellow-400 bg-yellow-500/10'
-		                                  : 'border-slate-700'
-		                              }`}
-		                            >
-		                              {selectedInstruction.match}
-		                            </div>
-		                          </div>
-		                          <div>
-		                            <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-		                              Mask
-		                            </div>
-		                            <div
-		                              className={`font-mono text-[11px] text-slate-100 bg-slate-800/70 border rounded px-2 py-1 ${
-		                                searchQuery.trim().length &&
-		                                String(selectedInstruction.mask || '')
-		                                  .toLowerCase()
-		                                  .includes(searchQuery.trim().toLowerCase())
-		                                  ? 'border-yellow-400 bg-yellow-500/10'
-		                                  : 'border-slate-700'
-		                              }`}
-		                            >
-		                              {selectedInstruction.mask}
-		                            </div>
-		                          </div>
-		                        </div>
-
-                        {compressedMapping && (
-                          <div className="rounded border border-slate-700 bg-slate-950/50 p-3">
-                            <div className="text-[10px] uppercase tracking-wider text-cyan-300 font-bold mb-2">
-                              Compressed Mapping
+                        <div className="space-y-3">
+                          <div>
+                            <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                              Encoding
                             </div>
-                            <div className="space-y-2">
-                              <div>
-                                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-                                  Compressed
-                                </div>
-                                <div className="font-mono text-[11px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded px-2 py-1">
-                                  {compressedMapping.compressed}
-                                </div>
-                              </div>
-                              <div>
-                                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-                                  Standard Equivalent
-                                </div>
-                                {hasStandardEquivalent ? (
-                                  <button
-                                    type="button"
-                                    className="w-full text-left font-mono text-[11px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded px-2 py-1 hover:border-cyan-400/60"
-                                    onClick={() => selectStandardEquivalent(standardEquivalentMnemonic)}
-                                    title="Open standard instruction details"
-                                  >
-                                    <span className="inline-flex items-center gap-1">
-                                      {compressedMapping.standard}
-                                      <ArrowUpRight size={12} className="opacity-70" />
-                                    </span>
-                                  </button>
-                                ) : (
-                                  <div className="font-mono text-[11px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded px-2 py-1">
-                                    {compressedMapping.standard}
-                                  </div>
-                                )}
-                              </div>
-                              <div>
-                                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-                                  Equivalent Instruction
-                                </div>
-                                {standardEquivalentMnemonic ? (
-                                  hasStandardEquivalent ? (
-                                    <button
-                                      type="button"
-                                      className="inline-flex items-center gap-1 text-[11px] font-mono text-cyan-200 hover:text-cyan-100 underline"
-                                      onClick={() => selectStandardEquivalent(standardEquivalentMnemonic)}
-                                      title="Open standard instruction details"
-                                    >
-                                      {standardEquivalentMnemonic}
-                                      <ArrowUpRight size={12} className="opacity-70" />
-                                    </button>
-                                  ) : (
-                                    <div className="text-[11px] text-slate-500 font-mono">
-                                      {standardEquivalentMnemonic}
-                                    </div>
-                                  )
-                                ) : (
-                                  <div className="text-[11px] text-slate-500">Unavailable</div>
-                                )}
-                              </div>
-                              <div>
-                                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-                                  Description
-                                </div>
-                                <div className="text-[11px] text-slate-200">{compressedMapping.description}</div>
-                              </div>
+                            <EncodingDiagram encoding={selectedInstruction.encoding} />
+                            <div className="mt-1 text-[10px] text-slate-500">
+                              Fixed bits are <span className="font-mono">0/1</span>, variable bits
+                              are <span className="font-mono">x</span>.
                             </div>
                           </div>
-                        )}
 
-                        {compressedEquivalents.length > 0 && (
-                          <div className="rounded border border-slate-700 bg-slate-950/40 p-3">
-                            <div className="text-[10px] uppercase tracking-wider text-emerald-300 font-bold mb-2">
-                              Compressed Equivalents
+                          <div>
+                            <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                              Variable Fields
                             </div>
-                            <div className="space-y-2">
-                              {compressedEquivalents.map((entry) => (
-                                <button
-                                  key={entry.mnemonic}
-                                  type="button"
-                                  className="w-full text-left rounded border border-slate-700 bg-slate-900/60 px-2 py-1.5 hover:border-emerald-400/60"
-                                  onClick={() => selectCompressedEquivalent(entry.mnemonic)}
-                                  title={`Open ${entry.mnemonic} details`}
+                            <div className="flex flex-wrap gap-1">
+                              {(selectedInstruction.variable_fields || []).map((field) => (
+                                <span
+                                  key={field}
+                                  className="px-1.5 py-0.5 rounded border border-slate-700 bg-slate-800/70 text-[10px] font-mono text-slate-200"
                                 >
-                                  <div className="flex items-center gap-1 text-[11px] font-mono text-emerald-200">
-                                    {normalizeMnemonicKey(entry.mnemonic)}
-                                    <ArrowUpRight size={12} className="opacity-70" />
-                                  </div>
-                                  <div className="text-[10px] font-mono text-slate-400">{entry.compressed}</div>
-                                </button>
+                                  {field}
+                                </span>
                               ))}
                             </div>
                           </div>
-                        )}
 
-		                      </div>
-		                    </div>
-		                  )}
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                Match
+                              </div>
+                              <div
+                                className={`font-mono text-[11px] text-slate-100 bg-slate-800/70 border rounded px-2 py-1 ${
+                                  searchQuery.trim().length &&
+                                  String(selectedInstruction.match || '')
+                                    .toLowerCase()
+                                    .includes(searchQuery.trim().toLowerCase())
+                                    ? 'border-yellow-400 bg-yellow-500/10'
+                                    : 'border-slate-700'
+                                }`}
+                              >
+                                {selectedInstruction.match}
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                Mask
+                              </div>
+                              <div
+                                className={`font-mono text-[11px] text-slate-100 bg-slate-800/70 border rounded px-2 py-1 ${
+                                  searchQuery.trim().length &&
+                                  String(selectedInstruction.mask || '')
+                                    .toLowerCase()
+                                    .includes(searchQuery.trim().toLowerCase())
+                                    ? 'border-yellow-400 bg-yellow-500/10'
+                                    : 'border-slate-700'
+                                }`}
+                              >
+                                {selectedInstruction.mask}
+                              </div>
+                            </div>
+                          </div>
 
-                  {activeProfile && (
-                    <div
-                      className={`
+                          {compressedMapping && (
+                            <div className="rounded border border-slate-700 bg-slate-950/50 p-3">
+                              <div className="text-[10px] uppercase tracking-wider text-cyan-300 font-bold mb-2">
+                                Compressed Mapping
+                              </div>
+                              <div className="space-y-2">
+                                <div>
+                                  <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                    Compressed
+                                  </div>
+                                  <div className="font-mono text-[11px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded px-2 py-1">
+                                    {compressedMapping.compressed}
+                                  </div>
+                                </div>
+                                <div>
+                                  <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                    Standard Equivalent
+                                  </div>
+                                  {hasStandardEquivalent ? (
+                                    <button
+                                      type="button"
+                                      className="w-full text-left font-mono text-[11px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded px-2 py-1 hover:border-cyan-400/60"
+                                      onClick={() =>
+                                        selectStandardEquivalent(standardEquivalentMnemonic)
+                                      }
+                                      title="Open standard instruction details"
+                                    >
+                                      <span className="inline-flex items-center gap-1">
+                                        {compressedMapping.standard}
+                                        <ArrowUpRight size={12} className="opacity-70" />
+                                      </span>
+                                    </button>
+                                  ) : (
+                                    <div className="font-mono text-[11px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded px-2 py-1">
+                                      {compressedMapping.standard}
+                                    </div>
+                                  )}
+                                </div>
+                                <div>
+                                  <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                    Equivalent Instruction
+                                  </div>
+                                  {standardEquivalentMnemonic ? (
+                                    hasStandardEquivalent ? (
+                                      <button
+                                        type="button"
+                                        className="inline-flex items-center gap-1 text-[11px] font-mono text-cyan-200 hover:text-cyan-100 underline"
+                                        onClick={() =>
+                                          selectStandardEquivalent(standardEquivalentMnemonic)
+                                        }
+                                        title="Open standard instruction details"
+                                      >
+                                        {standardEquivalentMnemonic}
+                                        <ArrowUpRight size={12} className="opacity-70" />
+                                      </button>
+                                    ) : (
+                                      <div className="text-[11px] text-slate-500 font-mono">
+                                        {standardEquivalentMnemonic}
+                                      </div>
+                                    )
+                                  ) : (
+                                    <div className="text-[11px] text-slate-500">Unavailable</div>
+                                  )}
+                                </div>
+                                <div>
+                                  <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                    Description
+                                  </div>
+                                  <div className="text-[11px] text-slate-200">
+                                    {compressedMapping.description}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {compressedEquivalents.length > 0 && (
+                            <div className="rounded border border-slate-700 bg-slate-950/40 p-3">
+                              <div className="text-[10px] uppercase tracking-wider text-emerald-300 font-bold mb-2">
+                                Compressed Equivalents
+                              </div>
+                              <div className="space-y-2">
+                                {compressedEquivalents.map((entry) => (
+                                  <button
+                                    key={entry.mnemonic}
+                                    type="button"
+                                    className="w-full text-left rounded border border-slate-700 bg-slate-900/60 px-2 py-1.5 hover:border-emerald-400/60"
+                                    onClick={() => selectCompressedEquivalent(entry.mnemonic)}
+                                    title={`Open ${entry.mnemonic} details`}
+                                  >
+                                    <div className="flex items-center gap-1 text-[11px] font-mono text-emerald-200">
+                                      {normalizeMnemonicKey(entry.mnemonic)}
+                                      <ArrowUpRight size={12} className="opacity-70" />
+                                    </div>
+                                    <div className="text-[10px] font-mono text-slate-400">
+                                      {entry.compressed}
+                                    </div>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {activeProfile && (
+                      <div
+                        className={`
                       mt-4 p-3 rounded text-xs flex items-center gap-2 border
                       ${
                         isHighlighted(selectedExt.id)
@@ -3321,273 +4300,286 @@ const RISCVExplorer = () => {
                           : 'bg-slate-800 border-slate-700 text-slate-500'
                       }
                     `}
+                      >
+                        {isHighlighted(selectedExt.id) ? (
+                          <>
+                            <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
+                            Required in <strong>{activeProfile}</strong>
+                          </>
+                        ) : (
+                          <>
+                            <div className="w-1.5 h-1.5 rounded-full bg-slate-600" />
+                            Not required in {activeProfile}
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="h-[300px] flex flex-col items-center justify-center text-slate-600 text-center space-y-4">
+                  <LayoutGrid size={32} className="opacity-50" />
+                  <p className="text-xs max-w-[150px]">
+                    Click any block on the left to view technical specifications and use cases.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {encoderValidatorOpen && (
+        <div className="fixed inset-0 z-50">
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setEncoderValidatorOpen(false)}
+            role="presentation"
+          />
+
+          <div className="absolute inset-0 p-3 md:p-8 flex items-start justify-center overflow-y-auto">
+            <div className="w-full max-w-3xl bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden">
+              <div className="p-4 border-b border-slate-700 flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wide flex items-center gap-2">
+                    <ScanSearch size={16} /> Encoder Validator
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Provide either a 32-bit Encoding pattern (0/1/-), or Match+Mask (hex). The
+                    validator lists any existing instructions that overlap.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  className="p-2 rounded border border-slate-600 bg-slate-800 text-slate-100 hover:border-slate-500"
+                  onClick={() => setEncoderValidatorOpen(false)}
+                  title="Close"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <div>
+                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                      Proposed mnemonic (optional)
+                    </div>
+                    <input
+                      type="text"
+                      value={encoderValidatorInput.mnemonic}
+                      onChange={(e) =>
+                        setEncoderValidatorInput((prev) => ({ ...prev, mnemonic: e.target.value }))
+                      }
+                      placeholder="e.g. MYOP"
+                      className="w-full px-3 py-2 rounded bg-slate-800 border border-slate-700 text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                      Encoding (required if no match/mask)
+                    </div>
+                    <input
+                      type="text"
+                      value={encoderValidatorInput.encoding}
+                      onChange={(e) =>
+                        setEncoderValidatorInput((prev) => ({ ...prev, encoding: e.target.value }))
+                      }
+                      placeholder="-----------------000-----1100111"
+                      className="w-full px-3 py-2 rounded bg-slate-800 border border-slate-700 text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                        Match (hex)
+                      </div>
+                      <input
+                        type="text"
+                        value={encoderValidatorInput.match}
+                        onChange={(e) =>
+                          setEncoderValidatorInput((prev) => ({ ...prev, match: e.target.value }))
+                        }
+                        placeholder="0x67"
+                        className="w-full px-3 py-2 rounded bg-slate-800 border border-slate-700 text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300"
+                      />
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                        Mask (hex)
+                      </div>
+                      <input
+                        type="text"
+                        value={encoderValidatorInput.mask}
+                        onChange={(e) =>
+                          setEncoderValidatorInput((prev) => ({ ...prev, mask: e.target.value }))
+                        }
+                        placeholder="0x707f"
+                        className="w-full px-3 py-2 rounded bg-slate-800 border border-slate-700 text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={runEncoderValidation}
+                      className="inline-flex items-center gap-2 px-3 py-2 rounded border border-yellow-500/50 bg-yellow-500/10 text-yellow-200 text-xs font-bold hover:border-yellow-400"
                     >
-                      {isHighlighted(selectedExt.id) ? (
-                        <>
-                          <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse" />
-                          Required in <strong>{activeProfile}</strong>
-                        </>
-                      ) : (
-                        <>
-                          <div className="w-1.5 h-1.5 rounded-full bg-slate-600" />
-                          Not required in {activeProfile}
-                        </>
-	                      )}
-	                    </div>
-	                  )}
-	                </div>
-	                </div>
-	              ) : (
-	                <div className="h-[300px] flex flex-col items-center justify-center text-slate-600 text-center space-y-4">
-	                  <LayoutGrid size={32} className="opacity-50" />
-	                  <p className="text-xs max-w-[150px]">
-	                    Click any block on the left to view technical specifications and use cases.
-	                  </p>
-	                </div>
-	              )}
-	            </div>
-		          </div>
-		        </div>
-	      </div>
+                      <ScanSearch size={16} />
+                      Validate
+                    </button>
 
-	      {encoderValidatorOpen && (
-	        <div className="fixed inset-0 z-50">
-	          <div
-	            className="absolute inset-0 bg-black/60"
-	            onClick={() => setEncoderValidatorOpen(false)}
-	            role="presentation"
-	          />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEncoderValidatorInput({
+                          mnemonic: '',
+                          encoding: '',
+                          match: '',
+                          mask: '',
+                        });
+                        setEncoderValidatorResult(null);
+                        setEncoderValidatorCopyStatus(null);
+                      }}
+                      className="px-3 py-2 rounded border border-slate-600 bg-slate-800 text-xs font-bold text-slate-100 hover:border-slate-500"
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </div>
 
-	          <div className="absolute inset-0 p-3 md:p-8 flex items-start justify-center overflow-y-auto">
-	            <div className="w-full max-w-3xl bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden">
-	              <div className="p-4 border-b border-slate-700 flex items-start justify-between gap-3">
-	                <div className="min-w-0">
-	                  <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wide flex items-center gap-2">
-	                    <ScanSearch size={16} /> Encoder Validator
-	                  </h3>
-	                  <p className="text-xs text-slate-500 mt-1">
-	                    Provide either a 32-bit Encoding pattern (0/1/-), or Match+Mask (hex). The validator lists any
-	                    existing instructions that overlap.
-	                  </p>
-	                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
+                      Results
+                    </div>
+                    <button
+                      type="button"
+                      disabled={!encoderValidatorResult?.proposed}
+                      onClick={async () => {
+                        if (!encoderValidatorResult?.proposed) return;
+                        const report = formatEncoderValidatorReport(
+                          encoderValidatorResult.proposed,
+                          encoderValidatorResult,
+                        );
+                        const ok = await copyTextToClipboard(report);
+                        setEncoderValidatorCopyStatus(ok ? 'copied' : 'failed');
+                        window.setTimeout(() => setEncoderValidatorCopyStatus(null), 1500);
+                      }}
+                      className="inline-flex items-center gap-2 px-3 py-2 rounded border border-slate-600 bg-slate-800 text-xs font-bold text-slate-100 hover:border-slate-500 disabled:opacity-30"
+                      title="Copy validation report"
+                    >
+                      <Copy size={14} />
+                      {encoderValidatorCopyStatus === 'copied'
+                        ? 'Copied'
+                        : encoderValidatorCopyStatus === 'failed'
+                          ? 'Copy failed'
+                          : 'Copy report'}
+                    </button>
+                  </div>
 
-	                <button
-	                  type="button"
-	                  className="p-2 rounded border border-slate-600 bg-slate-800 text-slate-100 hover:border-slate-500"
-	                  onClick={() => setEncoderValidatorOpen(false)}
-	                  title="Close"
-	                >
-	                  <X size={16} />
-	                </button>
-	              </div>
+                  {!encoderValidatorResult ? (
+                    <div className="text-xs text-slate-400 border border-slate-700 rounded p-3 bg-slate-800/50">
+                      Enter a proposed encoding and click Validate.
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {encoderValidatorResult.errors.length > 0 && (
+                        <div className="border border-red-800/40 bg-red-950/30 rounded p-3">
+                          <div className="text-[10px] uppercase tracking-wider text-red-200 font-bold mb-2">
+                            Errors
+                          </div>
+                          <ul className="text-xs text-red-100 space-y-1 list-disc pl-4">
+                            {encoderValidatorResult.errors.map((err) => (
+                              <li key={err}>{err}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
 
-	              <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-	                <div className="space-y-3">
-	                  <div>
-	                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-	                      Proposed mnemonic (optional)
-	                    </div>
-	                    <input
-	                      type="text"
-	                      value={encoderValidatorInput.mnemonic}
-	                      onChange={(e) =>
-	                        setEncoderValidatorInput((prev) => ({ ...prev, mnemonic: e.target.value }))
-	                      }
-	                      placeholder="e.g. MYOP"
-	                      className="w-full px-3 py-2 rounded bg-slate-800 border border-slate-700 text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300"
-	                    />
-	                  </div>
+                      {encoderValidatorResult.proposed && (
+                        <div className="border border-slate-700 rounded p-3 bg-slate-800/50">
+                          <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-2">
+                            Normalized Proposal
+                          </div>
+                          <div className="space-y-2">
+                            <div className="font-mono text-[11px] text-slate-200 break-all">
+                              Encoding: {encoderValidatorResult.proposed.encoding}
+                            </div>
+                            <div className="grid grid-cols-2 gap-2">
+                              <div className="font-mono text-[11px] text-slate-200">
+                                Match: {encoderValidatorResult.proposed.match}
+                              </div>
+                              <div className="font-mono text-[11px] text-slate-200">
+                                Mask: {encoderValidatorResult.proposed.mask}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
 
-	                  <div>
-	                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-	                      Encoding (required if no match/mask)
-	                    </div>
-	                    <input
-	                      type="text"
-	                      value={encoderValidatorInput.encoding}
-	                      onChange={(e) =>
-	                        setEncoderValidatorInput((prev) => ({ ...prev, encoding: e.target.value }))
-	                      }
-	                      placeholder="-----------------000-----1100111"
-	                      className="w-full px-3 py-2 rounded bg-slate-800 border border-slate-700 text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300"
-	                    />
-	                  </div>
+                      {encoderValidatorResult.proposed && (
+                        <div className="border border-slate-700 rounded p-3 bg-slate-800/50">
+                          <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-2">
+                            Conflicts ({encoderValidatorResult.conflicts.length})
+                          </div>
+                          {encoderValidatorResult.conflicts.length === 0 ? (
+                            <div className="text-xs text-emerald-200">
+                              No overlaps found within the current instruction set database.
+                            </div>
+                          ) : (
+                            <div className="space-y-2 max-h-[340px] overflow-y-auto overscroll-contain pr-1">
+                              {encoderValidatorResult.conflicts.map((conflict) => (
+                                <div
+                                  key={`${conflict.other.extId}:${conflict.other.mnemonic}:${conflict.type}`}
+                                  className="border border-slate-700 rounded p-2 bg-slate-900/50"
+                                >
+                                  <div className="flex items-start justify-between gap-2">
+                                    <div className="min-w-0">
+                                      <div className="font-mono text-xs text-slate-200 break-words">
+                                        {conflict.other.mnemonic}{' '}
+                                        <span className="text-slate-500">
+                                          ({conflict.other.extId})
+                                        </span>
+                                      </div>
+                                      <div className="text-[11px] text-slate-500">
+                                        {conflict.other.extName}
+                                      </div>
+                                    </div>
+                                    <span className="shrink-0 px-2 py-1 rounded text-[10px] font-mono uppercase tracking-wide border bg-slate-800 text-slate-100 border-slate-600">
+                                      {conflict.type}
+                                    </span>
+                                  </div>
 
-	                  <div className="grid grid-cols-2 gap-3">
-	                    <div>
-	                      <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-	                        Match (hex)
-	                      </div>
-	                      <input
-	                        type="text"
-	                        value={encoderValidatorInput.match}
-	                        onChange={(e) =>
-	                          setEncoderValidatorInput((prev) => ({ ...prev, match: e.target.value }))
-	                        }
-	                        placeholder="0x67"
-	                        className="w-full px-3 py-2 rounded bg-slate-800 border border-slate-700 text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300"
-	                      />
-	                    </div>
-	                    <div>
-	                      <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
-	                        Mask (hex)
-	                      </div>
-	                      <input
-	                        type="text"
-	                        value={encoderValidatorInput.mask}
-	                        onChange={(e) =>
-	                          setEncoderValidatorInput((prev) => ({ ...prev, mask: e.target.value }))
-	                        }
-	                        placeholder="0x707f"
-	                        className="w-full px-3 py-2 rounded bg-slate-800 border border-slate-700 text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300"
-	                      />
-	                    </div>
-	                  </div>
-
-	                  <div className="flex items-center gap-2 pt-1">
-	                    <button
-	                      type="button"
-	                      onClick={runEncoderValidation}
-	                      className="inline-flex items-center gap-2 px-3 py-2 rounded border border-yellow-500/50 bg-yellow-500/10 text-yellow-200 text-xs font-bold hover:border-yellow-400"
-	                    >
-	                      <ScanSearch size={16} />
-	                      Validate
-	                    </button>
-
-	                    <button
-	                      type="button"
-	                      onClick={() => {
-	                        setEncoderValidatorInput({ mnemonic: '', encoding: '', match: '', mask: '' });
-	                        setEncoderValidatorResult(null);
-	                        setEncoderValidatorCopyStatus(null);
-	                      }}
-	                      className="px-3 py-2 rounded border border-slate-600 bg-slate-800 text-xs font-bold text-slate-100 hover:border-slate-500"
-	                    >
-	                      Reset
-	                    </button>
-	                  </div>
-	                </div>
-
-	                <div className="space-y-3">
-	                  <div className="flex items-center justify-between gap-2">
-	                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">
-	                      Results
-	                    </div>
-	                    <button
-	                      type="button"
-	                      disabled={!encoderValidatorResult?.proposed}
-	                      onClick={async () => {
-	                        if (!encoderValidatorResult?.proposed) return;
-	                        const report = formatEncoderValidatorReport(
-	                          encoderValidatorResult.proposed,
-	                          encoderValidatorResult
-	                        );
-	                        const ok = await copyTextToClipboard(report);
-	                        setEncoderValidatorCopyStatus(ok ? 'copied' : 'failed');
-	                        window.setTimeout(() => setEncoderValidatorCopyStatus(null), 1500);
-	                      }}
-	                      className="inline-flex items-center gap-2 px-3 py-2 rounded border border-slate-600 bg-slate-800 text-xs font-bold text-slate-100 hover:border-slate-500 disabled:opacity-30"
-	                      title="Copy validation report"
-	                    >
-	                      <Copy size={14} />
-	                      {encoderValidatorCopyStatus === 'copied'
-	                        ? 'Copied'
-	                        : encoderValidatorCopyStatus === 'failed'
-	                          ? 'Copy failed'
-	                          : 'Copy report'}
-	                    </button>
-	                  </div>
-
-	                  {!encoderValidatorResult ? (
-	                    <div className="text-xs text-slate-400 border border-slate-700 rounded p-3 bg-slate-800/50">
-	                      Enter a proposed encoding and click Validate.
-	                    </div>
-	                  ) : (
-	                    <div className="space-y-3">
-	                      {encoderValidatorResult.errors.length > 0 && (
-	                        <div className="border border-red-800/40 bg-red-950/30 rounded p-3">
-	                          <div className="text-[10px] uppercase tracking-wider text-red-200 font-bold mb-2">
-	                            Errors
-	                          </div>
-	                          <ul className="text-xs text-red-100 space-y-1 list-disc pl-4">
-	                            {encoderValidatorResult.errors.map((err) => (
-	                              <li key={err}>{err}</li>
-	                            ))}
-	                          </ul>
-	                        </div>
-	                      )}
-
-	                      {encoderValidatorResult.proposed && (
-	                        <div className="border border-slate-700 rounded p-3 bg-slate-800/50">
-	                          <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-2">
-	                            Normalized Proposal
-	                          </div>
-	                          <div className="space-y-2">
-	                            <div className="font-mono text-[11px] text-slate-200 break-all">
-	                              Encoding: {encoderValidatorResult.proposed.encoding}
-	                            </div>
-	                            <div className="grid grid-cols-2 gap-2">
-	                              <div className="font-mono text-[11px] text-slate-200">Match: {encoderValidatorResult.proposed.match}</div>
-	                              <div className="font-mono text-[11px] text-slate-200">Mask: {encoderValidatorResult.proposed.mask}</div>
-	                            </div>
-	                          </div>
-	                        </div>
-	                      )}
-
-	                      {encoderValidatorResult.proposed && (
-	                        <div className="border border-slate-700 rounded p-3 bg-slate-800/50">
-	                          <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-2">
-	                            Conflicts ({encoderValidatorResult.conflicts.length})
-	                          </div>
-	                          {encoderValidatorResult.conflicts.length === 0 ? (
-	                            <div className="text-xs text-emerald-200">
-	                              No overlaps found within the current instruction set database.
-	                            </div>
-	                          ) : (
-	                            <div className="space-y-2 max-h-[340px] overflow-y-auto overscroll-contain pr-1">
-	                              {encoderValidatorResult.conflicts.map((conflict) => (
-	                                <div
-	                                  key={`${conflict.other.extId}:${conflict.other.mnemonic}:${conflict.type}`}
-	                                  className="border border-slate-700 rounded p-2 bg-slate-900/50"
-	                                >
-	                                  <div className="flex items-start justify-between gap-2">
-	                                    <div className="min-w-0">
-	                                      <div className="font-mono text-xs text-slate-200 break-words">
-	                                        {conflict.other.mnemonic}{' '}
-	                                        <span className="text-slate-500">({conflict.other.extId})</span>
-	                                      </div>
-	                                      <div className="text-[11px] text-slate-500">{conflict.other.extName}</div>
-	                                    </div>
-	                                    <span className="shrink-0 px-2 py-1 rounded text-[10px] font-mono uppercase tracking-wide border bg-slate-800 text-slate-100 border-slate-600">
-	                                      {conflict.type}
-	                                    </span>
-	                                  </div>
-
-	                                  <div className="mt-2 text-xs text-slate-300">{conflict.why}</div>
-	                                  <div className="mt-2 grid grid-cols-2 gap-2">
-	                                    <div className="font-mono text-[10px] text-slate-400">
-	                                      Common mask: {conflict.commonMask}
-	                                    </div>
-	                                    <div className="font-mono text-[10px] text-slate-400">
-	                                      Example word: {conflict.exampleWord}
-	                                    </div>
-	                                  </div>
-	                                </div>
-	                              ))}
-	                            </div>
-	                          )}
-	                        </div>
-	                      )}
-	                    </div>
-	                  )}
-	                </div>
-	              </div>
-	            </div>
-	          </div>
-	        </div>
-	      )}
-	    </div>
-	  );
-	};
+                                  <div className="mt-2 text-xs text-slate-300">{conflict.why}</div>
+                                  <div className="mt-2 grid grid-cols-2 gap-2">
+                                    <div className="font-mono text-[10px] text-slate-400">
+                                      Common mask: {conflict.commonMask}
+                                    </div>
+                                    <div className="font-mono text-[10px] text-slate-400">
+                                      Example word: {conflict.exampleWord}
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default RISCVExplorer;
