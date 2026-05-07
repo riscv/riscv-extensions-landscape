@@ -588,17 +588,9 @@ const RISCVExplorer = () => {
   const lastScrolledKeyRef = React.useRef(null);
 
   // ---------------------------------------------------------------------------
-  // Light / Dark theme – persisted in localStorage, defaults to system pref
+  // Light / Dark theme – useTheme handles localStorage + dark class on <html>
   // ---------------------------------------------------------------------------
-  const [isDark, setIsDark] = useState(() => {
-    const stored = typeof window !== 'undefined' && localStorage.getItem('riscv-theme');
-    if (stored) return stored === 'dark';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
-
-  React.useEffect(() => {
-    localStorage.setItem('riscv-theme', isDark ? 'dark' : 'light');
-  }, [isDark]);
+  const { isDark, toggle: toggleDark } = useTheme();
 
   // ---------------------------------------------------------------------------
   // Extension Catalog – loaded from `src/riscv_extensions.json`
@@ -2629,7 +2621,7 @@ const RISCVExplorer = () => {
             {/* Theme Toggle */}
             <button
               type="button"
-              onClick={() => setIsDark((d) => !d)}
+              onClick={() => toggleDark()}
               className={`p-1.5 rounded border transition-all ${isDark
                 ? 'bg-slate-800 border-slate-600 text-yellow-300 hover:border-yellow-400'
                 : 'bg-white border-slate-300 text-slate-600 hover:border-slate-400'
