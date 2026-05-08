@@ -2642,7 +2642,7 @@ const RISCVExplorer = () => {
                 <ExtensionBlock
                   key={item.id}
                   data={item}
-                  searchQuery={searchQuery}
+                  searchQuery={debouncedQuery}
                   colorClass="bg-blue-950 border-blue-800 text-blue-100"
                 />
               ))}
@@ -2659,7 +2659,7 @@ const RISCVExplorer = () => {
 	                <ExtensionBlock
                   key={item.id}
                   data={item}
-                  searchQuery={searchQuery}
+                  searchQuery={debouncedQuery}
                   colorClass="bg-emerald-950 border-emerald-800 text-emerald-100"
                 />
               ))}
@@ -2677,7 +2677,7 @@ const RISCVExplorer = () => {
 	                  <ExtensionBlock
                     key={item.id}
                     data={item}
-                    searchQuery={searchQuery}
+                    searchQuery={debouncedQuery}
                     colorClass="bg-purple-950/50 border-purple-800/50 text-purple-100"
                   />
                 ))}
@@ -2693,7 +2693,7 @@ const RISCVExplorer = () => {
 	                  <ExtensionBlock
 	                    key={item.id}
 	                    data={item}
-	                    searchQuery={searchQuery}
+	                    searchQuery={debouncedQuery}
 	                    colorClass="bg-amber-950/40 border-amber-800/50 text-amber-100"
 	                  />
 	                ))}
@@ -2709,7 +2709,7 @@ const RISCVExplorer = () => {
 	                  <ExtensionBlock
 	                    key={item.id}
                     data={item}
-                    searchQuery={searchQuery}
+                    searchQuery={debouncedQuery}
                     colorClass="bg-indigo-950/50 border-indigo-800/50 text-indigo-100"
                   />
                 ))}
@@ -2725,7 +2725,7 @@ const RISCVExplorer = () => {
                   <ExtensionBlock
                     key={item.id}
                     data={item}
-                    searchQuery={searchQuery}
+                    searchQuery={debouncedQuery}
                     colorClass="bg-pink-950/50 border-pink-800/50 text-pink-100"
                   />
                 ))}
@@ -2741,7 +2741,7 @@ const RISCVExplorer = () => {
 		                  <ExtensionBlock
 		                    key={item.id}
 		                    data={item}
-		                    searchQuery={searchQuery}
+		                    searchQuery={debouncedQuery}
 		                    colorClass="bg-sky-950/40 border-sky-800/40 text-sky-100"
 		                  />
 		                ))}
@@ -2757,7 +2757,7 @@ const RISCVExplorer = () => {
 		                  <ExtensionBlock
 		                    key={item.id}
 		                    data={item}
-		                    searchQuery={searchQuery}
+		                    searchQuery={debouncedQuery}
 		                    colorClass="bg-fuchsia-950/40 border-fuchsia-800/40 text-fuchsia-100"
 		                  />
 		                ))}
@@ -2773,7 +2773,7 @@ const RISCVExplorer = () => {
                   <ExtensionBlock
                     key={item.id}
                     data={item}
-                    searchQuery={searchQuery}
+                    searchQuery={debouncedQuery}
                     colorClass="bg-teal-950/50 border-teal-800/50 text-teal-100"
                   />
                 ))}
@@ -2789,7 +2789,7 @@ const RISCVExplorer = () => {
 	                  <ExtensionBlock
                     key={item.id}
                     data={item}
-                    searchQuery={searchQuery}
+                    searchQuery={debouncedQuery}
                     colorClass="bg-red-950/50 border-red-800/50 text-red-100"
                   />
                 ))}
@@ -2805,7 +2805,7 @@ const RISCVExplorer = () => {
 	                  <ExtensionBlock
                     key={item.id}
                     data={item}
-                    searchQuery={searchQuery}
+                    searchQuery={debouncedQuery}
                     colorClass="bg-slate-800 border-slate-600 text-slate-300"
                   />
                 ))}
@@ -2821,7 +2821,7 @@ const RISCVExplorer = () => {
 	                  <ExtensionBlock
 	                    key={item.id}
 	                    data={item}
-	                    searchQuery={searchQuery}
+	                    searchQuery={debouncedQuery}
 	                    colorClass="bg-violet-950/40 border-violet-800/40 text-violet-100"
 	                  />
 	                ))}
@@ -2837,7 +2837,7 @@ const RISCVExplorer = () => {
 	                  <ExtensionBlock
 	                    key={item.id}
 	                    data={item}
-	                    searchQuery={searchQuery}
+	                    searchQuery={debouncedQuery}
 	                    colorClass="bg-orange-950/50 border-orange-800/50 text-orange-100"
 	                  />
 	                ))}
@@ -2853,7 +2853,7 @@ const RISCVExplorer = () => {
 	                  <ExtensionBlock
 	                    key={item.id}
 	                    data={item}
-	                    searchQuery={searchQuery}
+	                    searchQuery={debouncedQuery}
 	                    colorClass="bg-orange-950/30 border-orange-700/30 text-orange-100"
 	                  />
 	                ))}
@@ -2874,7 +2874,7 @@ const RISCVExplorer = () => {
                     <ExtensionBlock
                       key={item.id}
                       data={item}
-                      searchQuery={searchQuery}
+                      searchQuery={debouncedQuery}
                       colorClass="bg-cyan-950/30 border-cyan-800/30 text-cyan-100"
                     />
                   ))}
@@ -2887,7 +2887,7 @@ const RISCVExplorer = () => {
                     <ExtensionBlock
                       key={item.id}
                       data={item}
-                      searchQuery={searchQuery}
+                      searchQuery={debouncedQuery}
                       colorClass="bg-cyan-950/30 border-cyan-800/30 text-cyan-100"
                     />
                   ))}
@@ -2902,7 +2902,7 @@ const RISCVExplorer = () => {
                     <ExtensionBlock
                       key={item.id}
                       data={item}
-                      searchQuery={searchQuery}
+                      searchQuery={debouncedQuery}
                       colorClass="bg-cyan-950/30 border-cyan-800/30 text-cyan-100"
                     />
                   ))}
