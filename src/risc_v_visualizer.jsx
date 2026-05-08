@@ -1929,6 +1929,29 @@ const RISCVExplorer = () => {
       'ECALL',
       'EBREAK',
     ],
+    // Supervisor memory management — virtual address invalidation (Volume II)
+    Svinval: [
+      'SINVAL.VMA',
+      'SFENCE.W.INVAL',
+      'SFENCE.INVAL.IR',
+    ],
+    // Debug extension — debug-mode return
+    Sdext: [
+      'DRET',
+    ],
+    // Non-maskable interrupt return
+    Smrnmi: [
+      'MNRET',
+    ],
+    // Supervisor counter-timer — clear shadow counter
+    Ssctr: [
+      'SCTRCLR',
+    ],
+    // Immediate branch (Zibi — Integer Branch Immediate)
+    Zibi: [
+      'BEQI',
+      'BNEI',
+    ],
   };
 
   const extensionCsrs = {

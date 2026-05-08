@@ -20239,7 +20239,35 @@
       "name": "Zibi",
       "desc": "Interruptible Mem Ops",
       "use": "Interruptible load/store semantics",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {
+        "BEQI": {
+          "encoding": "-----------------010-----1100011",
+          "variable_fields": [
+            "imm12hi",
+            "imm5",
+            "imm12lo"
+          ],
+          "extension": [
+            "rv_zibi"
+          ],
+          "match": "0x2063",
+          "mask": "0x707f"
+        },
+        "BNEI": {
+          "encoding": "-----------------011-----1100011",
+          "variable_fields": [
+            "imm12hi",
+            "imm5",
+            "imm12lo"
+          ],
+          "extension": [
+            "rv_zibi"
+          ],
+          "match": "0x3063",
+          "mask": "0x707f"
+        }
+      }
     },
     {
       "id": "Zicntr",
@@ -20610,7 +20638,39 @@
       "name": "Svinval",
       "desc": "Fine-Grained TLB Invalidate",
       "use": "Fine-grain TLB shootdown instructions",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {
+        "SINVAL.VMA": {
+          "encoding": "0001011----------000000001110011",
+          "variable_fields": [
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_svinval"
+          ],
+          "match": "0x16000073",
+          "mask": "0xfe007fff"
+        },
+        "SFENCE.W.INVAL": {
+          "encoding": "00011000000000000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_svinval"
+          ],
+          "match": "0x18000073",
+          "mask": "0xffffffff"
+        },
+        "SFENCE.INVAL.IR": {
+          "encoding": "00011000000100000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_svinval"
+          ],
+          "match": "0x18100073",
+          "mask": "0xffffffff"
+        }
+      }
     },
     {
       "id": "Svade",
@@ -20801,7 +20861,18 @@
       "name": "Smrnmi",
       "desc": "Resumable NMI",
       "use": "Restartable non-maskable interrupts",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {
+        "MNRET": {
+          "encoding": "01110000001000000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_smrnmi"
+          ],
+          "match": "0x70200073",
+          "mask": "0xffffffff"
+        }
+      }
     }
   ],
   "s_trap": [
@@ -20810,7 +20881,18 @@
       "name": "Sdext",
       "desc": "External Debug",
       "use": "External debug architecture",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {
+        "DRET": {
+          "encoding": "01111011001000000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_sdext"
+          ],
+          "match": "0x7b200073",
+          "mask": "0xffffffff"
+        }
+      }
     },
     {
       "id": "Sdtrig",
@@ -20859,7 +20941,18 @@
       "name": "Ssctr",
       "desc": "Control Transfer Records (S)",
       "use": "Hardware CFI logs (S)",
-      "url": "https://github.com/riscv/riscv-isa-manual"
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {
+        "SCTRCLR": {
+          "encoding": "00010000010000000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_ssctr"
+          ],
+          "match": "0x10400073",
+          "mask": "0xffffffff"
+        }
+      }
     },
     {
       "id": "Sddbltrp",
