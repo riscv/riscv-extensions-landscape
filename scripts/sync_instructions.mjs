@@ -126,7 +126,9 @@ for (const [extId, mnemonics] of Object.entries(extensionInstructions)) {
   }
 
   for (const { entry } of locations) {
-    if (!entry.instructions || typeof entry.instructions !== 'object') entry.instructions = {};
+    // Always reset instructions to prevent stale data from persisting
+    // when mnemonics are removed from extensionInstructions.
+    entry.instructions = {};
     for (const mnemonic of mnemonics) {
       const key = mnemonicToInstrDictKey(mnemonic);
       const details = instrDict[key];
@@ -136,6 +138,8 @@ for (const [extId, mnemonics] of Object.entries(extensionInstructions)) {
         missingInstructions.set(extId, missing);
         continue;
       }
+      // Skip deprecated instructions — they should not appear in the catalog.
+      if (details.deprecated) continue;
       entry.instructions[mnemonic] = details;
       addedCount += 1;
     }
