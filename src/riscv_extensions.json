@@ -12348,6 +12348,44 @@
           ],
           "match": "0x6000501b",
           "mask": "0xfe00707f"
+        },
+        "ORC.B": {
+          "encoding": "001010000111-----101-----0010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zbb"
+          ],
+          "match": "0x28705013",
+          "mask": "0xfff0707f"
+        },
+        "REV8": {
+          "encoding": "011010011000-----101-----0010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zbb",
+            "rv_zbkb"
+          ],
+          "match": "0x69805013",
+          "mask": "0xfff0707f"
+        },
+        "REV8_64": {
+          "encoding": "011010111000-----101-----0010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv64_zbb",
+            "rv64_zbkb"
+          ],
+          "match": "0x6b805013",
+          "mask": "0xfff0707f"
         }
       },
       "url": "https://github.com/riscv/riscv-isa-manual"
@@ -17202,6 +17240,68 @@
           ],
           "match": "0x6000501b",
           "mask": "0xfe00707f"
+        },
+        "BREV8": {
+          "encoding": "011010000111-----101-----0010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zbkb"
+          ],
+          "match": "0x68705013",
+          "mask": "0xfff0707f"
+        },
+        "REV8": {
+          "encoding": "011010011000-----101-----0010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zbb",
+            "rv_zbkb"
+          ],
+          "match": "0x69805013",
+          "mask": "0xfff0707f"
+        },
+        "REV8_64": {
+          "encoding": "011010111000-----101-----0010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv64_zbb",
+            "rv64_zbkb"
+          ],
+          "match": "0x6b805013",
+          "mask": "0xfff0707f"
+        },
+        "ZIP": {
+          "encoding": "000010011110-----001-----0010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zbkb"
+          ],
+          "match": "0x09e01013",
+          "mask": "0xfff0707f"
+        },
+        "UNZIP": {
+          "encoding": "000010011110-----101-----0010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zbkb"
+          ],
+          "match": "0x09e05013",
+          "mask": "0xfff0707f"
         }
       }
     },

@@ -1552,6 +1552,10 @@ const RISCVExplorer = () => {
       'ROL', 'ROR', 'RORI',
       // RV64 rotate variants
       'ROLW', 'RORW', 'RORIW',
+      // Byte/bitwise permutations
+      'ORC.B',
+      // Byte-reverse (RV32 and RV64 variants)
+      'REV8', 'REV8_64',
     ],
     Zbc: [
       // Carry-less multiply
@@ -1774,7 +1778,12 @@ const RISCVExplorer = () => {
       'ANDN', 'ORN', 'XNOR',
       // RV64
       'ROLW', 'RORW', 'RORIW',
-      // Note: REV8, BREV8, ZIP, UNZIP not in dictionary
+      // Bit-reverse within each byte (crypto-specific, not in Zbb)
+      'BREV8',
+      // Byte-reverse (shared with Zbb)
+      'REV8', 'REV8_64',
+      // Bit interleave / deinterleave (RV32 only)
+      'ZIP', 'UNZIP',
     ],
     Zbkc: [
       // Crypto carryless multiply

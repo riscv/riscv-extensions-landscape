@@ -1079,6 +1079,13 @@
     "match": "0x1063",
     "mask": "0x707f"
   },
+  "brev8": {
+    "encoding": "011010000111-----101-----0010011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zbkb"],
+    "match": "0x68705013",
+    "mask": "0xfff0707f"
+  },
   "bnei": {
     "encoding": "-----------------011-----1100011",
     "variable_fields": [
@@ -5133,6 +5140,13 @@
     "match": "0x6013",
     "mask": "0x707f"
   },
+  "orc_b": {
+    "encoding": "001010000111-----101-----0010011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zbb"],
+    "match": "0x28705013",
+    "mask": "0xfff0707f"
+  },
   "orn": {
     "encoding": "0100000----------110-----0110011",
     "variable_fields": [
@@ -5249,6 +5263,20 @@
     ],
     "match": "0x200603b",
     "mask": "0xfe00707f"
+  },
+  "rev8": {
+    "encoding": "011010011000-----101-----0010011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zbb", "rv_zbkb"],
+    "match": "0x69805013",
+    "mask": "0xfff0707f"
+  },
+  "rev8_64": {
+    "encoding": "011010111000-----101-----0010011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv64_zbb", "rv64_zbkb"],
+    "match": "0x6b805013",
+    "mask": "0xfff0707f"
   },
   "rol": {
     "encoding": "0110000----------001-----0110011",
@@ -6268,6 +6296,13 @@
     ],
     "match": "0x8005013",
     "mask": "0xfe00707f"
+  },
+  "unzip": {
+    "encoding": "000010011110-----101-----0010011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zbkb"],
+    "match": "0x09e05013",
+    "mask": "0xfff0707f"
   },
   "uret": {
     "encoding": "00000000001000000000000001110011",
@@ -16020,5 +16055,12 @@
     ],
     "match": "0x28004033",
     "mask": "0xfe00707f"
+  },
+  "zip": {
+    "encoding": "000010011110-----001-----0010011",
+    "variable_fields": ["rd", "rs1"],
+    "extension": ["rv_zbkb"],
+    "match": "0x09e01013",
+    "mask": "0xfff0707f"
   }
 }
