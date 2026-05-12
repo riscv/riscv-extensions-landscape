@@ -1552,6 +1552,7 @@ const RISCVExplorer = () => {
       'ROL', 'ROR', 'RORI',
       // RV64 rotate variants
       'ROLW', 'RORW', 'RORIW',
+      'REV8', 'ORC.B',
     ],
     Zbc: [
       // Carry-less multiply
@@ -1774,7 +1775,7 @@ const RISCVExplorer = () => {
       'ANDN', 'ORN', 'XNOR',
       // RV64
       'ROLW', 'RORW', 'RORIW',
-      // Note: REV8, BREV8, ZIP, UNZIP not in dictionary
+      'REV8', 'BREV8', 'ZIP', 'UNZIP',
     ],
     Zbkc: [
       // Crypto carryless multiply

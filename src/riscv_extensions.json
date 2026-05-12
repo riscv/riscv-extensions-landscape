@@ -3609,6 +3609,35 @@
           "match": "0x1800202f",
           "mask": "0xf800707f"
         },
+        "LR.D": {
+          "encoding": "00010--00000-----011-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv64_a"
+          ],
+          "match": "0x1000302f",
+          "mask": "0xf9f0707f"
+        },
+        "SC.D": {
+          "encoding": "00011------------011-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv64_a"
+          ],
+          "match": "0x1800302f",
+          "mask": "0xf800707f"
+        },
         "AMOSWAP.W": {
           "encoding": "00001------------010-----0101111",
           "variable_fields": [
@@ -3742,35 +3771,6 @@
             "rv_a"
           ],
           "match": "0xe000202f",
-          "mask": "0xf800707f"
-        },
-        "LR.D": {
-          "encoding": "00010--00000-----011-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv64_a"
-          ],
-          "match": "0x1000302f",
-          "mask": "0xf9f0707f"
-        },
-        "SC.D": {
-          "encoding": "00011------------011-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv64_a"
-          ],
-          "match": "0x1800302f",
           "mask": "0xf800707f"
         },
         "AMOSWAP.D": {
@@ -3983,6 +3983,45 @@
           "match": "0x800101b",
           "mask": "0xfc00707f"
         },
+        "SH1ADD.UW": {
+          "encoding": "0010000----------010-----0111011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv64_zba"
+          ],
+          "match": "0x2000203b",
+          "mask": "0xfe00707f"
+        },
+        "SH2ADD.UW": {
+          "encoding": "0010000----------100-----0111011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv64_zba"
+          ],
+          "match": "0x2000403b",
+          "mask": "0xfe00707f"
+        },
+        "SH3ADD.UW": {
+          "encoding": "0010000----------110-----0111011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv64_zba"
+          ],
+          "match": "0x2000603b",
+          "mask": "0xfe00707f"
+        },
         "ANDN": {
           "encoding": "0100000----------111-----0110011",
           "variable_fields": [
@@ -4034,57 +4073,6 @@
           "match": "0x40004033",
           "mask": "0xfe00707f"
         },
-        "ROL": {
-          "encoding": "0110000----------001-----0110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2"
-          ],
-          "extension": [
-            "rv_zbb",
-            "rv_zkn",
-            "rv_zks",
-            "rv_zk",
-            "rv_zbkb"
-          ],
-          "match": "0x60001033",
-          "mask": "0xfe00707f"
-        },
-        "ROR": {
-          "encoding": "0110000----------101-----0110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2"
-          ],
-          "extension": [
-            "rv_zbb",
-            "rv_zkn",
-            "rv_zks",
-            "rv_zk",
-            "rv_zbkb"
-          ],
-          "match": "0x60005033",
-          "mask": "0xfe00707f"
-        },
-        "RORI": {
-          "encoding": "011000-----------101-----0010011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "shamtd"
-          ],
-          "extension": [
-            "rv64_zbb",
-            "rv64_zks",
-            "rv64_zkn",
-            "rv64_zk",
-            "rv64_zbkb"
-          ],
-          "match": "0x60005013",
-          "mask": "0xfc00707f"
-        },
         "CLZ": {
           "encoding": "011000000000-----001-----0010011",
           "variable_fields": [
@@ -4119,6 +4107,42 @@
             "rv_zbb"
           ],
           "match": "0x60201013",
+          "mask": "0xfff0707f"
+        },
+        "CLZW": {
+          "encoding": "011000000000-----001-----0011011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv64_zbb"
+          ],
+          "match": "0x6000101b",
+          "mask": "0xfff0707f"
+        },
+        "CTZW": {
+          "encoding": "011000000001-----001-----0011011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv64_zbb"
+          ],
+          "match": "0x6010101b",
+          "mask": "0xfff0707f"
+        },
+        "CPOPW": {
+          "encoding": "011000000010-----001-----0011011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv64_zbb"
+          ],
+          "match": "0x6020101b",
           "mask": "0xfff0707f"
         },
         "MIN": {
@@ -4196,6 +4220,120 @@
           ],
           "match": "0x60501013",
           "mask": "0xfff0707f"
+        },
+        "ZEXT.H": {
+          "encoding": "000010000000-----100-----0110011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zbb"
+          ],
+          "match": "0x8004033",
+          "mask": "0xfff0707f"
+        },
+        "ROL": {
+          "encoding": "0110000----------001-----0110011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_zbb",
+            "rv_zkn",
+            "rv_zks",
+            "rv_zk",
+            "rv_zbkb"
+          ],
+          "match": "0x60001033",
+          "mask": "0xfe00707f"
+        },
+        "ROR": {
+          "encoding": "0110000----------101-----0110011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_zbb",
+            "rv_zkn",
+            "rv_zks",
+            "rv_zk",
+            "rv_zbkb"
+          ],
+          "match": "0x60005033",
+          "mask": "0xfe00707f"
+        },
+        "RORI": {
+          "encoding": "011000-----------101-----0010011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "shamtd"
+          ],
+          "extension": [
+            "rv64_zbb",
+            "rv64_zks",
+            "rv64_zkn",
+            "rv64_zk",
+            "rv64_zbkb"
+          ],
+          "match": "0x60005013",
+          "mask": "0xfc00707f"
+        },
+        "ROLW": {
+          "encoding": "0110000----------001-----0111011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv64_zbb",
+            "rv64_zks",
+            "rv64_zkn",
+            "rv64_zk",
+            "rv64_zbkb"
+          ],
+          "match": "0x6000103b",
+          "mask": "0xfe00707f"
+        },
+        "RORW": {
+          "encoding": "0110000----------101-----0111011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv64_zbb",
+            "rv64_zks",
+            "rv64_zkn",
+            "rv64_zk",
+            "rv64_zbkb"
+          ],
+          "match": "0x6000503b",
+          "mask": "0xfe00707f"
+        },
+        "RORIW": {
+          "encoding": "0110000----------101-----0011011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "shamtw"
+          ],
+          "extension": [
+            "rv64_zbb",
+            "rv64_zks",
+            "rv64_zkn",
+            "rv64_zk",
+            "rv64_zbkb"
+          ],
+          "match": "0x6000501b",
+          "mask": "0xfe00707f"
         },
         "CLMUL": {
           "encoding": "0000101----------001-----0110011",
@@ -4347,200 +4485,6 @@
           ],
           "match": "0x48005013",
           "mask": "0xfc00707f"
-        },
-        "SLO": {
-          "encoding": "0010000----------001-----0110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2"
-          ],
-          "extension": [
-            "rv_zbb"
-          ],
-          "match": "0x20001033",
-          "mask": "0xfe00707f",
-          "deprecated": true
-        },
-        "SLOI": {
-          "encoding": "001000-----------001-----0010011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "shamtd"
-          ],
-          "extension": [
-            "rv64_zbb"
-          ],
-          "match": "0x20001013",
-          "mask": "0xfc00707f",
-          "deprecated": true
-        },
-        "SRO": {
-          "encoding": "0010000----------101-----0110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2"
-          ],
-          "extension": [
-            "rv_zbb"
-          ],
-          "match": "0x20005033",
-          "mask": "0xfe00707f",
-          "deprecated": true
-        },
-        "SROI": {
-          "encoding": "001000-----------101-----0010011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "shamtd"
-          ],
-          "extension": [
-            "rv64_zbb"
-          ],
-          "match": "0x20005013",
-          "mask": "0xfc00707f",
-          "deprecated": true
-        },
-        "ZEXT.H": {
-          "encoding": "000010000000-----100-----0110011",
-          "variable_fields": [
-            "rd",
-            "rs1"
-          ],
-          "extension": [
-            "rv_zbb"
-          ],
-          "match": "0x8004033",
-          "mask": "0xfff0707f"
-        },
-        "SH1ADD.UW": {
-          "encoding": "0010000----------010-----0111011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2"
-          ],
-          "extension": [
-            "rv64_zba"
-          ],
-          "match": "0x2000203b",
-          "mask": "0xfe00707f"
-        },
-        "SH2ADD.UW": {
-          "encoding": "0010000----------100-----0111011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2"
-          ],
-          "extension": [
-            "rv64_zba"
-          ],
-          "match": "0x2000403b",
-          "mask": "0xfe00707f"
-        },
-        "SH3ADD.UW": {
-          "encoding": "0010000----------110-----0111011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2"
-          ],
-          "extension": [
-            "rv64_zba"
-          ],
-          "match": "0x2000603b",
-          "mask": "0xfe00707f"
-        },
-        "CLZW": {
-          "encoding": "011000000000-----001-----0011011",
-          "variable_fields": [
-            "rd",
-            "rs1"
-          ],
-          "extension": [
-            "rv64_zbb"
-          ],
-          "match": "0x6000101b",
-          "mask": "0xfff0707f"
-        },
-        "CTZW": {
-          "encoding": "011000000001-----001-----0011011",
-          "variable_fields": [
-            "rd",
-            "rs1"
-          ],
-          "extension": [
-            "rv64_zbb"
-          ],
-          "match": "0x6010101b",
-          "mask": "0xfff0707f"
-        },
-        "CPOPW": {
-          "encoding": "011000000010-----001-----0011011",
-          "variable_fields": [
-            "rd",
-            "rs1"
-          ],
-          "extension": [
-            "rv64_zbb"
-          ],
-          "match": "0x6020101b",
-          "mask": "0xfff0707f"
-        },
-        "ROLW": {
-          "encoding": "0110000----------001-----0111011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2"
-          ],
-          "extension": [
-            "rv64_zbb",
-            "rv64_zks",
-            "rv64_zkn",
-            "rv64_zk",
-            "rv64_zbkb"
-          ],
-          "match": "0x6000103b",
-          "mask": "0xfe00707f"
-        },
-        "RORW": {
-          "encoding": "0110000----------101-----0111011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2"
-          ],
-          "extension": [
-            "rv64_zbb",
-            "rv64_zks",
-            "rv64_zkn",
-            "rv64_zk",
-            "rv64_zbkb"
-          ],
-          "match": "0x6000503b",
-          "mask": "0xfe00707f"
-        },
-        "RORIW": {
-          "encoding": "0110000----------101-----0011011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "shamtw"
-          ],
-          "extension": [
-            "rv64_zbb",
-            "rv64_zks",
-            "rv64_zkn",
-            "rv64_zk",
-            "rv64_zbkb"
-          ],
-          "match": "0x6000501b",
-          "mask": "0xfe00707f"
         }
       },
       "url": "https://github.com/riscv/riscv-isa-manual"
@@ -4615,17 +4559,6 @@
             "rv_c"
           ],
           "match": "0x1",
-          "mask": "0xe003"
-        },
-        "C.JAL": {
-          "encoding": "----------------001-----------01",
-          "variable_fields": [
-            "c_imm12"
-          ],
-          "extension": [
-            "rv32_c"
-          ],
-          "match": "0x2001",
           "mask": "0xe003"
         },
         "C.LI": {
@@ -4753,6 +4686,18 @@
           "match": "0x8c61",
           "mask": "0xfc63"
         },
+        "C.ADD": {
+          "encoding": "----------------1001----------10",
+          "variable_fields": [
+            "rd_rs1_n0",
+            "c_rs2_n0"
+          ],
+          "extension": [
+            "rv_c"
+          ],
+          "match": "0x9002",
+          "mask": "0xf003"
+        },
         "C.J": {
           "encoding": "----------------101-----------01",
           "variable_fields": [
@@ -4871,6 +4816,107 @@
           "match": "0x9002",
           "mask": "0xf07f"
         },
+        "C.JAL": {
+          "encoding": "----------------001-----------01",
+          "variable_fields": [
+            "c_imm12"
+          ],
+          "extension": [
+            "rv32_c"
+          ],
+          "match": "0x2001",
+          "mask": "0xe003"
+        },
+        "C.LD": {
+          "encoding": "----------------011-----------00",
+          "variable_fields": [
+            "rd_p",
+            "rs1_p",
+            "c_uimm8lo",
+            "c_uimm8hi"
+          ],
+          "extension": [
+            "rv64_c"
+          ],
+          "match": "0x6000",
+          "mask": "0xe003"
+        },
+        "C.SD": {
+          "encoding": "----------------111-----------00",
+          "variable_fields": [
+            "rs1_p",
+            "rs2_p",
+            "c_uimm8hi",
+            "c_uimm8lo"
+          ],
+          "extension": [
+            "rv64_c"
+          ],
+          "match": "0xe000",
+          "mask": "0xe003"
+        },
+        "C.LDSP": {
+          "encoding": "----------------011-----------10",
+          "variable_fields": [
+            "rd_n0",
+            "c_uimm9sphi",
+            "c_uimm9splo"
+          ],
+          "extension": [
+            "rv64_c"
+          ],
+          "match": "0x6002",
+          "mask": "0xe003"
+        },
+        "C.SDSP": {
+          "encoding": "----------------111-----------10",
+          "variable_fields": [
+            "c_rs2",
+            "c_uimm9sp_s"
+          ],
+          "extension": [
+            "rv64_c"
+          ],
+          "match": "0xe002",
+          "mask": "0xe003"
+        },
+        "C.ADDIW": {
+          "encoding": "----------------001-----------01",
+          "variable_fields": [
+            "rd_rs1_n0",
+            "c_imm6lo",
+            "c_imm6hi"
+          ],
+          "extension": [
+            "rv64_c"
+          ],
+          "match": "0x2001",
+          "mask": "0xe003"
+        },
+        "C.ADDW": {
+          "encoding": "----------------100111---01---01",
+          "variable_fields": [
+            "rd_rs1_p",
+            "rs2_p"
+          ],
+          "extension": [
+            "rv64_c"
+          ],
+          "match": "0x9c21",
+          "mask": "0xfc63"
+        },
+        "C.SUBW": {
+          "encoding": "----------------100111---00---01",
+          "variable_fields": [
+            "rd_rs1_p",
+            "rs2_p"
+          ],
+          "extension": [
+            "rv64_c"
+          ],
+          "match": "0x9c01",
+          "mask": "0xfc63"
+        },
         "C.FLW": {
           "encoding": "----------------011-----------00",
           "variable_fields": [
@@ -4976,108 +5022,6 @@
           ],
           "match": "0xa002",
           "mask": "0xe003"
-        },
-        "C.LD": {
-          "encoding": "----------------011-----------00",
-          "variable_fields": [
-            "rd_p",
-            "rs1_p",
-            "c_uimm8lo",
-            "c_uimm8hi"
-          ],
-          "extension": [
-            "rv64_c"
-          ],
-          "match": "0x6000",
-          "mask": "0xe003"
-        },
-        "C.SD": {
-          "encoding": "----------------111-----------00",
-          "variable_fields": [
-            "rs1_p",
-            "rs2_p",
-            "c_uimm8hi",
-            "c_uimm8lo"
-          ],
-          "extension": [
-            "rv64_c"
-          ],
-          "match": "0xe000",
-          "mask": "0xe003"
-        },
-        "C.ADDIW": {
-          "encoding": "----------------001-----------01",
-          "variable_fields": [
-            "rd_rs1_n0",
-            "c_imm6lo",
-            "c_imm6hi"
-          ],
-          "extension": [
-            "rv64_c"
-          ],
-          "match": "0x2001",
-          "mask": "0xe003"
-        },
-        "C.ADD": {
-          "encoding": "----------------1001----------10",
-          "variable_fields": [
-            "rd_rs1_n0",
-            "c_rs2_n0"
-          ],
-          "extension": [
-            "rv_c"
-          ],
-          "match": "0x9002",
-          "mask": "0xf003"
-        },
-        "C.SUBW": {
-          "encoding": "----------------100111---00---01",
-          "variable_fields": [
-            "rd_rs1_p",
-            "rs2_p"
-          ],
-          "extension": [
-            "rv64_c"
-          ],
-          "match": "0x9c01",
-          "mask": "0xfc63"
-        },
-        "C.ADDW": {
-          "encoding": "----------------100111---01---01",
-          "variable_fields": [
-            "rd_rs1_p",
-            "rs2_p"
-          ],
-          "extension": [
-            "rv64_c"
-          ],
-          "match": "0x9c21",
-          "mask": "0xfc63"
-        },
-        "C.LDSP": {
-          "encoding": "----------------011-----------10",
-          "variable_fields": [
-            "rd_n0",
-            "c_uimm9sphi",
-            "c_uimm9splo"
-          ],
-          "extension": [
-            "rv64_c"
-          ],
-          "match": "0x6002",
-          "mask": "0xe003"
-        },
-        "C.SDSP": {
-          "encoding": "----------------111-----------10",
-          "variable_fields": [
-            "c_rs2",
-            "c_uimm9sp_s"
-          ],
-          "extension": [
-            "rv64_c"
-          ],
-          "match": "0xe002",
-          "mask": "0xe003"
         }
       },
       "url": "https://github.com/riscv/riscv-isa-manual"
@@ -5146,21 +5090,6 @@
           "match": "0x2000047",
           "mask": "0x600007f"
         },
-        "FNMSUB.D": {
-          "encoding": "-----01------------------1001011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "rs3",
-            "rm"
-          ],
-          "extension": [
-            "rv_d"
-          ],
-          "match": "0x200004b",
-          "mask": "0x600007f"
-        },
         "FNMADD.D": {
           "encoding": "-----01------------------1001111",
           "variable_fields": [
@@ -5174,6 +5103,21 @@
             "rv_d"
           ],
           "match": "0x200004f",
+          "mask": "0x600007f"
+        },
+        "FNMSUB.D": {
+          "encoding": "-----01------------------1001011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "rs3",
+            "rm"
+          ],
+          "extension": [
+            "rv_d"
+          ],
+          "match": "0x200004b",
           "mask": "0x600007f"
         },
         "FADD.D": {
@@ -5310,8 +5254,8 @@
           "match": "0x2a001053",
           "mask": "0xfe00707f"
         },
-        "FLE.D": {
-          "encoding": "1010001----------000-----1010011",
+        "FEQ.D": {
+          "encoding": "1010001----------010-----1010011",
           "variable_fields": [
             "rd",
             "rs1",
@@ -5320,7 +5264,7 @@
           "extension": [
             "rv_d"
           ],
-          "match": "0xa2000053",
+          "match": "0xa2002053",
           "mask": "0xfe00707f"
         },
         "FLT.D": {
@@ -5336,8 +5280,8 @@
           "match": "0xa2001053",
           "mask": "0xfe00707f"
         },
-        "FEQ.D": {
-          "encoding": "1010001----------010-----1010011",
+        "FLE.D": {
+          "encoding": "1010001----------000-----1010011",
           "variable_fields": [
             "rd",
             "rs1",
@@ -5346,7 +5290,7 @@
           "extension": [
             "rv_d"
           ],
-          "match": "0xa2002053",
+          "match": "0xa2000053",
           "mask": "0xfe00707f"
         },
         "FCVT.W.D": {
@@ -5399,6 +5343,58 @@
             "rv_d"
           ],
           "match": "0xd2100053",
+          "mask": "0xfff0007f"
+        },
+        "FCVT.L.D": {
+          "encoding": "110000100010-------------1010011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rm"
+          ],
+          "extension": [
+            "rv64_d"
+          ],
+          "match": "0xc2200053",
+          "mask": "0xfff0007f"
+        },
+        "FCVT.LU.D": {
+          "encoding": "110000100011-------------1010011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rm"
+          ],
+          "extension": [
+            "rv64_d"
+          ],
+          "match": "0xc2300053",
+          "mask": "0xfff0007f"
+        },
+        "FCVT.D.L": {
+          "encoding": "110100100010-------------1010011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rm"
+          ],
+          "extension": [
+            "rv64_d"
+          ],
+          "match": "0xd2200053",
+          "mask": "0xfff0007f"
+        },
+        "FCVT.D.LU": {
+          "encoding": "110100100011-------------1010011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rm"
+          ],
+          "extension": [
+            "rv64_d"
+          ],
+          "match": "0xd2300053",
           "mask": "0xfff0007f"
         },
         "FCVT.S.D": {
@@ -5462,58 +5458,6 @@
           ],
           "match": "0xe2001053",
           "mask": "0xfff0707f"
-        },
-        "FCVT.L.D": {
-          "encoding": "110000100010-------------1010011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rm"
-          ],
-          "extension": [
-            "rv64_d"
-          ],
-          "match": "0xc2200053",
-          "mask": "0xfff0007f"
-        },
-        "FCVT.LU.D": {
-          "encoding": "110000100011-------------1010011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rm"
-          ],
-          "extension": [
-            "rv64_d"
-          ],
-          "match": "0xc2300053",
-          "mask": "0xfff0007f"
-        },
-        "FCVT.D.L": {
-          "encoding": "110100100010-------------1010011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rm"
-          ],
-          "extension": [
-            "rv64_d"
-          ],
-          "match": "0xd2200053",
-          "mask": "0xfff0007f"
-        },
-        "FCVT.D.LU": {
-          "encoding": "110100100011-------------1010011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rm"
-          ],
-          "extension": [
-            "rv64_d"
-          ],
-          "match": "0xd2300053",
-          "mask": "0xfff0007f"
         }
       },
       "url": "https://github.com/riscv/riscv-isa-manual"
@@ -5582,21 +5526,6 @@
           "match": "0x47",
           "mask": "0x600007f"
         },
-        "FNMSUB.S": {
-          "encoding": "-----00------------------1001011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "rs3",
-            "rm"
-          ],
-          "extension": [
-            "rv_f"
-          ],
-          "match": "0x4b",
-          "mask": "0x600007f"
-        },
         "FNMADD.S": {
           "encoding": "-----00------------------1001111",
           "variable_fields": [
@@ -5610,6 +5539,21 @@
             "rv_f"
           ],
           "match": "0x4f",
+          "mask": "0x600007f"
+        },
+        "FNMSUB.S": {
+          "encoding": "-----00------------------1001011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "rs3",
+            "rm"
+          ],
+          "extension": [
+            "rv_f"
+          ],
+          "match": "0x4b",
           "mask": "0x600007f"
         },
         "FADD.S": {
@@ -5746,8 +5690,8 @@
           "match": "0x28001053",
           "mask": "0xfe00707f"
         },
-        "FLE.S": {
-          "encoding": "1010000----------000-----1010011",
+        "FEQ.S": {
+          "encoding": "1010000----------010-----1010011",
           "variable_fields": [
             "rd",
             "rs1",
@@ -5756,7 +5700,7 @@
           "extension": [
             "rv_f"
           ],
-          "match": "0xa0000053",
+          "match": "0xa0002053",
           "mask": "0xfe00707f"
         },
         "FLT.S": {
@@ -5772,8 +5716,8 @@
           "match": "0xa0001053",
           "mask": "0xfe00707f"
         },
-        "FEQ.S": {
-          "encoding": "1010000----------010-----1010011",
+        "FLE.S": {
+          "encoding": "1010000----------000-----1010011",
           "variable_fields": [
             "rd",
             "rs1",
@@ -5782,7 +5726,7 @@
           "extension": [
             "rv_f"
           ],
-          "match": "0xa0002053",
+          "match": "0xa0000053",
           "mask": "0xfe00707f"
         },
         "FCVT.W.S": {
@@ -5837,42 +5781,6 @@
           "match": "0xd0100053",
           "mask": "0xfff0007f"
         },
-        "FMV.X.W": {
-          "encoding": "111000000000-----000-----1010011",
-          "variable_fields": [
-            "rd",
-            "rs1"
-          ],
-          "extension": [
-            "rv_f"
-          ],
-          "match": "0xe0000053",
-          "mask": "0xfff0707f"
-        },
-        "FMV.W.X": {
-          "encoding": "111100000000-----000-----1010011",
-          "variable_fields": [
-            "rd",
-            "rs1"
-          ],
-          "extension": [
-            "rv_f"
-          ],
-          "match": "0xf0000053",
-          "mask": "0xfff0707f"
-        },
-        "FCLASS.S": {
-          "encoding": "111000000000-----001-----1010011",
-          "variable_fields": [
-            "rd",
-            "rs1"
-          ],
-          "extension": [
-            "rv_f"
-          ],
-          "match": "0xe0001053",
-          "mask": "0xfff0707f"
-        },
         "FCVT.L.S": {
           "encoding": "110000000010-------------1010011",
           "variable_fields": [
@@ -5924,6 +5832,42 @@
           ],
           "match": "0xd0300053",
           "mask": "0xfff0007f"
+        },
+        "FMV.X.W": {
+          "encoding": "111000000000-----000-----1010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_f"
+          ],
+          "match": "0xe0000053",
+          "mask": "0xfff0707f"
+        },
+        "FMV.W.X": {
+          "encoding": "111100000000-----000-----1010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_f"
+          ],
+          "match": "0xf0000053",
+          "mask": "0xfff0707f"
+        },
+        "FCLASS.S": {
+          "encoding": "111000000000-----001-----1010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_f"
+          ],
+          "match": "0xe0001053",
+          "mask": "0xfff0707f"
         }
       },
       "url": "https://github.com/riscv/riscv-isa-manual"
@@ -6693,21 +6637,6 @@
           "match": "0x6000047",
           "mask": "0x600007f"
         },
-        "FNMSUB.Q": {
-          "encoding": "-----11------------------1001011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "rs3",
-            "rm"
-          ],
-          "extension": [
-            "rv_q"
-          ],
-          "match": "0x600004b",
-          "mask": "0x600007f"
-        },
         "FNMADD.Q": {
           "encoding": "-----11------------------1001111",
           "variable_fields": [
@@ -6721,6 +6650,21 @@
             "rv_q"
           ],
           "match": "0x600004f",
+          "mask": "0x600007f"
+        },
+        "FNMSUB.Q": {
+          "encoding": "-----11------------------1001011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "rs3",
+            "rm"
+          ],
+          "extension": [
+            "rv_q"
+          ],
+          "match": "0x600004b",
           "mask": "0x600007f"
         },
         "FADD.Q": {
@@ -6857,8 +6801,8 @@
           "match": "0x2e001053",
           "mask": "0xfe00707f"
         },
-        "FLE.Q": {
-          "encoding": "1010011----------000-----1010011",
+        "FEQ.Q": {
+          "encoding": "1010011----------010-----1010011",
           "variable_fields": [
             "rd",
             "rs1",
@@ -6867,7 +6811,7 @@
           "extension": [
             "rv_q"
           ],
-          "match": "0xa6000053",
+          "match": "0xa6002053",
           "mask": "0xfe00707f"
         },
         "FLT.Q": {
@@ -6883,8 +6827,8 @@
           "match": "0xa6001053",
           "mask": "0xfe00707f"
         },
-        "FEQ.Q": {
-          "encoding": "1010011----------010-----1010011",
+        "FLE.Q": {
+          "encoding": "1010011----------000-----1010011",
           "variable_fields": [
             "rd",
             "rs1",
@@ -6893,7 +6837,7 @@
           "extension": [
             "rv_q"
           ],
-          "match": "0xa6002053",
+          "match": "0xa6000053",
           "mask": "0xfe00707f"
         },
         "FCVT.W.Q": {
@@ -7052,18 +6996,6 @@
           "match": "0x46100053",
           "mask": "0xfff0007f"
         },
-        "FCLASS.Q": {
-          "encoding": "111001100000-----001-----1010011",
-          "variable_fields": [
-            "rd",
-            "rs1"
-          ],
-          "extension": [
-            "rv_q"
-          ],
-          "match": "0xe6001053",
-          "mask": "0xfff0707f"
-        },
         "FMV.X.Q": {
           "encoding": "111000110000-----000-----1010011",
           "variable_fields": [
@@ -7086,6 +7018,18 @@
             "rv_q"
           ],
           "match": "0xf3000053",
+          "mask": "0xfff0707f"
+        },
+        "FCLASS.Q": {
+          "encoding": "111001100000-----001-----1010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_q"
+          ],
+          "match": "0xe6001053",
           "mask": "0xfff0707f"
         }
       },
@@ -7138,6 +7082,15 @@
       "use": "User privilege level (Volume II)",
       "discontinued": 0,
       "instructions": {
+        "URET": {
+          "encoding": "00000000001000000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_u"
+          ],
+          "match": "0x200073",
+          "mask": "0xffffffff"
+        },
         "ECALL": {
           "encoding": "00000000000000000000000001110011",
           "variable_fields": [],
@@ -7154,15 +7107,6 @@
             "rv_i"
           ],
           "match": "0x100073",
-          "mask": "0xffffffff"
-        },
-        "URET": {
-          "encoding": "00000000001000000000000001110011",
-          "variable_fields": [],
-          "extension": [
-            "rv_u"
-          ],
-          "match": "0x200073",
           "mask": "0xffffffff"
         }
       },
@@ -7201,173 +7145,18 @@
           "match": "0x7057",
           "mask": "0x8000707f"
         },
-        "VADD.VV": {
-          "encoding": "000000-----------000-----1010111",
+        "VSETIVLI": {
+          "encoding": "11---------------111-----1010111",
           "variable_fields": [
-            "vm",
-            "vs2",
-            "vs1",
-            "vd"
+            "zimm10",
+            "zimm5",
+            "rd"
           ],
           "extension": [
             "rv_v"
           ],
-          "match": "0x57",
-          "mask": "0xfc00707f"
-        },
-        "VADD.VX": {
-          "encoding": "000000-----------100-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x4057",
-          "mask": "0xfc00707f"
-        },
-        "VSUB.VV": {
-          "encoding": "000010-----------000-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "vs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x8000057",
-          "mask": "0xfc00707f"
-        },
-        "VSUB.VX": {
-          "encoding": "000010-----------100-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x8004057",
-          "mask": "0xfc00707f"
-        },
-        "VAND.VV": {
-          "encoding": "001001-----------000-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "vs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x24000057",
-          "mask": "0xfc00707f"
-        },
-        "VAND.VX": {
-          "encoding": "001001-----------100-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x24004057",
-          "mask": "0xfc00707f"
-        },
-        "VOR.VV": {
-          "encoding": "001010-----------000-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "vs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x28000057",
-          "mask": "0xfc00707f"
-        },
-        "VOR.VX": {
-          "encoding": "001010-----------100-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x28004057",
-          "mask": "0xfc00707f"
-        },
-        "VXOR.VV": {
-          "encoding": "001011-----------000-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "vs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x2c000057",
-          "mask": "0xfc00707f"
-        },
-        "VXOR.VX": {
-          "encoding": "001011-----------100-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x2c004057",
-          "mask": "0xfc00707f"
-        },
-        "VMUL.VV": {
-          "encoding": "100101-----------010-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "vs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x94002057",
-          "mask": "0xfc00707f"
-        },
-        "VMUL.VX": {
-          "encoding": "100101-----------110-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x94006057",
-          "mask": "0xfc00707f"
+          "match": "0xc0007057",
+          "mask": "0xc000707f"
         },
         "VLE8.V": {
           "encoding": "000000-00000-----000-----0000111",
@@ -7421,6 +7210,18 @@
           "match": "0x7007",
           "mask": "0xfdf0707f"
         },
+        "VLM.V": {
+          "encoding": "000000101011-----000-----0000111",
+          "variable_fields": [
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x2b00007",
+          "mask": "0xfff0707f"
+        },
         "VSE8.V": {
           "encoding": "000000-00000-----000-----0100111",
           "variable_fields": [
@@ -7473,362 +7274,6 @@
           "match": "0x7027",
           "mask": "0xfdf0707f"
         },
-        "VLSE32.V": {
-          "encoding": "000010-----------110-----0000111",
-          "variable_fields": [
-            "vm",
-            "rs2",
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x8006007",
-          "mask": "0xfc00707f"
-        },
-        "VSSE32.V": {
-          "encoding": "000010-----------110-----0100111",
-          "variable_fields": [
-            "vm",
-            "rs2",
-            "rs1",
-            "vs3"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x8006027",
-          "mask": "0xfc00707f"
-        },
-        "VMSEQ.VV": {
-          "encoding": "011000-----------000-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "vs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x60000057",
-          "mask": "0xfc00707f"
-        },
-        "VMSEQ.VX": {
-          "encoding": "011000-----------100-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x60004057",
-          "mask": "0xfc00707f"
-        },
-        "VMSNE.VV": {
-          "encoding": "011001-----------000-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "vs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x64000057",
-          "mask": "0xfc00707f"
-        },
-        "VMSNE.VX": {
-          "encoding": "011001-----------100-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x64004057",
-          "mask": "0xfc00707f"
-        },
-        "VMSLTU.VV": {
-          "encoding": "011010-----------000-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "vs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x68000057",
-          "mask": "0xfc00707f"
-        },
-        "VMSLTU.VX": {
-          "encoding": "011010-----------100-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x68004057",
-          "mask": "0xfc00707f"
-        },
-        "VMSLT.VV": {
-          "encoding": "011011-----------000-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "vs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x6c000057",
-          "mask": "0xfc00707f"
-        },
-        "VMSLT.VX": {
-          "encoding": "011011-----------100-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x6c004057",
-          "mask": "0xfc00707f"
-        },
-        "VMSLEU.VV": {
-          "encoding": "011100-----------000-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "vs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x70000057",
-          "mask": "0xfc00707f"
-        },
-        "VMSLEU.VX": {
-          "encoding": "011100-----------100-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x70004057",
-          "mask": "0xfc00707f"
-        },
-        "VMSLE.VV": {
-          "encoding": "011101-----------000-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "vs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x74000057",
-          "mask": "0xfc00707f"
-        },
-        "VMSLE.VX": {
-          "encoding": "011101-----------100-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x74004057",
-          "mask": "0xfc00707f"
-        },
-        "VREDSUM.VS": {
-          "encoding": "000000-----------010-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "vs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x2057",
-          "mask": "0xfc00707f"
-        },
-        "VMACC.VV": {
-          "encoding": "101101-----------010-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "vs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0xb4002057",
-          "mask": "0xfc00707f"
-        },
-        "VMACC.VX": {
-          "encoding": "101101-----------110-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0xb4006057",
-          "mask": "0xfc00707f"
-        },
-        "VFMV.V.F": {
-          "encoding": "010111100000-----101-----1010111",
-          "variable_fields": [
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x5e005057",
-          "mask": "0xfff0707f"
-        },
-        "VFMV.F.S": {
-          "encoding": "0100001-----00000001-----1010111",
-          "variable_fields": [
-            "vs2",
-            "rd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x42001057",
-          "mask": "0xfe0ff07f"
-        },
-        "VFMACC.VV": {
-          "encoding": "101100-----------001-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "vs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0xb0001057",
-          "mask": "0xfc00707f"
-        },
-        "VFMACC.VF": {
-          "encoding": "101100-----------101-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0xb0005057",
-          "mask": "0xfc00707f"
-        },
-        "VSLIDEUP.VI": {
-          "encoding": "001110-----------011-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "zimm5",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x38003057",
-          "mask": "0xfc00707f"
-        },
-        "VSLIDEDOWN.VI": {
-          "encoding": "001111-----------011-----1010111",
-          "variable_fields": [
-            "vm",
-            "vs2",
-            "zimm5",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x3c003057",
-          "mask": "0xfc00707f"
-        },
-        "VCOMPRESS.VM": {
-          "encoding": "0101111----------010-----1010111",
-          "variable_fields": [
-            "vs2",
-            "vs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x5e002057",
-          "mask": "0xfe00707f"
-        },
-        "VSETIVLI": {
-          "encoding": "11---------------111-----1010111",
-          "variable_fields": [
-            "zimm10",
-            "zimm5",
-            "rd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0xc0007057",
-          "mask": "0xc000707f"
-        },
-        "VLM.V": {
-          "encoding": "000000101011-----000-----0000111",
-          "variable_fields": [
-            "rs1",
-            "vd"
-          ],
-          "extension": [
-            "rv_v"
-          ],
-          "match": "0x2b00007",
-          "mask": "0xfff0707f"
-        },
         "VSM.V": {
           "encoding": "000000101011-----000-----0100111",
           "variable_fields": [
@@ -7867,6 +7312,20 @@
             "rv_v"
           ],
           "match": "0x8005007",
+          "mask": "0xfc00707f"
+        },
+        "VLSE32.V": {
+          "encoding": "000010-----------110-----0000111",
+          "variable_fields": [
+            "vm",
+            "rs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x8006007",
           "mask": "0xfc00707f"
         },
         "VLSE64.V": {
@@ -7909,6 +7368,20 @@
             "rv_v"
           ],
           "match": "0x8005027",
+          "mask": "0xfc00707f"
+        },
+        "VSSE32.V": {
+          "encoding": "000010-----------110-----0100111",
+          "variable_fields": [
+            "vm",
+            "rs2",
+            "rs1",
+            "vs3"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x8006027",
           "mask": "0xfc00707f"
         },
         "VSSE64.V": {
@@ -8389,6 +7862,34 @@
           "match": "0xe2800027",
           "mask": "0xfff0707f"
         },
+        "VADD.VV": {
+          "encoding": "000000-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x57",
+          "mask": "0xfc00707f"
+        },
+        "VADD.VX": {
+          "encoding": "000000-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x4057",
+          "mask": "0xfc00707f"
+        },
         "VADD.VI": {
           "encoding": "000000-----------011-----1010111",
           "variable_fields": [
@@ -8401,6 +7902,34 @@
             "rv_v"
           ],
           "match": "0x3057",
+          "mask": "0xfc00707f"
+        },
+        "VSUB.VV": {
+          "encoding": "000010-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x8000057",
+          "mask": "0xfc00707f"
+        },
+        "VSUB.VX": {
+          "encoding": "000010-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x8004057",
           "mask": "0xfc00707f"
         },
         "VRSUB.VX": {
@@ -8673,6 +8202,34 @@
           "match": "0x4c004057",
           "mask": "0xfe00707f"
         },
+        "VAND.VV": {
+          "encoding": "001001-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x24000057",
+          "mask": "0xfc00707f"
+        },
+        "VAND.VX": {
+          "encoding": "001001-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x24004057",
+          "mask": "0xfc00707f"
+        },
         "VAND.VI": {
           "encoding": "001001-----------011-----1010111",
           "variable_fields": [
@@ -8687,6 +8244,34 @@
           "match": "0x24003057",
           "mask": "0xfc00707f"
         },
+        "VOR.VV": {
+          "encoding": "001010-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x28000057",
+          "mask": "0xfc00707f"
+        },
+        "VOR.VX": {
+          "encoding": "001010-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x28004057",
+          "mask": "0xfc00707f"
+        },
         "VOR.VI": {
           "encoding": "001010-----------011-----1010111",
           "variable_fields": [
@@ -8699,6 +8284,34 @@
             "rv_v"
           ],
           "match": "0x28003057",
+          "mask": "0xfc00707f"
+        },
+        "VXOR.VV": {
+          "encoding": "001011-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x2c000057",
+          "mask": "0xfc00707f"
+        },
+        "VXOR.VX": {
+          "encoding": "001011-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x2c004057",
           "mask": "0xfc00707f"
         },
         "VXOR.VI": {
@@ -8925,6 +8538,34 @@
           "match": "0xb4003057",
           "mask": "0xfc00707f"
         },
+        "VMSEQ.VV": {
+          "encoding": "011000-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x60000057",
+          "mask": "0xfc00707f"
+        },
+        "VMSEQ.VX": {
+          "encoding": "011000-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x60004057",
+          "mask": "0xfc00707f"
+        },
         "VMSEQ.VI": {
           "encoding": "011000-----------011-----1010111",
           "variable_fields": [
@@ -8937,6 +8578,34 @@
             "rv_v"
           ],
           "match": "0x60003057",
+          "mask": "0xfc00707f"
+        },
+        "VMSNE.VV": {
+          "encoding": "011001-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x64000057",
+          "mask": "0xfc00707f"
+        },
+        "VMSNE.VX": {
+          "encoding": "011001-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x64004057",
           "mask": "0xfc00707f"
         },
         "VMSNE.VI": {
@@ -8953,6 +8622,90 @@
           "match": "0x64003057",
           "mask": "0xfc00707f"
         },
+        "VMSLTU.VV": {
+          "encoding": "011010-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x68000057",
+          "mask": "0xfc00707f"
+        },
+        "VMSLTU.VX": {
+          "encoding": "011010-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x68004057",
+          "mask": "0xfc00707f"
+        },
+        "VMSLT.VV": {
+          "encoding": "011011-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x6c000057",
+          "mask": "0xfc00707f"
+        },
+        "VMSLT.VX": {
+          "encoding": "011011-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x6c004057",
+          "mask": "0xfc00707f"
+        },
+        "VMSLEU.VV": {
+          "encoding": "011100-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x70000057",
+          "mask": "0xfc00707f"
+        },
+        "VMSLEU.VX": {
+          "encoding": "011100-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x70004057",
+          "mask": "0xfc00707f"
+        },
         "VMSLEU.VI": {
           "encoding": "011100-----------011-----1010111",
           "variable_fields": [
@@ -8965,6 +8718,34 @@
             "rv_v"
           ],
           "match": "0x70003057",
+          "mask": "0xfc00707f"
+        },
+        "VMSLE.VV": {
+          "encoding": "011101-----------000-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x74000057",
+          "mask": "0xfc00707f"
+        },
+        "VMSLE.VX": {
+          "encoding": "011101-----------100-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x74004057",
           "mask": "0xfc00707f"
         },
         "VMSLE.VI": {
@@ -9147,6 +8928,34 @@
             "rv_v"
           ],
           "match": "0x1c004057",
+          "mask": "0xfc00707f"
+        },
+        "VMUL.VV": {
+          "encoding": "100101-----------010-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x94002057",
+          "mask": "0xfc00707f"
+        },
+        "VMUL.VX": {
+          "encoding": "100101-----------110-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x94006057",
           "mask": "0xfc00707f"
         },
         "VMULH.VV": {
@@ -9427,6 +9236,34 @@
             "rv_v"
           ],
           "match": "0x8c006057",
+          "mask": "0xfc00707f"
+        },
+        "VMACC.VV": {
+          "encoding": "101101-----------010-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0xb4002057",
+          "mask": "0xfc00707f"
+        },
+        "VMACC.VX": {
+          "encoding": "101101-----------110-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0xb4006057",
           "mask": "0xfc00707f"
         },
         "VNMSAC.VV": {
@@ -10302,6 +10139,34 @@
           "match": "0xe0005057",
           "mask": "0xfc00707f"
         },
+        "VFMACC.VV": {
+          "encoding": "101100-----------001-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0xb0001057",
+          "mask": "0xfc00707f"
+        },
+        "VFMACC.VF": {
+          "encoding": "101100-----------101-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0xb0005057",
+          "mask": "0xfc00707f"
+        },
         "VFNMACC.VV": {
           "encoding": "101101-----------001-----1010111",
           "variable_fields": [
@@ -10955,6 +10820,18 @@
           "match": "0x5c005057",
           "mask": "0xfe00707f"
         },
+        "VFMV.V.F": {
+          "encoding": "010111100000-----101-----1010111",
+          "variable_fields": [
+            "rs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x5e005057",
+          "mask": "0xfff0707f"
+        },
         "VFCVT.XU.F.V": {
           "encoding": "010010------00000001-----1010111",
           "variable_fields": [
@@ -11227,6 +11104,20 @@
           ],
           "match": "0x480a9057",
           "mask": "0xfc0ff07f"
+        },
+        "VREDSUM.VS": {
+          "encoding": "000000-----------010-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x2057",
+          "mask": "0xfc00707f"
         },
         "VREDMAXU.VS": {
           "encoding": "000110-----------010-----1010111",
@@ -11656,6 +11547,18 @@
           "match": "0x42006057",
           "mask": "0xfff0707f"
         },
+        "VFMV.F.S": {
+          "encoding": "0100001-----00000001-----1010111",
+          "variable_fields": [
+            "vs2",
+            "rd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x42001057",
+          "mask": "0xfe0ff07f"
+        },
         "VFMV.S.F": {
           "encoding": "010000100000-----101-----1010111",
           "variable_fields": [
@@ -11682,6 +11585,20 @@
           "match": "0x38004057",
           "mask": "0xfc00707f"
         },
+        "VSLIDEUP.VI": {
+          "encoding": "001110-----------011-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "zimm5",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x38003057",
+          "mask": "0xfc00707f"
+        },
         "VSLIDEDOWN.VX": {
           "encoding": "001111-----------100-----1010111",
           "variable_fields": [
@@ -11694,6 +11611,20 @@
             "rv_v"
           ],
           "match": "0x3c004057",
+          "mask": "0xfc00707f"
+        },
+        "VSLIDEDOWN.VI": {
+          "encoding": "001111-----------011-----1010111",
+          "variable_fields": [
+            "vm",
+            "vs2",
+            "zimm5",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x3c003057",
           "mask": "0xfc00707f"
         },
         "VSLIDE1UP.VX": {
@@ -11807,6 +11738,19 @@
           ],
           "match": "0x38000057",
           "mask": "0xfc00707f"
+        },
+        "VCOMPRESS.VM": {
+          "encoding": "0101111----------010-----1010111",
+          "variable_fields": [
+            "vs2",
+            "vs1",
+            "vd"
+          ],
+          "extension": [
+            "rv_v"
+          ],
+          "match": "0x5e002057",
+          "mask": "0xfe00707f"
         },
         "VMV1R.V": {
           "encoding": "1001111-----00000011-----1010111",
@@ -12031,57 +11975,6 @@
           "match": "0x40004033",
           "mask": "0xfe00707f"
         },
-        "ROL": {
-          "encoding": "0110000----------001-----0110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2"
-          ],
-          "extension": [
-            "rv_zbb",
-            "rv_zkn",
-            "rv_zks",
-            "rv_zk",
-            "rv_zbkb"
-          ],
-          "match": "0x60001033",
-          "mask": "0xfe00707f"
-        },
-        "ROR": {
-          "encoding": "0110000----------101-----0110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2"
-          ],
-          "extension": [
-            "rv_zbb",
-            "rv_zkn",
-            "rv_zks",
-            "rv_zk",
-            "rv_zbkb"
-          ],
-          "match": "0x60005033",
-          "mask": "0xfe00707f"
-        },
-        "RORI": {
-          "encoding": "011000-----------101-----0010011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "shamtd"
-          ],
-          "extension": [
-            "rv64_zbb",
-            "rv64_zks",
-            "rv64_zkn",
-            "rv64_zk",
-            "rv64_zbkb"
-          ],
-          "match": "0x60005013",
-          "mask": "0xfc00707f"
-        },
         "CLZ": {
           "encoding": "011000000000-----001-----0010011",
           "variable_fields": [
@@ -12116,6 +12009,42 @@
             "rv_zbb"
           ],
           "match": "0x60201013",
+          "mask": "0xfff0707f"
+        },
+        "CLZW": {
+          "encoding": "011000000000-----001-----0011011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv64_zbb"
+          ],
+          "match": "0x6000101b",
+          "mask": "0xfff0707f"
+        },
+        "CTZW": {
+          "encoding": "011000000001-----001-----0011011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv64_zbb"
+          ],
+          "match": "0x6010101b",
+          "mask": "0xfff0707f"
+        },
+        "CPOPW": {
+          "encoding": "011000000010-----001-----0011011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv64_zbb"
+          ],
+          "match": "0x6020101b",
           "mask": "0xfff0707f"
         },
         "MIN": {
@@ -12194,62 +12123,6 @@
           "match": "0x60501013",
           "mask": "0xfff0707f"
         },
-        "SLO": {
-          "encoding": "0010000----------001-----0110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2"
-          ],
-          "extension": [
-            "rv_zbb"
-          ],
-          "match": "0x20001033",
-          "mask": "0xfe00707f",
-          "deprecated": true
-        },
-        "SLOI": {
-          "encoding": "001000-----------001-----0010011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "shamtd"
-          ],
-          "extension": [
-            "rv64_zbb"
-          ],
-          "match": "0x20001013",
-          "mask": "0xfc00707f",
-          "deprecated": true
-        },
-        "SRO": {
-          "encoding": "0010000----------101-----0110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2"
-          ],
-          "extension": [
-            "rv_zbb"
-          ],
-          "match": "0x20005033",
-          "mask": "0xfe00707f",
-          "deprecated": true
-        },
-        "SROI": {
-          "encoding": "001000-----------101-----0010011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "shamtd"
-          ],
-          "extension": [
-            "rv64_zbb"
-          ],
-          "match": "0x20005013",
-          "mask": "0xfc00707f",
-          "deprecated": true
-        },
         "ZEXT.H": {
           "encoding": "000010000000-----100-----0110011",
           "variable_fields": [
@@ -12262,41 +12135,56 @@
           "match": "0x8004033",
           "mask": "0xfff0707f"
         },
-        "CLZW": {
-          "encoding": "011000000000-----001-----0011011",
+        "ROL": {
+          "encoding": "0110000----------001-----0110011",
           "variable_fields": [
             "rd",
-            "rs1"
+            "rs1",
+            "rs2"
           ],
           "extension": [
-            "rv64_zbb"
+            "rv_zbb",
+            "rv_zkn",
+            "rv_zks",
+            "rv_zk",
+            "rv_zbkb"
           ],
-          "match": "0x6000101b",
-          "mask": "0xfff0707f"
+          "match": "0x60001033",
+          "mask": "0xfe00707f"
         },
-        "CTZW": {
-          "encoding": "011000000001-----001-----0011011",
+        "ROR": {
+          "encoding": "0110000----------101-----0110011",
           "variable_fields": [
             "rd",
-            "rs1"
+            "rs1",
+            "rs2"
           ],
           "extension": [
-            "rv64_zbb"
+            "rv_zbb",
+            "rv_zkn",
+            "rv_zks",
+            "rv_zk",
+            "rv_zbkb"
           ],
-          "match": "0x6010101b",
-          "mask": "0xfff0707f"
+          "match": "0x60005033",
+          "mask": "0xfe00707f"
         },
-        "CPOPW": {
-          "encoding": "011000000010-----001-----0011011",
+        "RORI": {
+          "encoding": "011000-----------101-----0010011",
           "variable_fields": [
             "rd",
-            "rs1"
+            "rs1",
+            "shamtd"
           ],
           "extension": [
-            "rv64_zbb"
+            "rv64_zbb",
+            "rv64_zks",
+            "rv64_zkn",
+            "rv64_zk",
+            "rv64_zbkb"
           ],
-          "match": "0x6020101b",
-          "mask": "0xfff0707f"
+          "match": "0x60005013",
+          "mask": "0xfc00707f"
         },
         "ROLW": {
           "encoding": "0110000----------001-----0111011",
@@ -12348,6 +12236,31 @@
           ],
           "match": "0x6000501b",
           "mask": "0xfe00707f"
+        },
+        "REV8": {
+          "encoding": "011010-11000-----101-----0010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zbb",
+            "rv_zbkb"
+          ],
+          "match": "0x69805013",
+          "mask": "0xfdf0707f"
+        },
+        "ORC.B": {
+          "encoding": "001010000111-----101-----0010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zbb"
+          ],
+          "match": "0x28705013",
+          "mask": "0xfff0707f"
         }
       },
       "url": "https://github.com/riscv/riscv-isa-manual"
@@ -17202,6 +17115,55 @@
           ],
           "match": "0x6000501b",
           "mask": "0xfe00707f"
+        },
+        "REV8": {
+          "encoding": "011010-11000-----101-----0010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zbb",
+            "rv_zbkb"
+          ],
+          "match": "0x69805013",
+          "mask": "0xfdf0707f"
+        },
+        "BREV8": {
+          "encoding": "011010000111-----101-----0010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zbkb"
+          ],
+          "match": "0x68705013",
+          "mask": "0xfff0707f"
+        },
+        "ZIP": {
+          "encoding": "000010001111-----001-----0010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv32_zbkb"
+          ],
+          "match": "0x08f01013",
+          "mask": "0xfff0707f"
+        },
+        "UNZIP": {
+          "encoding": "000010001110-----001-----0010011",
+          "variable_fields": [
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv32_zbkb"
+          ],
+          "match": "0x08e01013",
+          "mask": "0xfff0707f"
         }
       }
     },

@@ -126,7 +126,8 @@ for (const [extId, mnemonics] of Object.entries(extensionInstructions)) {
   }
 
   for (const { entry } of locations) {
-    if (!entry.instructions || typeof entry.instructions !== 'object') entry.instructions = {};
+    // Reset instructions to ensure catalog integrity (prevents "ghost entries")
+    entry.instructions = {};
     for (const mnemonic of mnemonics) {
       const key = mnemonicToInstrDictKey(mnemonic);
       const details = instrDict[key];
