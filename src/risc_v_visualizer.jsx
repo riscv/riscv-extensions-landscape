@@ -7,6 +7,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   Copy,
+  Share2,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
@@ -14,6 +15,27 @@ import extensions from './riscv_extensions.json';
 
 const BIT_WIDTH = 32n;
 const BIT_MASK_32 = (1n << BIT_WIDTH) - 1n;
+
+const allExtensions = Object.values(extensions).flat().filter(Boolean);
+
+const getExtensionById = (id) => {
+  const normalizedId = String(id || '').trim().toLowerCase();
+  if (!normalizedId) return null;
+  return allExtensions.find((ext) => ext.id.toLowerCase() === normalizedId) || null;
+};
+
+const getInitialSelectedExtension = () => {
+  if (typeof window === 'undefined') return null;
+  const extId = new URLSearchParams(window.location.search).get('ext');
+  return getExtensionById(extId);
+};
+
+const buildExtensionPermalink = (extId) => {
+  if (typeof window === 'undefined') return '';
+  const url = new URL(window.location.href);
+  url.searchParams.set('ext', extId);
+  return url.toString();
+};
 
 const normalizeMnemonicKey = (value) => String(value ?? '').trim().toUpperCase().split(/\s+/)[0];
 
@@ -566,9 +588,10 @@ const EncodingDiagram = ({ encoding }) => {
 const RISCVExplorer = () => {
   const [activeProfile, setActiveProfile] = useState(null);
   const [activeVolume, setActiveVolume] = useState(null);
-  const [selectedExt, setSelectedExt] = useState(null);
+  const [selectedExt, setSelectedExt] = useState(getInitialSelectedExtension);
   const [selectedInstruction, setSelectedInstruction] = useState(null);
   const [copyStatus, setCopyStatus] = useState(null);
+  const [shareStatus, setShareStatus] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchMatches, setSearchMatches] = useState(null);
   const [encoderValidatorOpen, setEncoderValidatorOpen] = useState(false);
@@ -2076,6 +2099,10 @@ const RISCVExplorer = () => {
       )
     : [];
 
+  React.useEffect(() => {
+    setShareStatus(null);
+  }, [selectedExt?.id]);
+
   const formatInstructionForClipboard = React.useCallback((ext, instr) => {
     if (!ext || !instr) return '';
     const lines = [
@@ -2128,11 +2155,17 @@ const RISCVExplorer = () => {
     }
   }, []);
 
+  const copySelectedExtensionPermalink = React.useCallback(async () => {
+    if (!selectedExt) return;
+    const ok = await copyTextToClipboard(buildExtensionPermalink(selectedExt.id));
+    setShareStatus(ok ? 'copied' : 'failed');
+    window.setTimeout(() => setShareStatus(null), 1500);
+  }, [copyTextToClipboard, selectedExt]);
+
   const allInstructionPatterns = React.useMemo(() => {
     const patterns = [];
-    const allExts = Object.values(extensions).flat().filter(Boolean);
 
-    for (const ext of allExts) {
+    for (const ext of allExtensions) {
       const instructions = ext?.instructions;
       if (!instructions || typeof instructions !== 'object') continue;
 
@@ -2333,9 +2366,8 @@ const RISCVExplorer = () => {
 
   const extensionSearchIndexById = React.useMemo(() => {
     const index = new Map();
-    const allExts = Object.values(extensions).flat().filter(Boolean);
 
-    for (const ext of allExts) {
+    for (const ext of allExtensions) {
       const parts = [];
 
       for (const field of [ext.id, ext.name, ext.desc, ext.use]) {
@@ -2457,12 +2489,11 @@ const RISCVExplorer = () => {
 	      return;
 	    }
 
-	    const allExts = Object.values(extensions).flat();
 	    let matchedMnemonic = null;
 	    let matchedDetails = null;
 
 	    // First, try an exact extension ID match
-	    let targetExt = allExts.find((ext) => ext.id.toLowerCase() === q);
+	    let targetExt = getExtensionById(q);
 
 	    // If no exact extension ID match, try to match an instruction mnemonic
 	    if (!targetExt) {
@@ -2472,7 +2503,7 @@ const RISCVExplorer = () => {
 
 	      if (matchEntry) {
 	        const [extId, mnemonics] = matchEntry;
-	        targetExt = allExts.find((ext) => ext.id === extId) || null;
+	        targetExt = getExtensionById(extId);
 	        matchedMnemonic = mnemonics.find((m) => m.toLowerCase() === q) || null;
 	        matchedDetails = targetExt?.instructions?.[matchedMnemonic] || null;
 	      }
@@ -2481,7 +2512,7 @@ const RISCVExplorer = () => {
 	    // If still no match, try a deep search against indexed extension+instruction details
 	    if (!targetExt) {
 	      targetExt =
-	        allExts.find((ext) => (extensionSearchIndexById.get(ext.id) || '').includes(q)) ||
+	        allExtensions.find((ext) => (extensionSearchIndexById.get(ext.id) || '').includes(q)) ||
 	        null;
 	    }
 
@@ -2937,6 +2968,21 @@ const RISCVExplorer = () => {
 	                      <ArrowUpRight size={18} className="mt-1 shrink-0 opacity-80" />
 	                    </a>
                   </div>
+
+                  <button
+                    type="button"
+                    onClick={copySelectedExtensionPermalink}
+                    className="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[10px] font-mono text-slate-100 hover:border-slate-500"
+                    title="Copy a shareable link to this extension"
+                    aria-label={`Copy permalink for ${selectedExt.id}`}
+                  >
+                    <Share2 size={12} />
+                    {shareStatus === 'copied'
+                      ? 'Copied'
+                      : shareStatus === 'failed'
+                        ? 'Copy failed'
+                        : 'Share'}
+                  </button>
 
                   {selectedExt.discontinued === 1 && (
                     <span className="shrink-0 px-2 py-1 rounded-md text-[10px] font-mono uppercase tracking-wide border bg-red-950/40 text-red-200 border-red-600/60">
