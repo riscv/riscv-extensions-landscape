@@ -1985,6 +1985,10 @@ const RISCVExplorer = () => {
     };
   }, []);
 
+  /**
+   * Checks one instruction against the active search term, including the mnemonic,
+   * encoding metadata, and extension tags that are not visible in the tile label.
+   */
   const instructionMatchesQuery = (mnemonic, details, q) => {
     const needle = String(q || '').trim().toLowerCase();
     if (!needle) return false;
@@ -2098,6 +2102,10 @@ const RISCVExplorer = () => {
     return `${lines.join('\n')}\n`;
   }, []);
 
+  /**
+   * Copies text through the async Clipboard API when available, then falls back
+   * to a temporary textarea for older browsers and restricted contexts.
+   */
   const copyTextToClipboard = React.useCallback(async (text) => {
     if (!text) return false;
     try {
@@ -2127,6 +2135,17 @@ const RISCVExplorer = () => {
       return false;
     }
   }, []);
+
+  /**
+   * Handles the instruction-detail Copy button by serializing the selected
+   * extension/instruction pair and surfacing a short success or failure state.
+   */
+  const copySelectedInstructionDetails = React.useCallback(async () => {
+    const text = formatInstructionForClipboard(selectedExt, selectedInstruction);
+    const ok = await copyTextToClipboard(text);
+    setCopyStatus(ok ? 'copied' : 'failed');
+    window.setTimeout(() => setCopyStatus(null), 1500);
+  }, [copyTextToClipboard, formatInstructionForClipboard, selectedExt, selectedInstruction]);
 
   const allInstructionPatterns = React.useMemo(() => {
     const patterns = [];
@@ -2200,6 +2219,10 @@ const RISCVExplorer = () => {
     return `${lines.join('\n')}\n`;
   }, []);
 
+  /**
+   * Normalizes a proposed encoding or match/mask pair, validates basic decoder
+   * invariants, and reports overlaps with the current instruction database.
+   */
   const runEncoderValidation = React.useCallback(() => {
     const input = encoderValidatorInput;
     const errors = [];
@@ -2444,9 +2467,11 @@ const RISCVExplorer = () => {
     );
   };
 
-  // Scroll to extension tile when search matches an extension ID or instruction mnemonic,
-  // and automatically open the Selected Details panel. Use a ref to avoid re-scrolling
-  // on every render while the query stays the same.
+  /**
+   * Handles search-driven navigation by selecting the best matching extension,
+   * optionally selecting the matching instruction, and scrolling the tile into view.
+   * The last-scrolled key prevents repeated scrolling while the query is unchanged.
+   */
 	  React.useEffect(() => {
 	    const q = searchQuery.trim().toLowerCase();
 
@@ -3111,12 +3136,7 @@ const RISCVExplorer = () => {
 		                          <button
 		                            type="button"
 		                            className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[10px] font-mono text-slate-100 hover:border-slate-500"
-		                            onClick={async () => {
-		                              const text = formatInstructionForClipboard(selectedExt, selectedInstruction);
-		                              const ok = await copyTextToClipboard(text);
-		                              setCopyStatus(ok ? 'copied' : 'failed');
-		                              window.setTimeout(() => setCopyStatus(null), 1500);
-		                            }}
+		                            onClick={copySelectedInstructionDetails}
 		                            title="Copy extension + instruction details"
 		                          >
 		                            <Copy size={12} />
