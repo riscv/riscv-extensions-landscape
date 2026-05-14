@@ -144,14 +144,46 @@ for (const [extId, mnemonics] of Object.entries(extensionInstructions)) {
 
 fs.writeFileSync(catalogPath, `${JSON.stringify(extensionsCatalog, null, 2)}\n`);
 
-console.log(`Updated ${path.relative(workspaceRoot, catalogPath)} with ${addedCount} instruction entries.`);
+console.log('\n=== Instruction Sync Summary ===');
+console.log(`Updated file: ${path.relative(workspaceRoot, catalogPath)}`);
+console.log(`Total instruction entries added: ${addedCount}`);
+
 if (missingExtensions.size) {
-  console.warn(`Extensions referenced in JSX but not found in YAML: ${Array.from(missingExtensions).sort().join(', ')}`);
-}
-if (missingInstructions.size) {
-  const sorted = Array.from(missingInstructions.entries()).sort(([a], [b]) => a.localeCompare(b));
-  console.warn('Instructions missing from instr_dict.json (by extension):');
-  for (const [extId, list] of sorted) {
-    console.warn(`- ${extId}: ${list.length}`);
+  console.warn('\n=== Missing Extensions ===');
+
+  const sortedExtensions = Array.from(missingExtensions).sort();
+
+  console.warn(`Count: ${sortedExtensions.length}`);
+
+  for (const ext of sortedExtensions) {
+    console.warn(`- ${ext}`);
   }
 }
+
+if (missingInstructions.size) {
+  console.warn('\n=== Missing Instructions ===');
+
+  const sorted = Array.from(missingInstructions.entries())
+    .sort(([a], [b]) => a.localeCompare(b));
+
+  let totalMissing = 0;
+
+  for (const [, list] of sorted) {
+    totalMissing += list.length;
+  }
+
+  console.warn(`Extensions with missing instructions: ${sorted.length}`);
+  console.warn(`Total missing instructions: ${totalMissing}`);
+
+  for (const [extId, list] of sorted) {
+    console.warn(`\n- ${extId}`);
+
+    const uniqueList = [...new Set(list)].sort();
+
+    for (const instr of uniqueList) {
+      console.warn(`   • ${instr}`);
+    }
+  }
+}
+
+console.log('\nSync completed.\n');
