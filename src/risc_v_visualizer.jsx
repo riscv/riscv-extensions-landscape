@@ -570,6 +570,7 @@ const RISCVExplorer = () => {
   const [selectedInstruction, setSelectedInstruction] = useState(null);
   const [copyStatus, setCopyStatus] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [coverageFilter, setCoverageFilter] = useState('all');
   const [searchMatches, setSearchMatches] = useState(null);
   const [encoderValidatorOpen, setEncoderValidatorOpen] = useState(false);
   const [encoderValidatorInput, setEncoderValidatorInput] = useState({
@@ -2626,6 +2627,23 @@ const RISCVExplorer = () => {
 		                placeholder="Search extensions by ID, name, or description..."
 		                className="w-full px-4 py-2.5 rounded-lg bg-slate-800 border border-yellow-200/40 text-sm text-slate-100 placeholder-slate-400 shadow-sm shadow-yellow-900/10 focus:outline-none focus:ring-2 focus:ring-yellow-400/60 focus:border-yellow-300"
 		              />
+                  <div className="mt-3">
+                    <label className="mr-2 font-medium">
+                      Coverage Filter:
+                    </label>
+
+                    <select
+                      value={coverageFilter}
+                      onChange={(e) => setCoverageFilter(e.target.value)}
+                      className="border rounded px-2 py-1 text-black"
+                    >
+                      <option value="all">All Extensions</option>
+                      <option value="mapped">Mapped Extensions</option>
+                      <option value="unmapped">Unmapped Extensions</option>
+                    </select>
+                  </div>
+                  
+                  
 		              <p className="mt-1 text-[10px] text-center text-slate-500">
 		                Typing here will highlight matching tiles in yellow (case-insensitive).
 		              </p>
@@ -2637,32 +2655,72 @@ const RISCVExplorer = () => {
             <h3 className="text-blue-400 text-xs font-bold uppercase flex items-center gap-2">
               Base ISA
             </h3>
+
             <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-              {extensions.base.map((item) => (
-                <ExtensionBlock
-                  key={item.id}
-                  data={item}
-                  searchQuery={searchQuery}
-                  colorClass="bg-blue-950 border-blue-800 text-blue-100"
-                />
-              ))}
+              {extensions.base
+
+                /* Coverage filtering */
+                .filter((item) => {
+
+                  const instructionCount =
+                    Object.keys(item.instructions || {}).length;
+
+                  if (coverageFilter === 'mapped') {
+                    return instructionCount > 0;
+                  }
+
+                  if (coverageFilter === 'unmapped') {
+                    return instructionCount === 0;
+                  }
+
+                  return true;
+                })
+
+                .map((item) => (
+                  <ExtensionBlock
+                    key={item.id}
+                    data={item}
+                    searchQuery={searchQuery}
+                    colorClass="bg-blue-950 border-blue-800 text-blue-100"
+                  />
+                ))}
             </div>
           </div>
 
-	          {/* 2. Single-Letter Extensions */}
-	          <div className="space-y-2 col-span-full">
-	            <h3 className="text-emerald-400 text-xs font-bold uppercase flex items-center gap-2">
-	              Single-Letter Extensions
-	            </h3>
-	            <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
-	              {extensions.standard.map((item) => (
-	                <ExtensionBlock
-                  key={item.id}
-                  data={item}
-                  searchQuery={searchQuery}
-                  colorClass="bg-emerald-950 border-emerald-800 text-emerald-100"
-                />
-              ))}
+	        {/* 2. Single-Letter Extensions */}
+          <div className="space-y-2 col-span-full">
+            <h3 className="text-emerald-400 text-xs font-bold uppercase flex items-center gap-2">
+              Single-Letter Extensions
+            </h3>
+
+            <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
+              {extensions.standard
+
+                /* Coverage filtering */
+                .filter((item) => {
+
+                  const instructionCount =
+                    Object.keys(item.instructions || {}).length;
+
+                  if (coverageFilter === 'mapped') {
+                    return instructionCount > 0;
+                  }
+
+                  if (coverageFilter === 'unmapped') {
+                    return instructionCount === 0;
+                  }
+
+                  return true;
+                })
+
+                .map((item) => (
+                  <ExtensionBlock
+                    key={item.id}
+                    data={item}
+                    searchQuery={searchQuery}
+                    colorClass="bg-emerald-950 border-emerald-800 text-emerald-100"
+                  />
+                ))}
             </div>
           </div>
 
