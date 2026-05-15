@@ -3576,335 +3576,161 @@
     {
       "id": "A",
       "name": "A",
-      "desc": "Atomics Bundle",
-      "use": "LR/SC & AMO ops in hardware",
+      "desc": "Atomic memory operations extension (RV A)",
+      "use": "Provides load-reserved/store-conditional (LR/SC) and atomic memory operations (AMO) for safe concurrent programming in hardware",
       "discontinued": 0,
       "instructions": {
         "LR.W": {
           "encoding": "00010--00000-----010-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_a"
-          ],
+          "variable_fields": ["rd", "rs1", "aq", "rl"],
+          "extension": ["rv_a"],
           "match": "0x1000202f",
           "mask": "0xf9f0707f"
         },
         "SC.W": {
           "encoding": "00011------------010-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv_a"],
           "match": "0x1800202f",
           "mask": "0xf800707f"
         },
         "AMOSWAP.W": {
           "encoding": "00001------------010-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv_a"],
           "match": "0x800202f",
           "mask": "0xf800707f"
         },
         "AMOADD.W": {
           "encoding": "00000------------010-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv_a"],
           "match": "0x202f",
           "mask": "0xf800707f"
         },
         "AMOXOR.W": {
           "encoding": "00100------------010-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv_a"],
           "match": "0x2000202f",
           "mask": "0xf800707f"
         },
         "AMOOR.W": {
           "encoding": "01000------------010-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv_a"],
           "match": "0x4000202f",
           "mask": "0xf800707f"
         },
         "AMOAND.W": {
           "encoding": "01100------------010-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv_a"],
           "match": "0x6000202f",
           "mask": "0xf800707f"
         },
         "AMOMIN.W": {
           "encoding": "10000------------010-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv_a"],
           "match": "0x8000202f",
           "mask": "0xf800707f"
         },
         "AMOMAX.W": {
           "encoding": "10100------------010-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv_a"],
           "match": "0xa000202f",
           "mask": "0xf800707f"
         },
         "AMOMINU.W": {
           "encoding": "11000------------010-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv_a"],
           "match": "0xc000202f",
           "mask": "0xf800707f"
         },
         "AMOMAXU.W": {
           "encoding": "11100------------010-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv_a"],
           "match": "0xe000202f",
           "mask": "0xf800707f"
         },
         "LR.D": {
           "encoding": "00010--00000-----011-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv64_a"
-          ],
+          "variable_fields": ["rd", "rs1", "aq", "rl"],
+          "extension": ["rv64_a"],
           "match": "0x1000302f",
           "mask": "0xf9f0707f"
         },
         "SC.D": {
           "encoding": "00011------------011-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv64_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv64_a"],
           "match": "0x1800302f",
           "mask": "0xf800707f"
         },
         "AMOSWAP.D": {
           "encoding": "00001------------011-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv64_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv64_a"],
           "match": "0x800302f",
           "mask": "0xf800707f"
         },
         "AMOADD.D": {
           "encoding": "00000------------011-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv64_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv64_a"],
           "match": "0x302f",
           "mask": "0xf800707f"
         },
         "AMOXOR.D": {
           "encoding": "00100------------011-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv64_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv64_a"],
           "match": "0x2000302f",
           "mask": "0xf800707f"
         },
         "AMOOR.D": {
           "encoding": "01000------------011-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv64_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv64_a"],
           "match": "0x4000302f",
           "mask": "0xf800707f"
         },
         "AMOAND.D": {
           "encoding": "01100------------011-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv64_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv64_a"],
           "match": "0x6000302f",
           "mask": "0xf800707f"
         },
         "AMOMIN.D": {
           "encoding": "10000------------011-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv64_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv64_a"],
           "match": "0x8000302f",
           "mask": "0xf800707f"
         },
         "AMOMAX.D": {
           "encoding": "10100------------011-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv64_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv64_a"],
           "match": "0xa000302f",
           "mask": "0xf800707f"
         },
         "AMOMINU.D": {
           "encoding": "11000------------011-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv64_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv64_a"],
           "match": "0xc000302f",
           "mask": "0xf800707f"
         },
         "AMOMAXU.D": {
           "encoding": "11100------------011-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv64_a"
-          ],
+          "variable_fields": ["rd", "rs1", "rs2", "aq", "rl"],
+          "extension": ["rv64_a"],
           "match": "0xe000302f",
           "mask": "0xf800707f"
         }
