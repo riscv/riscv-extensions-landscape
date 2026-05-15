@@ -1,0 +1,88 @@
+{
+  "dependencies": {
+    "D": {
+      "requires": ["F"],
+      "description": "Double-precision FP requires single-precision FP base"
+    },
+    "Q": {
+      "requires": ["D"],
+      "description": "Quad-precision FP requires double-precision FP"
+    },
+    "V": {
+      "requires": ["Zve64d", "F", "D"],
+      "description": "Full vector ISA requires FP64 vector support"
+    },
+    "B": {
+      "bundles": ["Zba", "Zbb", "Zbc", "Zbs"],
+      "description": "Bit-manipulation umbrella aggregating all Zb* sub-extensions"
+    },
+    "K": {
+      "bundles": ["Zkn", "Zks", "Zkr"],
+      "description": "Scalar crypto umbrella bundling NIST + ShangMi + entropy"
+    },
+    "Zkn": {
+      "bundles": ["Zknd", "Zkne", "Zknh", "Zbkb", "Zbkc", "Zkt"],
+      "description": "NIST scalar crypto suite"
+    },
+    "Zks": {
+      "bundles": ["Zksed", "Zksh", "Zbkb", "Zbkc", "Zbkx", "Zkt"],
+      "description": "ShangMi scalar crypto suite"
+    },
+    "Zvk": {
+      "bundles": ["Zvkb", "Zvkg", "Zvkned", "Zvknha", "Zvknhb", "Zvksed", "Zvksh", "Zvkt"],
+      "description": "Vector crypto umbrella"
+    },
+    "Zvkn": {
+      "bundles": ["Zvkned", "Zvknhb", "Zvkb", "Zvkt"],
+      "description": "Vector NIST suite"
+    },
+    "Zvks": {
+      "bundles": ["Zvksed", "Zvksh", "Zvkb", "Zvkt"],
+      "description": "Vector ShangMi suite"
+    },
+    "C": {
+      "bundles": ["Zca", "Zcf", "Zcd"],
+      "description": "Compressed ISA bundles base + FP compressed subsets"
+    },
+    "Zce": {
+      "bundles": ["Zca", "Zcb", "Zcmp", "Zcmt"],
+      "description": "Embedded compressed bundle"
+    },
+    "A": {
+      "bundles": ["Zaamo", "Zalrsc"],
+      "description": "Atomics bundles AMO + LR/SC"
+    },
+    "Zdinx": {
+      "requires": ["Zfinx"],
+      "description": "Double-in-integer requires single-in-integer base"
+    },
+    "Zhinx": {
+      "requires": ["Zfinx"],
+      "description": "Half-in-integer requires single-in-integer base"
+    },
+    "Zfh": {
+      "requires": ["F"],
+      "description": "Half-precision FP requires single-precision base"
+    },
+    "Zfhmin": {
+      "requires": ["F"],
+      "description": "Minimal half-precision requires single-precision base"
+    },
+    "Zcd": {
+      "requires": ["D", "Zca"],
+      "description": "Compressed double FP requires D + base compressed"
+    },
+    "Zcf": {
+      "requires": ["F", "Zca"],
+      "description": "Compressed single FP requires F + base compressed"
+    },
+    "Zicfiss": {
+      "requires": ["Zicsr"],
+      "description": "Shadow stacks require CSR access"
+    },
+    "Zicfilp": {
+      "requires": ["Zicsr"],
+      "description": "Landing pads require CSR access"
+    }
+  }
+}

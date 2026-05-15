@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Dependency Graph Styles */
+.dependency-node {
+  transition: all 0.2s ease-in-out;
+}
+
+.dependency-node:hover {
+  filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.4));
+}
+
+.dependency-edge {
+  stroke-linecap: round;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.dependency-edge:hover {
+  opacity: 1;
+  stroke-width: 3;
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.8; }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

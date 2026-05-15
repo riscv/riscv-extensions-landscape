@@ -5031,6 +5031,9 @@
       "name": "D",
       "desc": "Double-Precision Float (64-bit)",
       "use": "General-purpose FP, HPC",
+      "requires": [
+        "F"
+      ],
       "discontinued": 0,
       "instructions": {
         "FLD": {
@@ -6578,6 +6581,9 @@
       "name": "Q",
       "desc": "Quad-Precision Float (128-bit)",
       "use": "High-precision scientific math",
+      "requires": [
+        "D"
+      ],
       "discontinued": 0,
       "instructions": {
         "FLQ": {

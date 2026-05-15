@@ -11,6 +11,10 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import extensions from './riscv_extensions.json';
+import dependencyData from './data/extension_dependencies.json';
+import DependencyBadges from './components/DependencyBadges';
+import DependencyModal from './components/DependencyModal';
+import { BarChart2 } from 'lucide-react';
 
 const BIT_WIDTH = 32n;
 const BIT_MASK_32 = (1n << BIT_WIDTH) - 1n;
@@ -580,6 +584,7 @@ const RISCVExplorer = () => {
   });
   const [encoderValidatorResult, setEncoderValidatorResult] = useState(null);
   const [encoderValidatorCopyStatus, setEncoderValidatorCopyStatus] = useState(null);
+  const [dependencyGraphOpen, setDependencyGraphOpen] = useState(false);
   const lastScrolledKeyRef = React.useRef(null);
 
   // ---------------------------------------------------------------------------
@@ -2612,6 +2617,16 @@ const RISCVExplorer = () => {
 		              <ScanSearch size={16} />
 		              Encoder Validator
 		            </button>
+
+		            <button
+		              type="button"
+		              onClick={() => setDependencyGraphOpen(true)}
+		              className="inline-flex items-center gap-2 px-3 py-1 rounded text-xs font-bold border transition-all bg-purple-900/20 border-purple-700/50 text-purple-200 hover:bg-purple-900/40 hover:border-purple-500"
+		              title="View interactive extension dependency graph"
+		            >
+		              <BarChart2 size={16} />
+		              Dependency Graph
+		            </button>
 		          </div>
 		        </div>
 
@@ -3336,6 +3351,19 @@ const RISCVExplorer = () => {
 	                      )}
 	                    </div>
 	                  )}
+
+                    <DependencyBadges 
+                      extId={selectedExt.id} 
+                      dependencies={dependencyData.dependencies} 
+                      onNavigate={(id) => {
+                        const allExts = Object.values(extensions).flat();
+                        const target = allExts.find(e => e.id === id);
+                        if (target) {
+                          setSelectedExt(target);
+                          setSelectedInstruction(null);
+                        }
+                      }}
+                    />
 	                </div>
 	                </div>
 	              ) : (
@@ -3587,6 +3615,21 @@ const RISCVExplorer = () => {
 	          </div>
 	        </div>
 	      )}
+
+        <DependencyModal
+          isOpen={dependencyGraphOpen}
+          onClose={() => setDependencyGraphOpen(false)}
+          data={dependencyData}
+          onSelectExtension={(id) => {
+            const allExts = Object.values(extensions).flat();
+            const target = allExts.find(e => e.id === id);
+            if (target) {
+              setSelectedExt(target);
+              setSelectedInstruction(null);
+              setDependencyGraphOpen(false);
+            }
+          }}
+        />
 	    </div>
 	  );
 	};
