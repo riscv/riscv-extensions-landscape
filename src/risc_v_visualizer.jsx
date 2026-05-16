@@ -581,6 +581,21 @@ const RISCVExplorer = () => {
   const [encoderValidatorResult, setEncoderValidatorResult] = useState(null);
   const [encoderValidatorCopyStatus, setEncoderValidatorCopyStatus] = useState(null);
   const lastScrolledKeyRef = React.useRef(null);
+  const allExtensions = Object.values(extensions)
+  .flat()
+  .filter(Boolean);
+
+const totalExtensions = allExtensions.length;
+
+const mappedExtensions = allExtensions.filter(
+  (ext) => Object.keys(ext.instructions || {}).length > 0
+).length;
+
+const unmappedExtensions =
+  totalExtensions - mappedExtensions;
+
+const coveragePercentage =
+  ((mappedExtensions / totalExtensions) * 100).toFixed(2);
 
   // ---------------------------------------------------------------------------
   // Extension Catalog – loaded from `src/riscv_extensions.json`
@@ -2631,6 +2646,50 @@ const RISCVExplorer = () => {
 		              </p>
 		            </div>
 		          </div>
+              <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+
+                <div className="border rounded p-3 bg-slate-900">
+                  <div className="text-xs opacity-70">
+                    Total Extensions
+                  </div>
+
+                  <div className="text-xl font-bold">
+                    {totalExtensions}
+                  </div>
+                </div>
+
+                <div className="border rounded p-3 bg-slate-900">
+                  <div className="text-xs opacity-70">
+                    Mapped
+                  </div>
+
+                  <div className="text-xl font-bold text-green-400">
+                    {mappedExtensions}
+                  </div>
+                </div>
+
+                <div className="border rounded p-3 bg-slate-900">
+                  <div className="text-xs opacity-70">
+                    Unmapped
+                  </div>
+
+                  <div className="text-xl font-bold text-red-400">
+                    {unmappedExtensions}
+                  </div>
+                </div>
+
+                <div className="border rounded p-3 bg-slate-900">
+                  <div className="text-xs opacity-70">
+                    Coverage
+                  </div>
+
+                  <div className="text-xl font-bold text-yellow-400">
+                    {coveragePercentage}%
+                  </div>
+                </div>
+
+              </div>
+              
 
           {/* 1. Base */}
           <div className="space-y-2 col-span-full">
