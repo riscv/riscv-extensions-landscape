@@ -101,17 +101,21 @@ function buildExtensionIndex(extensionsCatalog) {
 function mnemonicToInstrDictKey(mnemonic) {
   return String(mnemonic).trim().toLowerCase().replaceAll('.', '_');
 }
-
+function normalizeExtensionId(extId) {
+  return extensionAliases[extId] || extId;
+}
 const workspaceRoot = process.cwd();
 const instrDictPath = path.join(workspaceRoot, 'src', 'instr_dict.json');
 const catalogPath = path.join(workspaceRoot, 'src', 'riscv_extensions.json');
 const visualizerPath = path.join(workspaceRoot, 'src', 'risc_v_visualizer.jsx');
+const aliasPath = path.join(workspaceRoot,'src','extension_aliases.json');
 
 const instrDict = JSON.parse(fs.readFileSync(instrDictPath, 'utf8'));
 const extensionsCatalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
 const visualizerSource = fs.readFileSync(visualizerPath, 'utf8');
 
 const extensionInstructions = extractExtensionInstructions(visualizerSource);
+const extensionAliases = JSON.parse(fs.readFileSync(aliasPath, 'utf8'));
 const extIndex = buildExtensionIndex(extensionsCatalog);
 
 const missingExtensions = new Set();
@@ -119,7 +123,9 @@ const missingInstructions = new Map();
 let addedCount = 0;
 
 for (const [extId, mnemonics] of Object.entries(extensionInstructions)) {
-  const locations = extIndex.get(extId);
+   const normalizedExtId =normalizeExtensionId(extId);
+   const locations =extIndex.get(normalizedExtId);
+
   if (!locations || locations.length === 0) {
     missingExtensions.add(extId);
     continue;
