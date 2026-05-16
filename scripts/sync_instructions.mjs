@@ -64,21 +64,6 @@ function findMatchingBrace(text, openIndex) {
   return -1;
 }
 
-function extractExtensionInstructions(jsxText) {
-  const marker = 'const extensionInstructions =';
-  const markerIndex = jsxText.indexOf(marker);
-  if (markerIndex === -1) die(`Could not find \`${marker}\` in src/risc_v_visualizer.jsx`);
-
-  const braceStart = jsxText.indexOf('{', markerIndex);
-  if (braceStart === -1) die('Could not find opening `{` for extensionInstructions object');
-
-  const braceEnd = findMatchingBrace(jsxText, braceStart);
-  if (braceEnd === -1) die('Could not find closing `}` for extensionInstructions object');
-
-  const objectLiteral = jsxText.slice(braceStart, braceEnd + 1);
-  const sandbox = {};
-  return vm.runInNewContext(`(${objectLiteral})`, sandbox, { timeout: 1000 });
-}
 
 function buildExtensionIndex(extensionsCatalog) {
   const index = new Map();
@@ -111,7 +96,16 @@ const instrDict = JSON.parse(fs.readFileSync(instrDictPath, 'utf8'));
 const extensionsCatalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
 const visualizerSource = fs.readFileSync(visualizerPath, 'utf8');
 
-const extensionInstructions = extractExtensionInstructions(visualizerSource);
+const extensionInstructions = JSON.parse(
+  fs.readFileSync(
+    path.join(
+      workspaceRoot,
+      'src',
+      'extension_instructions.json'
+    ),
+    'utf8'
+  )
+);
 const extIndex = buildExtensionIndex(extensionsCatalog);
 
 const missingExtensions = new Set();
