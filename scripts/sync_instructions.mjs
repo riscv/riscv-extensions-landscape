@@ -103,6 +103,7 @@ function mnemonicToInstrDictKey(mnemonic) {
 }
 
 const workspaceRoot = process.cwd();
+const isDryRun =process.argv.includes('--dry-run');
 const instrDictPath = path.join(workspaceRoot, 'src', 'instr_dict.json');
 const catalogPath = path.join(workspaceRoot, 'src', 'riscv_extensions.json');
 const visualizerPath = path.join(workspaceRoot, 'src', 'risc_v_visualizer.jsx');
@@ -142,9 +143,26 @@ for (const [extId, mnemonics] of Object.entries(extensionInstructions)) {
   }
 }
 
-fs.writeFileSync(catalogPath, `${JSON.stringify(extensionsCatalog, null, 2)}\n`);
+if (isDryRun) {
+  console.log(
+    '[Dry Run] No files were modified.'
+  );
+} else {
+  fs.writeFileSync(
+    catalogPath,
+    `${JSON.stringify(extensionsCatalog, null, 2)}\n`
+  );
+}
 
-console.log(`Updated ${path.relative(workspaceRoot, catalogPath)} with ${addedCount} instruction entries.`);
+if (isDryRun) {
+  console.log(
+    `[Dry Run] Would update ${path.relative(workspaceRoot, catalogPath)} with ${addedCount} instruction entries.`
+  );
+} else {
+  console.log(
+    `Updated ${path.relative(workspaceRoot, catalogPath)} with ${addedCount} instruction entries.`
+  );
+}
 if (missingExtensions.size) {
   console.warn(`Extensions referenced in JSX but not found in YAML: ${Array.from(missingExtensions).sort().join(', ')}`);
 }
