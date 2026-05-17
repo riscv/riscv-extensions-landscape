@@ -52,5 +52,41 @@ assert.strictEqual(
   isDryRun([]),
   false
 );
+function isValidHex(value) {
+  return /^0x[0-9a-fA-F]+$/.test(value);
+}
+
+function isValidEncoding(value) {
+  return (
+    typeof value === 'string' &&
+    value.trim().length > 0
+  );
+}
+assert.strictEqual(
+  isValidEncoding(
+    '0000000 rs2 rs1 000 rd 0110011'
+  ),
+  true
+);
+
+assert.strictEqual(
+  isValidEncoding(''),
+  false
+);
+
+assert.strictEqual(
+  isValidHex('0x33'),
+  true
+);
+
+assert.strictEqual(
+  isValidHex('0xfe00707f'),
+  true
+);
+
+assert.strictEqual(
+  isValidHex('33'),
+  false
+);
 
 console.log('All synchronization tooling tests passed.');
