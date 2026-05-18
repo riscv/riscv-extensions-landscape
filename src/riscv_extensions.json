@@ -13895,7 +13895,19 @@
       "desc": "Compressed May-Be-Ops",
       "use": "Reserved 16-bit NOP/future ops",
       "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
+      "instructions": {
+        "c_mop_N": {
+          "encoding": "----------------01100---10000001",
+          "variable_fields": [
+            "c_mop_t"
+          ],
+          "extension": [
+            "rv_zcmop"
+          ],
+          "match": "0x6081",
+          "mask": "0xf8ff"
+        }
+      }
     },
     {
       "id": "Zclsd",

@@ -99,7 +99,18 @@ function buildExtensionIndex(extensionsCatalog) {
 }
 
 function mnemonicToInstrDictKey(mnemonic) {
-  return String(mnemonic).trim().toLowerCase().replaceAll('.', '_');
+  if (
+    mnemonic === 'mop_r_N' ||
+    mnemonic === 'mop_rr_N' ||
+    mnemonic === 'c_mop_N'
+  ) {
+    return mnemonic;
+  }
+
+  return String(mnemonic)
+    .trim()
+    .toLowerCase()
+    .replaceAll('.', '_');
 }
 
 const workspaceRoot = process.cwd();

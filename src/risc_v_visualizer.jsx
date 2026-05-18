@@ -1497,8 +1497,7 @@ const RISCVExplorer = () => {
       'CM.JALT',
     ],
     Zcmop: [
-      // May-be-operations (reserved NOPs)
-      // Note: C.MOP.N has encoding but naming mismatch in dictionary
+      'c_mop_N',
     ],
     B: [
       // Aggregates Zba + Zbb + Zbc + Zbs
