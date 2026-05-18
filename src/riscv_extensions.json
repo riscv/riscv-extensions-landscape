@@ -16991,7 +16991,38 @@
       "desc": "May-Be-Ops (NOP family)",
       "use": "Reserved NOP encodings for future",
       "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
+      "instructions": {
+        "mop_r_N": {
+          "encoding": "1-00--0111-------100-----1110011",
+          "variable_fields": [
+            "mop_r_t_30",
+            "mop_r_t_27_26",
+            "mop_r_t_21_20",
+            "rd",
+            "rs1"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x81c04073",
+          "mask": "0xb3c0707f"
+        },
+        "mop_rr_N": {
+          "encoding": "1-00--1----------100-----1110011",
+          "variable_fields": [
+            "mop_rr_t_30",
+            "mop_rr_t_27_26",
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_zimop"
+          ],
+          "match": "0x82004073",
+          "mask": "0xb200707f"
+        }
+      }
     }
   ],
   "z_crypto": [

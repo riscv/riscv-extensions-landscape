@@ -1259,9 +1259,9 @@ const RISCVExplorer = () => {
       // Shadow stack atomic swap
       'SSAMOSWAP.W', 'SSAMOSWAP.D',
     ],
-    Zimop: [
-      // May-be operations (reserved NOPs)
-      // Note: MOP.R.N, MOP.RR.N have encoding but naming mismatch in dictionary
+   Zimop: [
+    'mop_r_N',
+    'mop_rr_N',
     ],
     F: [
       // Load/Store
