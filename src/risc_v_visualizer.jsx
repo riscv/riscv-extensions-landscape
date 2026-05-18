@@ -1510,6 +1510,9 @@ const RISCVExplorer = () => {
 
       // Zbb: Logical operations
       'ANDN', 'ORN', 'XNOR',
+      // Zbb: Deprecated logical operations
+      // adding these manually bcoz they are missing lol
+      'SLO', 'SLOI', 'SRO', 'SROI',
       // Zbb: Count leading/trailing zeros and population count
       'CLZ', 'CTZ', 'CPOP',
       'CLZW', 'CTZW', 'CPOPW',
@@ -1540,7 +1543,12 @@ const RISCVExplorer = () => {
     Zbb: [
       // Logical operations
       'ANDN', 'ORN', 'XNOR',
-      // Count leading/trailing zeros and population count
+      // logical operations that are old I guess
+      'SLO', 
+      'SLOI', // not sure why this one has I but whatever
+      'SRO', 
+      'SROI',
+      // Zbb: Count leading/trailing zeros and population count
       'CLZ', 'CTZ', 'CPOP',
       // RV64 word variants
       'CLZW', 'CTZW', 'CPOPW',
