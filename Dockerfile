@@ -21,6 +21,7 @@ FROM nginx:alpine
 # Copy the build output from Stage 1 to Nginx's html directory
 # Note: If you use CRA, change '/app/dist' to '/app/build'
 COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
