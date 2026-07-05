@@ -1,0 +1,212 @@
+{
+  "generated_at": "2026-07-05T07:23:19.938Z",
+  "summary": {
+    "instr_dict_entries": 1188,
+    "catalog_extensions": 220,
+    "extensions_with_instructions": 83,
+    "extensions_without_instructions": 137,
+    "extensions_missing_tags": 2,
+    "unique_synced_mnemonics": 1158,
+    "total_instruction_assignments": 3688,
+    "instr_dict_unmapped": 30,
+    "orphan_opcode_tags": 12,
+    "instr_dict_coverage_percent": 97.47,
+    "extension_instruction_coverage_percent": 37.73
+  },
+  "orphan_opcode_tags": [
+    "rv64_zbp",
+    "rv_zbp",
+    "rv_zvfbdot32f",
+    "rv_zvfofp4min",
+    "rv_zvfqbdot8f",
+    "rv_zvfqldot8f",
+    "rv_zvfwbdot16bf",
+    "rv_zvfwldot16bf",
+    "rv_zvqbdot8i",
+    "rv_zvqdotq",
+    "rv_zvqldot8i",
+    "rv_zvzip"
+  ],
+  "top_unmapped_instr_dict": [
+    {
+      "dictKey": "gorci",
+      "tags": [
+        "rv64_zbp"
+      ]
+    },
+    {
+      "dictKey": "grevi",
+      "tags": [
+        "rv64_zbp"
+      ]
+    },
+    {
+      "dictKey": "shfli",
+      "tags": [
+        "rv64_zbp"
+      ]
+    },
+    {
+      "dictKey": "unshfli",
+      "tags": [
+        "rv64_zbp"
+      ]
+    },
+    {
+      "dictKey": "vfbdot_vv",
+      "tags": [
+        "rv_zvfbdot32f"
+      ]
+    },
+    {
+      "dictKey": "vfext_vf2",
+      "tags": [
+        "rv_zvfofp4min"
+      ]
+    },
+    {
+      "dictKey": "vfqbdot_alt_vv",
+      "tags": [
+        "rv_zvfqbdot8f"
+      ]
+    },
+    {
+      "dictKey": "vfqbdot_vv",
+      "tags": [
+        "rv_zvfqbdot8f"
+      ]
+    },
+    {
+      "dictKey": "vfqldot_alt_vv",
+      "tags": [
+        "rv_zvfqldot8f"
+      ]
+    },
+    {
+      "dictKey": "vfqldot_vv",
+      "tags": [
+        "rv_zvfqldot8f"
+      ]
+    },
+    {
+      "dictKey": "vfwbdot_vv",
+      "tags": [
+        "rv_zvfwbdot16bf"
+      ]
+    },
+    {
+      "dictKey": "vfwldot_vv",
+      "tags": [
+        "rv_zvfwldot16bf"
+      ]
+    },
+    {
+      "dictKey": "vpaire_vv",
+      "tags": [
+        "rv_zvzip"
+      ]
+    },
+    {
+      "dictKey": "vpairo_vv",
+      "tags": [
+        "rv_zvzip"
+      ]
+    },
+    {
+      "dictKey": "vqbdots_vv",
+      "tags": [
+        "rv_zvqbdot8i"
+      ]
+    },
+    {
+      "dictKey": "vqbdotu_vv",
+      "tags": [
+        "rv_zvqbdot8i"
+      ]
+    },
+    {
+      "dictKey": "vqdot_vv",
+      "tags": [
+        "rv_zvqdotq"
+      ]
+    },
+    {
+      "dictKey": "vqdot_vx",
+      "tags": [
+        "rv_zvqdotq"
+      ]
+    },
+    {
+      "dictKey": "vqdotsu_vv",
+      "tags": [
+        "rv_zvqdotq"
+      ]
+    },
+    {
+      "dictKey": "vqdotsu_vx",
+      "tags": [
+        "rv_zvqdotq"
+      ]
+    },
+    {
+      "dictKey": "vqdotu_vv",
+      "tags": [
+        "rv_zvqdotq"
+      ]
+    },
+    {
+      "dictKey": "vqdotu_vx",
+      "tags": [
+        "rv_zvqdotq"
+      ]
+    },
+    {
+      "dictKey": "vqdotus_vx",
+      "tags": [
+        "rv_zvqdotq"
+      ]
+    },
+    {
+      "dictKey": "vqldots_vv",
+      "tags": [
+        "rv_zvqldot8i"
+      ]
+    },
+    {
+      "dictKey": "vqldotu_vv",
+      "tags": [
+        "rv_zvqldot8i"
+      ]
+    },
+    {
+      "dictKey": "vunzipe_v",
+      "tags": [
+        "rv_zvzip"
+      ]
+    },
+    {
+      "dictKey": "vunzipo_v",
+      "tags": [
+        "rv_zvzip"
+      ]
+    },
+    {
+      "dictKey": "vzip_vv",
+      "tags": [
+        "rv_zvzip"
+      ]
+    },
+    {
+      "dictKey": "xperm16",
+      "tags": [
+        "rv_zbp"
+      ]
+    },
+    {
+      "dictKey": "xperm32",
+      "tags": [
+        "rv64_zbp"
+      ]
+    }
+  ]
+}

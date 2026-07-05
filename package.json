@@ -5,10 +5,14 @@
   "main": "index.js",
   "homepage": "https://rpsene.github.io/riscv-extensions-landscape/",
 "scripts": {
+  "bootstrap:tags": "node scripts/bootstrap_extension_tags.mjs",
+  "sync:instructions": "node scripts/sync_instructions.mjs",
+  "metrics:baseline": "node scripts/baseline_metrics.mjs",
+  "data:refresh": "npm run bootstrap:tags && npm run sync:instructions && npm run metrics:baseline",
   "build": "webpack",
   "predeploy": "npm run build",
   "deploy": "gh-pages -d dist --branch gh-pages --dotfiles",
-  "test": "echo \"Error: no test specified\" && exit 1"
+  "test": "node scripts/baseline_metrics.mjs"
 },
   "keywords": [],
   "author": "",

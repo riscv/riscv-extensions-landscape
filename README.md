@@ -29,14 +29,28 @@ Open `http://localhost:8080`.
 
 ## Data model (where things live)
 
-- Extension catalog (groups + metadata + embedded instruction detail maps):
+- Extension catalog (groups + metadata + `tags` + embedded instruction detail maps):
   - `src/riscv_extensions.json`
 - Instruction detail dictionary (canonical instruction encodings/fields):
   - `src/instr_dict.json`
-- Instruction membership lists (which mnemonics belong to which extension, and in what order they appear):
+- Instruction membership lists (display order in the UI; sync is now tag-driven):
   - `src/risc_v_visualizer.jsx` (`extensionInstructions`)
-- Sync script (merges `instr_dict.json` into `riscv_extensions.json`):
+- Sync rules (opcode tag → catalog matching, split rules, architecture prefixes):
+  - `scripts/lib/sync_rules.mjs`
+- Sync script (merges `instr_dict.json` into `riscv_extensions.json` via catalog `tags`):
   - `scripts/sync_instructions.mjs`
+- Baseline metrics report (coverage counts for CI/PR review):
+  - `scripts/baseline_metrics.mjs` → `reports/baseline_metrics.json`
+
+### Refresh catalog data
+
+```bash
+npm run data:refresh
+```
+
+This runs, in order: `bootstrap:tags` → `sync:instructions` → `metrics:baseline`.
+
+To add a new extension with instructions, give it a `tags` array listing the `rv_*` opcode-file tags it owns (see `scripts/lib/sync_rules.mjs` for overrides and split rules).
 
 ## Add a new extension (step-by-step)
 
@@ -97,15 +111,24 @@ Example:
 }
 ```
 
-### 3) Sync into the catalog
+### 3) Add opcode tags and sync into the catalog
 
-Run:
+Add a `tags` array to the extension entry in `src/riscv_extensions.json`:
 
-```bash
-node scripts/sync_instructions.mjs
+```json
+{
+  "id": "Zfoo",
+  "tags": ["rv_zfoo", "rv64_zfoo"]
+}
 ```
 
-This updates `src/riscv_extensions.json` by populating `instructions` maps under each extension (keyed by mnemonic, e.g. `"SC.W": { ... }`).
+Then run:
+
+```bash
+npm run data:refresh
+```
+
+This updates `src/riscv_extensions.json` by populating `instructions` maps under each extension (keyed by mnemonic, e.g. `"SC.W": { ... }`) and writes `reports/baseline_metrics.json`.
 
 ### 4) Verify
 
