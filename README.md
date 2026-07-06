@@ -34,7 +34,9 @@ Open `http://localhost:8080`.
 - Instruction detail dictionary (canonical instruction encodings/fields):
   - `src/instr_dict.json`
 - Instruction membership lists (which mnemonics belong to which extension, and in what order they appear):
-  - `src/risc_v_visualizer.jsx` (`extensionInstructions`)
+  - `src/extension_membership.json` (`instructionsByExtension`)
+- Volume membership lists (used for Volume I vs Volume II filtering):
+  - `src/extension_membership.json` (`volumeMembership`)
 - Sync script (merges `instr_dict.json` into `riscv_extensions.json`):
   - `scripts/sync_instructions.mjs`
 
@@ -58,8 +60,8 @@ Notes:
 - `discontinued: 1` enables the “Discontinued” badge on the tile and in Selected Details.
 - The `url` is currently a placeholder used for the Selected Details title link.
 
-3. If the extension should be highlighted by **Volume II**, ensure it’s represented in one of:
-   - `src/risc_v_visualizer.jsx` volume membership logic (currently: `S`, `U`, `H`, `N` + `s_*` groups).
+3. If the extension should be highlighted by **Volume II**, add its ID to
+   `src/extension_membership.json` under `volumeMembership.II`.
 
 ## Add a new instruction + all details (step-by-step)
 
@@ -67,11 +69,11 @@ This project separates “which instructions belong to an extension” from “w
 
 ### 1) Add the instruction to the extension’s mnemonic list
 
-Edit `src/risc_v_visualizer.jsx` in `extensionInstructions` and add the mnemonic to the right extension ID list.
+Edit `src/extension_membership.json` in `instructionsByExtension` and add the mnemonic to the right extension ID list.
 
 Example:
 
-```js
+```json
 A: [
   'LR.W', 'SC.W',
   // add yours here

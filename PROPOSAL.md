@@ -100,7 +100,8 @@ and anyone who needs to navigate the RISC-V ISA quickly and accurately.
 |------|------|---------|
 | `src/instr_dict.json` | Instruction dictionary with encoding, match, mask, variable fields, and extension tags. | ~1,188 instructions |
 | `src/riscv_extensions.json` | Extension catalog organized by category group, with embedded instruction details after sync. | ~222 extensions across 17 groups |
-| `src/risc_v_visualizer.jsx` | Contains `extensionInstructions`, a mapping of extension IDs to ordered mnemonic arrays. Also contains the full React application. | ~3,600 lines |
+| `src/extension_membership.json` | Instruction membership lists by extension plus explicit Volume II membership for the visualizer and sync script. | Generated data |
+| `src/risc_v_visualizer.jsx` | React application for the visualizer and encoder validator. | ~3,600 lines |
 
 ### 5.3 Extension Data Schema
 
@@ -269,8 +270,8 @@ to the clipboard.
    ```
 
 3. **Update volume membership** (if applicable). If the extension belongs to
-   Privileged Volume II, ensure it is represented in the volume filtering logic
-   in `src/risc_v_visualizer.jsx`.
+   Privileged Volume II, ensure its ID is present in
+   `src/extension_membership.json` under `volumeMembership.II`.
 
 4. **Update profile membership** (if applicable). If the extension is part of a
    ratified profile (RVA22, RVA23, etc.), add it to the corresponding profile
@@ -278,9 +279,8 @@ to the clipboard.
 
 ### 7.2 Adding Instructions to an Extension
 
-1. **Register the mnemonic list.** In `src/risc_v_visualizer.jsx`, find the
-   `extensionInstructions` object and add or update the extension's mnemonic
-   array:
+1. **Register the mnemonic list.** In `src/extension_membership.json`, add or
+   update the extension's mnemonic array under `instructionsByExtension`:
 
    ```javascript
    Znew: [
@@ -428,7 +428,7 @@ When the RISC-V ISA manual or `riscv-opcodes` is updated:
 
 1. Update `src/instr_dict.json` with new or changed instruction encodings.
 2. Update `src/riscv_extensions.json` with new or modified extensions.
-3. Update `extensionInstructions` in `src/risc_v_visualizer.jsx` with new
+3. Update `instructionsByExtension` in `src/extension_membership.json` with new
    mnemonic assignments.
 4. Run `node scripts/sync_instructions.mjs` to merge changes.
 5. Run `npm run build` and verify.
