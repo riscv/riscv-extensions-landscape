@@ -12,9 +12,20 @@ import {
 } from 'lucide-react';
 import extensions from './riscv_extensions.json';
 import extensionMembership from './extension_membership.json';
+import {
+  BIT_MASK_32,
+  classifyOverlap,
+  describeConflictType,
+  encodingToMatchMask,
+  matchMaskToEncoding,
+  normalizeEncodingString,
+  normalizeProposedInput,
+  normalizePatternSource,
+  overlapExampleWord,
+  patternsOverlap,
+  toHex32,
+} from './encoder_validator.mjs';
 
-const BIT_WIDTH = 32n;
-const BIT_MASK_32 = (1n << BIT_WIDTH) - 1n;
 const extensionInstructions = extensionMembership.instructionsByExtension || {};
 const extensionMembershipByVolume = extensionMembership.volumeMembership || {};
 
@@ -275,94 +286,6 @@ const COMPRESSED_BY_STANDARD = COMPRESSED_INSTRUCTION_MAPPINGS.reduce((acc, entr
 }, {});
 
 const STANDARD_EQUIVALENT_PRIORITY = ['RV32I', 'RV64I', 'RV128I', 'RV32E', 'RV64E'];
-
-const normalizeHexString = (value) => {
-  const text = String(value ?? '').trim();
-  if (!text) return '';
-  return text.toLowerCase().startsWith('0x') ? text.toLowerCase() : `0x${text.toLowerCase()}`;
-};
-
-const parseHexToBigInt = (value) => {
-  const normalized = normalizeHexString(value);
-  if (!normalized) return null;
-  if (!/^0x[0-9a-f]+$/i.test(normalized)) return null;
-  try {
-    return BigInt(normalized);
-  } catch {
-    return null;
-  }
-};
-
-const toHex32 = (value) => {
-  const v = (value ?? 0n) & BIT_MASK_32;
-  return `0x${v.toString(16).padStart(8, '0')}`;
-};
-
-const normalizeEncodingString = (value) => {
-  const encoding = String(value ?? '').replace(/\s+/g, '');
-  if (!encoding) return '';
-  return encoding;
-};
-
-const encodingToMatchMask = (encoding) => {
-  const normalized = normalizeEncodingString(encoding);
-  if (!normalized) return { match: null, mask: null, error: 'Provide an encoding or match/mask.' };
-  if (normalized.length !== 32) {
-    return { match: null, mask: null, error: `Encoding must be 32 characters (got ${normalized.length}).` };
-  }
-  if (!/^[01-]{32}$/.test(normalized)) {
-    return { match: null, mask: null, error: 'Encoding may only contain 0, 1, and -.' };
-  }
-
-  let match = 0n;
-  let mask = 0n;
-  for (let i = 0; i < 32; i++) {
-    const bit = 31n - BigInt(i);
-    const ch = normalized[i];
-    if (ch === '-') continue;
-    mask |= 1n << bit;
-    if (ch === '1') match |= 1n << bit;
-  }
-  return { match, mask, error: null };
-};
-
-const matchMaskToEncoding = (match, mask) => {
-  const m = (match ?? 0n) & BIT_MASK_32;
-  const k = (mask ?? 0n) & BIT_MASK_32;
-  let out = '';
-  for (let bit = 31n; bit >= 0n; bit--) {
-    const bitMask = 1n << bit;
-    if ((k & bitMask) === 0n) out += '-';
-    else out += (m & bitMask) === 0n ? '0' : '1';
-  }
-  return out;
-};
-
-const patternsOverlap = (aMatch, aMask, bMatch, bMask) => {
-  const commonMask = (aMask & bMask) & BIT_MASK_32;
-  const diff = ((aMatch ^ bMatch) & commonMask) & BIT_MASK_32;
-  return diff === 0n;
-};
-
-const isSubsetPattern = (subsetMatch, subsetMask, supMatch, supMask) => {
-  const subsetMaskNorm = (subsetMask ?? 0n) & BIT_MASK_32;
-  const supMaskNorm = (supMask ?? 0n) & BIT_MASK_32;
-  const subsetMatchNorm = (subsetMatch ?? 0n) & BIT_MASK_32;
-  const supMatchNorm = (supMatch ?? 0n) & BIT_MASK_32;
-
-  const supBitsNotConstrainedBySubset = supMaskNorm & ~subsetMaskNorm;
-  if (supBitsNotConstrainedBySubset !== 0n) return false;
-  const mismatch = (subsetMatchNorm ^ supMatchNorm) & supMaskNorm;
-  return mismatch === 0n;
-};
-
-const overlapExampleWord = (aMatch, aMask, bMatch, bMask) => {
-  const am = (aMatch ?? 0n) & BIT_MASK_32;
-  const ak = (aMask ?? 0n) & BIT_MASK_32;
-  const bm = (bMatch ?? 0n) & BIT_MASK_32;
-  const bk = (bMask ?? 0n) & BIT_MASK_32;
-  return ((am & ak) | (bm & (bk & ~ak))) & BIT_MASK_32;
-};
 
 const EncodingDiagram = ({ encoding }) => {
   const scrollRef = React.useRef(null);
@@ -1294,6 +1217,7 @@ const RISCVExplorer = () => {
 
   const allInstructionPatterns = React.useMemo(() => {
     const patterns = [];
+    const invalidPatterns = [];
     const allExts = Object.values(extensions).flat().filter(Boolean);
 
     for (const ext of allExts) {
@@ -1301,34 +1225,29 @@ const RISCVExplorer = () => {
       if (!instructions || typeof instructions !== 'object') continue;
 
       for (const [mnemonic, details] of Object.entries(instructions)) {
-        const encoding = normalizeEncodingString(details?.encoding);
-        const matchParsed = parseHexToBigInt(details?.match);
-        const maskParsed = parseHexToBigInt(details?.mask);
-
-        let match = matchParsed;
-        let mask = maskParsed;
-
-        if ((match == null || mask == null) && encoding) {
-          const derived = encodingToMatchMask(encoding);
-          match = derived.match;
-          mask = derived.mask;
+        const normalized = normalizePatternSource(details ?? {});
+        if (normalized.match == null || normalized.mask == null || normalized.errors.length > 0) {
+          invalidPatterns.push({
+            extId: ext.id,
+            mnemonic,
+            errors: normalized.errors,
+          });
+          continue;
         }
-
-        if (match == null || mask == null) continue;
 
         patterns.push({
           extId: ext.id,
           extName: ext.name,
           mnemonic,
-          encoding: encoding || matchMaskToEncoding(match, mask),
-          match: match & BIT_MASK_32,
-          mask: mask & BIT_MASK_32,
+          encoding: normalized.encoding || matchMaskToEncoding(normalized.match, normalized.mask),
+          match: normalized.match & BIT_MASK_32,
+          mask: normalized.mask & BIT_MASK_32,
           url: ext.url || 'https://github.com/riscv/riscv-isa-manual',
         });
       }
     }
 
-    return patterns;
+    return { patterns, invalidPatterns };
   }, []);
 
   const formatEncoderValidatorReport = React.useCallback((proposed, result) => {
@@ -1349,6 +1268,12 @@ const RISCVExplorer = () => {
       lines.push('');
     }
 
+    if (result.warnings.length) {
+      lines.push(`Warnings (${result.warnings.length}):`);
+      for (const warning of result.warnings) lines.push(`- ${warning}`);
+      lines.push('');
+    }
+
     lines.push(`Conflicts (${result.conflicts.length}):`);
     if (!result.conflicts.length) {
       lines.push(`- None found within the current instruction set database.`);
@@ -1366,70 +1291,29 @@ const RISCVExplorer = () => {
 
   const runEncoderValidation = React.useCallback(() => {
     const input = encoderValidatorInput;
-    const errors = [];
-
     const proposedMnemonic = String(input.mnemonic || '').trim();
-    const proposedEncoding = normalizeEncodingString(input.encoding);
-    const proposedMatchInput = String(input.match || '').trim();
-    const proposedMaskInput = String(input.mask || '').trim();
+    const normalizedInput = normalizeProposedInput(input);
+    const warnings = [];
 
-    let proposedMatch = null;
-    let proposedMask = null;
-    let normalizedEncoding = '';
-
-    const hasEncoding = Boolean(proposedEncoding);
-    const hasMatchMask = Boolean(proposedMatchInput || proposedMaskInput);
-
-    if (!hasEncoding && !hasMatchMask) {
-      errors.push('Provide either Encoding, or both Match and Mask.');
+    if (allInstructionPatterns.invalidPatterns.length > 0) {
+      warnings.push(
+        `Skipped ${allInstructionPatterns.invalidPatterns.length} existing instruction pattern${
+          allInstructionPatterns.invalidPatterns.length === 1 ? '' : 's'
+        } with inconsistent encoding metadata.`
+      );
     }
 
-    if (hasEncoding) {
-      const derived = encodingToMatchMask(proposedEncoding);
-      if (derived.error) errors.push(derived.error);
-      proposedMatch = derived.match;
-      proposedMask = derived.mask;
-      normalizedEncoding = proposedEncoding;
-    }
-
-    if (hasMatchMask) {
-      const matchParsed = parseHexToBigInt(proposedMatchInput);
-      const maskParsed = parseHexToBigInt(proposedMaskInput);
-      if (matchParsed == null) errors.push('Match must be a hex value like 0x1234.');
-      if (maskParsed == null) errors.push('Mask must be a hex value like 0x707f.');
-
-      if (matchParsed != null && maskParsed != null) {
-        const matchNorm = matchParsed & BIT_MASK_32;
-        const maskNorm = maskParsed & BIT_MASK_32;
-        if ((matchNorm & ~maskNorm) !== 0n) {
-          errors.push('Match contains bits outside Mask (match & ~mask must be 0).');
-        }
-
-        if (!hasEncoding) {
-          proposedMatch = matchNorm;
-          proposedMask = maskNorm;
-          normalizedEncoding = matchMaskToEncoding(matchNorm, maskNorm);
-        } else if (proposedMatch != null && proposedMask != null) {
-          const derivedMatchNorm = proposedMatch & BIT_MASK_32;
-          const derivedMaskNorm = proposedMask & BIT_MASK_32;
-          if (derivedMatchNorm !== matchNorm || derivedMaskNorm !== maskNorm) {
-            errors.push('Encoding does not match the provided Match/Mask.');
-          }
-        }
-      }
-    }
-
-    if (proposedMatch == null || proposedMask == null) {
-      setEncoderValidatorResult({ errors, proposed: null, conflicts: [] });
+    if (normalizedInput.normalized == null) {
+      setEncoderValidatorResult({ errors: normalizedInput.errors, warnings, proposed: null, conflicts: [] });
       return;
     }
 
-    const matchNorm = (proposedMatch ?? 0n) & BIT_MASK_32;
-    const maskNorm = (proposedMask ?? 0n) & BIT_MASK_32;
+    const matchNorm = normalizedInput.normalized.match & BIT_MASK_32;
+    const maskNorm = normalizedInput.normalized.mask & BIT_MASK_32;
 
     const proposed = {
       mnemonic: proposedMnemonic,
-      encoding: normalizeEncodingString(normalizedEncoding) || matchMaskToEncoding(matchNorm, maskNorm),
+      encoding: normalizeEncodingString(normalizedInput.normalized.encoding) || matchMaskToEncoding(matchNorm, maskNorm),
       match: toHex32(matchNorm),
       mask: toHex32(maskNorm),
       matchValue: matchNorm,
@@ -1437,36 +1321,18 @@ const RISCVExplorer = () => {
     };
 
     const conflicts = [];
-    for (const other of allInstructionPatterns) {
+    for (const other of allInstructionPatterns.patterns) {
       const overlaps = patternsOverlap(matchNorm, maskNorm, other.match, other.mask);
       if (!overlaps) continue;
 
       const commonMask = (maskNorm & other.mask) & BIT_MASK_32;
-      const type =
-        matchNorm === other.match && maskNorm === other.mask
-          ? 'identical'
-          : isSubsetPattern(matchNorm, maskNorm, other.match, other.mask)
-            ? 'proposed_subset_of_existing'
-            : isSubsetPattern(other.match, other.mask, matchNorm, maskNorm)
-              ? 'existing_subset_of_proposed'
-              : 'partial_overlap';
-
-      let why = 'Overlapping decode space (there exist instruction words that satisfy both patterns).';
-      if (type === 'identical') {
-        why = 'Exact same match/mask pattern.';
-      } else if (type === 'proposed_subset_of_existing') {
-        why =
-          'Your proposed pattern is more specific, but every word it matches also matches the existing instruction.';
-      } else if (type === 'existing_subset_of_proposed') {
-        why =
-          'Your proposed pattern is more general, and it would also match words intended for the existing instruction.';
-      }
+      const type = classifyOverlap(matchNorm, maskNorm, other.match, other.mask);
 
       const exampleWord = overlapExampleWord(matchNorm, maskNorm, other.match, other.mask);
       conflicts.push({
         other,
         type,
-        why,
+        why: describeConflictType(type),
         commonMask: toHex32(commonMask),
         exampleWord: toHex32(exampleWord),
       });
@@ -1479,10 +1345,14 @@ const RISCVExplorer = () => {
         existing_subset_of_proposed: 2,
         partial_overlap: 3,
       };
-      return (order[a.type] ?? 99) - (order[b.type] ?? 99);
+      const typeDelta = (order[a.type] ?? 99) - (order[b.type] ?? 99);
+      if (typeDelta !== 0) return typeDelta;
+      const extDelta = a.other.extId.localeCompare(b.other.extId);
+      if (extDelta !== 0) return extDelta;
+      return a.other.mnemonic.localeCompare(b.other.mnemonic);
     });
 
-    setEncoderValidatorResult({ errors, proposed, conflicts });
+    setEncoderValidatorResult({ errors: [], warnings, proposed, conflicts });
   }, [allInstructionPatterns, encoderValidatorInput]);
 
   const isHighlightedByProfile = (id) => {
@@ -2676,6 +2546,19 @@ const RISCVExplorer = () => {
 	                          <ul className="text-xs text-red-100 space-y-1 list-disc pl-4">
 	                            {encoderValidatorResult.errors.map((err) => (
 	                              <li key={err}>{err}</li>
+	                            ))}
+	                          </ul>
+	                        </div>
+	                      )}
+
+	                      {encoderValidatorResult.warnings.length > 0 && (
+	                        <div className="border border-amber-800/40 bg-amber-950/20 rounded p-3">
+	                          <div className="text-[10px] uppercase tracking-wider text-amber-200 font-bold mb-2">
+	                            Warnings
+	                          </div>
+	                          <ul className="text-xs text-amber-100 space-y-1 list-disc pl-4">
+	                            {encoderValidatorResult.warnings.map((warning) => (
+	                              <li key={warning}>{warning}</li>
 	                            ))}
 	                          </ul>
 	                        </div>

@@ -127,10 +127,11 @@ Use the **Encoder Validator** button in the header to check a proposed instructi
 
 How it works:
 - Enter either a 32-bit `Encoding` pattern (32 chars of `0/1/-`) or a `Match` + `Mask` in hex.
-- The validator normalizes your input into a `match`/`mask` pair. If you provide both encoding and match/mask, it checks they agree.
+- The validator normalizes your input into a `match`/`mask` pair. If you provide both encoding and match/mask, it checks they agree and stops on invalid combinations instead of producing conflict output from inconsistent input.
 - It compares your proposed pattern against every existing instruction pattern in `src/riscv_extensions.json`.
 - A conflict is reported if the two patterns overlap (there exists any 32-bit word that satisfies both match/mask pairs).
 - Each conflict is classified as `identical`, `proposed_subset_of_existing`, `existing_subset_of_proposed`, or `partial_overlap`.
 - For each conflict, the report includes a plain-language reason, common mask, and an example word that matches both patterns.
+- Existing instruction entries with inconsistent encoding metadata are skipped and surfaced as warnings in the validator output.
 
 You can use **Copy report** in the modal to copy a full conflict report for sharing.

@@ -8,7 +8,8 @@
   "build": "webpack",
   "predeploy": "npm run build",
   "deploy": "gh-pages -d dist --branch gh-pages --dotfiles",
-  "test": "echo \"Error: no test specified\" && exit 1"
+  "test": "node --test test/encoder-validator.test.mjs",
+  "test:encoder-validator": "node --test test/encoder-validator.test.mjs"
 },
   "keywords": [],
   "author": "",

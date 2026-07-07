@@ -245,7 +245,9 @@ as:
 | `partial_overlap` | Some words match both, but neither is a subset of the other. |
 
 Each conflict includes a plain-language explanation, the common mask, and an
-example 32-bit word that satisfies both patterns. The full report can be copied
+example 32-bit word that satisfies both patterns. Invalid proposed input is
+rejected before conflict analysis, and existing instruction entries with
+inconsistent encoding metadata are skipped with warnings. The full report can be copied
 to the clipboard.
 
 ## 7. How to Add Data
