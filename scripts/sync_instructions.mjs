@@ -142,16 +142,21 @@ for (const [extId, mnemonics] of Object.entries(extensionInstructions)) {
   }
 }
 
+if (missingExtensions.size || missingInstructions.size) {
+  if (missingExtensions.size) {
+    console.error(`Extensions referenced in JSX but not found in src/riscv_extensions.json: ${Array.from(missingExtensions).sort().join(', ')}`);
+  }
+  if (missingInstructions.size) {
+    const sorted = Array.from(missingInstructions.entries()).sort(([a], [b]) => a.localeCompare(b));
+    console.error('Instructions missing from instr_dict.json (by extension):');
+    for (const [extId, list] of sorted) {
+      const missingMnemonics = Array.from(new Set(list)).sort((a, b) => a.localeCompare(b));
+      console.error(`- ${extId}: ${missingMnemonics.join(', ')}`);
+    }
+  }
+  die('Sync aborted: missing extension or instruction mappings would produce a partial catalog.');
+}
+
 fs.writeFileSync(catalogPath, `${JSON.stringify(extensionsCatalog, null, 2)}\n`);
 
 console.log(`Updated ${path.relative(workspaceRoot, catalogPath)} with ${addedCount} instruction entries.`);
-if (missingExtensions.size) {
-  console.warn(`Extensions referenced in JSX but not found in YAML: ${Array.from(missingExtensions).sort().join(', ')}`);
-}
-if (missingInstructions.size) {
-  const sorted = Array.from(missingInstructions.entries()).sort(([a], [b]) => a.localeCompare(b));
-  console.warn('Instructions missing from instr_dict.json (by extension):');
-  for (const [extId, list] of sorted) {
-    console.warn(`- ${extId}: ${list.length}`);
-  }
-}
