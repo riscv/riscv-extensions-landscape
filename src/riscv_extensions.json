@@ -21510,6 +21510,62 @@
       "desc": "Trace & Instrumentation",
       "use": "Trace / instrumentation spec tag",
       "url": "https://github.com/riscv/riscv-isa-manual"
+    },
+    {
+      "id": "Sha",
+      "name": "Sha",
+      "tags": ["rv_sha"],
+      "desc": "Augmented hypervisor",
+      "use": "Bundle of hypervisor augmentation requirements (profiles)",
+      "url": "https://github.com/riscv/riscv-isa-manual"
+    },
+    {
+      "id": "Shcounterenw",
+      "name": "Shcounterenw",
+      "tags": ["rv_shcounterenw"],
+      "desc": "Hypervisor counter enable",
+      "use": "Writable hcounteren for all supported counters",
+      "url": "https://github.com/riscv/riscv-isa-manual"
+    },
+    {
+      "id": "Shgatpa",
+      "name": "Shgatpa",
+      "tags": ["rv_shgatpa"],
+      "desc": "SvNNx4 guest translation for all supported S-mode modes, plus Bare",
+      "use": "Guest-physical address translation requirement",
+      "url": "https://github.com/riscv/riscv-isa-manual"
+    },
+    {
+      "id": "Shtvala",
+      "name": "Shtvala",
+      "tags": ["rv_shtvala"],
+      "desc": "Hypervisor Trap Value (htval) provides all needed values",
+      "use": "htval reporting requirement",
+      "url": "https://github.com/riscv/riscv-isa-manual"
+    },
+    {
+      "id": "Shvsatpa",
+      "name": "Shvsatpa",
+      "tags": ["rv_shvsatpa"],
+      "desc": "Virtual Supervisor address translation supports all supported S-mode modes",
+      "use": "VS-stage address translation requirement",
+      "url": "https://github.com/riscv/riscv-isa-manual"
+    },
+    {
+      "id": "Shvstvala",
+      "name": "Shvstvala",
+      "tags": ["rv_shvstvala"],
+      "desc": "Virtual Supervisor Trap Value (vstval) provides all needed values",
+      "use": "vstval reporting requirement",
+      "url": "https://github.com/riscv/riscv-isa-manual"
+    },
+    {
+      "id": "Shvstvecd",
+      "name": "Shvstvecd",
+      "tags": ["rv_shvstvecd"],
+      "desc": "Virtual Supervisor Trap Vector (vstvec) supports Direct mode",
+      "use": "vstvec Direct mode requirement",
+      "url": "https://github.com/riscv/riscv-isa-manual"
     }
   ]
 }
