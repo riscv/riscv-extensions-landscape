@@ -27171,6 +27171,69 @@
       "use": "Trace / instrumentation spec tag",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
+    },
+    {
+      "id": "Sha",
+      "name": "Sha",
+      "tags": [],
+      "desc": "Augmented hypervisor",
+      "use": "Bundle of hypervisor augmentation requirements (profiles)",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {}
+    },
+    {
+      "id": "Shcounterenw",
+      "name": "Shcounterenw",
+      "tags": [],
+      "desc": "Hypervisor counter enable",
+      "use": "Writable hcounteren for all supported counters",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {}
+    },
+    {
+      "id": "Shgatpa",
+      "name": "Shgatpa",
+      "tags": [],
+      "desc": "SvNNx4 guest translation for all supported S-mode modes, plus Bare",
+      "use": "Guest-physical address translation requirement",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {}
+    },
+    {
+      "id": "Shtvala",
+      "name": "Shtvala",
+      "tags": [],
+      "desc": "Hypervisor Trap Value (htval) provides all needed values",
+      "use": "htval reporting requirement",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {}
+    },
+    {
+      "id": "Shvsatpa",
+      "name": "Shvsatpa",
+      "tags": [],
+      "desc": "Virtual Supervisor address translation supports all supported S-mode modes",
+      "use": "VS-stage address translation requirement",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {}
+    },
+    {
+      "id": "Shvstvala",
+      "name": "Shvstvala",
+      "tags": [],
+      "desc": "Virtual Supervisor Trap Value (vstval) provides all needed values",
+      "use": "vstval reporting requirement",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {}
+    },
+    {
+      "id": "Shvstvecd",
+      "name": "Shvstvecd",
+      "tags": [],
+      "desc": "Virtual Supervisor Trap Vector (vstvec) supports Direct mode",
+      "use": "vstvec Direct mode requirement",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {}
     }
   ]
 }

@@ -183,6 +183,74 @@
       "requires": [],
       "verified": "none"
     },
+    "Sha": {
+      "requires": [
+        {
+          "ext": "H",
+          "src": "udb",
+          "ref": "Sha.yaml requirements.extension"
+        },
+        {
+          "ext": "Shcounterenw",
+          "src": "udb",
+          "ref": "Sha.yaml requirements.extension"
+        },
+        {
+          "ext": "Shgatpa",
+          "src": "udb",
+          "ref": "Sha.yaml requirements.extension"
+        },
+        {
+          "ext": "Shtvala",
+          "src": "udb",
+          "ref": "Sha.yaml requirements.extension"
+        },
+        {
+          "ext": "Shvsatpa",
+          "src": "udb",
+          "ref": "Sha.yaml requirements.extension"
+        },
+        {
+          "ext": "Shvstvala",
+          "src": "udb",
+          "ref": "Sha.yaml requirements.extension"
+        },
+        {
+          "ext": "Shvstvecd",
+          "src": "udb",
+          "ref": "Sha.yaml requirements.extension"
+        },
+        {
+          "ext": "Ssstateen",
+          "src": "udb",
+          "ref": "Sha.yaml requirements.extension"
+        }
+      ]
+    },
+    "Shcounterenw": {
+      "requires": [],
+      "verified": "udb"
+    },
+    "Shgatpa": {
+      "requires": [],
+      "verified": "udb"
+    },
+    "Shtvala": {
+      "requires": [],
+      "verified": "udb"
+    },
+    "Shvsatpa": {
+      "requires": [],
+      "verified": "udb"
+    },
+    "Shvstvala": {
+      "requires": [],
+      "verified": "udb"
+    },
+    "Shvstvecd": {
+      "requires": [],
+      "verified": "udb"
+    },
     "Sm": {
       "requires": [],
       "catalogued": false,
