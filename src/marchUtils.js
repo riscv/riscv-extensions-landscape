@@ -163,7 +163,24 @@ const NON_ISA_EXTENSION_IDS = new Set(['RERI', 'HTI']);
  *
  * [DATA] Cross-checked against our riscv_extensions.json catalog descriptions.
  */
-export const NON_MARCH_IDS = new Set(['K', 'N', 'P', 'S', 'U']); // B removed — ratified, decode-accept + explicit-encode
+/**
+ * Sv32/Sv39/Sv48/Sv57 are address-translation MODES, not extensions. They name
+ * the page-table depth a hart supports and are selected at runtime through the
+ * `satp` MODE field — the same category as S and U above.
+ *
+ * Verified against clang 21: `-march=rv64imafdc_sv39` is rejected with
+ * "unsupported standard supervisor-level extension 'sv'" (the parser reads `sv`
+ * plus version `39`), while every other Sv* extension — Svbare, Svade, Svadu,
+ * Svnapot, Svpbmt, Svinval — is accepted. Emitting them produced an invalid
+ * -march for all four ratified profiles, each of which mandates Sv39.
+ */
+/** The satp MODE values, kept separate so the exclusion reason can be accurate. */
+export const SATP_MODE_IDS = new Set(['Sv32', 'Sv39', 'Sv48', 'Sv57']);
+
+export const NON_MARCH_IDS = new Set([
+  'K', 'N', 'P', 'S', 'U',   // privilege levels and UI grouping tags
+  ...SATP_MODE_IDS,
+]); // B removed — ratified, decode-accept + explicit-encode
 
 // ============================================================================
 // Data provenance — displayed in ISA Workspace footer
@@ -417,7 +434,15 @@ export function buildMarchString(selectedIds, allExts) {
       continue;
     }
     if (NON_MARCH_IDS.has(id)) {
-      out.excluded.push({ id, reason: 'UI grouping tag / Non-ISA tag — not a valid -march token' });
+      // Two different reasons live in NON_MARCH_IDS, and telling a user that
+      // Sv39 is a "UI grouping tag" is simply wrong — it is a real
+      // architectural feature, just not one -march can express.
+      out.excluded.push({
+        id,
+        reason: SATP_MODE_IDS.has(id)
+          ? 'Address-translation mode selected via the satp MODE field — not an -march extension'
+          : 'UI grouping tag / Non-ISA tag — not a valid -march token',
+      });
       continue;
     }
     if (id === 'B') {

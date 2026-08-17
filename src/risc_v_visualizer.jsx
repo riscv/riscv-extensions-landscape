@@ -48,6 +48,7 @@ import WorkspacePanel from './WorkspacePanel.jsx';
 // only over what the user clicked.
 import { BASE_ISA_IDS, SMART_DEPENDENCIES, buildMarchString, buildCombinedCatalog } from './marchUtils.js';
 import { resolveSelection } from './isaGraph.js';
+import { PROFILES } from './profiles.js';
 import { buildIsaConfigYaml } from './exportUtils.js';
 
 // Ids the catalog can actually render. The dependency graph carries a few nodes
@@ -686,6 +687,7 @@ const RISCVExplorer = () => {
   // asked to be in. Turning the builder on is now a deliberate act.
   const [builderMode, setBuilderMode] = useState(false);
   const [workspacePanelOpen, setWorkspacePanelOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [workspaceQuickOpen, setWorkspaceQuickOpen] = useState(false);
   const [quickExportOpen, setQuickExportOpen] = useState(false);
   const [quickExportIncludeInstr, setQuickExportIncludeInstr] = useState(true);
@@ -1162,188 +1164,9 @@ const RISCVExplorer = () => {
   };
   */
 
-  // ---------------------------------------------------------------------------
-  // Profile Definitions – mandatory sets (U64+S64) for RVA20/22/23/RVB23
-  // ---------------------------------------------------------------------------
-  const profiles = {
-    // RVA20U64 + RVA20S64 – baseline “RV64GC-like” profile
-    RVA20: [
-      'RV64I',
-      'M',
-      'A',
-      'F',
-      'D',
-      'C',
-      'Zicsr',
-      'Zicntr',
-      'Ziccif',
-      'Ziccrse',
-      'Ziccamoa',
-      'Za128rs',
-      'Zicclsm',
-      'Zifencei',
-      'Ss1p11',
-      'Svbare',
-      'Sv39',
-      'Svade',
-      'Ssccptr',
-      'Sstvecd',
-      'Sstvala',
-    ],
-
-    // RVA22U64 + RVA22S64 – as referenced by RVA23 spec
-    RVA22: [
-      'RV64I',
-      'M',
-      'A',
-      'F',
-      'D',
-      'C',
-      'Zicsr',
-      'Zicntr',
-      'Zihpm',
-      'Ziccif',
-      'Ziccrse',
-      'Ziccamoa',
-      'Zicclsm',
-      'Za64rs',
-      'Zihintpause',
-      'Zba',
-      'Zbb',
-      'Zbs',
-      'Zic64b',
-      'Zicbom',
-      'Zicbop',
-      'Zicboz',
-      'Zfhmin',
-      'Zkt',
-      'Zifencei',
-      'Ss1p12',
-      'Svbare',
-      'Sv39',
-      'Svade',
-      'Ssccptr',
-      'Sstvecd',
-      'Sstvala',
-      'Sscounterenw',
-      'Svpbmt',
-      'Svinval',
-    ],
-
-    // RVA23U64 + RVA23S64 – full mandatory set
-    RVA23: [
-      'RV64I',
-      'M',
-      'A',
-      'F',
-      'D',
-      'C',
-      'Zicsr',
-      'Zicntr',
-      'Zihpm',
-      'Ziccif',
-      'Ziccrse',
-      'Ziccamoa',
-      'Zicclsm',
-      'Za64rs',
-      'Zihintpause',
-      'Zba',
-      'Zbb',
-      'Zbs',
-      'Zic64b',
-      'Zicbom',
-      'Zicbop',
-      'Zicboz',
-      'Zfhmin',
-      'Zkt',
-
-      // New mandatory in RVA23U64
-      'V',
-      'Zvfhmin',
-      'Zvbb',
-      'Zvkt',
-      'Zihintntl',
-      'Zicond',
-      'Zimop',
-      'Zcmop',
-      'Zcb',
-      'Zfa',
-      'Zawrs',
-      'Supm',
-
-      // S-profile extras
-      'Zifencei',
-      'Ss1p13',
-      'Svbare',
-      'Sv39',
-      'Svade',
-      'Ssccptr',
-      'Sstvecd',
-      'Sstvala',
-      'Sscounterenw',
-      'Svpbmt',
-      'Svinval',
-      'Svnapot',
-      'Sstc',
-      'Sscofpmf',
-      'Ssnpm',
-      'Ssu64xl',
-
-      // Hypervisor bundle
-      'Sha',
-      'H',
-    ],
-
-    // RVB23U64 + RVB23S64 – embedded-leaning profile
-    RVB23: [
-      'RV64I',
-      'M',
-      'A',
-      'F',
-      'D',
-      'C',
-      'Zicsr',
-      'Zicntr',
-      'Zihpm',
-      'Ziccif',
-      'Ziccrse',
-      'Ziccamoa',
-      'Zicclsm',
-      'Za64rs',
-      'Zihintpause',
-      'Zic64b',
-      'Zicbom',
-      'Zicbop',
-      'Zicboz',
-      'Zkt',
-
-      // RVA23-style unprivileged add-ons (minus V/Zfhmin/Supm mandates)
-      'Zihintntl',
-      'Zicond',
-      'Zimop',
-      'Zcmop',
-      'Zcb',
-      'Zfa',
-      'Zawrs',
-
-      'Zifencei',
-
-      'Ss1p13',
-      'Svnapot',
-      'Svbare',
-      'Sv39',
-      'Svade',
-      'Ssccptr',
-      'Sstvecd',
-      'Sstvala',
-      'Sscounterenw',
-      'Svpbmt',
-      'Svinval',
-      'Sstc',
-      'Sscofpmf',
-      'Ssu64xl',
-    ],
-  };
+  // Profile definitions live in ./profiles.js so scripts and tests can reach
+  // them; see that file for why.
+  const profiles = PROFILES;
 
   // ---------------------------------------------------------------------------
   // Instruction lists per extension (used in the details sidebar)
@@ -2197,6 +2020,91 @@ const RISCVExplorer = () => {
                     >
                       <Maximize2 size={13} className="transition-transform group-hover:scale-110" />
                     </button>
+
+                    {/* Hairline divider */}
+                    <div className="relative z-10 w-px self-stretch bg-amber-600/60" />
+
+                    {/* Start from a profile.
+                        A configuration can begin two ways: pick a base ISA tile
+                        and build up (what the tiles below afford), or start from
+                        a ratified profile and adjust. Only the first was
+                        reachable before. While the workspace is empty this
+                        carries a text label, because that is exactly when the
+                        user needs to know the second option exists. */}
+                    <div className="relative z-10 flex">
+                      <button
+                        type="button"
+                        onClick={() => setProfileMenuOpen(v => !v)}
+                        title="Start the configuration from a ratified profile"
+                        className={[
+                          'group inline-flex items-center gap-1.5 justify-center px-3 transition-all duration-300 z-20 whitespace-nowrap',
+                          workspaceIds.size === 0 ? 'rounded-r-xl' : '',
+                          profileMenuOpen
+                            ? 'bg-indigo-500 text-white shadow-inner'
+                            : 'bg-gradient-to-b from-amber-400 to-amber-500 text-slate-800 hover:from-indigo-500 hover:to-indigo-600 hover:text-white',
+                        ].join(' ')}
+                      >
+                        <Layers size={13} className="transition-transform group-hover:scale-110" />
+                        {workspaceIds.size === 0 && (
+                          <span className="text-[11px] font-bold">Start from profile</span>
+                        )}
+                      </button>
+
+                      {profileMenuOpen && (
+                        <div style={{
+                          position: 'absolute', top: 'calc(100% + 8px)', right: 0,
+                          zIndex: 50, display: 'flex', flexDirection: 'column',
+                          borderRadius: 10,
+                          background: 'linear-gradient(145deg, #1a1f2e 0%, #141824 100%)',
+                          border: '1px solid rgba(245,197,66,0.25)',
+                          boxShadow: '0 12px 32px rgba(0,0,0,0.55)',
+                          minWidth: 300, overflow: 'hidden',
+                        }}>
+                          <div style={{
+                            padding: '10px 14px',
+                            borderBottom: '1px solid rgba(255,255,255,0.06)',
+                            background: 'rgba(245,197,66,0.04)',
+                            fontSize: 11, color: '#f1f5f9', fontWeight: 700,
+                          }}>
+                            Start from a ratified profile
+                          </div>
+
+                          {Object.entries(profiles).map(([name, list]) => (
+                            <button
+                              key={name}
+                              type="button"
+                              onClick={() => {
+                                // Replace rather than merge: "start from" means
+                                // this profile is the starting point, and mixing
+                                // it into an existing pick would silently produce
+                                // a configuration matching neither.
+                                setWorkspaceIds(new Set());
+                                addWorkspaceIdsSmart(list);
+                                setProfileMenuOpen(false);
+                              }}
+                              style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                gap: 12, padding: '10px 14px', textAlign: 'left',
+                                borderBottom: '1px solid rgba(255,255,255,0.04)',
+                                background: 'transparent', cursor: 'pointer',
+                              }}
+                              className="hover:bg-amber-400/10 transition-colors"
+                            >
+                              <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--riscv-gold)' }}>{name}</span>
+                              <span style={{ fontSize: 10, color: 'var(--riscv-text-2)' }}>
+                                {list.length} extensions
+                              </span>
+                            </button>
+                          ))}
+
+                          <div style={{ padding: '8px 14px', fontSize: 10, color: 'var(--riscv-text-3)', lineHeight: 1.5 }}>
+                            Replaces the current selection. Dependencies are resolved
+                            automatically, so the result may include more than the
+                            profile lists.
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </>)}
 
                   {/* Clear and export — only meaningful once something is picked */}
