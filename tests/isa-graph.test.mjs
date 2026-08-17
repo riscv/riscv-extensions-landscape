@@ -223,6 +223,29 @@ test('traversal reports what it implied, and why', () => {
   assert.equal(explain('D', result), 'D was selected directly');
 });
 
+test('privilege levels resolve transitively', () => {
+  // The ISA builder walked dependencies one level deep, so selecting S added U
+  // but selecting H added only S — U went missing because it is reached through
+  // S. Anything that resolves a selection must take the whole closure.
+  const s = resolveSelection({ selected: ['S'] });
+  assert.ok(s.resolved.includes('U'), 'S requires U');
+
+  const h = resolveSelection({ selected: ['H'] });
+  assert.ok(h.resolved.includes('S'), 'H requires S');
+  assert.ok(h.resolved.includes('U'), 'H requires U transitively, through S');
+  assert.deepEqual(explain('U', h).split(' -> '), ['H', 'S', 'U']);
+});
+
+test('deep chains resolve completely, not one level down', () => {
+  // Zve64d used to yield only D and Zve64f. Everything below that was dropped.
+  const r = resolveSelection({ selected: ['Zve64d'] });
+  for (const required of ['D', 'F', 'Zicsr', 'Zve32f', 'Zve32x', 'Zve64x', 'Zvl32b', 'Zvl64b']) {
+    assert.ok(r.resolved.includes(required), `Zve64d should pull in ${required}`);
+  }
+  const q = resolveSelection({ selected: ['Q'] });
+  assert.ok(q.resolved.includes('F') && q.resolved.includes('Zicsr'), 'Q -> D -> F -> Zicsr');
+});
+
 test('traversal explains a conflict with the path that caused it', () => {
   // The case that used to vanish silently: nothing the user picked is F, but
   // Zve64d reaches it through D, and RV32E has no F registers.

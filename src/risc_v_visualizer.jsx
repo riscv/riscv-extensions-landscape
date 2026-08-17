@@ -42,8 +42,19 @@ import {
 } from 'lucide-react';
 import extensions from './riscv_extensions.json';
 import WorkspacePanel from './WorkspacePanel.jsx';
-import { BASE_ISA_IDS, SMART_DEPENDENCIES, INCOMPATIBLE_WITH, buildMarchString, buildCombinedCatalog } from './marchUtils.js';
+// INCOMPATIBLE_WITH is no longer imported here: conflicts now come back from
+// resolveSelection(), which checks them over the resolved closure rather than
+// only over what the user clicked.
+import { BASE_ISA_IDS, SMART_DEPENDENCIES, buildMarchString, buildCombinedCatalog } from './marchUtils.js';
+import { resolveSelection } from './isaGraph.js';
 import { buildIsaConfigYaml } from './exportUtils.js';
+
+// Ids the catalog can actually render. The dependency graph carries a few nodes
+// the catalog does not (UDB's S requires Sm, for which we have no entry), and
+// adding one of those to the workspace would show a row with nothing behind it.
+const CATALOG_IDS = new Set(
+  Object.values(extensions).flat().filter(Boolean).map((e) => e.id),
+);
 
 const BIT_WIDTH = 32n;
 const BIT_MASK_32 = (1n << BIT_WIDTH) - 1n;
@@ -736,31 +747,38 @@ const RISCVExplorer = () => {
         }
 
         next.add(id);
-
-        // 2. Smart Dependencies (e.g. D fundamentally requires F)
-        const deps = SMART_DEPENDENCIES[id];
-        if (deps) {
-          for (const dep of deps) {
-            if (!next.has(dep)) {
-              next.add(dep);
-              autoAdded.push(dep);
-            }
-          }
-        }
       }
 
-      // 3. Incompatibility Check (e.g. RV32E excludes F)
-      // Evaluate bidirectionally for all items currently in the 'next' set
-      for (const ext1 of next) {
-        const incompat = INCOMPATIBLE_WITH[ext1] || [];
-        for (const blocked of incompat) {
-          if (next.has(blocked)) {
-            // Revert the entire addition batch if it creates an invalid architectural state
-            setWorkspaceNotice(`Architecturally Invalid: ${ext1} is incompatible with ${blocked}`);
-            setTimeout(() => setWorkspaceNotice(null), 4500);
-            return prev;
-          }
-        }
+      // 2. Dependencies, resolved transitively through the graph.
+      //
+      // This used to walk SMART_DEPENDENCIES one level deep, which is only
+      // correct when a dependency has none of its own. It silently under-selected
+      // everything deeper: picking H added S but not U (H -> S -> U), and picking
+      // Zve64d added D and Zve64f but none of F, Zicsr, Zve32x, Zve64x or the
+      // Zvl*b tokens. resolveSelection() walks the whole closure.
+      const resolution = resolveSelection({
+        selected: Array.from(next),
+        base: Array.from(next).find((x) => BASE_ISA_IDS.has(x)) ?? null,
+      });
+
+      // 3. Incompatibility check, over the fully resolved set — so a conflict
+      // reached only through a dependency is caught too. The path is what makes
+      // the message useful: the offending extension is often one the user never
+      // picked (Zve64d -> D -> F on an E-base).
+      if (resolution.conflicts.length > 0) {
+        const c = resolution.conflicts[0];
+        const via = c.path.length > 1 ? ` (pulled in by ${c.path.join(' -> ')})` : '';
+        setWorkspaceNotice(`Architecturally Invalid: ${c.with} is incompatible with ${c.ext}${via}`);
+        setTimeout(() => setWorkspaceNotice(null), 4500);
+        return prev; // revert the whole batch, as before
+      }
+
+      for (const dep of resolution.resolved) {
+        // Skip graph-only nodes the catalog cannot show.
+        if (!CATALOG_IDS.has(dep)) continue;
+        if (next.has(dep)) continue;
+        next.add(dep);
+        autoAdded.push(dep);
       }
 
       if (autoAdded.length > 0) {
