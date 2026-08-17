@@ -25,14 +25,25 @@ jobs:
       # against our own model of the spec. This caught a case the unit tests
       # missed: excluding F for an E base while keeping D produced a string
       # clang rejects ("ILP32E cannot be used with the D ISA extension").
+      # The toolchain has to be recent enough to know the extensions we emit.
+      # ubuntu-24.04 ships clang 18, which rejects Ssccptr outright and treats
+      # Zcmop as experimental — both are ratified and both appear in the RVA23
+      # and RVB23 profiles. Validating against clang 18 would assert our strings
+      # against a two-year-old view of the ISA and fail on correct output.
       - name: Install clang
-        run: sudo apt-get update && sudo apt-get install -y clang
+        run: |
+          set -euo pipefail
+          wget -qO /tmp/llvm.sh https://apt.llvm.org/llvm.sh
+          chmod +x /tmp/llvm.sh
+          sudo /tmp/llvm.sh 20
+          echo "CLANG=clang-20" >> "$GITHUB_ENV"
       - name: Validate -march strings with clang
         run: |
           set -uo pipefail
+          "$CLANG" --version | head -1
           fail=0
           while IFS=$'\t' read -r target march; do
-            if clang --target="$target" -march="$march" -x c /dev/null -fsyntax-only 2>/tmp/err; then
+            if "$CLANG" --target="$target" -march="$march" -x c /dev/null -fsyntax-only 2>/tmp/err; then
               echo "ok    $march"
             else
               echo "FAIL  $march  <- $(head -1 /tmp/err)"
