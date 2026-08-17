@@ -56,10 +56,9 @@ for (const base of BASES) {
 // never touch — which is how every profile came to emit an Sv39 that clang
 // rejects, unnoticed.
 const CATALOG_IDS = new Set(ALL.filter(Boolean).map((e) => e.id));
-for (const [name, members] of Object.entries(PROFILES)) {
+for (const members of Object.values(PROFILES)) {
   const base = members.find((id) => /^RV(32|64|128)[IE]$/.test(id)) ?? null;
   if (base === 'RV128I') continue; // no clang riscv128 target
   const { resolved } = resolveSelection({ selected: members, base });
   emit(buildMarchString(resolved.filter((id) => CATALOG_IDS.has(id)), ALL).march);
-  void name;
 }
