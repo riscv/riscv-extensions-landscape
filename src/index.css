@@ -1,3 +1,369 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ─── Design Tokens ──────────────────────────────────────────────────────── */
+:root {
+  --riscv-bg: #07070e;
+  --riscv-surface: #0d0d17;
+  --riscv-surface-2: #111120;
+  --riscv-border: #1a1a2e;
+  --riscv-border-2: #242438;
+  --riscv-muted: #2a2a42;
+
+  --riscv-gold: #f5c542;
+  --riscv-gold-dim: rgba(245, 197, 66, 0.12);
+  --riscv-gold-glow: rgba(245, 197, 66, 0.20);
+
+  --riscv-violet: #8b7cf8;
+  --riscv-violet-dim: rgba(139, 124, 248, 0.12);
+
+  --riscv-success: #20d9a0;
+  --riscv-danger: #ff4d6b;
+  --riscv-warn: #f59e0b;
+
+  --riscv-text: #e2e8f0;
+  --riscv-text-2: #94a3b8;
+  --riscv-text-3: #475569;
+
+  /* Field colors for encoding diagram */
+  --field-opcode: #f5c542;
+  /* gold   — [6:0]   */
+  --field-rd: #f472b6;
+  /* pink   — [11:7]  */
+  --field-funct3: #2dd4bf;
+  /* teal   — [14:12] */
+  --field-rs1: #a78bfa;
+  /* violet — [19:15] */
+  --field-rs2: #818cf8;
+  /* indigo — [24:20] */
+  --field-funct7: #60a5fa;
+  /* blue   — [31:25] */
+  --field-var: #334155;
+  /* slate  — variable */
+}
+
+/* ─── Global Base ────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--riscv-bg);
+  color: var(--riscv-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code,
+pre,
+.font-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+/* ─── Custom Scrollbar ───────────────────────────────────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--riscv-muted) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--riscv-muted);
+  border-radius: 9999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--riscv-border-2);
+}
+
+/* ─── Animations ─────────────────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes goldPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 197, 66, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 0 4px rgba(245, 197, 66, 0);
+  }
+}
+
+@keyframes topBorderShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.25s ease-out both;
+}
+
+.animate-fade-in-right {
+  animation: fadeInRight 0.25s ease-out both;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s ease-out both;
+}
+
+/* ─── Component Utilities ────────────────────────────────────────────────── */
+.riscv-card {
+  background: var(--riscv-surface);
+  border: 1px solid var(--riscv-border);
+  border-radius: 10px;
+}
+
+.riscv-card-2 {
+  background: var(--riscv-surface-2);
+  border: 1px solid var(--riscv-border-2);
+  border-radius: 8px;
+}
+
+.riscv-input {
+  background: var(--riscv-surface);
+  border: 1px solid var(--riscv-border-2);
+  border-radius: 8px;
+  color: var(--riscv-text);
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.riscv-input:focus {
+  outline: none;
+  border-color: var(--riscv-gold);
+  box-shadow: 0 0 0 3px var(--riscv-gold-glow);
+}
+
+.riscv-btn {
+  border-radius: 7px;
+  border: 1px solid var(--riscv-border-2);
+  background: var(--riscv-surface-2);
+  color: var(--riscv-text);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  cursor: pointer;
+}
+
+.riscv-btn:hover {
+  border-color: var(--riscv-border-2);
+  background: var(--riscv-muted);
+}
+
+.riscv-btn:active {
+  transform: scale(0.97);
+}
+
+.riscv-btn-gold {
+  border-color: rgba(245, 197, 66, 0.35);
+  background: var(--riscv-gold-dim);
+  color: var(--riscv-gold);
+}
+
+.riscv-btn-gold:hover {
+  border-color: rgba(245, 197, 66, 0.6);
+  background: rgba(245, 197, 66, 0.18);
+}
+
+.riscv-btn-violet {
+  border-color: rgba(139, 124, 248, 0.35);
+  background: var(--riscv-violet-dim);
+  color: var(--riscv-violet);
+}
+
+.riscv-btn-violet:hover {
+  border-color: rgba(139, 124, 248, 0.6);
+  background: rgba(139, 124, 248, 0.20);
+}
+
+/* Extension tile hover lift */
+.ext-tile {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.ext-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 2px var(--riscv-text-3), 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.ext-tile-active {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 0 0 2px var(--riscv-gold), 0 8px 32px rgba(245, 197, 66, 0.12) !important;
+  animation: goldPulse 2s ease-in-out infinite;
+}
+
+.ext-tile-highlighted {
+  box-shadow: 0 0 0 2px var(--riscv-gold), 0 4px 16px rgba(245, 197, 66, 0.08);
+}
+
+/* Top accent border gradient */
+.riscv-top-border::before {
+  content: '';
+  display: block;
+  height: 2px;
+  background: linear-gradient(90deg, #f5c542 0%, #8b7cf8 50%, #20d9a0 100%);
+  background-size: 200% 200%;
+  animation: topBorderShimmer 6s ease infinite;
+  border-radius: 9999px;
+  margin-bottom: -2px;
+}
+
+/* Severity badges */
+.conflict-identical {
+  border-color: #ff4d6b;
+  background: rgba(255, 77, 107, 0.08);
+}
+
+.conflict-subset-in {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.conflict-subset-out {
+  border-color: #fbbf24;
+  background: rgba(251, 191, 36, 0.06);
+}
+
+.conflict-partial {
+  border-color: #d97706;
+  background: rgba(217, 119, 6, 0.06);
+}
+
+.conflict-none {
+  border-color: #20d9a0;
+  background: rgba(32, 217, 160, 0.08);
+}
+
+/* Encoding field colors */
+.enc-opcode {
+  background: rgba(245, 197, 66, 0.30);
+  color: #fef08a;
+  border-right-color: rgba(245, 197, 66, 0.50);
+}
+
+.enc-rd {
+  background: rgba(244, 114, 182, 0.25);
+  color: #fbcfe8;
+  border-right-color: rgba(244, 114, 182, 0.45);
+}
+
+.enc-funct3 {
+  background: rgba(45, 212, 191, 0.25);
+  color: #99f6e4;
+  border-right-color: rgba(45, 212, 191, 0.45);
+}
+
+.enc-rs1 {
+  background: rgba(167, 139, 250, 0.25);
+  color: #e9d5ff;
+  border-right-color: rgba(167, 139, 250, 0.45);
+}
+
+.enc-rs2 {
+  background: rgba(129, 140, 248, 0.25);
+  color: #c7d2fe;
+  border-right-color: rgba(129, 140, 248, 0.45);
+}
+
+.enc-funct7 {
+  background: rgba(96, 165, 250, 0.25);
+  color: #bfdbfe;
+  border-right-color: rgba(96, 165, 250, 0.45);
+}
+
+.enc-var {
+  background: rgba(51, 65, 85, 0.60);
+  color: #f8fafc;
+  border-right-color: rgba(71, 85, 105, 0.60);
+}
+
+/* ── ISA Workspace ──────────────────────────────────────────────────────── */
+
+/**
+ * Workspace badge on tiles.
+ * - Hidden (opacity 0) by default
+ * - Appears on tile hover
+ * - Always visible when data-in-workspace="true" (extension is in workspace)
+ */
+.workspace-tile-btn {
+  opacity: 0;
+  transition: opacity 0.12s ease, background 0.15s ease, border-color 0.15s ease;
+  line-height: 1;
+}
+
+/* Show on tile hover */
+.ext-tile:hover .workspace-tile-btn {
+  opacity: 1;
+}
+
+/* Always show when extension is in workspace */
+.workspace-tile-btn[data-in-workspace="true"] {
+  opacity: 1;
+}
+
+/* Panel slide-in animation (fallback — WorkspacePanel now inlines its own) */
+@keyframes slideInRight {
+  from { transform: translateX(40px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+

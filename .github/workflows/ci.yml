@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Tests
+        run: npm test
+
+      # Validates generated -march strings against a real toolchain rather than
+      # against our own model of the spec. This caught a case the unit tests
+      # missed: excluding F for an E base while keeping D produced a string
+      # clang rejects ("ILP32E cannot be used with the D ISA extension").
+      - name: Install clang
+        run: sudo apt-get update && sudo apt-get install -y clang
+      - name: Validate -march strings with clang
+        run: |
+          set -uo pipefail
+          fail=0
+          while IFS=$'\t' read -r target march; do
+            if clang --target="$target" -march="$march" -x c /dev/null -fsyntax-only 2>/tmp/err; then
+              echo "ok    $march"
+            else
+              echo "FAIL  $march  <- $(head -1 /tmp/err)"
+              fail=1
+            fi
+          done < <(node scripts/emit-march-matrix.mjs)
+          exit $fail
+
+  # Publishes to the gh-pages branch, which is what Pages serves. Gated on
+  # build-and-test so only tested code reaches the live site, and restricted to
+  # pushes on main so pull requests never publish.
+  deploy:
+    needs: build-and-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: gh-pages
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Publish dist/ to gh-pages
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -d dist || { echo "dist/ was not produced by the build"; exit 1; }
+          touch dist/.nojekyll
+          cd dist
+          git init -q
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "deploy: ${GITHUB_SHA::8} from main"
+          git push -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:gh-pages
+          echo "published ${GITHUB_SHA::8} to gh-pages"
