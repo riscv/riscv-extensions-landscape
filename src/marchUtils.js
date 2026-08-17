@@ -1,8 +1,12 @@
 /**
  * marchUtils.js — RISC-V -march String Utilities
  *
- * Pure functions. No React. No JSON imports.
- * Callers pass the flat extension array from riscv_extensions.json.
+ * Pure functions. No React. Callers pass the flat extension array from
+ * riscv_extensions.json — the catalog is never imported here.
+ *
+ * Exception: dependency data now comes from ./isaGraph.js, which owns
+ * isa-dependency-graph.json. That table used to live in this file and drifted;
+ * see isaGraph.js for why it moved and how it is validated.
  *
  * DATA SOURCES (documented for every design decision):
  *   [SPEC]   RISC-V Unprivileged ISA Specification, Chapter 27
@@ -98,78 +102,22 @@ export const BASE_ISA_PREFIX_MAP = {
 };
 
 // ============================================================================
-// Smart Dependencies
+// Dependencies and conflicts
 // ============================================================================
 /**
- * This table is intentionally hardcoded until the automate syncing of dependecies gets merged.
- * Do not replace with live fetching until that piece merges. When it does, this table should be deleted 
- * and replaced by reading the dependencies array UDB sync writes into each extension object in riscv_extensions.json.
- * 
- * Core, undeniable architectural dependencies. 
- * We do not map the entire evolving RISC-V graph, but we auto-resolve 
- * obvious ones (e.g. D fundamentally requires F) to assist the user.
+ * These used to be hand-written tables here, covering ~21 extensions. They are
+ * now derived from src/isa-dependency-graph.json, which carries a node for every
+ * catalog extension and a citation on every edge.
+ *
+ * Re-exported in the flat `{id: [ext]}` shape the existing callers expect. New
+ * code should prefer resolveSelection() from ./isaGraph.js, which reports what
+ * it implied and why instead of returning a bare set.
  */
-export const SMART_DEPENDENCIES = {
-  // --- Floating-point family ---
-  // D → F  : UDB D.yaml requirements.extension: {name: F} — directly fetched
-  // Q → D,F: ISA Manual Vol.I §14.1 "Q depends on D (which depends on F)"
-  // Zfh, Zfhmin → F: ISA Manual Vol.I §12.2 "Zfh requires F"
-  // Zfbfmin → F: UDB Zfbfmin.yaml — BF16 converts operate on F registers
-  // Zdinx → Zfinx: ISA Manual "Zdinx uses integer regs for double; requires Zfinx"
-  // Zhinx, Zhinxmin → Zfinx: ISA Manual §12, parallel to Zdinx reasoning
-  // F → Zicsr: F defines the fcsr/frm/fflags CSRs, so it cannot be used without
-  // Zicsr. GCC's riscv_ext_info encodes the same implication.
-  'F': ['Zicsr'], // ISA Manual Vol.I §12
-  'D': ['F'], // UDB-confirmed
-  'Q': ['D', 'F'], // ISA Manual Vol.I §14.1
-  'Zfh': ['F', 'Zfhmin'], // ISA Manual Vol.I §12.2 — Zfh is a superset of Zfhmin
-  'Zfhmin': ['F'], // ISA Manual Vol.I §12.2
-  'Zfbfmin': ['F'], // UDB-confirmed
-  'Zdinx': ['Zfinx', 'Zicsr'], // ISA Manual Vol.I §12
-  'Zhinx': ['Zfinx', 'Zhinxmin', 'Zicsr'], // ISA Manual Vol.I §12 — superset of Zhinxmin
-  'Zhinxmin': ['Zfinx', 'Zicsr'], // ISA Manual Vol.I §12
+// Imported, not `export ... from`: a re-export creates no local binding, and
+// isIncompatible()/dependsOnIncompatible() below reference these directly.
+import { SMART_DEPENDENCIES, INCOMPATIBLE_WITH } from './isaGraph.js';
 
-  // --- Vector family ---
-  // Source: ISA Manual Vol.I §33.18.2 "Zve* profiles" + kernel dt-bindings
-  // Zve32x → Zicsr: all vector extensions require CSR state (vtype, vl, vstart)
-  // Zve32f → Zve32x + F: adds FP vector ops to the integer-only Zve32x base
-  // Zve64x → Zve32x: extends 32-bit integer vector to 64-bit elements
-  // Zve64f → Zve32f + Zve64x + F: 64-bit elements with FP; subsumes Zve32f
-  // Zve64d → Zve64f + D: adds double-precision FP vector; UDB Zve64d.yaml confirmed
-  // V → Zve64d + Zvl128b: ISA Manual §33.18.2 "V = Zve64d + min 128-bit VLEN"
-  'Zve32x': ['Zicsr'], // ISA Manual Vol.I §33.18.2
-  'Zve32f': ['Zve32x', 'F'], // ISA Manual Vol.I §33.18.2
-  'Zve64x': ['Zve32x'], // ISA Manual Vol.I §33.18.2
-  'Zve64f': ['Zve32f', 'Zve64x', 'F'], // ISA Manual Vol.I §33.18.2
-  'Zve64d': ['Zve64f', 'D'], // UDB-confirmed
-  'V': ['Zve64d', 'Zvl128b'], // ISA Manual Vol.I §33.18.2
-
-  // --- Scalar crypto bundles ---
-  // Zkn: UDB Zkn.yaml — "shorthand for Zbkb, Zbkc, Zbkx, Zkne, Zknd, Zknh"
-  // Zks: UDB Zks.yaml — "shorthand for Zbkb, Zbkc, Zbkx, Zksed, Zksh"
-  // Zk:  UDB Zk.yaml  — "shorthand for Zkn, Zkr, Zkt" — directly fetched
-  'Zkn': ['Zknd', 'Zkne', 'Zknh', 'Zbkb', 'Zbkc', 'Zbkx'], // UDB-confirmed
-  'Zks': ['Zksed', 'Zksh', 'Zbkb', 'Zbkc', 'Zbkx'], // UDB-confirmed
-  'Zk': ['Zkn', 'Zkr', 'Zkt'], // UDB-confirmed
-
-  // --- Performance counters ---
-  // Source: ISA Manual Vol.II §3.1 — counter extensions require Zicsr
-  'Zicntr': ['Zicsr'], // ISA Manual Vol.II §3.1
-  'Zihpm': ['Zicsr'], // ISA Manual Vol.II §3.1
-
-  // --- Bit-manipulation ---
-  // B: Meta-extension typically resolved to Zba, Zbb, and Zbs.
-  'B': ['Zba', 'Zbb', 'Zbs'], // ISA Manual
-};
-
-/**
- * Architecturally invalid combinations.
- * Evaluated bidirectionally: e.g. RV32E excludes F, and F excludes RV32E.
- */
-export const INCOMPATIBLE_WITH = {
-  'RV32E': ['F'], // E-base (16 integer regs) cannot support F (requires 32 float regs)
-  'RV64E': ['F']
-};
+export { SMART_DEPENDENCIES, INCOMPATIBLE_WITH };
 
 // ============================================================================
 // Architectural tags that are not -march ISA options

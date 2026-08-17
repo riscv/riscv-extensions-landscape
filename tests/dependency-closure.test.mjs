@@ -22,21 +22,16 @@ import { SMART_DEPENDENCIES } from '../src/marchUtils.js';
 
 /**
  * Divergences we have looked at and accepted, with the reason.
- * Removing a gap from the table should also remove its entry here.
+ * Removing a gap from the graph should also remove its entry here — the test
+ * below fails on stale entries as well as on new ones.
+ *
+ * Empty as of the move to isa-dependency-graph.json. The six Zve*-and-V entries
+ * that lived here were the Zvl*b minimum-VLEN tokens, unresolved because we had
+ * only clang's word for them. riscv-unified-db records Zve32x -> Zvl32b and
+ * Zve64x -> Zvl64b directly, which agrees with clang and closes all six
+ * transitively, so they are now real edges rather than documented debt.
  */
-const KNOWN_DIVERGENCES = {
-  Zve32x:  ['zvl32b'],
-  Zve32f:  ['zvl32b'],
-  Zve64x:  ['zvl32b', 'zvl64b'],
-  Zve64f:  ['zvl32b', 'zvl64b'],
-  Zve64d:  ['zvl32b', 'zvl64b'],
-  V:       ['zvl32b', 'zvl64b'],
-};
-// Reason, shared by all of the above: clang implies a minimum-VLEN token (Zvl*b)
-// for every Zve* profile. Whether that is a normative architectural requirement
-// or clang's way of modelling VLEN is not settled here; it should be confirmed
-// against riscv-unified-db when the UDB sync lands (see #137). Until then the
-// tool does not emit Zvl*b, and that choice is recorded rather than hidden.
+const KNOWN_DIVERGENCES = {};
 
 function clangHasRiscv() {
   try {
