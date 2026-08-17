@@ -345,20 +345,40 @@ pre,
  * - Appears on tile hover
  * - Always visible when data-in-workspace="true" (extension is in workspace)
  */
+/*
+ * The add/remove control on each extension tile.
+ *
+ * This used to be opacity:0, revealed only on tile hover. Combined with the
+ * button existing at all times, that made the ISA builder undiscoverable: you
+ * had to already know the feature was there, and happen to hover a tile, to
+ * find out you could add extensions.
+ *
+ * It is now rendered only while builder mode is switched on (see the
+ * `builderMode` gate in risc_v_visualizer.jsx), so it no longer has to hide to
+ * keep the default browsing view clean — when it is present, it should be seen.
+ */
 .workspace-tile-btn {
-  opacity: 0;
-  transition: opacity 0.12s ease, background 0.15s ease, border-color 0.15s ease;
+  opacity: 1;
+  transition: opacity 0.12s ease, background 0.15s ease, border-color 0.15s ease,
+              transform 0.12s ease;
   line-height: 1;
+  /* Entrance, so switching the builder on visibly changes the page. */
+  animation: workspaceTileBtnIn 0.18s ease-out both;
 }
 
-/* Show on tile hover */
+@keyframes workspaceTileBtnIn {
+  from { opacity: 0; transform: scale(0.6); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Hovering the tile lifts the control slightly, as a hit-target affordance. */
 .ext-tile:hover .workspace-tile-btn {
-  opacity: 1;
+  transform: scale(1.12);
 }
 
-/* Always show when extension is in workspace */
-.workspace-tile-btn[data-in-workspace="true"] {
-  opacity: 1;
+@media (prefers-reduced-motion: reduce) {
+  .workspace-tile-btn { animation: none; }
+  .ext-tile:hover .workspace-tile-btn { transform: none; }
 }
 
 /* Panel slide-in animation (fallback — WorkspacePanel now inlines its own) */

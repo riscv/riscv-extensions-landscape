@@ -39,6 +39,7 @@ import {
   Trash2,
   Download,
   ChevronDown,
+  Maximize2,
 } from 'lucide-react';
 import extensions from './riscv_extensions.json';
 import WorkspacePanel from './WorkspacePanel.jsx';
@@ -679,6 +680,11 @@ const RISCVExplorer = () => {
   // ── ISA Workspace state ────────────────────────────────────────────────────
   const [workspaceIds, setWorkspaceIds] = useState(new Set());
   const [workspaceNotice, setWorkspaceNotice] = useState(null);
+  // Builder mode. The per-tile "+" affordances only exist while this is on.
+  // Previously they were always rendered, in a low-contrast grey, with nothing
+  // explaining what they did — a permanent control for a mode the user had not
+  // asked to be in. Turning the builder on is now a deliberate act.
+  const [builderMode, setBuilderMode] = useState(false);
   const [workspacePanelOpen, setWorkspacePanelOpen] = useState(false);
   const [workspaceQuickOpen, setWorkspaceQuickOpen] = useState(false);
   const [quickExportOpen, setQuickExportOpen] = useState(false);
@@ -1856,11 +1862,15 @@ const RISCVExplorer = () => {
           </span>
         )}
 
-        {/* ── ISA Workspace badge ── */}
-        {!isDiscontinued && (() => {
+        {/* ── ISA Workspace badge — only while the builder is switched on ── */}
+        {builderMode && !isDiscontinued && (() => {
           const isLocked = inWorkspace && lockedExtensions.has(data.id);
           const lockedBy = isLocked ? lockedExtensions.get(data.id) : [];
 
+          // The unselected "+" is the call to action, so it carries the accent
+          // colour rather than the grey it used to have. Selected tiles keep the
+          // filled amber check; locked ones are dimmed to read as unavailable.
+          const accent = '#f5c542';
           return (
             <button
               type="button"
@@ -1875,12 +1885,13 @@ const RISCVExplorer = () => {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 width: 18, height: 18,
                 borderRadius: 5,
-                border: `1px solid ${inWorkspace ? (isLocked ? 'rgba(245,197,66,0.3)' : 'rgba(245,197,66,0.5)') : 'rgba(255,255,255,0.12)'}`,
+                border: `1px solid ${isLocked ? 'rgba(245,197,66,0.3)' : 'rgba(245,197,66,0.6)'}`,
                 background: inWorkspace
-                  ? (isLocked ? 'rgba(245,197,66,0.08)' : 'rgba(245,197,66,0.2)')
-                  : 'rgba(10,10,20,0.6)',
+                  ? (isLocked ? 'rgba(245,197,66,0.08)' : 'rgba(245,197,66,0.22)')
+                  : 'rgba(245,197,66,0.14)',
                 backdropFilter: 'blur(4px)',
-                color: inWorkspace ? (isLocked ? 'rgba(245,197,66,0.5)' : '#f5c542') : '#64748b',
+                boxShadow: inWorkspace || isLocked ? 'none' : '0 0 0 2px rgba(245,197,66,0.12)',
+                color: isLocked ? 'rgba(245,197,66,0.5)' : accent,
                 cursor: isLocked ? 'not-allowed' : 'pointer',
                 transition: 'all 0.15s',
                 padding: 0,
@@ -2130,25 +2141,41 @@ const RISCVExplorer = () => {
                 <div className="relative inline-flex items-stretch rounded-xl">
 
                   {/* Active glow ring */}
-                  {workspaceIds.size > 0 && (
+                  {builderMode && (
                     <span className="absolute -inset-px rounded-xl animate-pulse bg-amber-400/20 pointer-events-none z-0" />
                   )}
 
-                  {/* Main body — opens full panel */}
+                  {/* Main body — switches builder mode on and off.
+                      It deliberately does NOT open the panel: the panel is a
+                      full-screen overlay, so opening it on activation would
+                      immediately cover the tiles the user is meant to click. */}
                   <button
                     type="button"
-                    onClick={() => setWorkspacePanelOpen(true)}
+                    aria-pressed={builderMode}
+                    onClick={() => setBuilderMode(v => !v)}
                     className={[
                       'relative z-10 inline-flex items-center gap-2 pl-3.5 pr-3 py-2 text-xs font-bold transition-all duration-300 whitespace-nowrap',
-                      workspaceIds.size > 0
+                      builderMode
                         ? 'bg-gradient-to-b from-amber-400 to-amber-500 text-slate-900 hover:from-amber-300 hover:to-amber-400 rounded-l-xl'
-                        : 'bg-gradient-to-b from-[#ffc107] to-[#ffb300] text-[#1e1e1e] hover:from-[#ffca28] hover:to-[#ffc107] rounded-xl',
+                        : 'bg-slate-800/80 text-amber-300/90 border border-amber-400/30 hover:bg-slate-700/80 hover:text-amber-200 rounded-xl',
                     ].join(' ')}
-                    style={{ boxShadow: workspaceIds.size > 0 ? '0 4px 18px rgba(251,191,36,0.4)' : '0 2px 10px rgba(0,0,0,0.2)' }}
-                    title={workspaceIds.size > 0 ? `Builder active — ${workspaceIds.size} extension${workspaceIds.size !== 1 ? 's' : ''}. Click to open panel.` : 'Open Custom ISA Builder'}
+                    style={{ boxShadow: builderMode ? '0 4px 18px rgba(251,191,36,0.4)' : '0 2px 10px rgba(0,0,0,0.2)' }}
+                    title={
+                      builderMode
+                        ? 'Custom ISA Builder is ON — click any extension’s + to add it. Click here to turn off.'
+                        : 'Turn on the Custom ISA Builder to start picking extensions'
+                    }
                   >
                     <Cpu size={14} className="opacity-80 flex-shrink-0" />
                     <span className="whitespace-nowrap">Custom ISA Builder</span>
+                    <span
+                      className={[
+                        'inline-flex items-center justify-center px-1.5 h-[16px] rounded-full text-[9px] font-black tracking-wide',
+                        builderMode ? 'bg-slate-900/75 text-amber-400' : 'bg-slate-900/60 text-slate-400',
+                      ].join(' ')}
+                    >
+                      {builderMode ? 'ON' : 'OFF'}
+                    </span>
                     {workspaceIds.size > 0 && (
                       <span className="inline-flex items-center justify-center min-w-[18px] px-1 h-[18px] rounded-full text-[9px] font-black bg-slate-900/75 text-amber-400">
                         {workspaceIds.size}
@@ -2156,8 +2183,24 @@ const RISCVExplorer = () => {
                     )}
                   </button>
 
-                  {/* Fused action icons — only when config is active */}
-                  {workspaceIds.size > 0 && (<>
+                  {/* Fused action icons — available while the builder is on */}
+                  {builderMode && (<>
+                    {/* Hairline divider */}
+                    <div className="relative z-10 w-px self-stretch bg-amber-600/60" />
+
+                    {/* Open the full panel */}
+                    <button
+                      type="button"
+                      title="Open the builder panel (-march string, export, conflicts)"
+                      onClick={() => setWorkspacePanelOpen(true)}
+                      className="group relative z-10 inline-flex items-center justify-center px-3 bg-gradient-to-b from-amber-400 to-amber-500 text-slate-800 hover:from-amber-300 hover:to-amber-400 transition-all duration-300 z-20"
+                    >
+                      <Maximize2 size={13} className="transition-transform group-hover:scale-110" />
+                    </button>
+                  </>)}
+
+                  {/* Clear and export — only meaningful once something is picked */}
+                  {builderMode && workspaceIds.size > 0 && (<>
                     {/* Hairline divider */}
                     <div className="relative z-10 w-px self-stretch bg-amber-600/60" />
 
