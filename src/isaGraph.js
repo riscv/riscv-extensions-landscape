@@ -134,7 +134,7 @@ export function validateGraph(graph = graphData, catalogIds = null) {
       }
     }
 
-    if (requires.length === 0 && !node.requiresOneOf && !node.verified) {
+    if (requires.length === 0 && !node.requiresOneOf && !node.verified && !node.conditionalRequirements) {
       warnings.push(`${id}: no dependencies and no "verified" marker — checked, or assumed?`);
     }
   }

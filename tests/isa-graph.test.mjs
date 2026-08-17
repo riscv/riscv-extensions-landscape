@@ -79,6 +79,64 @@ test('known dependencies survived the move off the hand-written table', () => {
   assert.ok(INCOMPATIBLE_WITH.RV32E.includes('F'), 'RV32E/F conflict lost');
 });
 
+test('requirements nested under allOf are read, not skipped', () => {
+  // UDB writes `requirements: {allOf: [{extension: {name: Zvl32b}}, {param: ...}]}`
+  // as well as the flatter `requirements: {extension: {name: F}}`. Reading only
+  // the second loses ~44 blocks, the whole Zvl*b chain among them.
+  assert.deepEqual(SMART_DEPENDENCIES.Zvl64b, ['Zvl32b']);
+  assert.deepEqual(SMART_DEPENDENCIES.Zvl128b, ['Zvl64b']);
+  assert.ok(closure('Zvl1024b').has('Zvl32b'), 'the VLEN chain should be transitive');
+  assert.deepEqual(SMART_DEPENDENCIES.Sv39, ['S']);
+  assert.deepEqual(SMART_DEPENDENCIES.Za64rs, ['Za128rs']);
+});
+
+test('conditional requirements are not flattened into hard edges', () => {
+  // C.yaml reads "Zca, and (not F or xlen 64 or Zcf), and (not D or Zcd)".
+  // Flattening yields "C requires F and D", which is false — C is legal with
+  // neither. Only the unconditional member is an edge.
+  assert.deepEqual(SMART_DEPENDENCIES.C, ['Zca']);
+  const c = DEPENDENCY_GRAPH.nodes.C;
+  assert.equal(c.conditionalRequirements, true, 'C should be marked as having conditions we drop');
+
+  // Supm and Zicfiss use if/then implications; only the unconditional part is an edge.
+  assert.deepEqual(SMART_DEPENDENCIES.Supm, ['U']);
+  assert.deepEqual(SMART_DEPENDENCIES.Zicfiss.sort(), ['Zaamo', 'Zicsr', 'Zimop']);
+  assert.equal(DEPENDENCY_GRAPH.nodes.Zicfiss.conditionalRequirements, true);
+});
+
+test('what every branch of a choice requires is required outright', () => {
+  // Zce's version block is a oneOf of three whole configurations that differ
+  // only in xlen and F. All three demand Zca, Zcb, Zcmp and Zcmt, so those are
+  // real edges — dropping the group entirely would understate them as zero.
+  assert.deepEqual(SMART_DEPENDENCIES.Zce.sort(), ['Zca', 'Zcb', 'Zcmp', 'Zcmt']);
+  const zce = DEPENDENCY_GRAPH.nodes.Zce;
+  assert.equal(zce.conditionalRequirements, true, 'the branch-specific parts are still dropped');
+  assert.equal(zce.verified, undefined, 'an unmodelled conditional is not a verified absence');
+  // Nothing that appears in only some branches leaks in.
+  assert.ok(!SMART_DEPENDENCIES.Zce.includes('F'), 'F is only in one branch');
+  assert.ok(!SMART_DEPENDENCIES.Zce.includes('Zcf'), 'Zcf is only in one branch');
+});
+
+test('UDB negations become conflicts, not dependencies', () => {
+  // Zfinx declares "Zicsr, and not F" — it replaces the F register file. Read
+  // as a dependency this inverts into "Zfinx requires F", which would build an
+  // architecturally invalid config.
+  assert.deepEqual(SMART_DEPENDENCIES.Zfinx, ['Zicsr']);
+  assert.deepEqual(INCOMPATIBLE_WITH.Zfinx, ['F']);
+  assert.deepEqual(INCOMPATIBLE_WITH.Zhinxmin, ['Zfhmin']);
+  assert.deepEqual(INCOMPATIBLE_WITH.Zcmp, ['Zcd']);
+
+  // A negation inside a condition is NOT an absolute exclusion: C's
+  // "anyOf[not F, xlen 64, Zcf]" does not make C incompatible with F.
+  assert.equal(INCOMPATIBLE_WITH.C, undefined, 'C must not be marked incompatible with F');
+
+  const result = resolveSelection({ selected: ['Zfinx', 'F'] });
+  assert.ok(
+    result.conflicts.some((c) => c.ext === 'F' && c.with === 'Zfinx'),
+    `selecting Zfinx with F should conflict, got ${JSON.stringify(result.conflicts)}`,
+  );
+});
+
 test('the Zvl divergence against clang is closed in the graph', () => {
   // clang and UDB both imply a minimum-VLEN token for the Zve* profiles; the
   // old table did not, and carried the gap in a KNOWN_DIVERGENCES ratchet.

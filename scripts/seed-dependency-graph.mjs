@@ -39,44 +39,134 @@ const GRAPH_PATH = path.join(repoRoot, 'src', 'isa-dependency-graph.json');
 // ---------------------------------------------------------------------------
 
 /**
- * Extension requirements reachable from a `requirements:` node, any shape.
+ * Extension requirements reachable from a `requirements:` node.
  *
- * `allOf` members are hard requirements. `anyOf`/`oneOf` members are a CHOICE
- * and must not be flattened into the hard set — Svpbmt requires S and *one of*
- * Sv39/Sv48/Sv57, and demanding all three would over-constrain every config
- * that uses it.
+ * UDB puts `extension:` in two structurally different places, and reading only
+ * one of them loses ~44 blocks including the whole Zvl*b chain:
+ *
+ *   requirements:                 requirements:
+ *     extension:                    allOf:
+ *       name: F                       - extension: {name: Zvl32b}
+ *                                     - param: {name: VLEN, greaterThanOrEqual: 64}
+ *
+ * Three kinds of member, treated differently:
+ *
+ *   allOf   — hard requirements.
+ *   anyOf   — a CHOICE. Svpbmt requires S and *one of* Sv39/Sv48/Sv57; flattening
+ *             that into the hard set demands all three paging modes at once.
+ *   not:    — a NEGATION, and `xlen:`/`param:` are conditions, not extensions.
+ *             C.yaml reads "Zca, and (not F or xlen 64 or Zcf), and (not D or
+ *             Zcd)": C requires only Zca. Flattening yields "C requires F and D",
+ *             which is false — C is perfectly legal without either.
+ *
+ * Groups mixing negation or width conditions are therefore not hard edges and
+ * not clean choice groups. They are returned as `conditional` so the caller can
+ * report them rather than silently guess.
  */
 function extensionRequirements(requirements) {
   const hard = [];
   const choices = [];
-  const walk = (node) => {
-    if (Array.isArray(node)) return node.forEach(walk);
+  const conditional = [];
+  const excluded = [];
+
+  /**
+   * True when every member names an extension and nothing else. Two spellings
+   * occur, depending on whether the group sits under `requirements:` or already
+   * inside an `extension:` node:
+   *   {extension: {name: X}}   and   {name: X}
+   * A `version:` alongside the name is fine — it constrains, it does not add a
+   * condition on some other extension being absent.
+   */
+  const optionName = (member) => {
+    if (!member || typeof member !== 'object') return null;
+    const keys = Object.keys(member);
+    if (keys.length === 1 && member.extension && typeof member.extension.name === 'string') {
+      return member.extension.name;
+    }
+    if (typeof member.name === 'string' && keys.every((k) => k === 'name' || k === 'version')) {
+      return member.name;
+    }
+    return null;
+  };
+  const pureChoiceOptions = (members) => {
+    if (!Array.isArray(members) || members.length === 0) return null;
+    const names = members.map(optionName);
+    return names.every(Boolean) ? names : null;
+  };
+
+  // `negated` — inside a `not:`. `guarded` — inside anyOf/oneOf/if, where a
+  // negation is one branch of a condition rather than an absolute exclusion.
+  // Zfinx says allOf[not: F], an unconditional "must not have F". C says
+  // anyOf[not: F, xlen: 64, Zcf], which is "F absent OR 64-bit OR Zcf" and
+  // excludes nothing on its own.
+  const walk = (node, negated = false, guarded = false) => {
+    if (Array.isArray(node)) return node.forEach((child) => walk(child, negated, guarded));
     if (!node || typeof node !== 'object') return;
-    if (typeof node.name === 'string') return void hard.push(node.name);
-    if ('allOf' in node) walk(node.allOf);
-    for (const combinator of ['anyOf', 'oneOf']) {
-      if (combinator in node) {
-        const options = [];
-        const collect = (n) => {
-          if (Array.isArray(n)) return n.forEach(collect);
-          if (n && typeof n === 'object') {
-            if (typeof n.name === 'string') options.push(n.name);
-            else for (const c of ['allOf', 'anyOf', 'oneOf']) if (c in n) collect(n[c]);
+
+    for (const [key, value] of Object.entries(node)) {
+      switch (key) {
+        case 'extension':
+          if (negated) walk(value, true, guarded);
+          else if (typeof value?.name === 'string') hard.push(value.name);
+          else walk(value, negated, guarded);
+          break;
+        case 'name':
+          if (typeof value !== 'string') break;
+          if (!negated) hard.push(value);
+          else if (!guarded) excluded.push(value);
+          break;
+        case 'allOf':
+          walk(value, negated, guarded);
+          break;
+        case 'anyOf':
+        case 'oneOf': {
+          const options = negated ? null : pureChoiceOptions(value);
+          if (options) {
+            choices.push(options);
+            break;
           }
-        };
-        collect(node[combinator]);
-        if (options.length) choices.push(options);
+          conditional.push(key);
+          // A non-pure group is a condition, so its branch-specific parts are
+          // dropped. But whatever EVERY branch requires is required outright:
+          // Zce's three alternative configurations all demand Zca, Zcb, Zcmp
+          // and Zcmt, differing only in xlen and F. Taking the intersection
+          // recovers those without asserting anything a branch does not.
+          if (!negated && Array.isArray(value) && value.length > 0) {
+            const perBranch = value.map((branch) => new Set(extensionRequirements(branch).hard));
+            const common = [...perBranch[0]].filter((name) => perBranch.every((s) => s.has(name)));
+            hard.push(...common);
+          }
+          break;
+        }
+        case 'not':
+          walk(value, true, guarded);
+          break;
+        case 'if':
+          // `if: {extension: U} then: {extension: S}` — an implication, not a
+          // dependency. Supm and Zicfiss use this. Neither side is walked as a
+          // requirement: the antecedent is a test, and the consequent only
+          // holds when it passes.
+          conditional.push('if');
+          break;
+        case 'then':
+          break;
+        // param / xlen / version are conditions on an implementation, not
+        // extension dependencies.
+        default:
+          break;
       }
     }
   };
-  walk(requirements?.extension);
-  return { hard, choices };
+
+  walk(requirements);
+  return { hard, choices, conditional, excluded };
 }
 
 function readUdb(root) {
   const dir = path.join(root, 'spec', 'std', 'isa', 'ext');
   const graph = {};
   const known = new Set();
+  const conditionalNodes = [];
   for (const file of fs.readdirSync(dir).filter((f) => f.endsWith('.yaml'))) {
     const id = file.slice(0, -5);
     known.add(id);
@@ -84,25 +174,35 @@ function readUdb(root) {
     if (!doc || typeof doc !== 'object') continue;
     const hard = new Set();
     const choices = [];
+    const excluded = new Set();
+    let skipped = 0;
     for (const req of [doc.requirements, ...(doc.versions ?? []).map((v) => v?.requirements)]) {
       if (!req) continue;
       const found = extensionRequirements(req);
       found.hard.forEach((n) => hard.add(n));
+      found.excluded.forEach((n) => excluded.add(n));
+      skipped += found.conditional.length;
       for (const options of found.choices) {
         const key = options.slice().sort().join('|');
         if (!choices.some((c) => c.slice().sort().join('|') === key)) choices.push(options);
       }
     }
     hard.delete(id); // a few files name themselves via version constraints
-    if (hard.size || choices.length) {
-      graph[id] = { hard: [...hard].sort(), choices };
+    if (skipped) conditionalNodes.push(`${id} (${skipped} group${skipped > 1 ? 's' : ''})`);
+    if (hard.size || choices.length || excluded.size || skipped) {
+      graph[id] = {
+        hard: [...hard].sort(),
+        choices,
+        excluded: [...excluded].sort(),
+        conditional: skipped > 0,
+      };
     }
   }
   let commit = 'unknown';
   try {
     commit = execFileSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
   } catch { /* not a git checkout — provenance degrades, extraction still works */ }
-  return { graph, known, commit };
+  return { graph, known, commit, conditionalNodes };
 }
 
 /** Extension ids in the shipped catalog. */
@@ -142,7 +242,7 @@ const CONFLICTS = {
 // ---------------------------------------------------------------------------
 // Build
 // ---------------------------------------------------------------------------
-const { graph: udb, known: udbKnown, commit } = readUdb(udbRoot);
+const { graph: udb, known: udbKnown, commit, conditionalNodes } = readUdb(udbRoot);
 const catalogIds = readCatalogIds();
 
 /**
@@ -181,13 +281,29 @@ for (const id of catalogIds.slice().sort((a, b) => a.localeCompare(b))) {
     }));
   }
 
-  if (CONFLICTS[id]) {
-    node.conflicts = CONFLICTS[id].map((c) => ({ ext: c.ext, src: 'isa-manual', ref: c.ref }));
+  // Conflicts come from two places: our own base-ISA rules, and UDB's
+  // unconditional `not:` clauses. The latter are real negative information —
+  // Zfinx declares "not F" because it replaces the F register file — and
+  // dropping them would leave nothing to stop an invalid pairing.
+  const conflicts = [];
+  for (const dep of udb[id]?.excluded ?? []) {
+    conflicts.push({ ext: dep, src: 'udb', ref: `${id}.yaml requirements … not: ${dep}` });
   }
+  for (const conflict of CONFLICTS[id] ?? []) {
+    if (conflicts.some((c) => c.ext === conflict.ext)) continue;
+    conflicts.push({ ext: conflict.ext, src: 'isa-manual', ref: conflict.ref });
+  }
+  if (conflicts.length) node.conflicts = conflicts;
   // How far to trust an empty `requires`. "udb" means UDB models this extension
   // and records no extension requirements; "none" means nothing authoritative
   // was consulted, so the emptiness is an assumption rather than a finding.
-  if (requires.length === 0 && !node.requiresOneOf) {
+  // UDB expresses some requirements as conditionals (negations, xlen guards)
+  // that this model does not represent. Record that, so an empty `requires` is
+  // never read as "UDB says this extension depends on nothing" when what UDB
+  // actually says is "it depends, conditionally".
+  if (udb[id]?.conditional) node.conditionalRequirements = true;
+
+  if (requires.length === 0 && !node.requiresOneOf && !node.conditionalRequirements) {
     node.verified = udbKnown.has(id) ? 'udb' : 'none';
   }
   nodes[id] = node;
@@ -275,4 +391,12 @@ if (checkOnly) {
   console.log(`wrote ${path.relative(repoRoot, GRAPH_PATH)}`);
   console.log(`  ${Object.keys(nodes).length} nodes, ${withDeps} with dependencies`);
   console.log(`  ${unverified} with no dependencies and no authoritative source (verified: none)`);
+  if (conditionalNodes.length) {
+    console.log(
+      `\n  ${conditionalNodes.length} node(s) have conditional requirements this model does not\n` +
+      '  represent (negations and xlen guards). Their unconditional edges are kept;\n' +
+      '  the conditional parts are dropped rather than flattened into false hard edges:\n' +
+      `    ${conditionalNodes.join(', ')}`,
+    );
+  }
 }
