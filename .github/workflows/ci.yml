@@ -39,12 +39,25 @@ jobs:
       # profile strings are tagged `modern` in the matrix and skipped here. Their
       # shape is covered by tests/profiles.test.mjs, which asserts no satp mode
       # is emitted, and they were checked against clang 21 by hand.
-      - name: Install clang
+      # Use the compiler the runner already has. ubuntu-24.04 ships clang, and
+      # every attempt to install one has cost us a build: apt.llvm.org hung to
+      # the 6-hour limit twice, and `apt-get install clang` then hung to the
+      # 20-minute cap. apt is only a fallback now, and a bounded one.
+      - name: Find clang
         run: |
-          set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq clang
-          echo "CLANG=clang" >> "$GITHUB_ENV"
+          set -uo pipefail
+          if ! command -v clang >/dev/null; then
+            echo "no preinstalled clang; trying apt with a time limit"
+            timeout 300 bash -c 'sudo apt-get update -qq && sudo apt-get install -y -qq clang' \
+              || echo "::warning::apt install failed or timed out"
+          fi
+          if command -v clang >/dev/null; then
+            clang --version | head -1
+            echo "CLANG=clang" >> "$GITHUB_ENV"
+          else
+            echo "::error::no clang available; the -march strings cannot be validated"
+            exit 1
+          fi
           echo "CLANG_TIER=core" >> "$GITHUB_ENV"
       - name: Validate -march strings with clang
         run: |
