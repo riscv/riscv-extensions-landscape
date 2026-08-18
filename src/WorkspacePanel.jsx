@@ -194,7 +194,7 @@ export default function WorkspacePanel({
           height: '100%',
           display: 'flex', flexDirection: 'column',
           background: '#0b0b16',
-          borderLeft: '1px solid rgba(255,255,255,0.07)',
+          borderLeft: '1px solid var(--riscv-tint-3)',
           boxShadow: '-32px 0 80px rgba(0,0,0,0.8), -1px 0 0 rgba(245,197,66,0.06)',
           animation: 'wsSlideIn 0.2s cubic-bezier(0.22,1,0.36,1)',
         }}
@@ -205,7 +205,7 @@ export default function WorkspacePanel({
         <div style={{
           display: 'flex', alignItems: 'center', gap: 12,
           padding: '14px 18px',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: '1px solid var(--riscv-tint-3)',
           background: 'linear-gradient(180deg, rgba(245,197,66,0.04) 0%, transparent 100%)',
           flexShrink: 0,
         }}>
@@ -221,7 +221,7 @@ export default function WorkspacePanel({
             </div>
             <span style={{
               fontWeight: 700, fontSize: 15, letterSpacing: '-0.01em',
-              color: '#e2e8f0',
+              color: 'var(--riscv-text)',
             }}>
               ISA Configuration Builder
             </span>
@@ -295,7 +295,7 @@ export default function WorkspacePanel({
                     borderRadius: 10,
                     background: 'linear-gradient(145deg, #1a1f2e 0%, #141824 100%)',
                     border: '1px solid rgba(245,197,66,0.25)',
-                    boxShadow: '0 12px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.03) inset',
+                    boxShadow: '0 12px 32px rgba(0,0,0,0.55), 0 0 0 1px var(--riscv-tint-2) inset',
                     minWidth: 280, overflow: 'hidden',
                   }}>
 
@@ -303,12 +303,12 @@ export default function WorkspacePanel({
                     <div style={{
                       display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                       padding: '10px 14px',
-                      borderBottom: '1px solid rgba(255,255,255,0.06)',
+                      borderBottom: '1px solid var(--riscv-tint-3)',
                       background: 'rgba(245,197,66,0.04)',
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                         <Package size={12} style={{ color: 'var(--riscv-gold)', opacity: 0.85 }} />
-                        <span style={{ fontSize: 12, color: '#f1f5f9', fontWeight: 700, letterSpacing: '0.01em' }}>
+                        <span style={{ fontSize: 12, color: 'var(--riscv-text)', fontWeight: 700, letterSpacing: '0.01em' }}>
                           Export Configuration YAML
                         </span>
                       </div>
@@ -327,8 +327,8 @@ export default function WorkspacePanel({
                         style={{
                           display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
                           padding: '10px 12px', borderRadius: 8, cursor: 'pointer',
-                          background: includeInstructions ? 'rgba(245,197,66,0.07)' : 'rgba(255,255,255,0.03)',
-                          border: `1px solid ${includeInstructions ? 'rgba(245,197,66,0.2)' : 'rgba(255,255,255,0.07)'}`,
+                          background: includeInstructions ? 'rgba(245,197,66,0.07)' : 'var(--riscv-tint-2)',
+                          border: `1px solid ${includeInstructions ? 'rgba(245,197,66,0.2)' : 'var(--riscv-tint-3)'}`,
                           transition: 'all 0.2s',
                           userSelect: 'none',
                         }}
@@ -336,7 +336,7 @@ export default function WorkspacePanel({
                         <div style={{ flex: 1 }}>
                           <span style={{
                             fontSize: 12.5, fontWeight: 600,
-                            color: includeInstructions ? '#f1f5f9' : '#94a3b8',
+                            color: includeInstructions ? 'var(--riscv-text)' : '#94a3b8',
                             display: 'block', lineHeight: 1.35, transition: 'color 0.2s',
                           }}>
                             Include instruction catalog
@@ -358,7 +358,7 @@ export default function WorkspacePanel({
                             : 'rgba(255,255,255,0.08)',
                           boxShadow: includeInstructions ? '0 0 8px rgba(245,197,66,0.4)' : 'none',
                           position: 'relative', transition: 'all 0.25s',
-                          border: `1px solid ${includeInstructions ? 'rgba(245,197,66,0.7)' : 'rgba(255,255,255,0.12)'}`,
+                          border: `1px solid ${includeInstructions ? 'rgba(245,197,66,0.7)' : 'var(--riscv-tint-4)'}`,
                         }}>
                           <div style={{
                             width: 15, height: 15, borderRadius: '50%',
@@ -433,13 +433,13 @@ export default function WorkspacePanel({
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 width: 28, height: 28, borderRadius: 6,
-                background: 'rgba(255,255,255,0.04)',
+                background: 'var(--riscv-tint-2)',
                 border: '1px solid rgba(255,255,255,0.08)',
                 color: '#64748b', cursor: 'pointer',
                 transition: 'all 0.15s',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#e2e8f0'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = '#64748b'; }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'var(--riscv-text)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'var(--riscv-tint-2)'; e.currentTarget.style.color = '#64748b'; }}
             >
               <X size={13} />
             </button>
@@ -529,8 +529,8 @@ export default function WorkspacePanel({
                       border: '1px solid rgba(245,197,66,0.35)',
                       color: 'var(--riscv-gold)',
                     } : {
-                      background: 'rgba(255,255,255,0.03)',
-                      border: '1px solid rgba(255,255,255,0.07)',
+                      background: 'var(--riscv-tint-2)',
+                      border: '1px solid var(--riscv-tint-3)',
                       color: '#6f7f95',
                     }),
                   }}
@@ -596,7 +596,7 @@ export default function WorkspacePanel({
                               <span style={{
                                 display: 'inline-flex', padding: '2px 6px', borderRadius: 4,
                                 background: 'rgba(255,255,255,0.08)',
-                                fontFamily: 'JetBrains Mono, monospace', fontSize: 12, fontWeight: 600, color: '#e2e8f0'
+                                fontFamily: 'JetBrains Mono, monospace', fontSize: 12, fontWeight: 600, color: 'var(--riscv-text)'
                               }}>
                                 {ex.id}
                               </span>
@@ -610,8 +610,8 @@ export default function WorkspacePanel({
                 ) : (
                   <div style={{
                     borderRadius: 8, padding: '14px',
-                    background: 'rgba(255,255,255,0.02)',
-                    border: '1px solid rgba(255,255,255,0.06)',
+                    background: 'var(--riscv-tint-1)',
+                    border: '1px solid var(--riscv-tint-3)',
                     textAlign: 'center',
                     fontSize: 13, color: '#6f7f95',
                   }}>
@@ -631,7 +631,7 @@ export default function WorkspacePanel({
                     flex: 1, display: 'flex', alignItems: 'center',
                     borderRadius: 8, overflow: 'hidden',
                     border: '1px solid rgba(255,255,255,0.09)',
-                    background: 'rgba(255,255,255,0.03)',
+                    background: 'var(--riscv-tint-2)',
                     transition: 'border-color 0.15s',
                   }}>
                     <input
@@ -645,7 +645,7 @@ export default function WorkspacePanel({
                         flex: 1, padding: '10px 12px',
                         background: 'transparent', border: 'none', outline: 'none',
                         fontFamily: 'JetBrains Mono, monospace',
-                        fontSize: 13, color: '#e2e8f0',
+                        fontSize: 13, color: 'var(--riscv-text)',
                         caretColor: 'var(--riscv-gold)',
                       }}
                     />
@@ -782,8 +782,8 @@ export default function WorkspacePanel({
                             style={{
                               fontSize: 11, fontFamily: 'monospace', padding: '4px 9px', borderRadius: 6,
                               cursor: 'pointer',
-                              border: `1px solid ${active ? 'rgba(245,197,66,0.6)' : 'rgba(255,255,255,0.12)'}`,
-                              background: active ? 'rgba(245,197,66,0.18)' : 'rgba(255,255,255,0.03)',
+                              border: `1px solid ${active ? 'rgba(245,197,66,0.6)' : 'var(--riscv-tint-4)'}`,
+                              background: active ? 'rgba(245,197,66,0.18)' : 'var(--riscv-tint-2)',
                               color: active ? 'var(--riscv-gold)' : 'var(--riscv-text-2)',
                             }}
                           >
@@ -805,8 +805,8 @@ export default function WorkspacePanel({
                       {params.map((prm) => (
                         <div key={prm.name} style={{
                           borderRadius: 7, padding: '8px 10px',
-                          background: prm.conflict ? 'rgba(255,77,107,0.08)' : 'rgba(255,255,255,0.02)',
-                          border: `1px solid ${prm.conflict ? 'rgba(255,77,107,0.3)' : 'rgba(255,255,255,0.06)'}`,
+                          background: prm.conflict ? 'rgba(255,77,107,0.08)' : 'var(--riscv-tint-1)',
+                          border: `1px solid ${prm.conflict ? 'rgba(255,77,107,0.3)' : 'var(--riscv-tint-3)'}`,
                         }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
                             <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'var(--riscv-text)' }}>{prm.name}</span>
@@ -859,7 +859,7 @@ export default function WorkspacePanel({
                     style={{
                       flex: 1, background: 'transparent',
                       border: 'none', outline: 'none',
-                      fontSize: 13, color: '#e2e8f0',
+                      fontSize: 13, color: 'var(--riscv-text)',
                       caretColor: 'var(--riscv-gold)',
                     }}
                   />
@@ -876,7 +876,7 @@ export default function WorkspacePanel({
                 {/* Table */}
                 <div style={{
                   borderRadius: 10,
-                  border: '1px solid rgba(255,255,255,0.07)',
+                  border: '1px solid var(--riscv-tint-3)',
                   overflow: 'hidden',
                 }}>
                   {/* Header */}
@@ -884,8 +884,8 @@ export default function WorkspacePanel({
                     display: 'grid',
                     gridTemplateColumns: '2fr 1.5fr 1.5fr',
                     padding: '9px 14px',
-                    background: 'rgba(255,255,255,0.03)',
-                    borderBottom: '1px solid rgba(255,255,255,0.07)',
+                    background: 'var(--riscv-tint-2)',
+                    borderBottom: '1px solid var(--riscv-tint-3)',
                   }}>
                     {[
                       { col: 'mnemonic', label: 'Mnemonic' },
@@ -935,8 +935,8 @@ export default function WorkspacePanel({
                     {filteredCatalog.length > 300 && (
                       <div style={{
                         padding: '10px 14px',
-                        background: 'rgba(255,255,255,0.02)',
-                        borderTop: '1px solid rgba(255,255,255,0.06)',
+                        background: 'var(--riscv-tint-1)',
+                        borderTop: '1px solid var(--riscv-tint-3)',
                         fontSize: 11, color: '#334155', textAlign: 'center',
                       }}>
                         Showing first 300 of {filteredCatalog.length.toLocaleString()}. Use filter to narrow results.
@@ -959,8 +959,8 @@ export default function WorkspacePanel({
           <div style={{
             margin: '8px 18px 18px',
             borderRadius: 9,
-            background: 'rgba(255,255,255,0.02)',
-            border: '1px solid rgba(255,255,255,0.06)',
+            background: 'var(--riscv-tint-1)',
+            border: '1px solid var(--riscv-tint-3)',
             padding: '12px 14px',
           }}>
             <p style={{
@@ -973,7 +973,7 @@ export default function WorkspacePanel({
               {DATA_PROVENANCE.map(p => (
                 <div key={p.label} style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
                   <span style={{ fontSize: 11, color: '#6f7f95', flexShrink: 0 }}>{p.label}</span>
-                  <span style={{ height: 1, flex: 1, background: 'rgba(255,255,255,0.04)', alignSelf: 'center' }} />
+                  <span style={{ height: 1, flex: 1, background: 'var(--riscv-tint-2)', alignSelf: 'center' }} />
                   <a
                     href={p.url} target="_blank" rel="noreferrer"
                     style={{
@@ -1047,8 +1047,8 @@ function InfoPill({ icon, children }) {
     <div style={{
       display: 'flex', alignItems: 'flex-start', gap: 7,
       padding: '8px 11px', borderRadius: 7,
-      background: 'rgba(255,255,255,0.03)',
-      border: '1px solid rgba(255,255,255,0.07)',
+      background: 'var(--riscv-tint-2)',
+      border: '1px solid var(--riscv-tint-3)',
       fontSize: 12, color: '#64748b',
     }}>
       <span style={{ flexShrink: 0, marginTop: 1, color: '#6f7f95' }}>{icon}</span>
@@ -1149,7 +1149,7 @@ function CatalogRowInner({ row, isEven, isHovered, onHover, onSelect }) {
         background: isHovered
           ? 'rgba(139,124,248,0.07)'
           : isEven ? 'transparent' : 'rgba(255,255,255,0.012)',
-        borderBottom: '1px solid rgba(255,255,255,0.04)',
+        borderBottom: '1px solid var(--riscv-tint-2)',
         cursor: 'pointer', textAlign: 'left',
         transition: 'background 0.1s',
         border: 'none',
@@ -1161,7 +1161,7 @@ function CatalogRowInner({ row, isEven, isHovered, onHover, onSelect }) {
       <span style={{
         fontFamily: 'JetBrains Mono, monospace',
         fontSize: 13, fontWeight: 600,
-        color: isHovered ? '#c4b5fd' : '#e2e8f0',
+        color: isHovered ? '#c4b5fd' : 'var(--riscv-text)',
         paddingRight: 8,
         transition: 'color 0.1s',
       }}>

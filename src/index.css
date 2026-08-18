@@ -17,6 +17,11 @@
   --riscv-gold-dim: rgba(245, 197, 66, 0.12);
   --riscv-gold-glow: rgba(245, 197, 66, 0.20);
 
+  /* Wordmark gradient. Bright amber reads on black and disappears on white, so
+     the light theme swaps in a deeper pair. */
+  --riscv-title-a: #f5c542;
+  --riscv-title-b: #fde68a;
+
   --riscv-violet: #8b7cf8;
   --riscv-violet-dim: rgba(139, 124, 248, 0.12);
 
@@ -27,6 +32,17 @@
   --riscv-text: #e2e8f0;
   --riscv-text-2: #aab8ca;
   --riscv-text-3: #6f7f95;
+
+  /* Overlay tints. Components paint subtle washes with rgba(255,255,255,0.0x),
+     which is invisible on a light ground. Routing them through tokens lets one
+     theme lighten and the other darken. */
+  --riscv-tint-1: rgba(255, 255, 255, 0.02);
+  --riscv-tint-2: rgba(255, 255, 255, 0.03);
+  --riscv-tint-3: rgba(255, 255, 255, 0.06);
+  --riscv-tint-4: rgba(255, 255, 255, 0.12);
+  --riscv-hairline: rgba(255, 255, 255, 0.06);
+  /* Raised plate behind toolbars and chips. */
+  --riscv-plate: rgba(15, 23, 42, 0.4);
 
   /* Field colors for encoding diagram */
   --field-opcode: #f5c542;
@@ -387,3 +403,151 @@ pre,
   to   { transform: translateX(0);    opacity: 1; }
 }
 
+/* ─── Light theme ────────────────────────────────────────────────────────────
+   Pastel rather than plain white: a warm off-white ground with a violet cast,
+   cards lifted to pure white so they read as surfaces rather than holes, and
+   accents desaturated to sit on light without glaring.
+
+   Contrast measured against the ground, not eyeballed:
+     text    #2b2a3d  12.93:1   AAA
+     text-2  #5c5a72   6.14:1   AA body
+     text-3  #807ea0   3.59:1   AA large / UI
+     violet  #6d5bd0   4.78:1   AA body
+     gold    #a8760a   3.6:1    AA large / UI
+   ────────────────────────────────────────────────────────────────────────── */
+:root[data-theme='light'] {
+  --riscv-bg: #f7f5fb;
+  --riscv-surface: #ffffff;
+  --riscv-surface-2: #f2eff9;
+  --riscv-border: #e4dff1;
+  --riscv-border-2: #d5cfe8;
+  --riscv-muted: #c3bcdd;
+
+  --riscv-gold: #a8760a;
+  --riscv-gold-dim: rgba(168, 118, 10, 0.10);
+  --riscv-gold-glow: rgba(168, 118, 10, 0.18);
+
+  --riscv-violet: #6d5bd0;
+  --riscv-violet-dim: rgba(109, 91, 208, 0.10);
+
+  --riscv-title-a: #8a5a00;
+  --riscv-title-b: #b8860b;
+
+  --riscv-success: #14866a;
+  --riscv-danger: #c2334d;
+  --riscv-warn: #b06f05;
+
+  --riscv-text: #2b2a3d;
+  --riscv-text-2: #5c5a72;
+  --riscv-text-3: #807ea0;
+
+  --riscv-tint-1: rgba(45, 40, 80, 0.02);
+  --riscv-tint-2: rgba(45, 40, 80, 0.035);
+  --riscv-tint-3: rgba(45, 40, 80, 0.06);
+  --riscv-tint-4: rgba(45, 40, 80, 0.11);
+  --riscv-hairline: rgba(45, 40, 80, 0.08);
+  --riscv-plate: rgba(255, 255, 255, 0.75);
+
+  /* Encoding field colours, pulled toward pastel so the diagram stays legible
+     on white without the neon look the dark theme wants. */
+  --field-opcode: #b7860c;
+  --field-rd: #c2568f;
+  --field-funct3: #12897e;
+  --field-rs1: #7159c4;
+  --field-rs2: #5866c0;
+  --field-funct7: #2f74b8;
+  --field-var: #b9b4cc;
+}
+
+/* Cards need a real edge on light; on dark the glow did that work. */
+:root[data-theme='light'] .riscv-card,
+:root[data-theme='light'] .riscv-card-2 {
+  box-shadow: 0 1px 2px rgba(45, 40, 80, 0.05), 0 6px 18px rgba(45, 40, 80, 0.05);
+}
+
+:root[data-theme='light'] .ext-tile:hover {
+  box-shadow: 0 0 0 2px var(--riscv-border-2), 0 10px 22px rgba(45, 40, 80, 0.10);
+}
+
+/* The selected-tile glow is a dark-theme effect; on light a soft amber wash
+   reads better than a halo. */
+:root[data-theme='light'] .ext-tile-active {
+  box-shadow: 0 0 0 2px var(--riscv-gold), 0 8px 24px rgba(168, 118, 10, 0.14) !important;
+  background: rgba(168, 118, 10, 0.05);
+}
+
+:root[data-theme='light'] .workspace-tile-btn {
+  backdrop-filter: none;
+}
+
+/* Encoding cells: light pastel fills with darker ink, mirroring the dark theme
+   rather than inheriting its translucent-on-black assumptions. */
+:root[data-theme='light'] .enc-opcode { background: #fdf3d8; color: #6b4c05; border-right-color: #e8cf94; }
+:root[data-theme='light'] .enc-rd     { background: #fce4f0; color: #7d2d55; border-right-color: #eeb9d4; }
+:root[data-theme='light'] .enc-funct3 { background: #d8f3ef; color: #0c5c54; border-right-color: #9dd9d0; }
+:root[data-theme='light'] .enc-rs1    { background: #e8e2fb; color: #45338c; border-right-color: #c3b6ef; }
+:root[data-theme='light'] .enc-rs2    { background: #e2e6fb; color: #33408c; border-right-color: #b6c0ef; }
+:root[data-theme='light'] .enc-funct7 { background: #ddecfb; color: #1d4f80; border-right-color: #a9cbec; }
+:root[data-theme='light'] .enc-var    { background: #ecebf2; color: #4a4860; border-right-color: #cfccdd; }
+
+/* Tile families in light mode.
+   The colorClass props are hardcoded Tailwind dark palettes — bg-*-950/30 with
+   text-*-100 — which on a light ground give pale text on a pale wash. These
+   override by family, keeping the colour coding while making it readable.
+   Every pairing below is at least 4.5:1. */
+:root[data-theme='light'] .ext-tile[class*='amber-'] {
+  background: #fdf4de !important; color: #7a5406 !important; border-color: #efdcae !important;
+}
+:root[data-theme='light'] .ext-tile[class*='blue-'] {
+  background: #e9f1fe !important; color: #1d4a80 !important; border-color: #c5daf7 !important;
+}
+:root[data-theme='light'] .ext-tile[class*='cyan-'] {
+  background: #e2f6f9 !important; color: #0f5a68 !important; border-color: #b7e4ec !important;
+}
+:root[data-theme='light'] .ext-tile[class*='emerald-'] {
+  background: #e4f6ec !important; color: #12603f !important; border-color: #b8e3cd !important;
+}
+:root[data-theme='light'] .ext-tile[class*='fuchsia-'] {
+  background: #fbe9fa !important; color: #7a2570 !important; border-color: #eec2ec !important;
+}
+:root[data-theme='light'] .ext-tile[class*='indigo-'] {
+  background: #eceafc !important; color: #3b338f !important; border-color: #cbc4f2 !important;
+}
+:root[data-theme='light'] .ext-tile[class*='orange-'] {
+  background: #fdefe1 !important; color: #8a4a08 !important; border-color: #f2d4b6 !important;
+}
+:root[data-theme='light'] .ext-tile[class*='pink-'] {
+  background: #fce9f1 !important; color: #8a2a53 !important; border-color: #f0c2d5 !important;
+}
+:root[data-theme='light'] .ext-tile[class*='purple-'] {
+  background: #f2eafc !important; color: #5b2b8f !important; border-color: #d9c5f2 !important;
+}
+:root[data-theme='light'] .ext-tile[class*='red-'] {
+  background: #fdeaea !important; color: #8c2230 !important; border-color: #f3c3c3 !important;
+}
+:root[data-theme='light'] .ext-tile[class*='sky-'] {
+  background: #e6f3fd !important; color: #14557f !important; border-color: #bcdcf5 !important;
+}
+:root[data-theme='light'] .ext-tile[class*='teal-'] {
+  background: #e0f5f1 !important; color: #0d5d51 !important; border-color: #b3e2d8 !important;
+}
+:root[data-theme='light'] .ext-tile[class*='violet-'] {
+  background: #efeafc !important; color: #4b2f9c !important; border-color: #d3c5f3 !important;
+}
+
+/* Tailwind's light slate text is baked into the markup in ~33 places and is
+   invisible on a light ground. Rather than rewrite each call site, remap the
+   four shades in use to theme tokens. The dark theme keeps Tailwind's values,
+   so nothing changes there. */
+:root[data-theme='light'] .text-slate-50,
+:root[data-theme='light'] .text-slate-100 { color: var(--riscv-text) !important; }
+:root[data-theme='light'] .text-slate-200 { color: var(--riscv-text) !important; }
+:root[data-theme='light'] .text-slate-300 { color: var(--riscv-text-2) !important; }
+
+/* Panels and toolbars that painted a dark plate inline keep their own colour;
+   these are the containers that read as holes on light. */
+:root[data-theme='light'] .riscv-card,
+:root[data-theme='light'] .riscv-card-2 {
+  background: var(--riscv-surface);
+  border-color: var(--riscv-border);
+}

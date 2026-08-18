@@ -40,6 +40,8 @@ import {
   Download,
   ChevronDown,
   Maximize2,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import extensions from './riscv_extensions.json';
 import WorkspacePanel from './WorkspacePanel.jsx';
@@ -686,6 +688,22 @@ const RISCVExplorer = () => {
   // Previously they were always rendered, in a low-contrast grey, with nothing
   // explaining what they did — a permanent control for a mode the user had not
   // asked to be in. Turning the builder on is now a deliberate act.
+  // Theme. Defaults to whatever the OS asks for, then remembers the choice.
+  // Applied to documentElement rather than a wrapper so the CSS variables
+  // cascade to everything, including the fixed-position panel.
+  const [theme, setTheme] = useState(() => {
+    try {
+      const saved = window.localStorage.getItem('riscv-landscape-theme');
+      if (saved === 'light' || saved === 'dark') return saved;
+    } catch { /* storage unavailable — fall through to the system preference */ }
+    return window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  });
+
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    try { window.localStorage.setItem('riscv-landscape-theme', theme); } catch { /* ignore */ }
+  }, [theme]);
+
   const [builderMode, setBuilderMode] = useState(false);
   const [workspacePanelOpen, setWorkspacePanelOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
@@ -1782,7 +1800,7 @@ const RISCVExplorer = () => {
   }, []);
 
   return (
-    <div className="min-h-screen text-slate-50" style={{ background: 'var(--riscv-bg)' }}>
+    <div className="min-h-screen" style={{ background: 'var(--riscv-bg)', color: 'var(--riscv-text)' }}>
       {/* Gradient top border */}
       <div className="riscv-top-border" />
       <div className="px-3 md:px-6 py-4 md:py-6 max-w-[1700px] mx-auto">
@@ -1797,7 +1815,7 @@ const RISCVExplorer = () => {
                   <h1
                     className="text-2xl md:text-3xl font-black tracking-tight"
                     style={{
-                      background: 'linear-gradient(90deg, #f5c542 0%, #fde68a 50%, #f5c542 100%)',
+                      background: 'linear-gradient(90deg, var(--riscv-title-a) 0%, var(--riscv-title-b) 50%, var(--riscv-title-a) 100%)',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
                     }}
@@ -1806,7 +1824,7 @@ const RISCVExplorer = () => {
                   </h1>
                 </div>
                 <p className="text-xs ml-9 whitespace-nowrap" style={{ color: 'var(--riscv-text-2)' }}>
-                  Authoritative reference for extensions, profiles &amp; per-instruction encoding.
+                  Reference for extensions, profiles &amp; per-instruction encoding.
                 </p>
                 {/* Stat bar */}
                 <div className="flex items-center gap-4 mt-3 ml-9">
@@ -1827,7 +1845,7 @@ const RISCVExplorer = () => {
               {/* Controls - Single Row Design 1 */}
               <div className="flex flex-wrap xl:flex-nowrap items-center justify-start lg:justify-end gap-x-3 gap-y-3 shrink-0">
                 {/* Grouped Filters Container */}
-                <div className="flex items-center gap-3 px-3.5 py-2 rounded-xl border shadow-lg backdrop-blur-md" style={{ background: 'rgba(15,23,42,0.4)', borderColor: 'rgba(255,255,255,0.08)' }}>
+                <div className="flex items-center gap-3 px-3.5 py-2 rounded-xl border shadow-lg backdrop-blur-md" style={{ background: 'var(--riscv-plate)', borderColor: 'rgba(255,255,255,0.08)' }}>
                   
                   {/* Profiles */}
                   <div className="flex items-center gap-2">
@@ -1902,6 +1920,23 @@ const RISCVExplorer = () => {
                 >
                   <ScanSearch size={14} className="text-indigo-400/80 group-hover:text-indigo-300 transition-colors" />
                   <span className="whitespace-nowrap">Encoder Validator</span>
+                </button>
+
+                {/* Theme toggle */}
+                <button
+                  type="button"
+                  onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
+                  title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+                  aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+                  className="group inline-flex items-center justify-center rounded-xl transition-all duration-300"
+                  style={{
+                    width: 34, height: 34,
+                    border: '1px solid var(--riscv-border-2)',
+                    background: 'var(--riscv-surface)',
+                    color: 'var(--riscv-text-2)',
+                  }}
+                >
+                  {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
                 </button>
 
                 {/* ISA Configuration Builder — fused action group */}
@@ -2006,9 +2041,9 @@ const RISCVExplorer = () => {
                         }}>
                           <div style={{
                             padding: '10px 14px',
-                            borderBottom: '1px solid rgba(255,255,255,0.06)',
+                            borderBottom: '1px solid var(--riscv-tint-3)',
                             background: 'rgba(245,197,66,0.04)',
-                            fontSize: 12, color: '#f1f5f9', fontWeight: 700,
+                            fontSize: 12, color: 'var(--riscv-text)', fontWeight: 700,
                           }}>
                             Start from a ratified profile
                           </div>
@@ -2029,7 +2064,7 @@ const RISCVExplorer = () => {
                               style={{
                                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                 gap: 12, padding: '10px 14px', textAlign: 'left',
-                                borderBottom: '1px solid rgba(255,255,255,0.04)',
+                                borderBottom: '1px solid var(--riscv-tint-2)',
                                 background: 'transparent', cursor: 'pointer',
                               }}
                               className="hover:bg-amber-400/10 transition-colors"
@@ -2092,19 +2127,19 @@ const RISCVExplorer = () => {
                           borderRadius: 10,
                           background: 'linear-gradient(145deg, #1a1f2e 0%, #141824 100%)',
                           border: '1px solid rgba(245,197,66,0.25)',
-                          boxShadow: '0 12px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.03) inset',
+                          boxShadow: '0 12px 32px rgba(0,0,0,0.55), 0 0 0 1px var(--riscv-tint-2) inset',
                           minWidth: 280, overflow: 'hidden',
                         }}>
                           {/* Header strip */}
                           <div style={{
                             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                             padding: '10px 14px',
-                            borderBottom: '1px solid rgba(255,255,255,0.06)',
+                            borderBottom: '1px solid var(--riscv-tint-3)',
                             background: 'rgba(245,197,66,0.04)',
                           }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                               <Package size={12} style={{ color: 'var(--riscv-gold)', opacity: 0.85 }} />
-                              <span style={{ fontSize: 12, color: '#f1f5f9', fontWeight: 700, letterSpacing: '0.01em' }}>
+                              <span style={{ fontSize: 12, color: 'var(--riscv-text)', fontWeight: 700, letterSpacing: '0.01em' }}>
                                 Export Configuration YAML
                               </span>
                             </div>
@@ -2123,8 +2158,8 @@ const RISCVExplorer = () => {
                               style={{
                                 display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
                                 padding: '10px 12px', borderRadius: 8, cursor: 'pointer',
-                                background: quickExportIncludeInstr ? 'rgba(245,197,66,0.07)' : 'rgba(255,255,255,0.03)',
-                                border: `1px solid ${quickExportIncludeInstr ? 'rgba(245,197,66,0.2)' : 'rgba(255,255,255,0.07)'}`,
+                                background: quickExportIncludeInstr ? 'rgba(245,197,66,0.07)' : 'var(--riscv-tint-2)',
+                                border: `1px solid ${quickExportIncludeInstr ? 'rgba(245,197,66,0.2)' : 'var(--riscv-tint-3)'}`,
                                 transition: 'all 0.2s',
                                 userSelect: 'none',
                               }}
@@ -2132,7 +2167,7 @@ const RISCVExplorer = () => {
                               <div style={{ flex: 1 }}>
                                 <span style={{
                                   fontSize: 12.5, fontWeight: 600,
-                                  color: quickExportIncludeInstr ? '#f1f5f9' : '#94a3b8',
+                                  color: quickExportIncludeInstr ? 'var(--riscv-text)' : '#94a3b8',
                                   display: 'block', lineHeight: 1.35, transition: 'color 0.2s',
                                 }}>
                                   Include instruction catalog
@@ -2154,7 +2189,7 @@ const RISCVExplorer = () => {
                                   : 'rgba(255,255,255,0.08)',
                                 boxShadow: quickExportIncludeInstr ? '0 0 8px rgba(245,197,66,0.4)' : 'none',
                                 position: 'relative', transition: 'all 0.25s',
-                                border: `1px solid ${quickExportIncludeInstr ? 'rgba(245,197,66,0.7)' : 'rgba(255,255,255,0.12)'}`,
+                                border: `1px solid ${quickExportIncludeInstr ? 'rgba(245,197,66,0.7)' : 'var(--riscv-tint-4)'}`,
                               }}>
                                 <div style={{
                                   width: 15, height: 15, borderRadius: '50%',
