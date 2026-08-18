@@ -6,12 +6,12 @@
 
 /* ─── Design Tokens ──────────────────────────────────────────────────────── */
 :root {
-  --riscv-bg: #07070e;
-  --riscv-surface: #0d0d17;
-  --riscv-surface-2: #111120;
-  --riscv-border: #1a1a2e;
-  --riscv-border-2: #242438;
-  --riscv-muted: #2a2a42;
+  --riscv-bg: #14141e;
+  --riscv-surface: #1b1b27;
+  --riscv-surface-2: #21212f;
+  --riscv-border: #2c2c3d;
+  --riscv-border-2: #38384c;
+  --riscv-muted: #414157;
 
   --riscv-gold: #f5c542;
   --riscv-gold-dim: rgba(245, 197, 66, 0.12);
@@ -25,8 +25,8 @@
   --riscv-warn: #f59e0b;
 
   --riscv-text: #e2e8f0;
-  --riscv-text-2: #94a3b8;
-  --riscv-text-3: #475569;
+  --riscv-text-2: #aab8ca;
+  --riscv-text-3: #6f7f95;
 
   /* Field colors for encoding diagram */
   --field-opcode: #f5c542;
@@ -386,4 +386,4 @@ pre,
   from { transform: translateX(40px); opacity: 0; }
   to   { transform: translateX(0);    opacity: 1; }
 }
-
+

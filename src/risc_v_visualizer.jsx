@@ -420,7 +420,7 @@ const EncodingDiagram = ({ encoding }) => {
   const normalized = String(encoding || '').replace(/\s+/g, '');
   if (normalized.length !== 32) {
     return (
-      <div className="font-mono text-[11px] bg-[var(--riscv-surface-2)] border border-[var(--riscv-border-2)] rounded px-2 py-1 break-all" style={{ color: 'var(--riscv-text-2)' }}>
+      <div className="font-mono text-[12px] bg-[var(--riscv-surface-2)] border border-[var(--riscv-border-2)] rounded px-2 py-1 break-all" style={{ color: 'var(--riscv-text-2)' }}>
         {encoding}
       </div>
     );
@@ -519,7 +519,7 @@ const EncodingDiagram = ({ encoding }) => {
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider font-semibold" style={{ color: 'var(--riscv-text-3)' }}>
+        <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider font-semibold" style={{ color: 'var(--riscv-text-3)' }}>
           <Binary size={11} />
           <span>Bit Fields</span>
           {canScroll && (
@@ -565,7 +565,7 @@ const EncodingDiagram = ({ encoding }) => {
                 <div
                   key={`${i}-${bit}`}
                   className={[
-                    'h-7 flex items-center justify-center font-mono text-[11px] font-medium border-r',
+                    'h-7 flex items-center justify-center font-mono text-[12px] font-medium border-r',
                     fieldCls,
                     i === 31 ? 'border-r-0' : isGroupEnd ? 'border-r-2' : '',
                   ].join(' ')}
@@ -578,7 +578,7 @@ const EncodingDiagram = ({ encoding }) => {
           </div>
 
           {/* Bit number labels */}
-          <div className="mt-1 flex justify-between text-[9px] font-mono px-0.5" style={{ color: 'var(--riscv-text-3)' }}>
+          <div className="mt-1 flex justify-between text-[10px] font-mono px-0.5" style={{ color: 'var(--riscv-text-3)' }}>
             <span>31</span>
             <span>0</span>
           </div>
@@ -588,7 +588,7 @@ const EncodingDiagram = ({ encoding }) => {
             {FIELD_LABELS.map(({ name, cls }) => (
               <span
                 key={name}
-                className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold border ${cls}`}
+                className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold border ${cls}`}
               >
                 {name}
               </span>
@@ -1674,7 +1674,7 @@ const RISCVExplorer = () => {
         {/* EOL badge */}
         {isDiscontinued && (
           <span
-            className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded text-[8px] font-mono uppercase tracking-wider"
+            className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded text-[9px] font-mono uppercase tracking-wider"
             style={{
               background: 'rgba(255,77,107,0.12)',
               color: '#ff7a8a',
@@ -1735,14 +1735,14 @@ const RISCVExplorer = () => {
 
         <div className="flex items-start justify-between mb-1">
           <span
-            className="font-mono font-semibold text-[11px] leading-tight"
+            className="font-mono font-semibold text-[12px] leading-tight"
             style={{ letterSpacing: '0.02em' }}
           >
             {data.name}
           </span>
         </div>
         <div
-          className="text-[10px] leading-snug line-clamp-2"
+          className="text-[11px] leading-snug line-clamp-2"
           style={{ color: 'var(--riscv-text-2)' }}
         >
           {data.desc}
@@ -1874,7 +1874,7 @@ const RISCVExplorer = () => {
                   ].map(({ label, value }) => (
                     <div key={label} className="flex items-baseline gap-1.5">
                       <span className="text-base font-black" style={{ color: 'var(--riscv-gold)' }}>{value}</span>
-                      <span className="text-[10px] uppercase tracking-wider" style={{ color: 'var(--riscv-text-3)' }}>{label}</span>
+                      <span className="text-[11px] uppercase tracking-wider" style={{ color: 'var(--riscv-text-3)' }}>{label}</span>
                     </div>
                   ))}
                 </div>
@@ -1887,7 +1887,7 @@ const RISCVExplorer = () => {
                   
                   {/* Profiles */}
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: 'var(--riscv-text-3)' }}>Profile</span>
+                    <span className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: 'var(--riscv-text-3)' }}>Profile</span>
                     <div className="flex gap-1.5">
                       {Object.keys(profiles).map((profile) => (
                         <button
@@ -1901,7 +1901,7 @@ const RISCVExplorer = () => {
                             })
                           }
                           className={[
-                            'px-3 py-1.5 text-[11px] rounded-lg transition-all duration-200 font-medium',
+                            'px-3 py-1.5 text-[12px] rounded-lg transition-all duration-200 font-medium',
                             activeProfile === profile 
                               ? 'bg-slate-700/80 text-white shadow-inner border border-slate-500/50' 
                               : 'text-slate-300 hover:text-white hover:bg-slate-700/40 border border-transparent hover:border-slate-600/30',
@@ -1918,7 +1918,7 @@ const RISCVExplorer = () => {
 
                   {/* Volumes */}
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: 'var(--riscv-text-3)' }}>Volume</span>
+                    <span className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: 'var(--riscv-text-3)' }}>Volume</span>
                     <div className="flex gap-1.5">
                       {['I', 'II'].map((vol) => (
                         <button
@@ -1932,7 +1932,7 @@ const RISCVExplorer = () => {
                             })
                           }
                           className={[
-                            'px-3 py-1.5 text-[11px] rounded-lg transition-all duration-200 font-medium',
+                            'px-3 py-1.5 text-[12px] rounded-lg transition-all duration-200 font-medium',
                             activeVolume === vol 
                               ? 'bg-slate-700/80 text-white shadow-inner border border-slate-500/50' 
                               : 'text-slate-300 hover:text-white hover:bg-slate-700/40 border border-transparent hover:border-slate-600/30',
@@ -1993,14 +1993,14 @@ const RISCVExplorer = () => {
                     <span className="whitespace-nowrap">Custom ISA Builder</span>
                     <span
                       className={[
-                        'inline-flex items-center justify-center px-1.5 h-[16px] rounded-full text-[9px] font-black tracking-wide',
+                        'inline-flex items-center justify-center px-1.5 h-[16px] rounded-full text-[10px] font-black tracking-wide',
                         builderMode ? 'bg-slate-900/75 text-amber-400' : 'bg-slate-900/60 text-slate-400',
                       ].join(' ')}
                     >
                       {builderMode ? 'ON' : 'OFF'}
                     </span>
                     {workspaceIds.size > 0 && (
-                      <span className="inline-flex items-center justify-center min-w-[18px] px-1 h-[18px] rounded-full text-[9px] font-black bg-slate-900/75 text-amber-400">
+                      <span className="inline-flex items-center justify-center min-w-[18px] px-1 h-[18px] rounded-full text-[10px] font-black bg-slate-900/75 text-amber-400">
                         {workspaceIds.size}
                       </span>
                     )}
@@ -2046,7 +2046,7 @@ const RISCVExplorer = () => {
                       >
                         <Layers size={13} className="transition-transform group-hover:scale-110" />
                         {workspaceIds.size === 0 && (
-                          <span className="text-[11px] font-bold">Start from profile</span>
+                          <span className="text-[12px] font-bold">Start from profile</span>
                         )}
                       </button>
 
@@ -2064,7 +2064,7 @@ const RISCVExplorer = () => {
                             padding: '10px 14px',
                             borderBottom: '1px solid rgba(255,255,255,0.06)',
                             background: 'rgba(245,197,66,0.04)',
-                            fontSize: 11, color: '#f1f5f9', fontWeight: 700,
+                            fontSize: 12, color: '#f1f5f9', fontWeight: 700,
                           }}>
                             Start from a ratified profile
                           </div>
@@ -2090,14 +2090,14 @@ const RISCVExplorer = () => {
                               }}
                               className="hover:bg-amber-400/10 transition-colors"
                             >
-                              <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--riscv-gold)' }}>{name}</span>
-                              <span style={{ fontSize: 10, color: 'var(--riscv-text-2)' }}>
+                              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--riscv-gold)' }}>{name}</span>
+                              <span style={{ fontSize: 11, color: 'var(--riscv-text-2)' }}>
                                 {list.length} extensions
                               </span>
                             </button>
                           ))}
 
-                          <div style={{ padding: '8px 14px', fontSize: 10, color: 'var(--riscv-text-3)', lineHeight: 1.5 }}>
+                          <div style={{ padding: '8px 14px', fontSize: 11, color: 'var(--riscv-text-3)', lineHeight: 1.5 }}>
                             Replaces the current selection. Dependencies are resolved
                             automatically, so the result may include more than the
                             profile lists.
@@ -2160,15 +2160,15 @@ const RISCVExplorer = () => {
                           }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                               <Package size={12} style={{ color: 'var(--riscv-gold)', opacity: 0.85 }} />
-                              <span style={{ fontSize: 11, color: '#f1f5f9', fontWeight: 700, letterSpacing: '0.01em' }}>
+                              <span style={{ fontSize: 12, color: '#f1f5f9', fontWeight: 700, letterSpacing: '0.01em' }}>
                                 Export Configuration YAML
                               </span>
                             </div>
                             <button
                               onClick={() => setQuickExportOpen(false)}
-                              style={{ background: 'none', border: 'none', color: '#475569', cursor: 'pointer', padding: 2, lineHeight: 0, borderRadius: 4 }}
+                              style={{ background: 'none', border: 'none', color: '#6f7f95', cursor: 'pointer', padding: 2, lineHeight: 0, borderRadius: 4 }}
                               onMouseEnter={e => e.currentTarget.style.color = '#94a3b8'}
-                              onMouseLeave={e => e.currentTarget.style.color = '#475569'}
+                              onMouseLeave={e => e.currentTarget.style.color = '#6f7f95'}
                             ><X size={13} /></button>
                           </div>
 
@@ -2187,14 +2187,14 @@ const RISCVExplorer = () => {
                             >
                               <div style={{ flex: 1 }}>
                                 <span style={{
-                                  fontSize: 11.5, fontWeight: 600,
+                                  fontSize: 12.5, fontWeight: 600,
                                   color: quickExportIncludeInstr ? '#f1f5f9' : '#94a3b8',
                                   display: 'block', lineHeight: 1.35, transition: 'color 0.2s',
                                 }}>
                                   Include instruction catalog
                                 </span>
                                 <span style={{
-                                  fontSize: 10, marginTop: 2, display: 'block',
+                                  fontSize: 11, marginTop: 2, display: 'block',
                                   color: workspaceTotalInstr > 100 ? '#f59e0b' : '#64748b',
                                   fontVariantNumeric: 'tabular-nums',
                                 }}>
@@ -2214,7 +2214,7 @@ const RISCVExplorer = () => {
                               }}>
                                 <div style={{
                                   width: 15, height: 15, borderRadius: '50%',
-                                  background: quickExportIncludeInstr ? '#1a1206' : '#475569',
+                                  background: quickExportIncludeInstr ? '#1a1206' : '#6f7f95',
                               position: 'absolute', top: 2,
                                   left: quickExportIncludeInstr ? 19 : 2,
                                   transition: 'all 0.25s',
@@ -2247,7 +2247,7 @@ const RISCVExplorer = () => {
                                 background: 'linear-gradient(135deg, rgba(245,197,66,0.22) 0%, rgba(245,197,66,0.12) 100%)',
                                 color: 'var(--riscv-gold)',
                                 border: '1px solid rgba(245,197,66,0.4)',
-                                fontSize: 11.5, fontWeight: 700,
+                                fontSize: 12.5, fontWeight: 700,
                                 cursor: 'pointer', transition: 'all 0.18s',
                                 letterSpacing: '0.02em',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
@@ -2300,10 +2300,10 @@ const RISCVExplorer = () => {
                     </button>
                   )}
                   <kbd
-                    className="hidden sm:flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono"
+                    className="hidden sm:flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-mono"
                     style={{ background: 'var(--riscv-muted)', color: 'var(--riscv-text-3)', border: '1px solid var(--riscv-border-2)' }}
                   >
-                    <span className="text-[9px]">⌘</span>K
+                    <span className="text-[10px]">⌘</span>K
                   </kbd>
                 </div>
               </div>
@@ -2313,8 +2313,8 @@ const RISCVExplorer = () => {
             <div className="space-y-2.5 col-span-full">
               <div className="flex items-center gap-2">
                 <CircuitBoard size={13} style={{ color: '#60a5fa' }} />
-                <h3 className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: '#60a5fa' }}>Base ISA</h3>
-                <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.base.length} isa</span>
+                <h3 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: '#60a5fa' }}>Base ISA</h3>
+                <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.base.length} isa</span>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
                 {extensions.base.map((item) => (
@@ -2332,8 +2332,8 @@ const RISCVExplorer = () => {
             <div className="space-y-2.5 col-span-full">
               <div className="flex items-center gap-2">
                 <Braces size={13} style={{ color: '#34d399' }} />
-                <h3 className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: '#34d399' }}>Single-Letter Extensions</h3>
-                <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.standard.length} ext</span>
+                <h3 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: '#34d399' }}>Single-Letter Extensions</h3>
+                <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.standard.length} ext</span>
               </div>
               <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
                 {extensions.standard.map((item) => (
@@ -2355,8 +2355,8 @@ const RISCVExplorer = () => {
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2">
                   <Binary size={12} style={{ color: '#a78bfa' }} />
-                  <h3 className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: '#a78bfa' }}>Bit Manipulation (Zb*)</h3>
-                  <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_bit.length}</span>
+                  <h3 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: '#a78bfa' }}>Bit Manipulation (Zb*)</h3>
+                  <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_bit.length}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_bit.map((item) => (
@@ -2373,8 +2373,8 @@ const RISCVExplorer = () => {
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2">
                   <Shuffle size={12} style={{ color: '#fbbf24' }} />
-                  <h3 className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: '#fbbf24' }}>Atomics (Za/Zic*)</h3>
-                  <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_atomics.length}</span>
+                  <h3 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: '#fbbf24' }}>Atomics (Za/Zic*)</h3>
+                  <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_atomics.length}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_atomics.map((item) => (
@@ -2391,8 +2391,8 @@ const RISCVExplorer = () => {
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2">
                   <Layers size={12} style={{ color: '#818cf8' }} />
-                  <h3 className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: '#818cf8' }}>Compressed (Zc*)</h3>
-                  <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_compress.length}</span>
+                  <h3 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: '#818cf8' }}>Compressed (Zc*)</h3>
+                  <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_compress.length}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_compress.map((item) => (
@@ -2409,8 +2409,8 @@ const RISCVExplorer = () => {
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2">
                   <FlaskConical size={12} style={{ color: '#f472b6' }} />
-                  <h3 className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: '#f472b6' }}>Float & Numerics (Zf*)</h3>
-                  <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_float.length}</span>
+                  <h3 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: '#f472b6' }}>Float & Numerics (Zf*)</h3>
+                  <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_float.length}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_float.map((item) => (
@@ -2427,8 +2427,8 @@ const RISCVExplorer = () => {
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2">
                   <Database size={12} style={{ color: '#38bdf8' }} />
-                  <h3 className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: '#38bdf8' }}>Load / Store</h3>
-                  <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_load_store.length}</span>
+                  <h3 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: '#38bdf8' }}>Load / Store</h3>
+                  <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_load_store.length}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_load_store.map((item) => (
@@ -2445,8 +2445,8 @@ const RISCVExplorer = () => {
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2">
                   <Activity size={12} style={{ color: '#e879f9' }} />
-                  <h3 className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: '#e879f9' }}>Integer</h3>
-                  <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_integer.length}</span>
+                  <h3 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: '#e879f9' }}>Integer</h3>
+                  <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_integer.length}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_integer.map((item) => (
@@ -2463,8 +2463,8 @@ const RISCVExplorer = () => {
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2">
                   <Zap size={12} style={{ color: '#2dd4bf' }} />
-                  <h3 className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: '#2dd4bf' }}>Vector Subsets (Zv/Zve)</h3>
-                  <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_vector.length}</span>
+                  <h3 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: '#2dd4bf' }}>Vector Subsets (Zv/Zve)</h3>
+                  <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_vector.length}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_vector.map((item) => (
@@ -2481,8 +2481,8 @@ const RISCVExplorer = () => {
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2">
                   <Shield size={12} style={{ color: '#f87171' }} />
-                  <h3 className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: '#f87171' }}>Security & CFI (Zi*)</h3>
-                  <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_security.length}</span>
+                  <h3 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: '#f87171' }}>Security & CFI (Zi*)</h3>
+                  <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_security.length}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_security.map((item) => (
@@ -2499,8 +2499,8 @@ const RISCVExplorer = () => {
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2">
                   <KeyRound size={12} style={{ color: '#94a3b8' }} />
-                  <h3 className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: '#94a3b8' }}>Cryptography (Zk*)</h3>
-                  <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_crypto.length}</span>
+                  <h3 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: '#94a3b8' }}>Cryptography (Zk*)</h3>
+                  <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_crypto.length}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_crypto.map((item) => (
@@ -2517,8 +2517,8 @@ const RISCVExplorer = () => {
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2">
                   <Lock size={12} style={{ color: '#c4b5fd' }} />
-                  <h3 className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: '#c4b5fd' }}>Vector Cryptography (Zvk*)</h3>
-                  <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_vector_crypto.length}</span>
+                  <h3 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: '#c4b5fd' }}>Vector Cryptography (Zvk*)</h3>
+                  <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_vector_crypto.length}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_vector_crypto.map((item) => (
@@ -2535,8 +2535,8 @@ const RISCVExplorer = () => {
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2">
                   <Settings2 size={12} style={{ color: '#fb923c' }} />
-                  <h3 className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: '#fb923c' }}>System</h3>
-                  <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_system.length}</span>
+                  <h3 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: '#fb923c' }}>System</h3>
+                  <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_system.length}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_system.map((item) => (
@@ -2553,8 +2553,8 @@ const RISCVExplorer = () => {
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2">
                   <MemoryStick size={12} style={{ color: '#fdba74' }} />
-                  <h3 className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: '#fdba74' }}>Caches</h3>
-                  <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_caches.length}</span>
+                  <h3 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: '#fdba74' }}>Caches</h3>
+                  <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.z_caches.length}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_caches.map((item) => (
@@ -2576,14 +2576,14 @@ const RISCVExplorer = () => {
             >
               <div className="flex items-center gap-2 mb-4">
                 <Network size={13} style={{ color: '#22d3ee' }} />
-                <h3 className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: '#22d3ee' }}>S &amp; Sv Extensions — Privileged ISA</h3>
+                <h3 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: '#22d3ee' }}>S &amp; Sv Extensions — Privileged ISA</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div className="space-y-2.5">
                   <div className="flex items-center gap-1.5">
                     <Layers size={11} style={{ color: 'var(--riscv-text-3)' }} />
-                    <h4 className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: 'var(--riscv-text-3)' }}>Memory (Sv)</h4>
-                    <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.s_mem.length}</span>
+                    <h4 className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: 'var(--riscv-text-3)' }}>Memory (Sv)</h4>
+                    <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.s_mem.length}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     {extensions.s_mem.map((item) => (
@@ -2599,8 +2599,8 @@ const RISCVExplorer = () => {
                 <div className="space-y-2.5">
                   <div className="flex items-center gap-1.5">
                     <Timer size={11} style={{ color: 'var(--riscv-text-3)' }} />
-                    <h4 className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: 'var(--riscv-text-3)' }}>Interrupts (Sm/Ss)</h4>
-                    <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.s_interrupt.length}</span>
+                    <h4 className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: 'var(--riscv-text-3)' }}>Interrupts (Sm/Ss)</h4>
+                    <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.s_interrupt.length}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     {extensions.s_interrupt.map((item) => (
@@ -2616,8 +2616,8 @@ const RISCVExplorer = () => {
                 <div className="space-y-2.5">
                   <div className="flex items-center gap-1.5">
                     <ServerCrash size={11} style={{ color: 'var(--riscv-text-3)' }} />
-                    <h4 className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: 'var(--riscv-text-3)' }}>Trap, Debug &amp; Hypervisor</h4>
-                    <span className="text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.s_trap.length}</span>
+                    <h4 className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: 'var(--riscv-text-3)' }}>Trap, Debug &amp; Hypervisor</h4>
+                    <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>{extensions.s_trap.length}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     {extensions.s_trap.map((item) => (
@@ -2642,7 +2642,7 @@ const RISCVExplorer = () => {
             >
               <div className="p-4 pb-3 flex items-center gap-2" style={{ borderBottom: '1px solid var(--riscv-border)' }}>
                 <Info size={14} style={{ color: 'var(--riscv-text-3)' }} />
-                <h2 className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: 'var(--riscv-text-3)' }}>Selected Details</h2>
+                <h2 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: 'var(--riscv-text-3)' }}>Selected Details</h2>
               </div>
 
               <div className="flex-1 overflow-y-auto overscroll-contain p-4 pt-3">
@@ -2664,7 +2664,7 @@ const RISCVExplorer = () => {
                       </div>
 
                       {selectedExt.discontinued === 1 && (
-                        <span className="shrink-0 px-2 py-1 rounded-md text-[10px] font-mono uppercase tracking-wide border bg-red-950/40 text-red-200 border-red-600/60">
+                        <span className="shrink-0 px-2 py-1 rounded-md text-[11px] font-mono uppercase tracking-wide border bg-red-950/40 text-red-200 border-red-600/60">
                           Discontinued
                         </span>
                       )}
@@ -2672,12 +2672,12 @@ const RISCVExplorer = () => {
 
                     <div className="space-y-6">
                       <div>
-                        <h4 className="text-[10px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: 'var(--riscv-text-3)' }}>Description</h4>
+                        <h4 className="text-[11px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: 'var(--riscv-text-3)' }}>Description</h4>
                         <p className="text-sm leading-relaxed" style={{ color: 'var(--riscv-text)' }}>{selectedExt.desc}</p>
                       </div>
 
                       <div className="riscv-card-2 p-3 rounded-lg">
-                        <h4 className="text-[10px] uppercase tracking-widest font-semibold mb-2 flex items-center gap-1" style={{ color: 'var(--riscv-violet)' }}>
+                        <h4 className="text-[11px] uppercase tracking-widest font-semibold mb-2 flex items-center gap-1" style={{ color: 'var(--riscv-violet)' }}>
                           <ArrowRight size={10} /> Use Case
                         </h4>
                         <p className="text-sm italic" style={{ color: 'var(--riscv-text-2)' }}>{selectedExt.use}</p>
@@ -2691,10 +2691,10 @@ const RISCVExplorer = () => {
                           <div className="bg-slate-900 p-3 rounded border border-slate-700">
                             <div className="flex items-center justify-between gap-3">
                               <div className="min-w-0">
-                                <div className="text-[10px] uppercase tracking-wider text-yellow-300 font-bold mb-0.5">
+                                <div className="text-[11px] uppercase tracking-wider text-yellow-300 font-bold mb-0.5">
                                   Search Hits ({searchMatches.mnemonics.length})
                                 </div>
-                                <div className="text-[11px] font-mono text-slate-200 truncate">
+                                <div className="text-[12px] font-mono text-slate-200 truncate">
                                   {searchMatches.mnemonics[searchMatches.index] || ''}
                                   <span className="ml-2 text-slate-500">
                                     ({searchMatches.index + 1}/{searchMatches.mnemonics.length})
@@ -2705,7 +2705,7 @@ const RISCVExplorer = () => {
                               <div className="flex items-center gap-2 shrink-0">
                                 <button
                                   type="button"
-                                  className="px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[10px] font-mono text-slate-100 disabled:opacity-40"
+                                  className="px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[11px] font-mono text-slate-100 disabled:opacity-40"
                                   onClick={() => {
                                     setSearchMatches((current) => {
                                       if (!current || current.extId !== selectedExt.id) return current;
@@ -2722,7 +2722,7 @@ const RISCVExplorer = () => {
                                 </button>
                                 <button
                                   type="button"
-                                  className="px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[10px] font-mono text-slate-100 disabled:opacity-40"
+                                  className="px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[11px] font-mono text-slate-100 disabled:opacity-40"
                                   onClick={() => {
                                     setSearchMatches((current) => {
                                       if (!current || current.extId !== selectedExt.id) return current;
@@ -2743,7 +2743,7 @@ const RISCVExplorer = () => {
 
                       {Object.keys(selectedExt.instructions || {}).length > 0 && (
                         <div className="bg-slate-900 p-3 rounded border border-slate-700">
-                          <h4 className="text-[10px] uppercase tracking-wider text-emerald-400 font-bold mb-2">
+                          <h4 className="text-[11px] uppercase tracking-wider text-emerald-400 font-bold mb-2">
                             Instruction Set Snapshot ({Object.keys(selectedExt.instructions || {}).length})
                           </h4>
                           <div className="flex flex-wrap gap-1">
@@ -2779,7 +2779,7 @@ const RISCVExplorer = () => {
                                       return { ...current, index: idx };
                                     });
                                   }}
-                                  className={`px-1.5 py-0.5 rounded border text-[10px] font-mono tracking-tight ${isActive
+                                  className={`px-1.5 py-0.5 rounded border text-[11px] font-mono tracking-tight ${isActive
                                     ? isDeprecated
                                       ? 'border-red-400 bg-red-500/10 text-red-200'
                                       : 'border-emerald-400 bg-emerald-500/10 text-emerald-200'
@@ -2806,7 +2806,7 @@ const RISCVExplorer = () => {
 
                       {extensionCsrs[selectedExt.id] && (
                         <div className="bg-slate-900 p-3 rounded border border-slate-700">
-                          <h4 className="text-[10px] uppercase tracking-wider text-sky-300 font-bold mb-2">
+                          <h4 className="text-[11px] uppercase tracking-wider text-sky-300 font-bold mb-2">
                             {(extensionCsrLabels[selectedExt.id] || 'CSRs')}{' '}
                             ({extensionCsrs[selectedExt.id].length})
                           </h4>
@@ -2814,7 +2814,7 @@ const RISCVExplorer = () => {
                             {extensionCsrs[selectedExt.id].map((csr) => (
                               <span
                                 key={csr}
-                                className="px-1.5 py-0.5 rounded border border-slate-700 bg-slate-800/70 text-[10px] font-mono text-slate-200"
+                                className="px-1.5 py-0.5 rounded border border-slate-700 bg-slate-800/70 text-[11px] font-mono text-slate-200"
                               >
                                 {csr}
                               </span>
@@ -2826,13 +2826,13 @@ const RISCVExplorer = () => {
                       {selectedInstruction && (
                         <div className="bg-slate-900 p-3 rounded border border-slate-700">
                           <div className="flex items-start justify-between gap-3 mb-2">
-                            <h4 className="text-[10px] uppercase tracking-wider text-purple-300 font-bold flex items-center gap-1">
+                            <h4 className="text-[11px] uppercase tracking-wider text-purple-300 font-bold flex items-center gap-1">
                               <ArrowRight size={10} /> Instruction Details
                             </h4>
                             <div className="flex items-center gap-2">
                               <button
                                 type="button"
-                                className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[10px] font-mono text-slate-100 hover:border-slate-500"
+                                className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[11px] font-mono text-slate-100 hover:border-slate-500"
                                 onClick={async () => {
                                   const text = formatInstructionForClipboard(selectedExt, selectedInstruction);
                                   const ok = await copyTextToClipboard(text);
@@ -2850,7 +2850,7 @@ const RISCVExplorer = () => {
                               </button>
                               <button
                                 type="button"
-                                className="text-[10px] font-mono text-slate-500 hover:text-slate-300"
+                                className="text-[11px] font-mono text-slate-500 hover:text-slate-300"
                                 onClick={() => setSelectedInstruction(null)}
                               >
                                 Close
@@ -2863,7 +2863,7 @@ const RISCVExplorer = () => {
                               {selectedInstruction.mnemonic}
                             </div>
                             {selectedInstruction.deprecated && (
-                              <span className="shrink-0 px-2 py-1 rounded-md text-[10px] font-mono uppercase tracking-wide border bg-red-950/40 text-red-200 border-red-600/60">
+                              <span className="shrink-0 px-2 py-1 rounded-md text-[11px] font-mono uppercase tracking-wide border bg-red-950/40 text-red-200 border-red-600/60">
                                 Discontinued
                               </span>
                             )}
@@ -2871,25 +2871,25 @@ const RISCVExplorer = () => {
 
                           <div className="space-y-3">
                             <div>
-                              <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                              <div className="text-[11px] uppercase tracking-wider text-slate-500 font-bold mb-1">
                                 Encoding
                               </div>
                               <EncodingDiagram encoding={selectedInstruction.encoding} />
-                              <div className="mt-1 text-[10px] text-slate-500">
+                              <div className="mt-1 text-[11px] text-slate-500">
                                 Fixed bits are <span className="font-mono">0/1</span>, variable bits are{' '}
                                 <span className="font-mono">x</span>.
                               </div>
                             </div>
 
                             <div>
-                              <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                              <div className="text-[11px] uppercase tracking-wider text-slate-500 font-bold mb-1">
                                 Variable Fields
                               </div>
                               <div className="flex flex-wrap gap-1">
                                 {(selectedInstruction.variable_fields || []).map((field) => (
                                   <span
                                     key={field}
-                                    className="px-1.5 py-0.5 rounded border border-slate-700 bg-slate-800/70 text-[10px] font-mono text-slate-200"
+                                    className="px-1.5 py-0.5 rounded border border-slate-700 bg-slate-800/70 text-[11px] font-mono text-slate-200"
                                   >
                                     {field}
                                   </span>
@@ -2899,11 +2899,11 @@ const RISCVExplorer = () => {
 
                             <div className="grid grid-cols-2 gap-2">
                               <div>
-                                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                <div className="text-[11px] uppercase tracking-wider text-slate-500 font-bold mb-1">
                                   Match
                                 </div>
                                 <div
-                                  className={`font-mono text-[11px] text-slate-100 bg-slate-800/70 border rounded px-2 py-1 ${searchQuery.trim().length &&
+                                  className={`font-mono text-[12px] text-slate-100 bg-slate-800/70 border rounded px-2 py-1 ${searchQuery.trim().length &&
                                     String(selectedInstruction.match || '')
                                       .toLowerCase()
                                       .includes(searchQuery.trim().toLowerCase())
@@ -2915,11 +2915,11 @@ const RISCVExplorer = () => {
                                 </div>
                               </div>
                               <div>
-                                <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                <div className="text-[11px] uppercase tracking-wider text-slate-500 font-bold mb-1">
                                   Mask
                                 </div>
                                 <div
-                                  className={`font-mono text-[11px] text-slate-100 bg-slate-800/70 border rounded px-2 py-1 ${searchQuery.trim().length &&
+                                  className={`font-mono text-[12px] text-slate-100 bg-slate-800/70 border rounded px-2 py-1 ${searchQuery.trim().length &&
                                     String(selectedInstruction.mask || '')
                                       .toLowerCase()
                                       .includes(searchQuery.trim().toLowerCase())
@@ -2934,26 +2934,26 @@ const RISCVExplorer = () => {
 
                             {compressedMapping && (
                               <div className="rounded border border-slate-700 bg-slate-950/50 p-3">
-                                <div className="text-[10px] uppercase tracking-wider text-cyan-300 font-bold mb-2">
+                                <div className="text-[11px] uppercase tracking-wider text-cyan-300 font-bold mb-2">
                                   Compressed Mapping
                                 </div>
                                 <div className="space-y-2">
                                   <div>
-                                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                    <div className="text-[11px] uppercase tracking-wider text-slate-500 font-bold mb-1">
                                       Compressed
                                     </div>
-                                    <div className="font-mono text-[11px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded px-2 py-1">
+                                    <div className="font-mono text-[12px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded px-2 py-1">
                                       {compressedMapping.compressed}
                                     </div>
                                   </div>
                                   <div>
-                                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                    <div className="text-[11px] uppercase tracking-wider text-slate-500 font-bold mb-1">
                                       Standard Equivalent
                                     </div>
                                     {hasStandardEquivalent ? (
                                       <button
                                         type="button"
-                                        className="w-full text-left font-mono text-[11px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded px-2 py-1 hover:border-cyan-400/60"
+                                        className="w-full text-left font-mono text-[12px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded px-2 py-1 hover:border-cyan-400/60"
                                         onClick={() => selectStandardEquivalent(standardEquivalentMnemonic)}
                                         title="Open standard instruction details"
                                       >
@@ -2963,20 +2963,20 @@ const RISCVExplorer = () => {
                                         </span>
                                       </button>
                                     ) : (
-                                      <div className="font-mono text-[11px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded px-2 py-1">
+                                      <div className="font-mono text-[12px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded px-2 py-1">
                                         {compressedMapping.standard}
                                       </div>
                                     )}
                                   </div>
                                   <div>
-                                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                    <div className="text-[11px] uppercase tracking-wider text-slate-500 font-bold mb-1">
                                       Equivalent Instruction
                                     </div>
                                     {standardEquivalentMnemonic ? (
                                       hasStandardEquivalent ? (
                                         <button
                                           type="button"
-                                          className="inline-flex items-center gap-1 text-[11px] font-mono text-cyan-200 hover:text-cyan-100 underline"
+                                          className="inline-flex items-center gap-1 text-[12px] font-mono text-cyan-200 hover:text-cyan-100 underline"
                                           onClick={() => selectStandardEquivalent(standardEquivalentMnemonic)}
                                           title="Open standard instruction details"
                                         >
@@ -2984,19 +2984,19 @@ const RISCVExplorer = () => {
                                           <ArrowUpRight size={12} className="opacity-70" />
                                         </button>
                                       ) : (
-                                        <div className="text-[11px] text-slate-500 font-mono">
+                                        <div className="text-[12px] text-slate-500 font-mono">
                                           {standardEquivalentMnemonic}
                                         </div>
                                       )
                                     ) : (
-                                      <div className="text-[11px] text-slate-500">Unavailable</div>
+                                      <div className="text-[12px] text-slate-500">Unavailable</div>
                                     )}
                                   </div>
                                   <div>
-                                    <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">
+                                    <div className="text-[11px] uppercase tracking-wider text-slate-500 font-bold mb-1">
                                       Description
                                     </div>
-                                    <div className="text-[11px] text-slate-200">{compressedMapping.description}</div>
+                                    <div className="text-[12px] text-slate-200">{compressedMapping.description}</div>
                                   </div>
                                 </div>
                               </div>
@@ -3004,7 +3004,7 @@ const RISCVExplorer = () => {
 
                             {compressedEquivalents.length > 0 && (
                               <div className="rounded border border-slate-700 bg-slate-950/40 p-3">
-                                <div className="text-[10px] uppercase tracking-wider text-emerald-300 font-bold mb-2">
+                                <div className="text-[11px] uppercase tracking-wider text-emerald-300 font-bold mb-2">
                                   Compressed Equivalents
                                 </div>
                                 <div className="space-y-2">
@@ -3016,11 +3016,11 @@ const RISCVExplorer = () => {
                                       onClick={() => selectCompressedEquivalent(entry.mnemonic)}
                                       title={`Open ${entry.mnemonic} details`}
                                     >
-                                      <div className="flex items-center gap-1 text-[11px] font-mono text-emerald-200">
+                                      <div className="flex items-center gap-1 text-[12px] font-mono text-emerald-200">
                                         {normalizeMnemonicKey(entry.mnemonic)}
                                         <ArrowUpRight size={12} className="opacity-70" />
                                       </div>
-                                      <div className="text-[10px] font-mono text-slate-400">{entry.compressed}</div>
+                                      <div className="text-[11px] font-mono text-slate-400">{entry.compressed}</div>
                                     </button>
                                   ))}
                                 </div>
@@ -3063,7 +3063,7 @@ const RISCVExplorer = () => {
                     </div>
                     <div>
                       <p className="text-xs font-medium mb-1" style={{ color: 'var(--riscv-text-2)' }}>No Extension Selected</p>
-                      <p className="text-[11px] max-w-[160px] mx-auto" style={{ color: 'var(--riscv-text-3)' }}>
+                      <p className="text-[12px] max-w-[160px] mx-auto" style={{ color: 'var(--riscv-text-3)' }}>
                         Click any tile to explore specifications, encodings &amp; profiles.
                       </p>
                     </div>
@@ -3076,7 +3076,7 @@ const RISCVExplorer = () => {
 
         {/* ─── Footer ─────────────────────────────────────────────────── */}
         <footer
-          className="mt-10 pb-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px]"
+          className="mt-10 pb-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px]"
           style={{ borderTop: '1px solid var(--riscv-border)', paddingTop: '1.5rem', color: 'var(--riscv-text-3)' }}
         >
           <div className="flex items-center gap-2">
@@ -3117,7 +3117,7 @@ const RISCVExplorer = () => {
                     <ScanSearch size={15} style={{ color: 'var(--riscv-violet)' }} />
                     <span>Encoder Validator</span>
                   </h3>
-                  <p className="text-[11px] mt-1" style={{ color: 'var(--riscv-text-3)' }}>
+                  <p className="text-[12px] mt-1" style={{ color: 'var(--riscv-text-3)' }}>
                     Enter a 32-bit encoding (0/1/-) or Match+Mask (hex). Detects overlaps against the full ISA database.
                   </p>
                 </div>
@@ -3135,7 +3135,7 @@ const RISCVExplorer = () => {
               <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-3">
                   <div>
-                    <div className="text-[10px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: 'var(--riscv-text-3)' }}>Proposed Mnemonic <span style={{ fontWeight: 400 }}>(optional)</span></div>
+                    <div className="text-[11px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: 'var(--riscv-text-3)' }}>Proposed Mnemonic <span style={{ fontWeight: 400 }}>(optional)</span></div>
                     <input
                       type="text"
                       value={encoderValidatorInput.mnemonic}
@@ -3148,7 +3148,7 @@ const RISCVExplorer = () => {
                   </div>
 
                   <div>
-                    <div className="text-[10px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: 'var(--riscv-text-3)' }}>Encoding <span style={{ fontWeight: 400 }}>(required if no match/mask)</span></div>
+                    <div className="text-[11px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: 'var(--riscv-text-3)' }}>Encoding <span style={{ fontWeight: 400 }}>(required if no match/mask)</span></div>
                     <input
                       type="text"
                       value={encoderValidatorInput.encoding}
@@ -3162,7 +3162,7 @@ const RISCVExplorer = () => {
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <div className="text-[10px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: 'var(--riscv-text-3)' }}>Match (hex)</div>
+                      <div className="text-[11px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: 'var(--riscv-text-3)' }}>Match (hex)</div>
                       <input
                         type="text"
                         value={encoderValidatorInput.match}
@@ -3174,7 +3174,7 @@ const RISCVExplorer = () => {
                       />
                     </div>
                     <div>
-                      <div className="text-[10px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: 'var(--riscv-text-3)' }}>Mask (hex)</div>
+                      <div className="text-[11px] uppercase tracking-widest font-semibold mb-1.5" style={{ color: 'var(--riscv-text-3)' }}>Mask (hex)</div>
                       <input
                         type="text"
                         value={encoderValidatorInput.mask}
@@ -3191,7 +3191,7 @@ const RISCVExplorer = () => {
                     <button
                       type="button"
                       onClick={runEncoderValidation}
-                      className="riscv-btn riscv-btn-violet inline-flex items-center gap-2 px-4 py-2 text-[11px]"
+                      className="riscv-btn riscv-btn-violet inline-flex items-center gap-2 px-4 py-2 text-[12px]"
                     >
                       <ScanSearch size={14} />
                       Validate
@@ -3204,7 +3204,7 @@ const RISCVExplorer = () => {
                         setEncoderValidatorResult(null);
                         setEncoderValidatorCopyStatus(null);
                       }}
-                      className="riscv-btn px-3 py-2 text-[11px]"
+                      className="riscv-btn px-3 py-2 text-[12px]"
                     >
                       Reset
                     </button>
@@ -3213,7 +3213,7 @@ const RISCVExplorer = () => {
 
                 <div className="space-y-3">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="text-[10px] uppercase tracking-widest font-semibold" style={{ color: 'var(--riscv-text-3)' }}>Results</div>
+                    <div className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: 'var(--riscv-text-3)' }}>Results</div>
                     <button
                       type="button"
                       disabled={!encoderValidatorResult?.proposed}
@@ -3227,7 +3227,7 @@ const RISCVExplorer = () => {
                         setEncoderValidatorCopyStatus(ok ? 'copied' : 'failed');
                         window.setTimeout(() => setEncoderValidatorCopyStatus(null), 1500);
                       }}
-                      className="riscv-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] disabled:opacity-30"
+                      className="riscv-btn inline-flex items-center gap-1.5 px-3 py-1.5 text-[12px] disabled:opacity-30"
                       title="Copy validation report"
                     >
                       <Copy size={12} />
@@ -3241,7 +3241,7 @@ const RISCVExplorer = () => {
 
                   {!encoderValidatorResult ? (
                     <div
-                      className="text-[11px] rounded-lg p-3"
+                      className="text-[12px] rounded-lg p-3"
                       style={{ background: 'var(--riscv-surface-2)', border: '1px solid var(--riscv-border-2)', color: 'var(--riscv-text-3)' }}
                     >
                       Enter a proposed encoding and click Validate.
@@ -3250,7 +3250,7 @@ const RISCVExplorer = () => {
                     <div className="space-y-3">
                       {encoderValidatorResult.errors.length > 0 && (
                         <div className="border border-red-800/40 bg-red-950/30 rounded p-3">
-                          <div className="text-[10px] uppercase tracking-wider text-red-200 font-bold mb-2">
+                          <div className="text-[11px] uppercase tracking-wider text-red-200 font-bold mb-2">
                             Errors
                           </div>
                           <ul className="text-xs text-red-100 space-y-1 list-disc pl-4">
@@ -3263,16 +3263,16 @@ const RISCVExplorer = () => {
 
                       {encoderValidatorResult.proposed && (
                         <div className="border border-slate-700 rounded p-3 bg-slate-800/50">
-                          <div className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-2">
+                          <div className="text-[11px] uppercase tracking-wider text-slate-400 font-bold mb-2">
                             Normalized Proposal
                           </div>
                           <div className="space-y-2">
-                            <div className="font-mono text-[11px] text-slate-200 break-all">
+                            <div className="font-mono text-[12px] text-slate-200 break-all">
                               Encoding: {encoderValidatorResult.proposed.encoding}
                             </div>
                             <div className="grid grid-cols-2 gap-2">
-                              <div className="font-mono text-[11px] text-slate-200">Match: {encoderValidatorResult.proposed.match}</div>
-                              <div className="font-mono text-[11px] text-slate-200">Mask: {encoderValidatorResult.proposed.mask}</div>
+                              <div className="font-mono text-[12px] text-slate-200">Match: {encoderValidatorResult.proposed.match}</div>
+                              <div className="font-mono text-[12px] text-slate-200">Mask: {encoderValidatorResult.proposed.mask}</div>
                             </div>
                           </div>
                         </div>
@@ -3280,11 +3280,11 @@ const RISCVExplorer = () => {
 
                       {encoderValidatorResult.proposed && (
                         <div className="rounded-lg p-3" style={{ border: '1px solid var(--riscv-border-2)', background: 'var(--riscv-surface-2)' }}>
-                          <div className="text-[10px] uppercase tracking-widest font-semibold mb-2" style={{ color: 'var(--riscv-text-3)' }}>Conflicts ({encoderValidatorResult.conflicts.length})</div>
+                          <div className="text-[11px] uppercase tracking-widest font-semibold mb-2" style={{ color: 'var(--riscv-text-3)' }}>Conflicts ({encoderValidatorResult.conflicts.length})</div>
                           {encoderValidatorResult.conflicts.length === 0 ? (
                             <div className="conflict-none rounded-lg p-3 flex items-center gap-2 border">
                               <CheckCircle2 size={15} style={{ color: 'var(--riscv-success)', flexShrink: 0 }} />
-                              <span className="text-[12px] font-medium" style={{ color: 'var(--riscv-success)' }}>No overlaps found in ISA database — safe to use.</span>
+                              <span className="text-[13px] font-medium" style={{ color: 'var(--riscv-success)' }}>No overlaps found in ISA database — safe to use.</span>
                             </div>
                           ) : (
                             <div className="space-y-2 max-h-[340px] overflow-y-auto overscroll-contain pr-1">
@@ -3306,25 +3306,25 @@ const RISCVExplorer = () => {
                                       <div className="min-w-0 flex items-start gap-1.5">
                                         <SeverityIcon size={13} className="mt-0.5 shrink-0 opacity-80" />
                                         <div>
-                                          <div className="font-mono text-[11px] font-medium break-words" style={{ color: 'var(--riscv-text)' }}>
+                                          <div className="font-mono text-[12px] font-medium break-words" style={{ color: 'var(--riscv-text)' }}>
                                             {conflict.other.mnemonic}{' '}
                                             <span style={{ color: 'var(--riscv-text-3)' }}>({conflict.other.extId})</span>
                                           </div>
-                                          <div className="text-[10px] mt-0.5" style={{ color: 'var(--riscv-text-3)' }}>{conflict.other.extName}</div>
+                                          <div className="text-[11px] mt-0.5" style={{ color: 'var(--riscv-text-3)' }}>{conflict.other.extName}</div>
                                         </div>
                                       </div>
                                       <span
-                                        className="shrink-0 px-1.5 py-0.5 rounded text-[9px] font-mono uppercase tracking-wider border"
+                                        className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider border"
                                         style={{ background: 'rgba(0,0,0,0.2)', color: 'inherit' }}
                                       >
                                         {conflict.type.replace(/_/g, ' ')}
                                       </span>
                                     </div>
 
-                                    <div className="mt-1.5 text-[11px]" style={{ color: 'var(--riscv-text-2)' }}>{conflict.why}</div>
+                                    <div className="mt-1.5 text-[12px]" style={{ color: 'var(--riscv-text-2)' }}>{conflict.why}</div>
                                     <div className="mt-1.5 grid grid-cols-2 gap-2">
-                                      <div className="font-mono text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>mask: {conflict.commonMask}</div>
-                                      <div className="font-mono text-[10px]" style={{ color: 'var(--riscv-text-3)' }}>example: {conflict.exampleWord}</div>
+                                      <div className="font-mono text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>mask: {conflict.commonMask}</div>
+                                      <div className="font-mono text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>example: {conflict.exampleWord}</div>
                                     </div>
                                   </div>
                                 );

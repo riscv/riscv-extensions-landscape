@@ -210,7 +210,7 @@ export default function WorkspacePanel({
               <Cpu size={13} style={{ color: 'var(--riscv-gold)' }} />
             </div>
             <span style={{
-              fontWeight: 700, fontSize: 14, letterSpacing: '-0.01em',
+              fontWeight: 700, fontSize: 15, letterSpacing: '-0.01em',
               color: '#e2e8f0',
             }}>
               Custom ISA Configuration Builder
@@ -224,19 +224,19 @@ export default function WorkspacePanel({
                   padding: '3px 8px', borderRadius: 6,
                   background: 'rgba(245,197,66,0.1)',
                   border: '1px solid rgba(245,197,66,0.22)',
-                  fontSize: 10, fontWeight: 700, color: 'var(--riscv-gold)',
+                  fontSize: 11, fontWeight: 700, color: 'var(--riscv-gold)',
                   letterSpacing: '0.03em', minWidth: 52, justifyContent: 'center',
                 }}>
                   <span style={{ color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{workspaceIds.size}</span>
                   <span style={{ opacity: 0.65, fontWeight: 500 }}>ext</span>
                 </span>
-                <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: 9 }}>·</span>
+                <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: 10 }}>·</span>
                 <span style={{
                   display: 'inline-flex', alignItems: 'center', gap: 4,
                   padding: '3px 8px', borderRadius: 6,
                   background: 'rgba(99,179,237,0.08)',
                   border: '1px solid rgba(99,179,237,0.18)',
-                  fontSize: 10, fontWeight: 700, color: '#7ec8e3',
+                  fontSize: 11, fontWeight: 700, color: '#7ec8e3',
                   letterSpacing: '0.03em', minWidth: 68, justifyContent: 'center',
                 }}>
                   <span style={{ color: '#bee3f8', fontVariantNumeric: 'tabular-nums' }}>{totalInstructions.toLocaleString()}</span>
@@ -257,7 +257,7 @@ export default function WorkspacePanel({
                     padding: '6px 12px', borderRadius: 6,
                     background: showExportOptions ? 'rgba(16, 185, 129, 0.15)' : 'rgba(16, 185, 129, 0.08)',
                     border: '1px solid rgba(16, 185, 129, 0.25)',
-                    color: '#34d399', fontSize: 11, fontWeight: 600,
+                    color: '#34d399', fontSize: 12, fontWeight: 600,
                     cursor: 'pointer', transition: 'all 0.2s ease',
                   }}
                   onMouseEnter={e => {
@@ -298,15 +298,15 @@ export default function WorkspacePanel({
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                         <Package size={12} style={{ color: 'var(--riscv-gold)', opacity: 0.85 }} />
-                        <span style={{ fontSize: 11, color: '#f1f5f9', fontWeight: 700, letterSpacing: '0.01em' }}>
+                        <span style={{ fontSize: 12, color: '#f1f5f9', fontWeight: 700, letterSpacing: '0.01em' }}>
                           Export Configuration YAML
                         </span>
                       </div>
                       <button
                         onClick={() => setShowExportOptions(false)}
-                        style={{ background: 'none', border: 'none', color: '#475569', cursor: 'pointer', padding: 2, lineHeight: 0, borderRadius: 4 }}
+                        style={{ background: 'none', border: 'none', color: '#6f7f95', cursor: 'pointer', padding: 2, lineHeight: 0, borderRadius: 4 }}
                         onMouseEnter={e => e.currentTarget.style.color = '#94a3b8'}
-                        onMouseLeave={e => e.currentTarget.style.color = '#475569'}
+                        onMouseLeave={e => e.currentTarget.style.color = '#6f7f95'}
                       ><X size={13} /></button>
                     </div>
 
@@ -325,14 +325,14 @@ export default function WorkspacePanel({
                       >
                         <div style={{ flex: 1 }}>
                           <span style={{
-                            fontSize: 11.5, fontWeight: 600,
+                            fontSize: 12.5, fontWeight: 600,
                             color: includeInstructions ? '#f1f5f9' : '#94a3b8',
                             display: 'block', lineHeight: 1.35, transition: 'color 0.2s',
                           }}>
                             Include instruction catalog
                           </span>
                           <span style={{
-                            fontSize: 10, marginTop: 2, display: 'block',
+                            fontSize: 11, marginTop: 2, display: 'block',
                             color: totalInstructions > 100 ? '#f59e0b' : '#64748b',
                             fontVariantNumeric: 'tabular-nums',
                           }}>
@@ -352,7 +352,7 @@ export default function WorkspacePanel({
                         }}>
                           <div style={{
                             width: 15, height: 15, borderRadius: '50%',
-                            background: includeInstructions ? '#1a1206' : '#475569',
+                            background: includeInstructions ? '#1a1206' : '#6f7f95',
                             position: 'absolute', top: 2,
                             left: includeInstructions ? 19 : 2,
                             transition: 'all 0.25s',
@@ -371,7 +371,7 @@ export default function WorkspacePanel({
                           background: 'linear-gradient(135deg, rgba(245,197,66,0.22) 0%, rgba(245,197,66,0.12) 100%)',
                           color: 'var(--riscv-gold)',
                           border: '1px solid rgba(245,197,66,0.4)',
-                          fontSize: 11.5, fontWeight: 700,
+                          fontSize: 12.5, fontWeight: 700,
                           cursor: 'pointer', transition: 'all 0.18s',
                           letterSpacing: '0.02em',
                           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
@@ -402,7 +402,7 @@ export default function WorkspacePanel({
                   padding: '6px 12px', borderRadius: 6,
                   background: 'rgba(239, 68, 68, 0.08)',
                   border: '1px solid rgba(239, 68, 68, 0.25)',
-                  color: '#f87171', fontSize: 11, fontWeight: 600,
+                  color: '#f87171', fontSize: 12, fontWeight: 600,
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
                 }}
@@ -458,12 +458,12 @@ export default function WorkspacePanel({
                 <Package size={28} style={{ color: 'rgba(245,197,66,0.4)' }} />
               </div>
               <div>
-                <p style={{ fontSize: 14, fontWeight: 600, color: '#94a3b8', marginBottom: 6 }}>
+                <p style={{ fontSize: 15, fontWeight: 600, color: '#94a3b8', marginBottom: 6 }}>
                   No extensions selected
                 </p>
-                <p style={{ fontSize: 12, color: '#475569', maxWidth: 260, lineHeight: 1.6 }}>
+                <p style={{ fontSize: 13, color: '#6f7f95', maxWidth: 260, lineHeight: 1.6 }}>
                   Hover any extension tile and click the <strong style={{ color: 'var(--riscv-gold)' }}>+</strong> badge to add it here. Or paste a{' '}
-                  <code style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: '#94a3b8' }}>-march</code> string in the decode tab.
+                  <code style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 12, color: '#94a3b8' }}>-march</code> string in the decode tab.
                 </p>
               </div>
               {/* Show decode input when empty too */}
@@ -474,7 +474,7 @@ export default function WorkspacePanel({
                   padding: '8px 16px', borderRadius: 8,
                   background: 'rgba(245,197,66,0.1)',
                   border: '1px solid rgba(245,197,66,0.25)',
-                  color: 'var(--riscv-gold)', fontSize: 12, fontWeight: 500,
+                  color: 'var(--riscv-gold)', fontSize: 13, fontWeight: 500,
                   cursor: 'pointer',
                 }}
               >
@@ -509,7 +509,7 @@ export default function WorkspacePanel({
                   key={tab}
                   onClick={() => { setMarchTab(tab); setParseResult(null); }}
                   style={{
-                    padding: '6px 14px', borderRadius: 7, fontSize: 11,
+                    padding: '6px 14px', borderRadius: 7, fontSize: 12,
                     fontWeight: 600, fontFamily: 'JetBrains Mono, monospace',
                     cursor: 'pointer', letterSpacing: '0.04em',
                     textTransform: 'uppercase',
@@ -521,7 +521,7 @@ export default function WorkspacePanel({
                     } : {
                       background: 'rgba(255,255,255,0.03)',
                       border: '1px solid rgba(255,255,255,0.07)',
-                      color: '#475569',
+                      color: '#6f7f95',
                     }),
                   }}
                 >
@@ -544,7 +544,7 @@ export default function WorkspacePanel({
                       <code style={{
                         flex: 1, padding: '11px 14px',
                         fontFamily: 'JetBrains Mono, monospace',
-                        fontSize: 12.5, color: '#f5c542',
+                        fontSize: 13.5, color: '#f5c542',
                         wordBreak: 'break-all', letterSpacing: '0.01em',
                       }}>
                         {encodeResult.march}
@@ -557,11 +557,11 @@ export default function WorkspacePanel({
                           width: 44, alignSelf: 'stretch',
                           borderLeft: '1px solid rgba(245,197,66,0.15)',
                           background: copiedMarch ? 'rgba(32,217,160,0.1)' : 'transparent',
-                          color: copiedMarch ? '#20d9a0' : '#475569',
+                          color: copiedMarch ? '#20d9a0' : '#6f7f95',
                           cursor: 'pointer', transition: 'all 0.15s',
                         }}
                         onMouseEnter={e => { if (!copiedMarch) { e.currentTarget.style.background = 'rgba(245,197,66,0.1)'; e.currentTarget.style.color = 'var(--riscv-gold)'; } }}
-                        onMouseLeave={e => { if (!copiedMarch) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#475569'; } }}
+                        onMouseLeave={e => { if (!copiedMarch) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#6f7f95'; } }}
                         title="Copy -march string"
                       >
                         {copiedMarch
@@ -577,7 +577,7 @@ export default function WorkspacePanel({
                         border: '1px solid rgba(255,160,122,0.15)',
                         marginTop: 4
                       }}>
-                        <p style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#ffa07a', marginBottom: 10, marginTop: 0 }}>
+                        <p style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#ffa07a', marginBottom: 10, marginTop: 0 }}>
                           <Info size={13} /> Excluded from -march
                         </p>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -586,11 +586,11 @@ export default function WorkspacePanel({
                               <span style={{
                                 display: 'inline-flex', padding: '2px 6px', borderRadius: 4,
                                 background: 'rgba(255,255,255,0.08)',
-                                fontFamily: 'JetBrains Mono, monospace', fontSize: 11, fontWeight: 600, color: '#e2e8f0'
+                                fontFamily: 'JetBrains Mono, monospace', fontSize: 12, fontWeight: 600, color: '#e2e8f0'
                               }}>
                                 {ex.id}
                               </span>
-                              <span style={{ fontSize: 11, color: '#94a3b8', lineHeight: 1.4 }}>{ex.reason}</span>
+                              <span style={{ fontSize: 12, color: '#94a3b8', lineHeight: 1.4 }}>{ex.reason}</span>
                             </div>
                           ))}
                         </div>
@@ -603,7 +603,7 @@ export default function WorkspacePanel({
                     background: 'rgba(255,255,255,0.02)',
                     border: '1px solid rgba(255,255,255,0.06)',
                     textAlign: 'center',
-                    fontSize: 12, color: '#475569',
+                    fontSize: 13, color: '#6f7f95',
                   }}>
                     {isEmpty
                       ? 'Select extensions from the tile view to generate a -march string.'
@@ -635,7 +635,7 @@ export default function WorkspacePanel({
                         flex: 1, padding: '10px 12px',
                         background: 'transparent', border: 'none', outline: 'none',
                         fontFamily: 'JetBrains Mono, monospace',
-                        fontSize: 12, color: '#e2e8f0',
+                        fontSize: 13, color: '#e2e8f0',
                         caretColor: 'var(--riscv-gold)',
                       }}
                     />
@@ -647,7 +647,7 @@ export default function WorkspacePanel({
                       padding: '10px 14px', borderRadius: 8,
                       background: 'rgba(245,197,66,0.14)',
                       border: '1px solid rgba(245,197,66,0.3)',
-                      color: 'var(--riscv-gold)', fontSize: 11,
+                      color: 'var(--riscv-gold)', fontSize: 12,
                       fontWeight: 600, cursor: 'pointer',
                       transition: 'all 0.15s', flexShrink: 0,
                     }}
@@ -666,14 +666,14 @@ export default function WorkspacePanel({
                         background: 'rgba(32,217,160,0.06)',
                         border: '1px solid rgba(32,217,160,0.18)',
                       }}>
-                        <p style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#20d9a0', marginBottom: 9 }}>
+                        <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#20d9a0', marginBottom: 9 }}>
                           ✓ Resolved {parseResult.resolvedIds.length} extensions — added to workspace
                         </p>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
                           {parseResult.resolvedIds.map(id => (
                             <span key={id} style={{
                               padding: '3px 8px', borderRadius: 5,
-                              fontFamily: 'JetBrains Mono, monospace', fontSize: 10,
+                              fontFamily: 'JetBrains Mono, monospace', fontSize: 11,
                               background: 'rgba(32,217,160,0.08)',
                               border: '1px solid rgba(32,217,160,0.25)',
                               color: '#a7f3d0',
@@ -693,14 +693,14 @@ export default function WorkspacePanel({
                         background: 'rgba(245,197,66,0.05)',
                         border: '1px solid rgba(245,197,66,0.15)',
                       }}>
-                        <p style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#f59e0b', marginBottom: 7 }}>
+                        <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#f59e0b', marginBottom: 7 }}>
                           Not in catalog ({parseResult.unknownTokens.length})
                         </p>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
                           {parseResult.unknownTokens.map(t => (
                             <span key={t} style={{
                               padding: '2px 7px', borderRadius: 4,
-                              fontFamily: 'monospace', fontSize: 10,
+                              fontFamily: 'monospace', fontSize: 11,
                               background: 'rgba(245,197,66,0.07)',
                               border: '1px solid rgba(245,197,66,0.2)',
                               color: '#fde68a',
@@ -716,12 +716,12 @@ export default function WorkspacePanel({
                         border: '1px solid rgba(255,160,122,0.15)',
                         marginTop: 4
                       }}>
-                        <p style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#ffa07a', marginBottom: 10, marginTop: 0 }}>
+                        <p style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#ffa07a', marginBottom: 10, marginTop: 0 }}>
                           <Info size={13} /> Decoder Notes
                         </p>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                           {parseResult.warnings.map((warn, i) => (
-                            <div key={i} style={{ fontSize: 11, color: '#94a3b8', lineHeight: 1.4 }}>
+                            <div key={i} style={{ fontSize: 12, color: '#94a3b8', lineHeight: 1.4 }}>
                               • {warn}
                             </div>
                           ))}
@@ -753,7 +753,7 @@ export default function WorkspacePanel({
                   background: 'rgba(255,255,255,0.025)',
                   marginBottom: 10,
                 }}>
-                  <Search size={13} style={{ color: '#475569', flexShrink: 0 }} />
+                  <Search size={13} style={{ color: '#6f7f95', flexShrink: 0 }} />
                   <input
                     type="text"
                     value={catalogQuery}
@@ -762,14 +762,14 @@ export default function WorkspacePanel({
                     style={{
                       flex: 1, background: 'transparent',
                       border: 'none', outline: 'none',
-                      fontSize: 12, color: '#e2e8f0',
+                      fontSize: 13, color: '#e2e8f0',
                       caretColor: 'var(--riscv-gold)',
                     }}
                   />
                   {catalogQuery && (
                     <button
                       onClick={() => setCatalogQuery('')}
-                      style={{ color: '#475569', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                      style={{ color: '#6f7f95', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
                     >
                       <X size={12} />
                     </button>
@@ -801,7 +801,7 @@ export default function WorkspacePanel({
                         style={{
                           display: 'inline-flex', alignItems: 'center', gap: 5,
                           background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-                          fontSize: 10, fontWeight: 700,
+                          fontSize: 11, fontWeight: 700,
                           textTransform: 'uppercase', letterSpacing: '0.07em',
                           color: catalogSort.col === col ? '#94a3b8' : '#334155',
                           transition: 'color 0.15s',
@@ -819,7 +819,7 @@ export default function WorkspacePanel({
                     {filteredCatalog.length === 0 ? (
                       <div style={{
                         padding: '24px', textAlign: 'center',
-                        fontSize: 12, color: '#334155',
+                        fontSize: 13, color: '#334155',
                       }}>
                         {catalogQuery ? 'No instructions match the filter.' : 'No instructions in selected extensions.'}
                       </div>
@@ -840,7 +840,7 @@ export default function WorkspacePanel({
                         padding: '10px 14px',
                         background: 'rgba(255,255,255,0.02)',
                         borderTop: '1px solid rgba(255,255,255,0.06)',
-                        fontSize: 10, color: '#334155', textAlign: 'center',
+                        fontSize: 11, color: '#334155', textAlign: 'center',
                       }}>
                         Showing first 300 of {filteredCatalog.length.toLocaleString()}. Use filter to narrow results.
                       </div>
@@ -848,7 +848,7 @@ export default function WorkspacePanel({
                   </div>
                 </div>
 
-                <p style={{ fontSize: 10, color: '#334155', marginTop: 6 }}>
+                <p style={{ fontSize: 11, color: '#334155', marginTop: 6 }}>
                   Deduplicated by mnemonic + encoding.
                   Same instruction shared across extensions → shown once, all sources listed.
                 </p>
@@ -867,7 +867,7 @@ export default function WorkspacePanel({
             padding: '12px 14px',
           }}>
             <p style={{
-              fontSize: 9, fontWeight: 700, textTransform: 'uppercase',
+              fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
               letterSpacing: '0.1em', color: '#334155', marginBottom: 9,
             }}>
               Data Sources
@@ -875,13 +875,13 @@ export default function WorkspacePanel({
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               {DATA_PROVENANCE.map(p => (
                 <div key={p.label} style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-                  <span style={{ fontSize: 10, color: '#475569', flexShrink: 0 }}>{p.label}</span>
+                  <span style={{ fontSize: 11, color: '#6f7f95', flexShrink: 0 }}>{p.label}</span>
                   <span style={{ height: 1, flex: 1, background: 'rgba(255,255,255,0.04)', alignSelf: 'center' }} />
                   <a
                     href={p.url} target="_blank" rel="noreferrer"
                     style={{
                       display: 'inline-flex', alignItems: 'center', gap: 4,
-                      fontSize: 10, color: '#8b7cf8', textDecoration: 'none',
+                      fontSize: 11, color: '#8b7cf8', textDecoration: 'none',
                       flexShrink: 0,
                     }}
                     onMouseEnter={e => e.currentTarget.style.color = '#a89af9'}
@@ -916,14 +916,14 @@ function Section({ label, icon, count, total, children }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 12 }}>
         <span style={{ color: '#334155' }}>{icon}</span>
         <span style={{
-          fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
-          letterSpacing: '0.08em', color: '#475569',
+          fontSize: 11, fontWeight: 700, textTransform: 'uppercase',
+          letterSpacing: '0.08em', color: '#6f7f95',
         }}>
           {label}
         </span>
         {count !== undefined && (
           <span style={{
-            fontSize: 10, color: '#334155', fontFamily: 'JetBrains Mono, monospace',
+            fontSize: 11, color: '#334155', fontFamily: 'JetBrains Mono, monospace',
           }}>
             {total !== undefined && count !== total
               ? `${count.toLocaleString()} / ${total.toLocaleString()}`
@@ -952,9 +952,9 @@ function InfoPill({ icon, children }) {
       padding: '8px 11px', borderRadius: 7,
       background: 'rgba(255,255,255,0.03)',
       border: '1px solid rgba(255,255,255,0.07)',
-      fontSize: 11, color: '#64748b',
+      fontSize: 12, color: '#64748b',
     }}>
-      <span style={{ flexShrink: 0, marginTop: 1, color: '#475569' }}>{icon}</span>
+      <span style={{ flexShrink: 0, marginTop: 1, color: '#6f7f95' }}>{icon}</span>
       {children}
     </div>
   );
@@ -984,7 +984,7 @@ function ExtChip({ ext, lockedBy, onRemove }) {
     >
       <span style={{
         fontFamily: 'JetBrains Mono, monospace',
-        fontSize: 11, fontWeight: 600,
+        fontSize: 12, fontWeight: 600,
         color: isLocked ? 'rgba(245,197,66,0.6)' : 'var(--riscv-gold)',
         letterSpacing: '0.02em',
       }}>
@@ -998,7 +998,7 @@ function ExtChip({ ext, lockedBy, onRemove }) {
           width: 16, height: 16, borderRadius: 4,
           background: (hovered && !isLocked) ? 'rgba(255,255,255,0.08)' : 'transparent',
           border: 'none', cursor: isLocked ? 'not-allowed' : 'pointer',
-          color: isLocked ? 'rgba(255,255,255,0.15)' : (hovered ? '#94a3b8' : '#475569'),
+          color: isLocked ? 'rgba(255,255,255,0.15)' : (hovered ? '#94a3b8' : '#6f7f95'),
           transition: 'all 0.12s',
           padding: 0,
         }}
@@ -1055,7 +1055,7 @@ function CatalogRow({ row, isEven, isHovered, onHover, onSelect }) {
       {/* Mnemonic */}
       <span style={{
         fontFamily: 'JetBrains Mono, monospace',
-        fontSize: 12, fontWeight: 600,
+        fontSize: 13, fontWeight: 600,
         color: isHovered ? '#c4b5fd' : '#e2e8f0',
         paddingRight: 8,
         transition: 'color 0.1s',
@@ -1068,7 +1068,7 @@ function CatalogRow({ row, isEven, isHovered, onHover, onSelect }) {
         {row.sources.map(s => (
           <span key={s.extId} style={{
             padding: '1px 6px', borderRadius: 4,
-            fontSize: 10, fontFamily: 'JetBrains Mono, monospace',
+            fontSize: 11, fontFamily: 'JetBrains Mono, monospace',
             fontWeight: 500,
             background: `${srcColor(s.extId)}18`,
             border: `1px solid ${srcColor(s.extId)}38`,
@@ -1083,7 +1083,7 @@ function CatalogRow({ row, isEven, isHovered, onHover, onSelect }) {
       {/* Match */}
       <span style={{
         fontFamily: 'JetBrains Mono, monospace',
-        fontSize: 11, color: '#475569',
+        fontSize: 12, color: '#6f7f95',
         letterSpacing: '0.01em',
       }}>
         {row.match || '—'}
