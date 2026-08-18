@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RISC-V Extension Visualizer</title>
+  <!-- Favicon, inlined as a data URI on purpose.
+       The build has no copy plugin: HtmlWebpackPlugin emits this file and
+       webpack emits bundle.js, and nothing else in public/ reaches dist/. A
+       favicon.svg dropped alongside this file would 404 in production without
+       anything failing. Inlining keeps one source that cannot silently vanish.
+       Three ascending bars: the spread of extensions the landscape covers. -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%2314141e%22/%3E%3Crect x=%225.5%22 y=%2218%22 width=%225%22 height=%228.5%22 rx=%221.6%22 fill=%22%23f5c542%22/%3E%3Crect x=%2213.5%22 y=%2212%22 width=%225%22 height=%2214.5%22 rx=%221.6%22 fill=%22%23f5c542%22/%3E%3Crect x=%2221.5%22 y=%225.5%22 width=%225%22 height=%2221%22 rx=%221.6%22 fill=%22%23f5c542%22/%3E%3Crect x=%22.6%22 y=%22.6%22 width=%2230.8%22 height=%2230.8%22 rx=%226.4%22 fill=%22none%22 stroke=%22%23f5c542%22 stroke-opacity=%22.3%22 stroke-width=%221.2%22/%3E%3C/svg%3E">
 </head>
 <body>
   <div id="root"></div>
