@@ -58,6 +58,7 @@ export default function WorkspacePanel({
   lockedExtensions,
   allExts,
   onAddId,
+  onSetVlen,
   onRemoveId,
   onClear,
   onLoadIds,
@@ -771,8 +772,13 @@ export default function WorkspacePanel({
                           <button
                             key={bits}
                             type="button"
-                            onClick={() => ext && onAddId(ext)}
-                            title={`Set VLEN ≥ ${bits} by adding ${ext}`}
+                            // Clicking the active value clears the floor; clicking
+                            // any other sets it, which means dropping the higher
+                            // Zvl*b extensions rather than just adding a lower one.
+                            onClick={() => onSetVlen(active ? null : bits)}
+                            title={active
+                              ? `VLEN is ≥ ${bits}. Click to clear it (removes ${ext}).`
+                              : `Set VLEN ≥ ${bits}${vlen && bits < vlen ? ` — lowers it from ${vlen}` : ''}`}
                             style={{
                               fontSize: 11, fontFamily: 'monospace', padding: '4px 9px', borderRadius: 6,
                               cursor: 'pointer',
@@ -787,8 +793,10 @@ export default function WorkspacePanel({
                       })}
                     </div>
                     <div style={{ fontSize: 10, color: 'var(--riscv-text-3)', marginTop: 6 }}>
-                      There is no VLEN flag. Vector length is expressed by the Zvl*b extensions,
-                      so choosing one here adds it to the configuration.
+                      There is no VLEN flag: vector length is expressed by the Zvl*b extensions.
+                      Click a value to set the floor, or click the selected one to clear it. A
+                      vector extension may hold the floor above your choice — Zve64x requires
+                      Zvl64b — in which case the higher value stands.
                     </div>
                   </div>
 
@@ -1101,7 +1109,15 @@ function ExtChip({ ext, lockedBy, onRemove }) {
 // ============================================================================
 // Catalog table row
 // ============================================================================
-function CatalogRow({ row, isEven, isHovered, onHover, onSelect }) {
+/**
+ * One row of the combined instruction catalogue.
+ *
+ * Memoised because 300 of these render at once and the panel re-renders on
+ * every hover and every selection change. Without it, moving the pointer down
+ * the table repaints all 300 rows per row entered, which is most of the lag
+ * reported when clicking around the builder.
+ */
+function CatalogRowInner({ row, isEven, isHovered, onHover, onSelect }) {
   const multiSource = row.sources.length > 1;
 
   // Assign a color per source extension (deterministic, based on first char)
@@ -1180,3 +1196,5 @@ function CatalogRow({ row, isEven, isHovered, onHover, onSelect }) {
     </button>
   );
 }
+
+const CatalogRow = React.memo(CatalogRowInner);

@@ -1654,6 +1654,33 @@ const RISCVExplorer = () => {
     addWorkspaceIdsSmart(id, true);
   }, [addWorkspaceIdsSmart]);
 
+// Setting a VLEN floor is not the same as adding an extension. The Zvl*b
+  // chain is nested — Zvl1024b already implies Zvl128b — so clicking a lower
+  // value while a higher one is selected has to REMOVE the higher ones, or
+  // nothing visible happens. That was the original bug: the button only added,
+  // so lowering VLEN silently did nothing.
+  //
+  // Passing null clears the floor entirely.
+  //
+  // The result is re-resolved afterwards, so anything genuinely required puts
+  // itself back: asking for 32 while Zve64x is selected leaves you at 64,
+  // because Zve64x requires Zvl64b. The panel then shows the real floor rather
+  // than the one that was asked for.
+  const handleSetVlen = React.useCallback((bits) => {
+    const WIDTHS = [32, 64, 128, 256, 512, 1024];
+    setWorkspaceIds((prev) => {
+      const desired = new Set(prev);
+      for (const w of WIDTHS) {
+        if (bits === null || w > bits) desired.delete(`Zvl${w}b`);
+      }
+      if (bits !== null) desired.add(`Zvl${bits}b`);
+
+      const base = [...desired].find((x) => BASE_ISA_IDS.has(x)) ?? null;
+      const { resolved } = resolveSelection({ selected: [...desired], base });
+      return new Set(resolved.filter((id) => CATALOG_IDS.has(id)));
+    });
+  }, []);
+
   const tileProps = React.useMemo(() => ({
     searchQuery,
     selectedExtId: selectedExt?.id ?? null,
@@ -3284,6 +3311,7 @@ const RISCVExplorer = () => {
         lockedExtensions={lockedExtensions}
         allExts={allExtsList}
         onAddId={(id) => addWorkspaceIdsSmart(id)}
+        onSetVlen={handleSetVlen}
         onRemoveId={(id) =>
           setWorkspaceIds((prev) => {
             const next = new Set(prev);

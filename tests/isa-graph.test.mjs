@@ -393,3 +393,39 @@ test('a profile reports the parameters it constrains', () => {
   }
   assert.deepEqual(params.filter((p) => p.conflict), [], 'a ratified profile must not self-conflict');
 });
+
+test('lowering VLEN means removing the higher Zvl extensions', () => {
+  // The chain is nested — Zvl1024b already implies Zvl128b — so "set 128" can
+  // never be "add Zvl128b". Adding it while Zvl1024b is present changes nothing
+  // visible, which is exactly how the control was broken.
+  const setVlen = (ids, bits) => {
+    const desired = new Set(ids);
+    for (const w of [32, 64, 128, 256, 512, 1024]) {
+      if (bits === null || w > bits) desired.delete(`Zvl${w}b`);
+    }
+    if (bits !== null) desired.add(`Zvl${bits}b`);
+    const base = [...desired].find((x) => /^RV(32|64|128)[IE]$/.test(x)) ?? null;
+    return resolveSelection({ selected: [...desired], base }).resolved;
+  };
+
+  const at1024 = setVlen(['RV64I'], 1024);
+  assert.equal(impliedVlen(at1024), 1024);
+
+  const lowered = setVlen(at1024, 128);
+  assert.equal(impliedVlen(lowered), 128, 'lowering must drop the higher Zvl extensions');
+  assert.ok(!lowered.includes('Zvl1024b'));
+  assert.ok(lowered.includes('Zvl128b'));
+
+  const cleared = setVlen(lowered, null);
+  assert.equal(impliedVlen(cleared), null, 'clearing must remove every Zvl extension');
+});
+
+test('a vector extension holds the VLEN floor above a lower request', () => {
+  // Zve64x requires Zvl64b, so asking for 32 cannot take it below 64. The
+  // request is honoured as far as the architecture allows and no further.
+  const desired = new Set(['RV64I', 'Zve64x']);
+  for (const w of [32, 64, 128, 256, 512, 1024]) if (w > 32) desired.delete(`Zvl${w}b`);
+  desired.add('Zvl32b');
+  const { resolved } = resolveSelection({ selected: [...desired], base: 'RV64I' });
+  assert.equal(impliedVlen(resolved), 64, 'Zve64x should hold the floor at 64');
+});
