@@ -30,19 +30,39 @@ jobs:
       # Zcmop as experimental — both are ratified and both appear in the RVA23
       # and RVB23 profiles. Validating against clang 18 would assert our strings
       # against a two-year-old view of the ISA and fail on correct output.
+      # A recent clang is preferred: ubuntu-24.04 ships clang 18, which rejects
+      # Ssccptr and calls Zcmop experimental, though both are ratified and both
+      # appear in RVA23/RVB23. But apt.llvm.org is a third-party host, and making
+      # every build depend on it is a bad trade for a validation step — it hung
+      # for over ten minutes once. Bounded, with a fallback to the distro clang.
       - name: Install clang
         run: |
-          set -euo pipefail
-          wget -qO /tmp/llvm.sh https://apt.llvm.org/llvm.sh
-          chmod +x /tmp/llvm.sh
-          sudo /tmp/llvm.sh 20
-          echo "CLANG=clang-20" >> "$GITHUB_ENV"
+          set -uo pipefail
+          sudo apt-get update -qq && sudo apt-get install -y -qq clang
+          echo "CLANG=clang" >> "$GITHUB_ENV"
+          echo "CLANG_TIER=core" >> "$GITHUB_ENV"
+          if timeout 240 bash -c '
+                wget -qO /tmp/llvm.sh https://apt.llvm.org/llvm.sh &&
+                chmod +x /tmp/llvm.sh &&
+                sudo /tmp/llvm.sh 20' && command -v clang-20 >/dev/null; then
+            echo "CLANG=clang-20" >> "$GITHUB_ENV"
+            echo "CLANG_TIER=modern" >> "$GITHUB_ENV"
+          else
+            echo "::warning::apt.llvm.org unavailable or slow — falling back to the distro clang. Profile strings will be skipped."
+          fi
       - name: Validate -march strings with clang
         run: |
           set -uo pipefail
           "$CLANG" --version | head -1
-          fail=0
-          while IFS=$'\t' read -r target march; do
+          echo "tier: $CLANG_TIER"
+          fail=0 checked=0 skipped=0
+          while IFS=$'\t' read -r target march tier; do
+            if [ "$tier" = modern ] && [ "$CLANG_TIER" != modern ]; then
+              echo "skip  $march  <- needs a newer clang than this job has"
+              skipped=$((skipped+1))
+              continue
+            fi
+            checked=$((checked+1))
             if "$CLANG" --target="$target" -march="$march" -x c /dev/null -fsyntax-only 2>/tmp/err; then
               echo "ok    $march"
             else
@@ -50,6 +70,12 @@ jobs:
               fail=1
             fi
           done < <(node scripts/emit-march-matrix.mjs)
+          echo "checked=$checked skipped=$skipped"
+          # Skipping everything would make this step pass while testing nothing.
+          if [ "$checked" -lt 30 ]; then
+            echo "::error::only $checked strings were checked; the matrix or the tier gate is broken"
+            fail=1
+          fi
           exit $fail
 
   # Publishes to the gh-pages branch, which is what Pages serves. Gated on

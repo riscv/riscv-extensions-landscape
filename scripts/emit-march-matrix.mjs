@@ -36,17 +36,25 @@ const SELECTIONS = [
 // RV128I omitted: no clang riscv128 target.
 const BASES = ['RV32I', 'RV64I', 'RV32E', 'RV64E'];
 
+// Third column is the toolchain tier the row needs:
+//   core    — plain ratified extensions; any clang from the last few years takes it.
+//   modern  — needs a recent clang. The profiles mandate Ssccptr and Zcmop, which
+//             clang 18 (what ubuntu-24.04 ships) rejects and calls experimental
+//             respectively. Both are ratified; the compiler is simply behind.
+// CI validates `core` unconditionally and `modern` only when it managed to
+// install a recent clang, so a slow or unreachable apt.llvm.org degrades the
+// check instead of hanging the build.
 const seen = new Set();
-const emit = (march) => {
+const emit = (march, tier) => {
   if (!march || seen.has(march)) return;
   seen.add(march);
   const triple = march.startsWith('rv32') ? 'riscv32-unknown-elf' : 'riscv64-unknown-elf';
-  process.stdout.write(`${triple}\t${march}\n`);
+  process.stdout.write(`${triple}\t${march}\t${tier}\n`);
 };
 
 for (const base of BASES) {
   for (const sel of SELECTIONS) {
-    emit(buildMarchString([base, ...sel.exts], ALL).march);
+    emit(buildMarchString([base, ...sel.exts], ALL).march, 'core');
   }
 }
 
@@ -60,5 +68,5 @@ for (const members of Object.values(PROFILES)) {
   const base = members.find((id) => /^RV(32|64|128)[IE]$/.test(id)) ?? null;
   if (base === 'RV128I') continue; // no clang riscv128 target
   const { resolved } = resolveSelection({ selected: members, base });
-  emit(buildMarchString(resolved.filter((id) => CATALOG_IDS.has(id)), ALL).march);
+  emit(buildMarchString(resolved.filter((id) => CATALOG_IDS.has(id)), ALL).march, 'modern');
 }
