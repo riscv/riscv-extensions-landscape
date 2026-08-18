@@ -90,9 +90,9 @@ function ExtensionTile({
         const isLocked = inWorkspace && lockedExtensions.has(data.id);
         const lockedBy = isLocked ? lockedExtensions.get(data.id) : [];
 
-        // The unselected "+" is the call to action, so it carries the accent
-        // colour. Selected tiles keep the filled amber check; locked ones are
-        // dimmed to read as unavailable.
+        // Amber says "you can add this"; green says "it is in". Using one colour
+        // for both made a full configuration a wall of undifferentiated amber.
+        // Locked tiles stay dimmed to read as unavailable.
         const accent = '#f5c542';
         return (
           <button
@@ -108,13 +108,16 @@ function ExtensionTile({
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               width: 18, height: 18,
               borderRadius: 5,
-              border: `1px solid ${isLocked ? 'rgba(245,197,66,0.3)' : 'rgba(245,197,66,0.6)'}`,
+              border: `1px solid ${
+                isLocked ? 'rgba(245,197,66,0.3)'
+                  : inWorkspace ? 'var(--riscv-check-edge)' : 'rgba(245,197,66,0.6)'
+              }`,
               background: inWorkspace
-                ? (isLocked ? 'rgba(245,197,66,0.08)' : 'rgba(245,197,66,0.22)')
+                ? (isLocked ? 'rgba(245,197,66,0.08)' : 'var(--riscv-check-fill)')
                 : 'rgba(245,197,66,0.14)',
               backdropFilter: 'blur(4px)',
               boxShadow: inWorkspace || isLocked ? 'none' : '0 0 0 2px rgba(245,197,66,0.12)',
-              color: isLocked ? 'rgba(245,197,66,0.5)' : accent,
+              color: isLocked ? 'rgba(245,197,66,0.5)' : (inWorkspace ? 'var(--riscv-check)' : accent),
               cursor: isLocked ? 'not-allowed' : 'pointer',
               transition: 'all 0.15s',
               padding: 0,
@@ -128,7 +131,7 @@ function ExtensionTile({
             {inWorkspace
               ? (
                 <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
-                  <path d="M1.5 4.5L3.5 6.5L7.5 2.5" stroke="#f5c542" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M1.5 4.5L3.5 6.5L7.5 2.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               )
               : <Plus size={9} />

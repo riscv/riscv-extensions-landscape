@@ -44,6 +44,15 @@
   /* Raised plate behind toolbars and chips. */
   --riscv-plate: rgba(15, 23, 42, 0.4);
 
+  /* "In the configuration" confirmation. Amber marks the action available, so
+     the completed state gets its own colour rather than more amber.
+     Same green ramp in both themes; the shade differs because no single value
+     is strong on both grounds — green-500 measures 8.02:1 on the dark tile but
+     only 2.03:1 on the light emerald wash, and green-700 the reverse. */
+  --riscv-check: #22c55e;
+  --riscv-check-fill: rgba(34, 197, 94, 0.20);
+  --riscv-check-edge: rgba(34, 197, 94, 0.55);
+
   /* Field colors for encoding diagram */
   --field-opcode: #f5c542;
   /* gold   — [6:0]   */
@@ -447,6 +456,10 @@ pre,
   --riscv-tint-4: rgba(45, 40, 80, 0.11);
   --riscv-hairline: rgba(45, 40, 80, 0.08);
   --riscv-plate: rgba(255, 255, 255, 0.75);
+
+  --riscv-check: #15803d;
+  --riscv-check-fill: rgba(21, 128, 61, 0.14);
+  --riscv-check-edge: rgba(21, 128, 61, 0.45);
 
   /* Encoding field colours, pulled toward pastel so the diagram stays legible
      on white without the neon look the dark theme wants. */
