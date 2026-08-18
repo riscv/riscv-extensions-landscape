@@ -1,0 +1,128 @@
+/**
+ * The tile's render behaviour, tested without a DOM.
+ *
+ * A user reported selections taking "seconds to minutes" on Chrome under macOS.
+ * The cause was ExtensionBlock being defined inside RISCVExplorer's render body:
+ * a new function reference every render, so React saw a new component type and
+ * unmounted and rebuilt all 227 tiles instead of updating them. Confirmed in the
+ * browser first, by checking whether tile DOM nodes were reused after a click.
+ *
+ * There is no DOM or React testing library here, and adding one would be a large
+ * dependency for a small surface. Two things are testable as they stand, and
+ * between them they cover the regression:
+ *
+ *   1. tilePropsAreEqual is a pure function and carries the whole optimisation.
+ *   2. Whether a component is declared inside another is a property of the
+ *      source, so it can be asserted by reading the file.
+ */
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { tilePropsAreEqual } from '../src/tileMemo.js';
+
+const here = path.dirname(new URL(import.meta.url).pathname);
+const srcDir = path.join(here, '..', 'src');
+
+const baseProps = (over = {}) => ({
+  data: { id: 'Zfa', name: 'Zfa', desc: 'Additional FP Instructions' },
+  colorClass: 'border-blue-900/60',
+  searchQuery: '',
+  searchIndex: 'zfa additional fp instructions',
+  selectedExtId: null,
+  workspaceIds: new Set(),
+  lockedExtensions: new Map(),
+  builderMode: false,
+  isHighlighted: () => false,
+  isDimmed: () => false,
+  onSelect: () => {},
+  onToggleWorkspace: () => {},
+  ...over,
+});
+
+test('identical props skip the re-render', () => {
+  const a = baseProps();
+  assert.equal(tilePropsAreEqual(a, { ...a }), true);
+});
+
+test('a new Set with the same membership still skips', () => {
+  // The heart of it. workspaceIds is rebuilt on every change, so comparing it
+  // by identity would re-render all 227 tiles whenever any one of them moved.
+  const prev = baseProps({ workspaceIds: new Set(['D', 'F']) });
+  const next = baseProps({ ...prev, workspaceIds: new Set(['D', 'F']) });
+  assert.notEqual(prev.workspaceIds, next.workspaceIds, 'the Sets must be different objects');
+  assert.equal(tilePropsAreEqual(prev, next), true, 'same membership should not re-render');
+});
+
+test('a tile re-renders when its own membership changes', () => {
+  const prev = baseProps({ workspaceIds: new Set() });
+  const next = baseProps({ ...prev, workspaceIds: new Set(['Zfa']) });
+  assert.equal(tilePropsAreEqual(prev, next), false);
+});
+
+test('a tile does NOT re-render when a different tile changes', () => {
+  // Selecting D must not repaint Zfa. This is what turns one click from 227
+  // renders into one.
+  const prev = baseProps({ workspaceIds: new Set(['F']) });
+  const next = baseProps({ ...prev, workspaceIds: new Set(['F', 'D']) });
+  assert.equal(tilePropsAreEqual(prev, next), true);
+});
+
+test('lock state and its reason are both tracked', () => {
+  const unlocked = baseProps({ lockedExtensions: new Map() });
+  const locked = baseProps({ ...unlocked, lockedExtensions: new Map([['Zfa', ['Q']]]) });
+  assert.equal(tilePropsAreEqual(unlocked, locked), false, 'becoming locked must re-render');
+
+  // The tooltip names who requires it, so the reason changing is user-visible
+  // even though the locked flag itself did not move.
+  const lockedByTwo = baseProps({ ...unlocked, lockedExtensions: new Map([['Zfa', ['Q', 'D']]]) });
+  assert.equal(tilePropsAreEqual(locked, lockedByTwo), false, 'a changed reason must re-render');
+});
+
+test('everything the tile displays forces a re-render when it changes', () => {
+  const base = baseProps();
+  const changes = {
+    data: { id: 'Zfa', name: 'Zfa', desc: 'changed' },
+    colorClass: 'border-red-900',
+    searchQuery: 'zf',
+    searchIndex: 'different',
+    selectedExtId: 'Zfa',
+    builderMode: true,
+    isHighlighted: () => true,
+    isDimmed: () => true,
+    onSelect: () => {},
+    onToggleWorkspace: () => {},
+  };
+  for (const [key, value] of Object.entries(changes)) {
+    assert.equal(
+      tilePropsAreEqual(base, baseProps({ [key]: value })),
+      false,
+      `${key} changed but the tile would not re-render`,
+    );
+  }
+});
+
+test('no component is declared inside another component', () => {
+  // The original defect, as a property of the source. A capitalised arrow
+  // function or function declaration indented inside another component body is
+  // a new type on every render, which remounts its whole subtree.
+  const offenders = [];
+  for (const file of fs.readdirSync(srcDir).filter((f) => /\.jsx?$/.test(f))) {
+    const lines = fs.readFileSync(path.join(srcDir, file), 'utf8').split('\n');
+    lines.forEach((line, i) => {
+      const m = line.match(
+        /^\s+(?:const|let|function)\s+([A-Z][A-Za-z0-9]*)\s*(?:=\s*(?:React\.)?(?:memo\()?\(?[^)]*\)?\s*=>|\()/,
+      );
+      if (!m) return;
+      // A memoised or hook-wrapped binding keeps a stable identity, so it is fine.
+      if (/React\.(memo|useMemo|useCallback)/.test(line)) return;
+      offenders.push(`${file}:${i + 1}  ${m[1]}`);
+    });
+  }
+  assert.deepEqual(
+    offenders,
+    [],
+    'components must live at module scope, or React remounts their subtree every render:\n  '
+      + offenders.join('\n  '),
+  );
+});

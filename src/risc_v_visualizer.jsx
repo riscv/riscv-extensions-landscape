@@ -43,6 +43,7 @@ import {
 } from 'lucide-react';
 import extensions from './riscv_extensions.json';
 import WorkspacePanel from './WorkspacePanel.jsx';
+import ExtensionTile from './ExtensionTile.jsx';
 // INCOMPATIBLE_WITH is no longer imported here: conflicts now come back from
 // resolveSelection(), which checks them over the resolved closure rather than
 // only over what the user clicked.
@@ -1561,15 +1562,15 @@ const RISCVExplorer = () => {
     setEncoderValidatorResult({ errors, proposed, conflicts });
   }, [allInstructionPatterns, encoderValidatorInput]);
 
-  const isHighlightedByProfile = (id) => {
+  const isHighlightedByProfile = React.useCallback((id) => {
     if (!activeProfile) return false;
     return profiles[activeProfile].includes(id);
-  };
+  }, [activeProfile]);
 
-  const isHighlightedByVolume = (id) => {
+  const isHighlightedByVolume = React.useCallback((id) => {
     if (!activeVolume) return false;
     return volumeMembership[activeVolume]?.has(id) ?? false;
-  };
+  }, [activeVolume, volumeMembership]);
 
   const extensionSearchIndexById = React.useMemo(() => {
     const index = new Map();
@@ -1620,136 +1621,52 @@ const RISCVExplorer = () => {
     return index;
   }, []);
 
-  const isHighlighted = (id) => {
-    return isHighlightedByProfile(id) || isHighlightedByVolume(id);
-  };
+  // Stable identities on purpose: these ride in tileProps, and a fresh function
+  // each render would make every tile re-render even when nothing it shows moved.
+  const isHighlighted = React.useCallback(
+    (id) => isHighlightedByProfile(id) || isHighlightedByVolume(id),
+    [isHighlightedByProfile, isHighlightedByVolume],
+  );
 
-  const isDimmed = (id) => {
+  const isDimmed = React.useCallback((id) => {
     if (activeVolume) return false;
     if (!activeProfile) return false;
     return !profiles[activeProfile].includes(id);
-  };
+  }, [activeVolume, activeProfile]);
 
-  const ExtensionBlock = ({ data, colorClass, searchQuery }) => {
-    const q = searchQuery.trim().toLowerCase();
-    const searchIndex = extensionSearchIndexById.get(data.id) || '';
-    const matchesSearch = q.length ? searchIndex.includes(q) : false;
+  // The tile lives in ./ExtensionTile.jsx. It used to be defined here, inside
+  // the render body, which meant a new component type on every render and a
+  // full unmount/remount of all 227 tiles for every click and keystroke.
+  //
+  // These props are memoised so the tile's comparator can do its job: stable
+  // identities for everything shared, and the tile itself asks only whether ITS
+  // own id changed membership.
+  const handleSelectExt = React.useCallback((data) => {
+    setSelectedExt((current) => {
+      const next = current?.id === data.id ? null : data;
+      setSelectedInstruction(null);
+      setSearchMatches(null);
+      return next;
+    });
+  }, []);
 
-    const isDiscontinued = data.discontinued === 1;
-    const isSelected = selectedExt?.id === data.id;
-    const highlighted = isHighlighted(data.id) || matchesSearch || isSelected;
-    const dimmed = isDimmed(data.id) && !matchesSearch && !isSelected;
-    const inWorkspace = workspaceIds.has(data.id);
+  const handleToggleWorkspace = React.useCallback((id) => {
+    addWorkspaceIdsSmart(id, true);
+  }, [addWorkspaceIdsSmart]);
 
-    return (
-      <div
-        id={`ext-${data.id}`}
-        onClick={() =>
-          setSelectedExt((current) => {
-            const next = current?.id === data.id ? null : data;
-            setSelectedInstruction(null);
-            setSearchMatches(null);
-            return next;
-          })
-        }
-        className={[
-          'ext-tile group relative rounded-lg border cursor-pointer select-none',
-          isSelected ? 'ext-tile-active' : '',
-          highlighted && !isSelected ? 'ext-tile-highlighted' : '',
-          dimmed ? 'opacity-20 grayscale pointer-events-none' : '',
-          isDiscontinued && !dimmed
-            ? 'border-[var(--riscv-border-2)] bg-[var(--riscv-surface)]'
-            : !dimmed ? colorClass : '',
-        ].join(' ')}
-        style={{
-          padding: '10px',
-          // Amber glow ring when in workspace
-          ...(inWorkspace && !isDiscontinued ? {
-            borderColor: 'rgba(245,197,66,0.55)',
-            boxShadow: '0 0 0 1px rgba(245,197,66,0.2), inset 0 0 12px rgba(245,197,66,0.04)',
-          } : {}),
-          transition: 'border-color 0.2s, box-shadow 0.2s',
-        }}
-      >
-        {/* EOL badge */}
-        {isDiscontinued && (
-          <span
-            className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded text-[9px] font-mono uppercase tracking-wider"
-            style={{
-              background: 'rgba(255,77,107,0.12)',
-              color: '#ff7a8a',
-              border: '1px solid rgba(255,77,107,0.25)',
-            }}
-          >
-            EOL
-          </span>
-        )}
+  const tileProps = React.useMemo(() => ({
+    searchQuery,
+    selectedExtId: selectedExt?.id ?? null,
+    workspaceIds,
+    lockedExtensions,
+    builderMode,
+    isHighlighted,
+    isDimmed,
+    onSelect: handleSelectExt,
+    onToggleWorkspace: handleToggleWorkspace,
+  }), [searchQuery, selectedExt, workspaceIds, lockedExtensions, builderMode,
+       isHighlighted, isDimmed, handleSelectExt, handleToggleWorkspace]);
 
-        {/* ── ISA Workspace badge — only while the builder is switched on ── */}
-        {builderMode && !isDiscontinued && (() => {
-          const isLocked = inWorkspace && lockedExtensions.has(data.id);
-          const lockedBy = isLocked ? lockedExtensions.get(data.id) : [];
-
-          // The unselected "+" is the call to action, so it carries the accent
-          // colour rather than the grey it used to have. Selected tiles keep the
-          // filled amber check; locked ones are dimmed to read as unavailable.
-          const accent = '#f5c542';
-          return (
-            <button
-              type="button"
-              data-in-workspace={inWorkspace ? 'true' : 'false'}
-              onClick={(e) => {
-                e.stopPropagation();
-                // addWorkspaceIdsSmart handles the lock rejection/toast internally for clicks
-                addWorkspaceIdsSmart(data.id, true);
-              }}
-              className="workspace-tile-btn absolute top-1.5 right-1.5"
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                width: 18, height: 18,
-                borderRadius: 5,
-                border: `1px solid ${isLocked ? 'rgba(245,197,66,0.3)' : 'rgba(245,197,66,0.6)'}`,
-                background: inWorkspace
-                  ? (isLocked ? 'rgba(245,197,66,0.08)' : 'rgba(245,197,66,0.22)')
-                  : 'rgba(245,197,66,0.14)',
-                backdropFilter: 'blur(4px)',
-                boxShadow: inWorkspace || isLocked ? 'none' : '0 0 0 2px rgba(245,197,66,0.12)',
-                color: isLocked ? 'rgba(245,197,66,0.5)' : accent,
-                cursor: isLocked ? 'not-allowed' : 'pointer',
-                transition: 'all 0.15s',
-                padding: 0,
-              }}
-              title={isLocked ? `Required by ${lockedBy.join(', ')} — remove dependent first` : (inWorkspace ? `Remove ${data.id} from ISA Configuration Builder` : `Add ${data.id} to ISA Configuration Builder`)}
-            >
-              {inWorkspace
-                ? (
-                  <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
-                    <path d="M1.5 4.5L3.5 6.5L7.5 2.5" stroke="#f5c542" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                )
-                : <Plus size={9} />
-              }
-            </button>
-          );
-        })()}
-
-        <div className="flex items-start justify-between mb-1">
-          <span
-            className="font-mono font-semibold text-[12px] leading-tight"
-            style={{ letterSpacing: '0.02em' }}
-          >
-            {data.name}
-          </span>
-        </div>
-        <div
-          className="text-[11px] leading-snug line-clamp-2"
-          style={{ color: 'var(--riscv-text-2)' }}
-        >
-          {data.desc}
-        </div>
-      </div>
-    );
-  };
 
 
 
@@ -2318,10 +2235,11 @@ const RISCVExplorer = () => {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
                 {extensions.base.map((item) => (
-                  <ExtensionBlock
+                  <ExtensionTile
                     key={item.id}
                     data={item}
-                    searchQuery={searchQuery}
+                    searchIndex={extensionSearchIndexById.get(item.id)}
+                    {...tileProps}
                     colorClass="border-blue-900/60 bg-blue-950/40 text-blue-100"
                   />
                 ))}
@@ -2337,10 +2255,11 @@ const RISCVExplorer = () => {
               </div>
               <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
                 {extensions.standard.map((item) => (
-                  <ExtensionBlock
+                  <ExtensionTile
                     key={item.id}
                     data={item}
-                    searchQuery={searchQuery}
+                    searchIndex={extensionSearchIndexById.get(item.id)}
+                    {...tileProps}
                     colorClass="border-emerald-900/60 bg-emerald-950/40 text-emerald-100"
                   />
                 ))}
@@ -2360,10 +2279,11 @@ const RISCVExplorer = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_bit.map((item) => (
-                    <ExtensionBlock
+                    <ExtensionTile
                       key={item.id}
                       data={item}
-                      searchQuery={searchQuery}
+                      searchIndex={extensionSearchIndexById.get(item.id)}
+                      {...tileProps}
                       colorClass="border-purple-900/60 bg-purple-950/30 text-purple-100"
                     />
                   ))}
@@ -2378,10 +2298,11 @@ const RISCVExplorer = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_atomics.map((item) => (
-                    <ExtensionBlock
+                    <ExtensionTile
                       key={item.id}
                       data={item}
-                      searchQuery={searchQuery}
+                      searchIndex={extensionSearchIndexById.get(item.id)}
+                      {...tileProps}
                       colorClass="border-amber-900/60 bg-amber-950/30 text-amber-100"
                     />
                   ))}
@@ -2396,10 +2317,11 @@ const RISCVExplorer = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_compress.map((item) => (
-                    <ExtensionBlock
+                    <ExtensionTile
                       key={item.id}
                       data={item}
-                      searchQuery={searchQuery}
+                      searchIndex={extensionSearchIndexById.get(item.id)}
+                      {...tileProps}
                       colorClass="border-indigo-900/60 bg-indigo-950/30 text-indigo-100"
                     />
                   ))}
@@ -2414,10 +2336,11 @@ const RISCVExplorer = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_float.map((item) => (
-                    <ExtensionBlock
+                    <ExtensionTile
                       key={item.id}
                       data={item}
-                      searchQuery={searchQuery}
+                      searchIndex={extensionSearchIndexById.get(item.id)}
+                      {...tileProps}
                       colorClass="border-pink-900/60 bg-pink-950/30 text-pink-100"
                     />
                   ))}
@@ -2432,10 +2355,11 @@ const RISCVExplorer = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_load_store.map((item) => (
-                    <ExtensionBlock
+                    <ExtensionTile
                       key={item.id}
                       data={item}
-                      searchQuery={searchQuery}
+                      searchIndex={extensionSearchIndexById.get(item.id)}
+                      {...tileProps}
                       colorClass="border-sky-900/60 bg-sky-950/30 text-sky-100"
                     />
                   ))}
@@ -2450,10 +2374,11 @@ const RISCVExplorer = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_integer.map((item) => (
-                    <ExtensionBlock
+                    <ExtensionTile
                       key={item.id}
                       data={item}
-                      searchQuery={searchQuery}
+                      searchIndex={extensionSearchIndexById.get(item.id)}
+                      {...tileProps}
                       colorClass="border-fuchsia-900/60 bg-fuchsia-950/30 text-fuchsia-100"
                     />
                   ))}
@@ -2468,10 +2393,11 @@ const RISCVExplorer = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_vector.map((item) => (
-                    <ExtensionBlock
+                    <ExtensionTile
                       key={item.id}
                       data={item}
-                      searchQuery={searchQuery}
+                      searchIndex={extensionSearchIndexById.get(item.id)}
+                      {...tileProps}
                       colorClass="border-teal-900/60 bg-teal-950/30 text-teal-100"
                     />
                   ))}
@@ -2486,10 +2412,11 @@ const RISCVExplorer = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_security.map((item) => (
-                    <ExtensionBlock
+                    <ExtensionTile
                       key={item.id}
                       data={item}
-                      searchQuery={searchQuery}
+                      searchIndex={extensionSearchIndexById.get(item.id)}
+                      {...tileProps}
                       colorClass="border-red-900/60 bg-red-950/30 text-red-100"
                     />
                   ))}
@@ -2504,10 +2431,11 @@ const RISCVExplorer = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_crypto.map((item) => (
-                    <ExtensionBlock
+                    <ExtensionTile
                       key={item.id}
                       data={item}
-                      searchQuery={searchQuery}
+                      searchIndex={extensionSearchIndexById.get(item.id)}
+                      {...tileProps}
                       colorClass="border-[var(--riscv-border-2)] bg-[var(--riscv-surface-2)] text-slate-300"
                     />
                   ))}
@@ -2522,10 +2450,11 @@ const RISCVExplorer = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_vector_crypto.map((item) => (
-                    <ExtensionBlock
+                    <ExtensionTile
                       key={item.id}
                       data={item}
-                      searchQuery={searchQuery}
+                      searchIndex={extensionSearchIndexById.get(item.id)}
+                      {...tileProps}
                       colorClass="border-violet-900/60 bg-violet-950/30 text-violet-100"
                     />
                   ))}
@@ -2540,10 +2469,11 @@ const RISCVExplorer = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_system.map((item) => (
-                    <ExtensionBlock
+                    <ExtensionTile
                       key={item.id}
                       data={item}
-                      searchQuery={searchQuery}
+                      searchIndex={extensionSearchIndexById.get(item.id)}
+                      {...tileProps}
                       colorClass="border-orange-900/60 bg-orange-950/30 text-orange-100"
                     />
                   ))}
@@ -2558,10 +2488,11 @@ const RISCVExplorer = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {extensions.z_caches.map((item) => (
-                    <ExtensionBlock
+                    <ExtensionTile
                       key={item.id}
                       data={item}
-                      searchQuery={searchQuery}
+                      searchIndex={extensionSearchIndexById.get(item.id)}
+                      {...tileProps}
                       colorClass="border-orange-900/40 bg-orange-950/20 text-orange-100"
                     />
                   ))}
@@ -2587,10 +2518,11 @@ const RISCVExplorer = () => {
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     {extensions.s_mem.map((item) => (
-                      <ExtensionBlock
+                      <ExtensionTile
                         key={item.id}
                         data={item}
-                        searchQuery={searchQuery}
+                        searchIndex={extensionSearchIndexById.get(item.id)}
+                        {...tileProps}
                         colorClass="border-cyan-900/50 bg-cyan-950/20 text-cyan-100"
                       />
                     ))}
@@ -2604,10 +2536,11 @@ const RISCVExplorer = () => {
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     {extensions.s_interrupt.map((item) => (
-                      <ExtensionBlock
+                      <ExtensionTile
                         key={item.id}
                         data={item}
-                        searchQuery={searchQuery}
+                        searchIndex={extensionSearchIndexById.get(item.id)}
+                        {...tileProps}
                         colorClass="border-cyan-900/50 bg-cyan-950/20 text-cyan-100"
                       />
                     ))}
@@ -2621,10 +2554,11 @@ const RISCVExplorer = () => {
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     {extensions.s_trap.map((item) => (
-                      <ExtensionBlock
+                      <ExtensionTile
                         key={item.id}
                         data={item}
-                        searchQuery={searchQuery}
+                        searchIndex={extensionSearchIndexById.get(item.id)}
+                        {...tileProps}
                         colorClass="border-cyan-900/50 bg-cyan-950/20 text-cyan-100"
                       />
                     ))}

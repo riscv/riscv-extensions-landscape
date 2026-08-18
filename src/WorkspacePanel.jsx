@@ -35,6 +35,20 @@ import { buildIsaConfigYaml } from './exportUtils.js';
 // ---------------------------------------------------------------------------
 // WorkspacePanel
 // ---------------------------------------------------------------------------
+/**
+ * Sort direction indicator for the catalog table header.
+ *
+ * At module scope deliberately. It used to be declared inside WorkspacePanel,
+ * which made it a new component type on every render and remounted the icon
+ * each time. Same defect as the extension tile, smaller blast radius.
+ */
+function SortIcon({ col, sort }) {
+  if (sort.col !== col) return <ChevronsUpDown size={10} style={{ opacity: 0.3 }} />;
+  return sort.dir === 1
+    ? <ChevronUp size={10} style={{ color: 'var(--riscv-gold)' }} />
+    : <ChevronDown size={10} style={{ color: 'var(--riscv-gold)' }} />;
+}
+
 export default function WorkspacePanel({
   open,
   onClose,
@@ -146,13 +160,6 @@ export default function WorkspacePanel({
     setCatalogSort(prev =>
       prev.col === col ? { col, dir: -prev.dir } : { col, dir: 1 }
     );
-  }
-
-  function SortIcon({ col }) {
-    if (catalogSort.col !== col) return <ChevronsUpDown size={10} style={{ opacity: 0.3 }} />;
-    return catalogSort.dir === 1
-      ? <ChevronUp size={10} style={{ color: 'var(--riscv-gold)' }} />
-      : <ChevronDown size={10} style={{ color: 'var(--riscv-gold)' }} />;
   }
 
   if (!open) return null;
@@ -809,7 +816,7 @@ export default function WorkspacePanel({
                         onMouseEnter={e => e.currentTarget.style.color = '#64748b'}
                         onMouseLeave={e => e.currentTarget.style.color = catalogSort.col === col ? '#94a3b8' : '#334155'}
                       >
-                        {label} <SortIcon col={col} />
+                        {label} <SortIcon sort={catalogSort} col={col} />
                       </button>
                     ))}
                   </div>
