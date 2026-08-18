@@ -1719,7 +1719,7 @@ const RISCVExplorer = () => {
                 transition: 'all 0.15s',
                 padding: 0,
               }}
-              title={isLocked ? `Required by ${lockedBy.join(', ')} — remove dependent first` : (inWorkspace ? `Remove ${data.id} from Custom ISA Configuration Builder` : `Add ${data.id} to Custom ISA Configuration Builder`)}
+              title={isLocked ? `Required by ${lockedBy.join(', ')} — remove dependent first` : (inWorkspace ? `Remove ${data.id} from ISA Configuration Builder` : `Add ${data.id} to ISA Configuration Builder`)}
             >
               {inWorkspace
                 ? (
@@ -1960,7 +1960,7 @@ const RISCVExplorer = () => {
                   <span className="whitespace-nowrap">Encoder Validator</span>
                 </button>
 
-                {/* Custom ISA Configuration Builder — fused action group */}
+                {/* ISA Configuration Builder — fused action group */}
                 <div className="relative inline-flex items-stretch rounded-xl">
 
                   {/* Active glow ring */}
@@ -1985,12 +1985,12 @@ const RISCVExplorer = () => {
                     style={{ boxShadow: builderMode ? '0 4px 18px rgba(251,191,36,0.4)' : '0 2px 10px rgba(0,0,0,0.2)' }}
                     title={
                       builderMode
-                        ? 'Custom ISA Builder is ON — click any extension’s + to add it. Click here to turn off.'
-                        : 'Turn on the Custom ISA Builder to start picking extensions'
+                        ? 'ISA Configuration Builder is ON — click any extension’s + to add it. Click here to turn off.'
+                        : 'Turn on the ISA Configuration Builder to start picking extensions'
                     }
                   >
                     <Cpu size={14} className="opacity-80 flex-shrink-0" />
-                    <span className="whitespace-nowrap">Custom ISA Builder</span>
+                    <span className="whitespace-nowrap">ISA Configuration Builder</span>
                     <span
                       className={[
                         'inline-flex items-center justify-center px-1.5 h-[16px] rounded-full text-[10px] font-black tracking-wide',

@@ -213,7 +213,7 @@ export default function WorkspacePanel({
               fontWeight: 700, fontSize: 15, letterSpacing: '-0.01em',
               color: '#e2e8f0',
             }}>
-              Custom ISA Configuration Builder
+              ISA Configuration Builder
             </span>
 
             {/* Stats badges */}

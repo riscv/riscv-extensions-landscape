@@ -1,5 +1,5 @@
 /**
- * exportUtils.js — Export generator for the Custom ISA Configuration Builder
+ * exportUtils.js — Export generator for the ISA Configuration Builder
  *
  * Goal: produce a complete, accurate, self-describing ISA configuration file
  * that is valuable on its own terms, not shaped to satisfy any specific
