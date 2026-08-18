@@ -25,7 +25,11 @@ import {
   resolveSelection,
   closure,
   explain,
+  resolveParams,
+  impliedVlen,
+  vlenExtension,
 } from '../src/isaGraph.js';
+import { PROFILES } from '../src/profiles.js';
 
 const catalogIds = (() => {
   const file = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'src', 'riscv_extensions.json');
@@ -319,4 +323,73 @@ test('the implied path is the shortest one', () => {
   });
   const result = resolveSelection({ selected: ['A'], graph });
   assert.deepEqual(explain('C', result).split(' -> '), ['A', 'C']);
+});
+
+// ---------------------------------------------------------------------------
+// Implementation parameters
+// ---------------------------------------------------------------------------
+
+test('the graph carries the parameters UDB attaches to extensions', () => {
+  const withParams = Object.entries(DEPENDENCY_GRAPH.nodes).filter(([, n]) => n.params?.length);
+  assert.ok(withParams.length >= 20, `expected UDB's parameter constraints, found ${withParams.length}`);
+  for (const [id, node] of withParams) {
+    for (const prm of node.params) {
+      assert.ok(prm.name, `${id}: a parameter with no name`);
+      assert.ok(
+        ['greaterThanOrEqual', 'includes', 'oneOf', 'equal'].includes(prm.kind),
+        `${id}/${prm.name}: unknown constraint kind "${prm.kind}"`,
+      );
+      assert.equal(prm.src, 'udb', `${id}/${prm.name} should cite UDB`);
+    }
+  }
+});
+
+test('VLEN is the maximum floor across the selection, not the last one seen', () => {
+  // Zvl32b, Zvl64b and Zvl128b all appear once V is selected. The answer is
+  // 128, not 32: these are floors, and the largest wins.
+  const { resolved } = resolveSelection({ selected: ['RV64I', 'V'], base: 'RV64I' });
+  assert.equal(impliedVlen(resolved), 128);
+
+  assert.equal(impliedVlen(resolveSelection({ selected: ['RV64I', 'Zve32x'], base: 'RV64I' }).resolved), 32);
+  assert.equal(impliedVlen(resolveSelection({ selected: ['RV64I', 'Zve64d'], base: 'RV64I' }).resolved), 64);
+
+  // No vector extension means no constraint at all, which is not the same as 0.
+  assert.equal(impliedVlen(['RV64I', 'M']), null);
+});
+
+test('oneOf constraints intersect, so the stricter extension wins', () => {
+  // Za64rs permits two reservation strategies, Za128rs three. Together only the
+  // two both allow are legal — a union here would let through a configuration
+  // neither extension accepts.
+  const params = resolveParams(['Za64rs', 'Za128rs']);
+  const lrsc = params.find((p) => p.name === 'LRSC_RESERVATION_STRATEGY');
+  assert.ok(lrsc, 'LRSC_RESERVATION_STRATEGY should be constrained');
+  assert.equal(lrsc.kind, 'oneOf');
+  assert.equal(lrsc.value.length, 2);
+  assert.ok(!lrsc.value.some((v) => /128-byte/.test(v)), 'Za64rs forbids the 128-byte strategy');
+  assert.deepEqual(lrsc.from.sort(), ['Za128rs', 'Za64rs']);
+});
+
+test('includes constraints union, because each is a separate demand', () => {
+  // Sv32 needs SXLEN to offer 32, Sv39 needs 64. Supporting both means offering
+  // both, so these accumulate rather than narrow.
+  const sxlen = resolveParams(['Sv32', 'Sv39']).find((p) => p.name === 'SXLEN');
+  assert.equal(sxlen.kind, 'includes');
+  assert.deepEqual([...sxlen.value].sort((a, b) => a - b), [32, 64]);
+});
+
+test('vlenExtension maps a width back to the extension that sets it', () => {
+  assert.equal(vlenExtension(128), 'Zvl128b');
+  assert.equal(vlenExtension(1024), 'Zvl1024b');
+  assert.equal(vlenExtension(48), null, 'there is no Zvl48b');
+});
+
+test('a profile reports the parameters it constrains', () => {
+  const { resolved } = resolveSelection({ selected: PROFILES.RVA23, base: 'RV64I' });
+  const params = resolveParams(resolved);
+  const names = params.map((p) => p.name);
+  for (const expected of ['VLEN', 'CACHE_BLOCK_SIZE', 'LRSC_RESERVATION_STRATEGY']) {
+    assert.ok(names.includes(expected), `RVA23 should constrain ${expected}`);
+  }
+  assert.deepEqual(params.filter((p) => p.conflict), [], 'a ratified profile must not self-conflict');
 });

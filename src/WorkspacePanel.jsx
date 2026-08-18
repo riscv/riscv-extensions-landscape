@@ -22,6 +22,7 @@ import {
   ChevronDown,
   ChevronsUpDown,
   Zap,
+  Sliders,
 } from 'lucide-react';
 
 import {
@@ -31,6 +32,7 @@ import {
   DATA_PROVENANCE,
 } from './marchUtils.js';
 import { buildIsaConfigYaml } from './exportUtils.js';
+import { resolveParams, impliedVlen, vlenExtension } from './isaGraph.js';
 
 // ---------------------------------------------------------------------------
 // WorkspacePanel
@@ -740,6 +742,86 @@ export default function WorkspacePanel({
               </div>
             )}
           </Section>
+
+          {/* Implementation parameters */}
+          {!isEmpty && (() => {
+            const ids = Array.from(workspaceIds);
+            const params = resolveParams(ids);
+            const vlen = impliedVlen(ids);
+            const VLEN_CHOICES = [32, 64, 128, 256, 512, 1024];
+            return (
+              <>
+                <Divider />
+                <Section label="Implementation Parameters" count={params.length} icon={<Sliders size={11} />}>
+                  {/* Vector length first: it is the one parameter -march can
+                      carry, and the one people come looking for. It is set by
+                      picking a Zvl*b extension, which is not obvious. */}
+                  <div style={{ marginBottom: params.length ? 14 : 0 }}>
+                    <div style={{ fontSize: 11, color: 'var(--riscv-text-2)', marginBottom: 6 }}>
+                      Vector length (VLEN)
+                      {vlen
+                        ? <span style={{ color: 'var(--riscv-gold)', fontWeight: 700 }}>{`  ≥ ${vlen} bits`}</span>
+                        : <span style={{ color: 'var(--riscv-text-3)' }}>  not constrained — no vector extension selected</span>}
+                    </div>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      {VLEN_CHOICES.map((bits) => {
+                        const ext = vlenExtension(bits);
+                        const active = vlen === bits;
+                        return (
+                          <button
+                            key={bits}
+                            type="button"
+                            onClick={() => ext && onAddId(ext)}
+                            title={`Set VLEN ≥ ${bits} by adding ${ext}`}
+                            style={{
+                              fontSize: 11, fontFamily: 'monospace', padding: '4px 9px', borderRadius: 6,
+                              cursor: 'pointer',
+                              border: `1px solid ${active ? 'rgba(245,197,66,0.6)' : 'rgba(255,255,255,0.12)'}`,
+                              background: active ? 'rgba(245,197,66,0.18)' : 'rgba(255,255,255,0.03)',
+                              color: active ? 'var(--riscv-gold)' : 'var(--riscv-text-2)',
+                            }}
+                          >
+                            {bits}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <div style={{ fontSize: 10, color: 'var(--riscv-text-3)', marginTop: 6 }}>
+                      There is no VLEN flag. Vector length is expressed by the Zvl*b extensions,
+                      so choosing one here adds it to the configuration.
+                    </div>
+                  </div>
+
+                  {params.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                      {params.map((prm) => (
+                        <div key={prm.name} style={{
+                          borderRadius: 7, padding: '8px 10px',
+                          background: prm.conflict ? 'rgba(255,77,107,0.08)' : 'rgba(255,255,255,0.02)',
+                          border: `1px solid ${prm.conflict ? 'rgba(255,77,107,0.3)' : 'rgba(255,255,255,0.06)'}`,
+                        }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
+                            <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'var(--riscv-text)' }}>{prm.name}</span>
+                            <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'var(--riscv-gold)' }}>
+                              {prm.kind === 'greaterThanOrEqual' ? `≥ ${prm.value}`
+                                : Array.isArray(prm.value) ? prm.value.length === 1 ? String(prm.value[0]) : `one of ${prm.value.length}`
+                                : String(prm.value)}
+                            </span>
+                          </div>
+                          <div style={{ fontSize: 10, color: 'var(--riscv-text-3)', marginTop: 3 }}>
+                            required by {prm.from.join(', ')}
+                          </div>
+                          {prm.conflict && (
+                            <div style={{ fontSize: 10, color: '#ff7a8a', marginTop: 4 }}>{prm.conflict}</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </Section>
+              </>
+            );
+          })()}
 
           {/* Instruction catalog tab */}
           {!isEmpty && (

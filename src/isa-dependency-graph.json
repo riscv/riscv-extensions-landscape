@@ -248,6 +248,15 @@
           "src": "udb",
           "ref": "Shtvala.yaml requirements.extension"
         }
+      ],
+      "params": [
+        {
+          "name": "REPORT_GPA_IN_HTVAL_ON_GUEST_PAGE_FAULT",
+          "kind": "equal",
+          "value": true,
+          "src": "udb",
+          "ref": "Shtvala.yaml requirements … param"
+        }
       ]
     },
     "Shvsatpa": {
@@ -265,6 +274,15 @@
     },
     "Shvstvecd": {
       "requires": [],
+      "params": [
+        {
+          "name": "VSTVEC_MODES",
+          "kind": "includes",
+          "value": 0,
+          "src": "udb",
+          "ref": "Shvstvecd.yaml requirements … param"
+        }
+      ],
       "verified": "udb"
     },
     "Sm": {
@@ -514,6 +532,24 @@
     },
     "Ssstrict": {
       "requires": [],
+      "params": [
+        {
+          "name": "TRAP_ON_UNIMPLEMENTED_INSTRUCTION",
+          "kind": "equal",
+          "value": true,
+          "reason": "Ssstrict requires unimplemented opcodes to trap",
+          "src": "udb",
+          "ref": "Ssstrict.yaml requirements … param"
+        },
+        {
+          "name": "TRAP_ON_UNIMPLEMENTED_CSR",
+          "kind": "equal",
+          "value": true,
+          "reason": "Ssstrict requires unimplemented CSR accesses to trap",
+          "src": "udb",
+          "ref": "Ssstrict.yaml requirements … param"
+        }
+      ],
       "verified": "udb"
     },
     "Sstc": {
@@ -530,22 +566,70 @@
     },
     "Sstvecd": {
       "requires": [],
+      "params": [
+        {
+          "name": "STVEC_MODES",
+          "kind": "includes",
+          "value": 0,
+          "src": "udb",
+          "ref": "Sstvecd.yaml requirements … param"
+        }
+      ],
       "verified": "udb"
     },
     "Sstvecv": {
       "requires": [],
+      "params": [
+        {
+          "name": "STVEC_MODES",
+          "kind": "includes",
+          "value": 1,
+          "src": "udb",
+          "ref": "Sstvecv.yaml requirements … param"
+        }
+      ],
       "verified": "udb"
     },
     "Ssu32xl": {
       "requires": [],
+      "params": [
+        {
+          "name": "UXLEN",
+          "kind": "includes",
+          "value": 32,
+          "src": "udb",
+          "ref": "Ssu32xl.yaml requirements … param"
+        }
+      ],
       "verified": "udb"
     },
     "Ssu64xl": {
       "requires": [],
+      "params": [
+        {
+          "name": "UXLEN",
+          "kind": "includes",
+          "value": 64,
+          "src": "udb",
+          "ref": "Ssu64xl.yaml requirements … param"
+        }
+      ],
       "verified": "udb"
     },
     "Ssube": {
       "requires": [],
+      "params": [
+        {
+          "name": "U_MODE_ENDIANNESS",
+          "kind": "oneOf",
+          "value": [
+            "big",
+            "dynamic"
+          ],
+          "src": "udb",
+          "ref": "Ssube.yaml requirements … param"
+        }
+      ],
       "verified": "udb"
     },
     "Ssvxscr": {
@@ -573,6 +657,15 @@
           "src": "udb",
           "ref": "Sv32.yaml requirements.extension"
         }
+      ],
+      "params": [
+        {
+          "name": "SXLEN",
+          "kind": "includes",
+          "value": 32,
+          "src": "udb",
+          "ref": "Sv32.yaml requirements … param"
+        }
       ]
     },
     "Sv39": {
@@ -581,6 +674,15 @@
           "ext": "S",
           "src": "udb",
           "ref": "Sv39.yaml requirements.extension"
+        }
+      ],
+      "params": [
+        {
+          "name": "SXLEN",
+          "kind": "includes",
+          "value": 64,
+          "src": "udb",
+          "ref": "Sv39.yaml requirements … param"
         }
       ]
     },
@@ -652,6 +754,16 @@
           "ext": "S",
           "src": "udb",
           "ref": "Svbare.yaml requirements.extension"
+        }
+      ],
+      "params": [
+        {
+          "name": "SATP_MODE_BARE",
+          "kind": "equal",
+          "value": true,
+          "reason": "Svbare mandates that the `satp` mode Bare must be supported.",
+          "src": "udb",
+          "ref": "Svbare.yaml requirements … param"
         }
       ]
     },
@@ -741,6 +853,19 @@
     },
     "Za128rs": {
       "requires": [],
+      "params": [
+        {
+          "name": "LRSC_RESERVATION_STRATEGY",
+          "kind": "oneOf",
+          "value": [
+            "reserve exactly enough to cover the access",
+            "reserve naturally-aligned 64-byte region",
+            "reserve naturally-aligned 128-byte region"
+          ],
+          "src": "udb",
+          "ref": "Za128rs.yaml requirements … param"
+        }
+      ],
       "verified": "udb"
     },
     "Za64rs": {
@@ -749,6 +874,18 @@
           "ext": "Za128rs",
           "src": "udb",
           "ref": "Za64rs.yaml requirements.extension"
+        }
+      ],
+      "params": [
+        {
+          "name": "LRSC_RESERVATION_STRATEGY",
+          "kind": "oneOf",
+          "value": [
+            "reserve exactly enough to cover the access",
+            "reserve naturally-aligned 64-byte region"
+          ],
+          "src": "udb",
+          "ref": "Za64rs.yaml requirements … param"
         }
       ]
     },
@@ -1073,6 +1210,16 @@
     },
     "Zic64b": {
       "requires": [],
+      "params": [
+        {
+          "name": "CACHE_BLOCK_SIZE",
+          "kind": "equal",
+          "value": 64,
+          "reason": "Zic64b mandates 64-byte cache block sizes",
+          "src": "udb",
+          "ref": "Zic64b.yaml requirements … param"
+        }
+      ],
       "verified": "udb"
     },
     "Zicbom": {
@@ -1101,6 +1248,15 @@
     },
     "Zicclsm": {
       "requires": [],
+      "params": [
+        {
+          "name": "MISALIGNED_LDST",
+          "kind": "equal",
+          "value": true,
+          "src": "udb",
+          "ref": "Zicclsm.yaml requirements … param"
+        }
+      ],
       "verified": "udb"
     },
     "Ziccrse": {
@@ -1724,6 +1880,15 @@
           "src": "udb",
           "ref": "Zvl1024b.yaml requirements.extension"
         }
+      ],
+      "params": [
+        {
+          "name": "VLEN",
+          "kind": "greaterThanOrEqual",
+          "value": 1024,
+          "src": "udb",
+          "ref": "Zvl1024b.yaml requirements … param"
+        }
       ]
     },
     "Zvl128b": {
@@ -1732,6 +1897,15 @@
           "ext": "Zvl64b",
           "src": "udb",
           "ref": "Zvl128b.yaml requirements.extension"
+        }
+      ],
+      "params": [
+        {
+          "name": "VLEN",
+          "kind": "greaterThanOrEqual",
+          "value": 128,
+          "src": "udb",
+          "ref": "Zvl128b.yaml requirements … param"
         }
       ]
     },
@@ -1742,10 +1916,28 @@
           "src": "udb",
           "ref": "Zvl256b.yaml requirements.extension"
         }
+      ],
+      "params": [
+        {
+          "name": "VLEN",
+          "kind": "greaterThanOrEqual",
+          "value": 256,
+          "src": "udb",
+          "ref": "Zvl256b.yaml requirements … param"
+        }
       ]
     },
     "Zvl32b": {
       "requires": [],
+      "params": [
+        {
+          "name": "VLEN",
+          "kind": "greaterThanOrEqual",
+          "value": 32,
+          "src": "udb",
+          "ref": "Zvl32b.yaml requirements … param"
+        }
+      ],
       "verified": "udb"
     },
     "Zvl512b": {
@@ -1755,6 +1947,15 @@
           "src": "udb",
           "ref": "Zvl512b.yaml requirements.extension"
         }
+      ],
+      "params": [
+        {
+          "name": "VLEN",
+          "kind": "greaterThanOrEqual",
+          "value": 512,
+          "src": "udb",
+          "ref": "Zvl512b.yaml requirements … param"
+        }
       ]
     },
     "Zvl64b": {
@@ -1763,6 +1964,15 @@
           "ext": "Zvl32b",
           "src": "udb",
           "ref": "Zvl64b.yaml requirements.extension"
+        }
+      ],
+      "params": [
+        {
+          "name": "VLEN",
+          "kind": "greaterThanOrEqual",
+          "value": 64,
+          "src": "udb",
+          "ref": "Zvl64b.yaml requirements … param"
         }
       ]
     },

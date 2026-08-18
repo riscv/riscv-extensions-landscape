@@ -16,6 +16,7 @@
 
 import { buildMarchString, BASE_ISA_IDS, BASE_ISA_PREFIX_MAP } from './marchUtils.js';
 import { buildCombinedCatalog } from './marchUtils.js';
+import { resolveParams } from './isaGraph.js';
 
 // Tokens that are not valid ISA string entries (e.g. K, P are retired/placeholder)
 const INVALID_ISA_TOKENS = new Set(['K', 'P']);
@@ -167,6 +168,35 @@ export function buildIsaConfigYaml(selectedIds, allExts, includeInstructions = t
   lines.push(`# Zicsr/Zifencei present → User Spec 2.3+; supervisor exts → Priv Spec 1.11+`);
   lines.push(`user_spec_version: "${userSpecVersion}"`);
   lines.push(`privilege_spec_version: "${privSpecVersion}"`);
+  lines.push(``);
+  lines.push(`# Implementation parameters the selection constrains, from`);
+  lines.push(`# riscv-unified-db. -march can express only VLEN, and only obliquely`);
+  lines.push(`# through the Zvl*b extensions, so these are the part of the`);
+  lines.push(`# configuration a compiler flag cannot carry.`);
+  lines.push(`#`);
+  lines.push(`#   greaterThanOrEqual — a floor; the largest wins`);
+  lines.push(`#   includes           — the value must offer at least these`);
+  lines.push(`#   oneOf              — pick one; each extension narrows the field`);
+  lines.push(`#   equal              — fixed`);
+  const params = resolveParams(selectedIds);
+  if (params.length === 0) {
+    lines.push(`parameters: {}   # nothing in this selection constrains one`);
+  } else {
+    lines.push(`parameters:`);
+    for (const prm of params) {
+      lines.push(`  ${prm.name}:`);
+      lines.push(`    constraint: ${prm.kind}`);
+      const value = Array.isArray(prm.value)
+        ? `[${prm.value.map((v) => (typeof v === 'string' ? JSON.stringify(v) : v)).join(', ')}]`
+        : (typeof prm.value === 'string' ? JSON.stringify(prm.value) : prm.value);
+      lines.push(`    value: ${value}`);
+      lines.push(`    required_by: [${prm.from.join(', ')}]`);
+      if (prm.reason) lines.push(`    reason: ${JSON.stringify(prm.reason)}`);
+      // A conflict is left in the file on purpose: silently dropping it would
+      // produce a configuration that looks valid and is not.
+      if (prm.conflict) lines.push(`    CONFLICT: ${JSON.stringify(prm.conflict)}`);
+    }
+  }
   lines.push(``);
   lines.push(`extensions:`);
   for (const ext of allExtsList) {

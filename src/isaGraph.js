@@ -331,6 +331,100 @@ export function resolveSelection({
   return { resolved: [...resolved], implied, redundant, conflicts, choices, unknown };
 }
 
+/**
+ * Implementation parameters a selection constrains.
+ *
+ * These are the other half of a configuration. -march can express only one of
+ * them — VLEN, and then only obliquely, through the Zvl*b extensions — but a
+ * configuration handed to riscv-config or to hardware needs the rest.
+ *
+ * Constraints from different extensions are merged, and the merge is where the
+ * meaning lives:
+ *
+ *   greaterThanOrEqual  the largest floor wins. Zvl64b and Zvl128b together
+ *                       mean VLEN >= 128, not two separate demands.
+ *   includes            union. Sv32 and Sv39 together mean SXLEN must offer
+ *                       both 32 and 64.
+ *   oneOf               intersection: each extension narrows the field. Za64rs
+ *                       permits fewer strategies than Za128rs, so together the
+ *                       stricter list stands.
+ *   equal               all must agree. Disagreement is a real conflict and is
+ *                       reported rather than silently resolved.
+ *
+ * @returns {Array<{name, kind, value, from: string[], reason?: string, conflict?: string}>}
+ */
+export function resolveParams(ids, graph = graphData) {
+  const byName = new Map();
+
+  for (const id of ids) {
+    for (const prm of graph.nodes?.[id]?.params ?? []) {
+      const existing = byName.get(prm.name);
+      if (!existing) {
+        byName.set(prm.name, {
+          name: prm.name,
+          kind: prm.kind,
+          value: Array.isArray(prm.value) ? [...prm.value] : prm.value,
+          from: [id],
+          ...(prm.reason ? { reason: prm.reason } : {}),
+        });
+        continue;
+      }
+      existing.from.push(id);
+
+      if (prm.kind !== existing.kind) {
+        existing.conflict = `${prm.name} is constrained as both ${existing.kind} and ${prm.kind}`;
+        continue;
+      }
+      switch (prm.kind) {
+        case 'greaterThanOrEqual':
+          existing.value = Math.max(existing.value, prm.value);
+          break;
+        case 'includes': {
+          const set = new Set([].concat(existing.value, prm.value));
+          existing.value = [...set].sort((a, b) => (a > b ? 1 : -1));
+          break;
+        }
+        case 'oneOf': {
+          const allowed = new Set(prm.value);
+          const narrowed = [].concat(existing.value).filter((v) => allowed.has(v));
+          if (narrowed.length === 0) {
+            existing.conflict = `${prm.name}: ${existing.from.join(' and ')} allow no common value`;
+          } else {
+            existing.value = narrowed;
+          }
+          break;
+        }
+        case 'equal':
+          if (existing.value !== prm.value) {
+            existing.conflict =
+              `${prm.name}: ${existing.from.join(' and ')} require ${existing.value} and ${prm.value}`;
+          }
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  return [...byName.values()].sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/**
+ * The VLEN floor a selection implies, or null when it has no vector extension.
+ * Vector length is set by picking a Zvl*b extension rather than by a flag, so
+ * this is the number a user actually chose without necessarily realising it.
+ */
+export function impliedVlen(ids, graph = graphData) {
+  const vlen = resolveParams(ids, graph).find((p) => p.name === 'VLEN');
+  return vlen && vlen.kind === 'greaterThanOrEqual' ? vlen.value : null;
+}
+
+/** The Zvl*b extension that sets a given VLEN floor, for the reverse direction. */
+export function vlenExtension(bits, graph = graphData) {
+  const id = `Zvl${bits}b`;
+  return graph.nodes?.[id] ? id : null;
+}
+
 /** One-line explanation of why `ext` is in a resolution, for UI and errors. */
 export function explain(ext, result) {
   const hit = result.implied.find((entry) => entry.ext === ext);

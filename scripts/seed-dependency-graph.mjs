@@ -68,6 +68,10 @@ function extensionRequirements(requirements) {
   const choices = [];
   const conditional = [];
   const excluded = [];
+  // Implementation parameters the extension constrains. These are not
+  // dependencies — VLEN is not an extension — but they are the other half of
+  // what makes a configuration real, and UDB states them right here.
+  const params = [];
 
   /**
    * True when every member names an extension and nothing else. Two spellings
@@ -115,6 +119,15 @@ function extensionRequirements(requirements) {
           if (!negated) hard.push(value);
           else if (!guarded) excluded.push(value);
           break;
+        case 'param':
+          // { name: VLEN, greaterThanOrEqual: 128 } and friends. Only taken
+          // from unguarded, unnegated positions, same rule as extensions.
+          if (!negated && !guarded && value && typeof value.name === 'string') {
+            const { name, reason, ...rest } = value;
+            const [kind, bound] = Object.entries(rest)[0] ?? [];
+            if (kind) params.push({ name, kind, value: bound, ...(reason ? { reason } : {}) });
+          }
+          break;
         case 'allOf':
           walk(value, negated, guarded);
           break;
@@ -159,7 +172,7 @@ function extensionRequirements(requirements) {
   };
 
   walk(requirements);
-  return { hard, choices, conditional, excluded };
+  return { hard, choices, conditional, excluded, params };
 }
 
 function readUdb(root) {
@@ -175,12 +188,18 @@ function readUdb(root) {
     const hard = new Set();
     const choices = [];
     const excluded = new Set();
+    const params = [];
     let skipped = 0;
     for (const req of [doc.requirements, ...(doc.versions ?? []).map((v) => v?.requirements)]) {
       if (!req) continue;
       const found = extensionRequirements(req);
       found.hard.forEach((n) => hard.add(n));
       found.excluded.forEach((n) => excluded.add(n));
+      for (const prm of found.params) {
+        if (!params.some((x) => x.name === prm.name && x.kind === prm.kind && x.value === prm.value)) {
+          params.push(prm);
+        }
+      }
       skipped += found.conditional.length;
       for (const options of found.choices) {
         const key = options.slice().sort().join('|');
@@ -189,12 +208,13 @@ function readUdb(root) {
     }
     hard.delete(id); // a few files name themselves via version constraints
     if (skipped) conditionalNodes.push(`${id} (${skipped} group${skipped > 1 ? 's' : ''})`);
-    if (hard.size || choices.length || excluded.size || skipped) {
+    if (hard.size || choices.length || excluded.size || skipped || params.length) {
       graph[id] = {
         hard: [...hard].sort(),
         choices,
         excluded: [...excluded].sort(),
         conditional: skipped > 0,
+        params,
       };
     }
   }
@@ -302,6 +322,9 @@ for (const id of catalogIds.slice().sort((a, b) => a.localeCompare(b))) {
   // never read as "UDB says this extension depends on nothing" when what UDB
   // actually says is "it depends, conditionally".
   if (udb[id]?.conditional) node.conditionalRequirements = true;
+  if (udb[id]?.params?.length) {
+    node.params = udb[id].params.map((prm) => ({ ...prm, src: 'udb', ref: `${id}.yaml requirements … param` }));
+  }
 
   if (requires.length === 0 && !node.requiresOneOf && !node.conditionalRequirements) {
     node.verified = udbKnown.has(id) ? 'udb' : 'none';
