@@ -4,9 +4,7 @@
       "id": "RV32I",
       "name": "RV32I",
       "tags": [
-        "rv_i",
-        "rv_zicsr",
-        "rv_zifencei"
+        "rv_i"
       ],
       "desc": "Standard Integer Base (32-bit)",
       "use": "Microcontrollers, IoT",
@@ -492,97 +490,6 @@
           "match": "0x4013",
           "mask": "0x707f"
         },
-        "CSRRC": {
-          "encoding": "-----------------011-----1110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "csr"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x3073",
-          "mask": "0x707f"
-        },
-        "CSRRCI": {
-          "encoding": "-----------------111-----1110011",
-          "variable_fields": [
-            "rd",
-            "csr",
-            "zimm5"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x7073",
-          "mask": "0x707f"
-        },
-        "CSRRS": {
-          "encoding": "-----------------010-----1110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "csr"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x2073",
-          "mask": "0x707f"
-        },
-        "CSRRSI": {
-          "encoding": "-----------------110-----1110011",
-          "variable_fields": [
-            "rd",
-            "csr",
-            "zimm5"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x6073",
-          "mask": "0x707f"
-        },
-        "CSRRW": {
-          "encoding": "-----------------001-----1110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "csr"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x1073",
-          "mask": "0x707f"
-        },
-        "CSRRWI": {
-          "encoding": "-----------------101-----1110011",
-          "variable_fields": [
-            "rd",
-            "csr",
-            "zimm5"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x5073",
-          "mask": "0x707f"
-        },
-        "FENCE.I": {
-          "encoding": "-----------------001-----0001111",
-          "variable_fields": [
-            "imm12",
-            "rs1",
-            "rd"
-          ],
-          "extension": [
-            "rv_zifencei"
-          ],
-          "match": "0x100f",
-          "mask": "0x707f"
-        },
         "SLLI": {
           "encoding": "0000000----------001-----0010011",
           "variable_fields": [
@@ -630,9 +537,7 @@
       "name": "RV64I",
       "tags": [
         "rv64_i",
-        "rv_i",
-        "rv_zicsr",
-        "rv_zifencei"
+        "rv_i"
       ],
       "desc": "Standard Integer Base (64-bit)",
       "use": "Servers, Mobile, PC",
@@ -1313,97 +1218,6 @@
           ],
           "match": "0x4013",
           "mask": "0x707f"
-        },
-        "CSRRC": {
-          "encoding": "-----------------011-----1110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "csr"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x3073",
-          "mask": "0x707f"
-        },
-        "CSRRCI": {
-          "encoding": "-----------------111-----1110011",
-          "variable_fields": [
-            "rd",
-            "csr",
-            "zimm5"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x7073",
-          "mask": "0x707f"
-        },
-        "CSRRS": {
-          "encoding": "-----------------010-----1110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "csr"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x2073",
-          "mask": "0x707f"
-        },
-        "CSRRSI": {
-          "encoding": "-----------------110-----1110011",
-          "variable_fields": [
-            "rd",
-            "csr",
-            "zimm5"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x6073",
-          "mask": "0x707f"
-        },
-        "CSRRW": {
-          "encoding": "-----------------001-----1110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "csr"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x1073",
-          "mask": "0x707f"
-        },
-        "CSRRWI": {
-          "encoding": "-----------------101-----1110011",
-          "variable_fields": [
-            "rd",
-            "csr",
-            "zimm5"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x5073",
-          "mask": "0x707f"
-        },
-        "FENCE.I": {
-          "encoding": "-----------------001-----0001111",
-          "variable_fields": [
-            "imm12",
-            "rs1",
-            "rd"
-          ],
-          "extension": [
-            "rv_zifencei"
-          ],
-          "match": "0x100f",
-          "mask": "0x707f"
         }
       },
       "url": "https://docs.riscv.org/reference/isa/unpriv/rv64.html"
@@ -1412,9 +1226,7 @@
       "id": "RV32E",
       "name": "RV32E",
       "tags": [
-        "rv_i",
-        "rv_zicsr",
-        "rv_zifencei"
+        "rv_i"
       ],
       "desc": "Embedded Base (16 regs)",
       "use": "Tiny cores (Reduced silicon)",
@@ -1900,97 +1712,6 @@
           "match": "0x4013",
           "mask": "0x707f"
         },
-        "CSRRC": {
-          "encoding": "-----------------011-----1110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "csr"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x3073",
-          "mask": "0x707f"
-        },
-        "CSRRCI": {
-          "encoding": "-----------------111-----1110011",
-          "variable_fields": [
-            "rd",
-            "csr",
-            "zimm5"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x7073",
-          "mask": "0x707f"
-        },
-        "CSRRS": {
-          "encoding": "-----------------010-----1110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "csr"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x2073",
-          "mask": "0x707f"
-        },
-        "CSRRSI": {
-          "encoding": "-----------------110-----1110011",
-          "variable_fields": [
-            "rd",
-            "csr",
-            "zimm5"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x6073",
-          "mask": "0x707f"
-        },
-        "CSRRW": {
-          "encoding": "-----------------001-----1110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "csr"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x1073",
-          "mask": "0x707f"
-        },
-        "CSRRWI": {
-          "encoding": "-----------------101-----1110011",
-          "variable_fields": [
-            "rd",
-            "csr",
-            "zimm5"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x5073",
-          "mask": "0x707f"
-        },
-        "FENCE.I": {
-          "encoding": "-----------------001-----0001111",
-          "variable_fields": [
-            "imm12",
-            "rs1",
-            "rd"
-          ],
-          "extension": [
-            "rv_zifencei"
-          ],
-          "match": "0x100f",
-          "mask": "0x707f"
-        },
         "SLLI": {
           "encoding": "0000000----------001-----0010011",
           "variable_fields": [
@@ -2038,9 +1759,7 @@
       "name": "RV64E",
       "tags": [
         "rv64_i",
-        "rv_i",
-        "rv_zicsr",
-        "rv_zifencei"
+        "rv_i"
       ],
       "desc": "Embedded Base (64-bit, 16 regs)",
       "use": "Efficient 64-bit controllers",
@@ -2721,97 +2440,6 @@
           ],
           "match": "0x4013",
           "mask": "0x707f"
-        },
-        "CSRRC": {
-          "encoding": "-----------------011-----1110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "csr"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x3073",
-          "mask": "0x707f"
-        },
-        "CSRRCI": {
-          "encoding": "-----------------111-----1110011",
-          "variable_fields": [
-            "rd",
-            "csr",
-            "zimm5"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x7073",
-          "mask": "0x707f"
-        },
-        "CSRRS": {
-          "encoding": "-----------------010-----1110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "csr"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x2073",
-          "mask": "0x707f"
-        },
-        "CSRRSI": {
-          "encoding": "-----------------110-----1110011",
-          "variable_fields": [
-            "rd",
-            "csr",
-            "zimm5"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x6073",
-          "mask": "0x707f"
-        },
-        "CSRRW": {
-          "encoding": "-----------------001-----1110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "csr"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x1073",
-          "mask": "0x707f"
-        },
-        "CSRRWI": {
-          "encoding": "-----------------101-----1110011",
-          "variable_fields": [
-            "rd",
-            "csr",
-            "zimm5"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x5073",
-          "mask": "0x707f"
-        },
-        "FENCE.I": {
-          "encoding": "-----------------001-----0001111",
-          "variable_fields": [
-            "imm12",
-            "rs1",
-            "rd"
-          ],
-          "extension": [
-            "rv_zifencei"
-          ],
-          "match": "0x100f",
-          "mask": "0x707f"
         }
       },
       "url": "https://docs.riscv.org/reference/isa/unpriv/rv32e.html"
@@ -2821,9 +2449,7 @@
       "name": "RV128I",
       "tags": [
         "rv64_i",
-        "rv_i",
-        "rv_zicsr",
-        "rv_zifencei"
+        "rv_i"
       ],
       "desc": "128-bit Address Space",
       "use": "Experimental/Research",
@@ -3503,97 +3129,6 @@
             "rv_i"
           ],
           "match": "0x4013",
-          "mask": "0x707f"
-        },
-        "CSRRC": {
-          "encoding": "-----------------011-----1110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "csr"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x3073",
-          "mask": "0x707f"
-        },
-        "CSRRCI": {
-          "encoding": "-----------------111-----1110011",
-          "variable_fields": [
-            "rd",
-            "csr",
-            "zimm5"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x7073",
-          "mask": "0x707f"
-        },
-        "CSRRS": {
-          "encoding": "-----------------010-----1110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "csr"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x2073",
-          "mask": "0x707f"
-        },
-        "CSRRSI": {
-          "encoding": "-----------------110-----1110011",
-          "variable_fields": [
-            "rd",
-            "csr",
-            "zimm5"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x6073",
-          "mask": "0x707f"
-        },
-        "CSRRW": {
-          "encoding": "-----------------001-----1110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "csr"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x1073",
-          "mask": "0x707f"
-        },
-        "CSRRWI": {
-          "encoding": "-----------------101-----1110011",
-          "variable_fields": [
-            "rd",
-            "csr",
-            "zimm5"
-          ],
-          "extension": [
-            "rv_zicsr"
-          ],
-          "match": "0x5073",
-          "mask": "0x707f"
-        },
-        "FENCE.I": {
-          "encoding": "-----------------001-----0001111",
-          "variable_fields": [
-            "imm12",
-            "rs1",
-            "rd"
-          ],
-          "extension": [
-            "rv_zifencei"
-          ],
-          "match": "0x100f",
           "mask": "0x707f"
         }
       },
