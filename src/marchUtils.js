@@ -174,6 +174,26 @@ const NON_ISA_EXTENSION_IDS = new Set(['RERI', 'HTI']);
  * Svnapot, Svpbmt, Svinval — is accepted. Emitting them produced an invalid
  * -march for all four ratified profiles, each of which mandates Sv39.
  */
+/**
+ * Shorthand extensions that ABSORB their members in an ISA string.
+ *
+ * These are not ordinary dependencies. D depends on F and both belong in the
+ * string; Zkn is a *name for* its members, so listing both is malformed. The
+ * riscv-config validator (riscv/riscv-config, isa_validator.py) rejects it:
+ *
+ *   "Zkn is a superset of Zbkb, Zbkc, Zbkx, Zkne, Zknd, Zknh. In presence of
+ *    Zkn the subsets must be ignored in the ISA string."
+ *
+ * clang accepts the redundant form, which is why a toolchain check never
+ * noticed. The members stay in the dependency graph — selecting Zkn genuinely
+ * does give you Zbkb — they are simply not spelled out in -march.
+ */
+export const SHORTHAND_BUNDLES = {
+  Zkn: ['Zbkb', 'Zbkc', 'Zbkx', 'Zknd', 'Zkne', 'Zknh'],
+  Zks: ['Zbkb', 'Zbkc', 'Zbkx', 'Zksed', 'Zksh'],
+  Zk:  ['Zbkb', 'Zbkc', 'Zbkx', 'Zknd', 'Zkne', 'Zknh', 'Zkn', 'Zkr', 'Zkt'],
+};
+
 /** The satp MODE values, kept separate so the exclusion reason can be accurate. */
 export const SATP_MODE_IDS = new Set(['Sv32', 'Sv39', 'Sv48', 'Sv57']);
 
@@ -422,8 +442,30 @@ export function buildMarchString(selectedIds, allExts) {
   const singles = [];
   const multis = [];
 
+  // A shorthand and its members must not both appear. riscv-config rejects
+  // "Zkn is a superset of Zbkb, Zbkc, Zbkx, Zkne, Zknd, Zknh. In presence of
+  // Zkn the subsets must be ignored in the ISA string." clang tolerates the
+  // redundant form, so this is invisible to a toolchain check.
+  //
+  // Deliberately narrow. It is NOT "drop anything implied by something else" —
+  // D implies F and both belong in the string. Only these three shorthands
+  // absorb their members.
+  const absorbed = new Map(); // member -> shorthand that covers it
+  for (const [shorthand, members] of Object.entries(SHORTHAND_BUNDLES)) {
+    if (!selectedIds.includes(shorthand)) continue;
+    for (const member of members) absorbed.set(member, shorthand);
+  }
+
   for (const id of selectedIds) {
     if (BASE_ISA_IDS.has(id)) continue;
+
+    if (absorbed.has(id)) {
+      out.excluded.push({
+        id,
+        reason: `Covered by ${absorbed.get(id)} — a shorthand must not list its own members`,
+      });
+      continue;
+    }
 
     if (SPEC_VERSION_TAG_PATTERN.test(id)) {
       out.excluded.push({ id, reason: 'Privileged spec version compliance tag — not an -march option' });
