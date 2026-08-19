@@ -43,3 +43,5 @@ Out of scope:
 
 The deployed site tracks `main`. Fixes land there and deploy automatically;
 there are no maintained release branches to backport to.
+
+<!-- dco signed-path validation, to be reverted -->
