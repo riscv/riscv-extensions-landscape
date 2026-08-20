@@ -1,3 +1,746 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ─── Design Tokens ──────────────────────────────────────────────────────── */
+:root {
+  --riscv-bg: #14141e;
+  /* The builder panel's own ground. Deeper than --riscv-surface so the sliding
+     panel reads as sitting above the page rather than continuous with it. */
+  --riscv-panel: #0b0b16;
+  --riscv-surface: #1b1b27;
+  --riscv-surface-2: #21212f;
+  --riscv-border: #2c2c3d;
+  --riscv-border-2: #38384c;
+  --riscv-muted: #414157;
+
+  --riscv-gold: #f5c542;
+  --riscv-gold-dim: rgba(245, 197, 66, 0.12);
+  --riscv-gold-glow: rgba(245, 197, 66, 0.20);
+
+  /* Wordmark gradient. Bright amber reads on black and disappears on white, so
+     the light theme swaps in a deeper pair. */
+  --riscv-title-a: #f5c542;
+  --riscv-title-b: #fde68a;
+
+  --riscv-violet: #8b7cf8;
+  --riscv-violet-dim: rgba(139, 124, 248, 0.12);
+
+  --riscv-success: #20d9a0;
+  --riscv-danger: #ff4d6b;
+  --riscv-warn: #f59e0b;
+
+  --riscv-text: #e2e8f0;
+  --riscv-text-2: #aab8ca;
+  --riscv-text-3: #6f7f95;
+
+  /* Overlay tints. Components paint subtle washes with rgba(255,255,255,0.0x),
+     which is invisible on a light ground. Routing them through tokens lets one
+     theme lighten and the other darken. */
+  --riscv-tint-1: rgba(255, 255, 255, 0.02);
+  --riscv-tint-2: rgba(255, 255, 255, 0.03);
+  --riscv-tint-3: rgba(255, 255, 255, 0.06);
+  --riscv-tint-4: rgba(255, 255, 255, 0.12);
+  --riscv-hairline: rgba(255, 255, 255, 0.06);
+  /* Raised plate behind toolbars and chips. */
+  --riscv-plate: rgba(15, 23, 42, 0.4);
+
+  /* "In the configuration" confirmation. Amber marks the action available, so
+     the completed state gets its own colour rather than more amber.
+     Same green ramp in both themes; the shade differs because no single value
+     is strong on both grounds — green-500 measures 8.02:1 on the dark tile but
+     only 2.03:1 on the light emerald wash, and green-700 the reverse. */
+  --riscv-check: #22c55e;
+  --riscv-check-fill: rgba(34, 197, 94, 0.20);
+  --riscv-check-edge: rgba(34, 197, 94, 0.55);
+
+  /* Source-chip accents in the builder's catalogue. Assigned by hashing the
+     extension id, so the set has to stay stable and ordered. These are read as
+     text on the panel ground, which is why they get a light variant: the dark
+     tones below are 400-level and measure under 2:1 on white. */
+  /* Instruction-count badge, and extension ids that are locked in place by a
+     dependency. The locked tone has to stay legible while reading as inactive,
+     so it desaturates rather than fading out. */
+  --riscv-info: #7ec8e3;
+  --riscv-gold-locked: rgba(245, 197, 66, 0.6);
+
+  --riscv-accent-1: #8b7cf8;
+  --riscv-accent-2: #f472b6;
+  --riscv-accent-3: #2dd4bf;
+  --riscv-accent-4: #60a5fa;
+  --riscv-accent-5: #f5c542;
+  --riscv-accent-6: #34d399;
+  --riscv-accent-7: #fb923c;
+  --riscv-accent-8: #a78bfa;
+  --riscv-accent-9: #f87171;
+
+  /* Field colors for encoding diagram */
+  --field-opcode: #f5c542;
+  /* gold   — [6:0]   */
+  --field-rd: #f472b6;
+  /* pink   — [11:7]  */
+  --field-funct3: #2dd4bf;
+  /* teal   — [14:12] */
+  --field-rs1: #a78bfa;
+  /* violet — [19:15] */
+  --field-rs2: #818cf8;
+  /* indigo — [24:20] */
+  --field-funct7: #60a5fa;
+  /* blue   — [31:25] */
+  --field-var: #334155;
+  /* slate  — variable */
+}
+
+/* ─── Global Base ────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--riscv-bg);
+  color: var(--riscv-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code,
+pre,
+.font-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+/* ─── Custom Scrollbar ───────────────────────────────────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--riscv-muted) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--riscv-muted);
+  border-radius: 9999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--riscv-border-2);
+}
+
+/* ─── Animations ─────────────────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes goldPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 197, 66, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 0 4px rgba(245, 197, 66, 0);
+  }
+}
+
+@keyframes topBorderShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.25s ease-out both;
+}
+
+.animate-fade-in-right {
+  animation: fadeInRight 0.25s ease-out both;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s ease-out both;
+}
+
+/* ─── Component Utilities ────────────────────────────────────────────────── */
+.riscv-card {
+  background: var(--riscv-surface);
+  border: 1px solid var(--riscv-border);
+  border-radius: 10px;
+}
+
+.riscv-card-2 {
+  background: var(--riscv-surface-2);
+  border: 1px solid var(--riscv-border-2);
+  border-radius: 8px;
+}
+
+.riscv-input {
+  background: var(--riscv-surface);
+  border: 1px solid var(--riscv-border-2);
+  border-radius: 8px;
+  color: var(--riscv-text);
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.riscv-input:focus {
+  outline: none;
+  border-color: var(--riscv-gold);
+  box-shadow: 0 0 0 3px var(--riscv-gold-glow);
+}
+
+.riscv-btn {
+  border-radius: 7px;
+  border: 1px solid var(--riscv-border-2);
+  background: var(--riscv-surface-2);
+  color: var(--riscv-text);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  cursor: pointer;
+}
+
+.riscv-btn:hover {
+  border-color: var(--riscv-border-2);
+  background: var(--riscv-muted);
+}
+
+.riscv-btn:active {
+  transform: scale(0.97);
+}
+
+.riscv-btn-gold {
+  border-color: rgba(245, 197, 66, 0.35);
+  background: var(--riscv-gold-dim);
+  color: var(--riscv-gold);
+}
+
+.riscv-btn-gold:hover {
+  border-color: rgba(245, 197, 66, 0.6);
+  background: rgba(245, 197, 66, 0.18);
+}
+
+.riscv-btn-violet {
+  border-color: rgba(139, 124, 248, 0.35);
+  background: var(--riscv-violet-dim);
+  color: var(--riscv-violet);
+}
+
+.riscv-btn-violet:hover {
+  border-color: rgba(139, 124, 248, 0.6);
+  background: rgba(139, 124, 248, 0.20);
+}
+
+/* Extension tile hover lift */
+.ext-tile {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.ext-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 2px var(--riscv-text-3), 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.ext-tile-active {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 0 0 2px var(--riscv-gold), 0 8px 32px rgba(245, 197, 66, 0.12) !important;
+  animation: goldPulse 2s ease-in-out infinite;
+}
+
+.ext-tile-highlighted {
+  box-shadow: 0 0 0 2px var(--riscv-gold), 0 4px 16px rgba(245, 197, 66, 0.08);
+}
+
+/* Top accent border gradient */
+.riscv-top-border::before {
+  content: '';
+  display: block;
+  height: 2px;
+  background: linear-gradient(90deg, #f5c542 0%, #8b7cf8 50%, #20d9a0 100%);
+  background-size: 200% 200%;
+  animation: topBorderShimmer 6s ease infinite;
+  border-radius: 9999px;
+  margin-bottom: -2px;
+}
+
+/* Severity badges */
+.conflict-identical {
+  border-color: #ff4d6b;
+  background: rgba(255, 77, 107, 0.08);
+}
+
+.conflict-subset-in {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.conflict-subset-out {
+  border-color: #fbbf24;
+  background: rgba(251, 191, 36, 0.06);
+}
+
+.conflict-partial {
+  border-color: #d97706;
+  background: rgba(217, 119, 6, 0.06);
+}
+
+.conflict-none {
+  border-color: #20d9a0;
+  background: rgba(32, 217, 160, 0.08);
+}
+
+/* Encoding field colors */
+.enc-opcode {
+  background: rgba(245, 197, 66, 0.30);
+  color: #fef08a;
+  border-right-color: rgba(245, 197, 66, 0.50);
+}
+
+.enc-rd {
+  background: rgba(244, 114, 182, 0.25);
+  color: #fbcfe8;
+  border-right-color: rgba(244, 114, 182, 0.45);
+}
+
+.enc-funct3 {
+  background: rgba(45, 212, 191, 0.25);
+  color: #99f6e4;
+  border-right-color: rgba(45, 212, 191, 0.45);
+}
+
+.enc-rs1 {
+  background: rgba(167, 139, 250, 0.25);
+  color: #e9d5ff;
+  border-right-color: rgba(167, 139, 250, 0.45);
+}
+
+.enc-rs2 {
+  background: rgba(129, 140, 248, 0.25);
+  color: #c7d2fe;
+  border-right-color: rgba(129, 140, 248, 0.45);
+}
+
+.enc-funct7 {
+  background: rgba(96, 165, 250, 0.25);
+  color: #bfdbfe;
+  border-right-color: rgba(96, 165, 250, 0.45);
+}
+
+.enc-var {
+  background: rgba(51, 65, 85, 0.60);
+  color: #f8fafc;
+  border-right-color: rgba(71, 85, 105, 0.60);
+}
+
+/* ── ISA Workspace ──────────────────────────────────────────────────────── */
+
+/**
+ * Workspace badge on tiles.
+ * - Hidden (opacity 0) by default
+ * - Appears on tile hover
+ * - Always visible when data-in-workspace="true" (extension is in workspace)
+ */
+/*
+ * The add/remove control on each extension tile.
+ *
+ * This used to be opacity:0, revealed only on tile hover. Combined with the
+ * button existing at all times, that made the ISA builder undiscoverable: you
+ * had to already know the feature was there, and happen to hover a tile, to
+ * find out you could add extensions.
+ *
+ * It is now rendered only while builder mode is switched on (see the
+ * `builderMode` gate in risc_v_visualizer.jsx), so it no longer has to hide to
+ * keep the default browsing view clean — when it is present, it should be seen.
+ */
+.workspace-tile-btn {
+  opacity: 1;
+  transition: opacity 0.12s ease, background 0.15s ease, border-color 0.15s ease,
+              transform 0.12s ease;
+  line-height: 1;
+  /* Entrance, so switching the builder on visibly changes the page. */
+  animation: workspaceTileBtnIn 0.18s ease-out both;
+}
+
+@keyframes workspaceTileBtnIn {
+  from { opacity: 0; transform: scale(0.6); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Hovering the tile lifts the control slightly, as a hit-target affordance. */
+.ext-tile:hover .workspace-tile-btn {
+  transform: scale(1.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workspace-tile-btn { animation: none; }
+  .ext-tile:hover .workspace-tile-btn { transform: none; }
+}
+
+/* Panel slide-in animation (fallback — WorkspacePanel now inlines its own) */
+@keyframes slideInRight {
+  from { transform: translateX(40px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* ─── Light theme ────────────────────────────────────────────────────────────
+   Pastel rather than plain white: a warm off-white ground with a violet cast,
+   cards lifted to pure white so they read as surfaces rather than holes, and
+   accents desaturated to sit on light without glaring.
+
+   Contrast measured against the ground, not eyeballed:
+     text    #2b2a3d  12.93:1   AAA
+     text-2  #5c5a72   6.14:1   AA body
+     text-3  #6b6a87   4.81:1   AA body
+     violet  #6d5bd0   4.78:1   AA body
+     gold    #8f6408   4.86:1   AA body
+   ────────────────────────────────────────────────────────────────────────── */
+:root[data-theme='light'] {
+  --riscv-bg: #f7f5fb;
+  /* Catalogue chip accents, one step down the ramp from their dark
+     counterparts. Measured on white: 4.75:1 (orange) through 6.55:1 (violet),
+     so the least legible of them still clears body text. Hue order is preserved
+     because the chip colour is chosen by hashing the extension id. */
+  /* 5.53:1 and 5.30:1 on white. The locked gold goes olive rather than pale,
+     because fading it toward the ground is what made it unreadable at 1.34:1. */
+  --riscv-info: #0369a1;
+  --riscv-gold-locked: #7a6a3d;
+
+  --riscv-accent-1: #7c3aed;
+  --riscv-accent-2: #be185d;
+  --riscv-accent-3: #0f766e;
+  --riscv-accent-4: #1d4ed8;
+  --riscv-accent-5: #8f6408;
+  --riscv-accent-6: #047857;
+  --riscv-accent-7: #c2410c;
+  --riscv-accent-8: #6d28d9;
+  --riscv-accent-9: #b91c1c;
+
+  /* Pure white, so the panel lifts off the warm ground the same way cards do.
+     Left dark, it kept every token-coloured label dark-on-dark: the panel title
+     measured 1.4:1. */
+  --riscv-panel: #ffffff;
+  --riscv-surface: #ffffff;
+  --riscv-surface-2: #f2eff9;
+  --riscv-border: #e4dff1;
+  --riscv-border-2: #d5cfe8;
+  --riscv-muted: #c3bcdd;
+
+  /* Darker than it looks like it should be, and deliberately so. Gold is an
+     inherently light hue, so at #a8760a it measured 3.69:1 against the header
+     plate and 3.99:1 on white, both under the 4.5:1 floor. Luminance has to
+     drop to about 0.166 to clear 4.5:1 on a near-white surface; this sits at
+     0.152. Only the text colour moved, so the dim and glow tints below keep
+     the original warmth for borders and halos. */
+  --riscv-gold: #8f6408;
+  --riscv-gold-dim: rgba(168, 118, 10, 0.10);
+  --riscv-gold-glow: rgba(168, 118, 10, 0.18);
+
+  --riscv-violet: #6d5bd0;
+  --riscv-violet-dim: rgba(109, 91, 208, 0.10);
+
+  --riscv-title-a: #8a5a00;
+  --riscv-title-b: #b8860b;
+
+  --riscv-success: #14866a;
+  --riscv-danger: #c2334d;
+  --riscv-warn: #b06f05;
+
+  --riscv-text: #2b2a3d;
+  --riscv-text-2: #5c5a72;
+  /* Was #807ea0, which is fine for the large, incidental text this token was
+     scoped to but fails at the 11px labels the builder panel uses it for
+     (3.88:1 on white). Darkened to clear 4.5:1 as body text. */
+  --riscv-text-3: #6b6a87;
+
+  --riscv-tint-1: rgba(45, 40, 80, 0.02);
+  --riscv-tint-2: rgba(45, 40, 80, 0.035);
+  --riscv-tint-3: rgba(45, 40, 80, 0.06);
+  --riscv-tint-4: rgba(45, 40, 80, 0.11);
+  --riscv-hairline: rgba(45, 40, 80, 0.08);
+  --riscv-plate: rgba(255, 255, 255, 0.75);
+
+  --riscv-check: #15803d;
+  --riscv-check-fill: rgba(21, 128, 61, 0.14);
+  --riscv-check-edge: rgba(21, 128, 61, 0.45);
+
+  /* Encoding field colours, pulled toward pastel so the diagram stays legible
+     on white without the neon look the dark theme wants. */
+  --field-opcode: #b7860c;
+  --field-rd: #c2568f;
+  --field-funct3: #12897e;
+  --field-rs1: #7159c4;
+  --field-rs2: #5866c0;
+  --field-funct7: #2f74b8;
+  --field-var: #b9b4cc;
+}
+
+/* Cards need a real edge on light; on dark the glow did that work. */
+:root[data-theme='light'] .riscv-card,
+:root[data-theme='light'] .riscv-card-2 {
+  box-shadow: 0 1px 2px rgba(45, 40, 80, 0.05), 0 6px 18px rgba(45, 40, 80, 0.05);
+}
+
+:root[data-theme='light'] .ext-tile:hover {
+  box-shadow: 0 0 0 2px var(--riscv-border-2), 0 10px 22px rgba(45, 40, 80, 0.10);
+}
+
+/* The selected-tile glow is a dark-theme effect; on light a soft amber wash
+   reads better than a halo. */
+:root[data-theme='light'] .ext-tile-active {
+  box-shadow: 0 0 0 2px var(--riscv-gold), 0 8px 24px rgba(168, 118, 10, 0.14) !important;
+  background: rgba(168, 118, 10, 0.05);
+}
+
+:root[data-theme='light'] .workspace-tile-btn {
+  backdrop-filter: none;
+}
+
+/* Encoding cells: light pastel fills with darker ink, mirroring the dark theme
+   rather than inheriting its translucent-on-black assumptions. */
+:root[data-theme='light'] .enc-opcode { background: #fdf3d8; color: #6b4c05; border-right-color: #e8cf94; }
+:root[data-theme='light'] .enc-rd     { background: #fce4f0; color: #7d2d55; border-right-color: #eeb9d4; }
+:root[data-theme='light'] .enc-funct3 { background: #d8f3ef; color: #0c5c54; border-right-color: #9dd9d0; }
+:root[data-theme='light'] .enc-rs1    { background: #e8e2fb; color: #45338c; border-right-color: #c3b6ef; }
+:root[data-theme='light'] .enc-rs2    { background: #e2e6fb; color: #33408c; border-right-color: #b6c0ef; }
+:root[data-theme='light'] .enc-funct7 { background: #ddecfb; color: #1d4f80; border-right-color: #a9cbec; }
+:root[data-theme='light'] .enc-var    { background: #ecebf2; color: #4a4860; border-right-color: #cfccdd; }
+
+/* Tile families in light mode.
+   The colorClass props are hardcoded Tailwind dark palettes — bg-*-950/30 with
+   text-*-100 — which on a light ground give pale text on a pale wash. These
+   override by family, keeping the colour coding while making it readable.
+   Every pairing below is at least 4.5:1. */
+:root[data-theme='light'] .ext-tile[class*='amber-'] {
+  background: #fdf4de !important; color: #7a5406 !important; border-color: #efdcae !important;
+}
+:root[data-theme='light'] .ext-tile[class*='blue-'] {
+  background: #e9f1fe !important; color: #1d4a80 !important; border-color: #c5daf7 !important;
+}
+:root[data-theme='light'] .ext-tile[class*='cyan-'] {
+  background: #e2f6f9 !important; color: #0f5a68 !important; border-color: #b7e4ec !important;
+}
+:root[data-theme='light'] .ext-tile[class*='emerald-'] {
+  background: #e4f6ec !important; color: #12603f !important; border-color: #b8e3cd !important;
+}
+:root[data-theme='light'] .ext-tile[class*='fuchsia-'] {
+  background: #fbe9fa !important; color: #7a2570 !important; border-color: #eec2ec !important;
+}
+:root[data-theme='light'] .ext-tile[class*='indigo-'] {
+  background: #eceafc !important; color: #3b338f !important; border-color: #cbc4f2 !important;
+}
+:root[data-theme='light'] .ext-tile[class*='orange-'] {
+  background: #fdefe1 !important; color: #8a4a08 !important; border-color: #f2d4b6 !important;
+}
+:root[data-theme='light'] .ext-tile[class*='pink-'] {
+  background: #fce9f1 !important; color: #8a2a53 !important; border-color: #f0c2d5 !important;
+}
+:root[data-theme='light'] .ext-tile[class*='purple-'] {
+  background: #f2eafc !important; color: #5b2b8f !important; border-color: #d9c5f2 !important;
+}
+:root[data-theme='light'] .ext-tile[class*='red-'] {
+  background: #fdeaea !important; color: #8c2230 !important; border-color: #f3c3c3 !important;
+}
+:root[data-theme='light'] .ext-tile[class*='sky-'] {
+  background: #e6f3fd !important; color: #14557f !important; border-color: #bcdcf5 !important;
+}
+:root[data-theme='light'] .ext-tile[class*='teal-'] {
+  background: #e0f5f1 !important; color: #0d5d51 !important; border-color: #b3e2d8 !important;
+}
+:root[data-theme='light'] .ext-tile[class*='violet-'] {
+  background: #efeafc !important; color: #4b2f9c !important; border-color: #d3c5f3 !important;
+}
+
+/* Tailwind's light slate text is baked into the markup in ~33 places and is
+   invisible on a light ground. Rather than rewrite each call site, remap the
+   four shades in use to theme tokens. The dark theme keeps Tailwind's values,
+   so nothing changes there. */
+:root[data-theme='light'] .text-slate-50,
+:root[data-theme='light'] .text-slate-100 { color: var(--riscv-text) !important; }
+:root[data-theme='light'] .text-slate-200 { color: var(--riscv-text) !important; }
+:root[data-theme='light'] .text-slate-300 { color: var(--riscv-text-2) !important; }
+:root[data-theme='light'] .text-slate-400 { color: var(--riscv-text-2) !important; }
+:root[data-theme='light'] .text-slate-500 { color: var(--riscv-text-3) !important; }
+:root[data-theme='light'] .text-white { color: var(--riscv-text) !important; }
+
+/* Panels and toolbars that painted a dark plate inline keep their own colour;
+   these are the containers that read as holes on light. */
+:root[data-theme='light'] .riscv-card,
+:root[data-theme='light'] .riscv-card-2 {
+  background: var(--riscv-surface);
+  border-color: var(--riscv-border);
+}
+
+/* Sidebar Details Panel explicit Tailwind overrides for light theme */
+:root[data-theme='light'] .bg-slate-900 { background: var(--riscv-surface-2) !important; }
+:root[data-theme='light'] .bg-slate-800,
+:root[data-theme='light'] .bg-slate-800\/70 { background: var(--riscv-surface) !important; }
+:root[data-theme='light'] .border-slate-700 { border-color: var(--riscv-border-2) !important; }
+:root[data-theme='light'] .border-slate-600 { border-color: var(--riscv-border) !important; }
+:root[data-theme='light'] .hover\:border-slate-500:hover { border-color: var(--riscv-muted) !important; }
+
+/* Instruction Set Snapshot buttons & headings for light theme */
+:root[data-theme='light'] .text-emerald-400 { color: var(--riscv-success) !important; }
+:root[data-theme='light'] .text-emerald-200 { color: #12603f !important; }
+:root[data-theme='light'] .border-emerald-400 { border-color: #b8e3cd !important; }
+:root[data-theme='light'] .bg-emerald-500\/10 { background: #e4f6ec !important; }
+
+:root[data-theme='light'] .text-yellow-300 { color: var(--riscv-warn) !important; }
+:root[data-theme='light'] .text-yellow-200 { color: #8a4a08 !important; }
+:root[data-theme='light'] .border-yellow-400 { border-color: #f2d4b6 !important; }
+:root[data-theme='light'] .bg-yellow-500\/10 { background: #fdefe1 !important; }
+
+:root[data-theme='light'] .text-red-200 { color: #8c2230 !important; }
+:root[data-theme='light'] .border-red-400,
+:root[data-theme='light'] .border-red-500\/60 { border-color: #f3c3c3 !important; }
+:root[data-theme='light'] .bg-red-500\/10,
+:root[data-theme='light'] .bg-red-500\/5 { background: #fdeaea !important; }
+
+:root[data-theme='light'] .text-sky-300 { color: #1d4f80 !important; }
+:root[data-theme='light'] .text-purple-300 { color: var(--riscv-violet) !important; }
+
+/* Grouped Filters Container buttons (Profile/Volume) */
+:root[data-theme='light'] .hover\:text-slate-200:hover { color: #3730a3 !important; }
+:root[data-theme='light'] .hover\:bg-slate-800\/50:hover { background: #e0e7ff !important; }
+:root[data-theme='light'] .bg-slate-700\/50 { background: #4f46e5 !important; color: #ffffff !important; border-color: #4338ca !important; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25) !important; }
+
+/* Encoder Validator button */
+:root[data-theme='light'] .text-indigo-300,
+:root[data-theme='light'] .text-indigo-300\/70 { color: #4338ca !important; }
+:root[data-theme='light'] .hover\:text-indigo-300:hover { color: #312e81 !important; }
+:root[data-theme='light'] .bg-indigo-500\/20 { background: #e0e7ff !important; }
+:root[data-theme='light'] .hover\:bg-indigo-500\/10:hover { background: #c7d2fe !important; }
+:root[data-theme='light'] .border-indigo-500\/20,
+:root[data-theme='light'] .border-indigo-500\/30 { border-color: #a5b4fc !important; }
+
+/* ISA Configuration Builder button */
+:root[data-theme='light'] .builder-btn-off {
+  background: #1e293b !important; /* slate-800 */
+  color: #fbbf24 !important; /* bright amber-400 */
+  border-color: rgba(245, 158, 11, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+:root[data-theme='light'] .builder-btn-off:hover {
+  background: #334155 !important; /* slate-700 */
+  color: #fcd34d !important; /* bright amber-300 */
+}
+
+:root[data-theme='light'] .builder-badge-off {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #fbbf24 !important; /* match text */
+}
+:root[data-theme='light'] .builder-badge-on {
+  background: rgba(0, 0, 0, 0.3) !important;
+  color: #fef3c7 !important;
+}
+
+/* Builder Toolbar Container */
+:root[data-theme='light'] .builder-toolbar {
+  background: #ffffff !important;
+  border-color: #fcd34d !important;
+  box-shadow: 0 8px 32px rgba(245, 197, 66, 0.2) !important;
+}
+
+/* Section heading accents.
+   The 15 group headings ("Base ISA", "Atomics (Za/Zic*)", ...) carry their
+   accent as an inline hex, picked as a 400-level Tailwind tone for a dark
+   background. On the pastel surface every one of them measured between
+   1.54:1 and 2.76:1, so the whole set was failing the 4.5:1 floor.
+
+   A filter rather than 15 hand-picked replacements, for two reasons: an inline
+   style outranks any colour rule we could write here, and darkening in place
+   keeps each hue distinguishable, which is the entire point of colour-coding
+   the groups. Measured across all 15: min 5.17:1, max 7.81:1.
+
+   :has() lets one rule catch the icon alongside its heading, so the two do not
+   drift apart. New sections inherit this automatically. */
+:root[data-theme='light'] div:has(> h3.uppercase.tracking-widest) {
+  filter: brightness(0.5) saturate(1.5);
+}
+
+/* Builder popover menus (profile picker, quick export).
+   These live in a class rather than inline styles specifically so the light
+   override below can reach them: an inline style outranks a stylesheet rule,
+   which is why both menus stayed dark when the rest of the toolbar went light. */
+.builder-menu {
+  background: linear-gradient(145deg, #1a1f2e 0%, #141824 100%);
+  border: 1px solid rgba(245, 197, 66, 0.25);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55), 0 0 0 1px var(--riscv-tint-2) inset;
+}
+
+:root[data-theme='light'] .builder-menu {
+  background: #ffffff;
+  border-color: #fcd34d;
+  /* Matches the toolbar's warm lift. A black drop shadow reads as grime
+     against the pastel background. */
+  box-shadow: 0 12px 32px rgba(245, 197, 66, 0.22), 0 0 0 1px rgba(45, 40, 80, 0.04) inset;
+}
+
+/* Toolbar Action Button - Amber (Open Panel) */
+:root[data-theme='light'] .builder-action-amber.text-amber-300 { color: #d97706 !important; }
+:root[data-theme='light'] .builder-action-amber:hover { background: #fef3c7 !important; color: #b45309 !important; box-shadow: none !important; }
+
+/* Toolbar Action Button - Indigo (Profile Menu) */
+:root[data-theme='light'] .builder-action-indigo.text-indigo-300 { color: #4338ca !important; }
+:root[data-theme='light'] .builder-action-indigo:hover { background: #e0e7ff !important; color: #3730a3 !important; box-shadow: none !important; }
+
+/* Toolbar Action Button - Rose (Clear) */
+:root[data-theme='light'] .builder-action-rose.text-rose-300 { color: #e11d48 !important; }
+:root[data-theme='light'] .builder-action-rose:hover { background: #ffe4e6 !important; color: #be123c !important; box-shadow: none !important; }
+
+/* Toolbar Action Button - Emerald (Export) */
+:root[data-theme='light'] .builder-action-emerald.text-emerald-300 { color: #059669 !important; }
+:root[data-theme='light'] .builder-action-emerald:hover { background: #d1fae5 !important; color: #047857 !important; box-shadow: none !important; }
+

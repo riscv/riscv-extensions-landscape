@@ -1,0 +1,93 @@
+name: DCO
+
+# Checks that every commit in a pull request carries a Signed-off-by trailer,
+# as described in CONTRIBUTING.md.
+#
+# Deliberately a plain script rather than a third-party action. It is a page of
+# git, and a sign-off gate is not worth granting a token to code we do not
+# control.
+
+on:
+  pull_request:
+
+jobs:
+  check-sign-off:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # The PR head itself, not the synthetic merge commit, and with enough
+          # history to walk back to the base.
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Every commit is signed off
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -uo pipefail
+
+          # Merge commits are excluded: GitHub generates them rather than the
+          # contributor authoring them, so there is nothing for them to certify.
+          mapfile -t commits < <(git rev-list --no-merges "$BASE_SHA..$HEAD_SHA")
+
+          if [ "${#commits[@]}" -eq 0 ]; then
+            echo "no non-merge commits to check"
+            exit 0
+          fi
+
+          fail=0
+          for sha in "${commits[@]}"; do
+            subject=$(git log -1 --format=%s "$sha")
+            author=$(git log -1 --format='%an <%ae>' "$sha")
+
+            mapfile -t signoffs < <(
+              git log -1 --format=%B "$sha" \
+                | sed -n 's/^[[:space:]]*Signed-off-by:[[:space:]]*//p' \
+                | sed 's/[[:space:]]*$//'
+            )
+
+            if [ "${#signoffs[@]}" -eq 0 ]; then
+              echo "FAIL  ${sha:0:8}  $subject"
+              echo "        no Signed-off-by trailer"
+              fail=1
+              continue
+            fi
+
+            # The sign-off must be the author's own. Accepting any sign-off would
+            # let a commit be certified on someone else's behalf.
+            matched=0
+            for line in "${signoffs[@]}"; do
+              if [ "$line" = "$author" ]; then matched=1; break; fi
+            done
+
+            if [ "$matched" -eq 1 ]; then
+              echo "ok    ${sha:0:8}  $subject"
+            else
+              echo "FAIL  ${sha:0:8}  $subject"
+              echo "        author:     $author"
+              echo "        signed off: ${signoffs[*]}"
+              fail=1
+            fi
+          done
+
+          if [ "$fail" -ne 0 ]; then
+            echo ""
+            echo "---"
+            echo "One or more commits lack a matching Signed-off-by line."
+            echo ""
+            echo "Signing off certifies the Developer Certificate of Origin,"
+            echo "which is in the DCO file at the root of this repository."
+            echo ""
+            echo "  most recent commit:  git commit --amend -s"
+            echo "  a whole branch:      git rebase --signoff origin/main"
+            echo "  then:                git push --force-with-lease"
+            echo ""
+            echo "The name and email in the sign-off must match the commit author."
+            echo "---"
+            exit 1
+          fi
+
+          echo "all ${#commits[@]} commit(s) signed off"

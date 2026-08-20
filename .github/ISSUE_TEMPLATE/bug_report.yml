@@ -1,0 +1,50 @@
+name: Bug report
+description: Something in the application does not work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For a wrong dependency, a missing instruction, or a bad encoding, please
+        use the **ISA data correction** template instead. It asks for the source
+        citation that makes the fix verifiable.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you got instead.
+      placeholder: |
+        1. Selected RV64I, then V
+        2. Expected Zve64d to be pulled in
+        3. Nothing was added and the -march string did not change
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and operating system
+      placeholder: Chrome 128 on macOS 15
+    validations:
+      required: true
+
+  - type: textarea
+    id: console
+    attributes:
+      label: Console output
+      description: >
+        Anything in the browser console, if there is something. Optional, but it
+        often turns a guess into a diagnosis.
+      render: text
+
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Theme
+      description: Only relevant if the problem is visual.
+      options:
+        - Not relevant
+        - Dark
+        - Light
+        - Both

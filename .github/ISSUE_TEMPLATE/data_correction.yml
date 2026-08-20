@@ -1,0 +1,54 @@
+name: ISA data correction
+description: A dependency, instruction, encoding, or profile is wrong or missing
+labels: [data]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Corrections are welcome, and are the most valuable kind of report this
+        project gets. A citation is what makes one actionable: with a source we
+        can fix it with confidence, and without one we are guessing against the
+        same specification you are reading.
+
+  - type: input
+    id: extension
+    attributes:
+      label: Extension, instruction, or profile
+      placeholder: Zvfhmin, or FENCE.I, or RVA23U64
+    validations:
+      required: true
+
+  - type: textarea
+    id: incorrect
+    attributes:
+      label: What is shown, and what it should be
+      placeholder: |
+        Shown:    Zfa requires Zfh
+        Expected: Zfa has no dependency on Zfh
+    validations:
+      required: true
+
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: >
+        The specification section, the riscv-unified-db file, or the
+        riscv-opcodes entry that supports the correction. A link or a quoted
+        clause both work.
+      placeholder: |
+        Unprivileged ISA Manual, section on Zfa
+        or: riscv-unified-db/spec/std/isa/ext/Zfa.yaml
+    validations:
+      required: true
+
+  - type: dropdown
+    id: where
+    attributes:
+      label: Which data does this affect
+      description: If you are not sure, leave it unanswered.
+      options:
+        - Not sure
+        - Dependencies or conflicts (isa-dependency-graph.json)
+        - Instructions or encodings (riscv_extensions.json)
+        - Profiles (profiles.js)

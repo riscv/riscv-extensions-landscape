@@ -1,0 +1,127 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    # The default is 6 hours. A hung step burned two full runs before this.
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Tests
+        run: npm test
+
+      # Validates generated -march strings against a real toolchain rather than
+      # against our own model of the spec. This caught a case the unit tests
+      # missed: excluding F for an E base while keeping D produced a string
+      # clang rejects ("ILP32E cannot be used with the D ISA extension").
+      #
+      # The distro clang only. Pulling clang-20 from apt.llvm.org was tried and
+      # reverted: the step hung to the 6-hour job limit, twice. `timeout` did not
+      # save it, because the `sudo` child survives the signal and keeps the
+      # step's stdout pipe open, so the runner waits regardless. A validation
+      # step is not worth a third-party host on the critical path.
+      #
+      # The cost is that ubuntu-24.04 ships clang 18, which rejects Ssccptr and
+      # calls Zcmop experimental — both ratified, both in RVA23/RVB23. Those four
+      # profile strings are tagged `modern` in the matrix and skipped here. Their
+      # shape is covered by tests/profiles.test.mjs, which asserts no satp mode
+      # is emitted, and they were checked against clang 21 by hand.
+      # Use the compiler the runner already has. ubuntu-24.04 ships clang, and
+      # every attempt to install one has cost us a build: apt.llvm.org hung to
+      # the 6-hour limit twice, and `apt-get install clang` then hung to the
+      # 20-minute cap. apt is only a fallback now, and a bounded one.
+      - name: Find clang
+        run: |
+          set -uo pipefail
+          if ! command -v clang >/dev/null; then
+            echo "no preinstalled clang; trying apt with a time limit"
+            timeout 300 bash -c 'sudo apt-get update -qq && sudo apt-get install -y -qq clang' \
+              || echo "::warning::apt install failed or timed out"
+          fi
+          if command -v clang >/dev/null; then
+            clang --version | head -1
+            echo "CLANG=clang" >> "$GITHUB_ENV"
+          else
+            echo "::error::no clang available; the -march strings cannot be validated"
+            exit 1
+          fi
+          echo "CLANG_TIER=core" >> "$GITHUB_ENV"
+      - name: Validate -march strings with clang
+        run: |
+          set -uo pipefail
+          "$CLANG" --version | head -1
+          echo "tier: $CLANG_TIER"
+          fail=0 checked=0 skipped=0
+          while IFS=$'\t' read -r target march tier; do
+            if [ "$tier" = modern ] && [ "$CLANG_TIER" != modern ]; then
+              echo "skip  $march  <- needs a newer clang than this job has"
+              skipped=$((skipped+1))
+              continue
+            fi
+            checked=$((checked+1))
+            if "$CLANG" --target="$target" -march="$march" -x c /dev/null -fsyntax-only 2>/tmp/err; then
+              echo "ok    $march"
+            else
+              echo "FAIL  $march  <- $(head -1 /tmp/err)"
+              fail=1
+            fi
+          done < <(node scripts/emit-march-matrix.mjs)
+          echo "checked=$checked skipped=$skipped"
+          # Skipping everything would make this step pass while testing nothing.
+          if [ "$checked" -lt 30 ]; then
+            echo "::error::only $checked strings were checked; the matrix or the tier gate is broken"
+            fail=1
+          fi
+          exit $fail
+
+  # Publishes to the gh-pages branch, which is what Pages serves. Gated on
+  # build-and-test so only tested code reaches the live site, and restricted to
+  # pushes on main so pull requests never publish.
+  deploy:
+    needs: build-and-test
+    timeout-minutes: 10
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: gh-pages
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Publish dist/ to gh-pages
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -d dist || { echo "dist/ was not produced by the build"; exit 1; }
+          touch dist/.nojekyll
+          cd dist
+          git init -q
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "deploy: ${GITHUB_SHA::8} from main"
+          git push -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:gh-pages
+          echo "published ${GITHUB_SHA::8} to gh-pages"

@@ -1,0 +1,122 @@
+/**
+ * Data integrity checks for src/riscv_extensions.json.
+ *
+ * These run with Node's built-in test runner (`node --test`) so the repo
+ * gains test coverage without adding a test framework dependency.
+ *
+ * The catalog is the single source of truth for the whole app: the landscape
+ * view, the encoder diagrams, and (once the ISA workspace lands) dependency
+ * resolution and -march generation. A malformed entry here surfaces as a
+ * confusing UI bug far from its cause, so it is worth asserting the shape.
+ */
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const catalog = JSON.parse(
+  readFileSync(join(here, '..', 'src', 'riscv_extensions.json'), 'utf8'),
+);
+
+/** Flatten { category: [ext, ...] } into [[category, ext], ...] */
+function allExtensions() {
+  const out = [];
+  for (const [category, list] of Object.entries(catalog)) {
+    for (const ext of list) out.push([category, ext]);
+  }
+  return out;
+}
+
+test('catalog is a non-empty object of category -> array', () => {
+  assert.equal(typeof catalog, 'object');
+  assert.ok(!Array.isArray(catalog), 'top level must be an object, not an array');
+  const categories = Object.keys(catalog);
+  assert.ok(categories.length > 0, 'catalog has no categories');
+  for (const [name, list] of Object.entries(catalog)) {
+    assert.ok(Array.isArray(list), `category "${name}" is not an array`);
+  }
+});
+
+test('every extension has a non-empty id and name', () => {
+  for (const [category, ext] of allExtensions()) {
+    assert.ok(ext && typeof ext === 'object', `${category}: entry is not an object`);
+    assert.equal(typeof ext.id, 'string', `${category}: missing string id`);
+    assert.ok(ext.id.trim().length > 0, `${category}: empty id`);
+    assert.equal(typeof ext.name, 'string', `${ext.id}: missing string name`);
+    assert.ok(ext.name.trim().length > 0, `${ext.id}: empty name`);
+  }
+});
+
+test('extension ids are unique, case-insensitively', () => {
+  // marchUtils.buildLookup() keys extensions by id.toLowerCase(). Two entries
+  // whose ids differ only in case would silently overwrite each other there,
+  // so uniqueness must hold case-insensitively, not just exactly.
+  const seen = new Map();
+  const collisions = [];
+  for (const [category, ext] of allExtensions()) {
+    const key = ext.id.toLowerCase();
+    if (seen.has(key)) collisions.push(`${ext.id} (${category}) collides with ${seen.get(key)}`);
+    else seen.set(key, `${ext.id} (${category})`);
+  }
+  assert.deepEqual(collisions, [], `duplicate ids:\n  ${collisions.join('\n  ')}`);
+});
+
+test('instruction encodings are 16 or 32 bits of 0/1/-', () => {
+  const bad = [];
+  for (const [, ext] of allExtensions()) {
+    for (const [mnemonic, details] of Object.entries(ext.instructions ?? {})) {
+      const enc = details?.encoding;
+      if (typeof enc !== 'string') {
+        bad.push(`${ext.id}/${mnemonic}: encoding is not a string`);
+        continue;
+      }
+      if (!/^[01-]+$/.test(enc)) {
+        bad.push(`${ext.id}/${mnemonic}: encoding has characters outside [01-]`);
+      }
+      if (enc.length !== 32 && enc.length !== 16) {
+        bad.push(`${ext.id}/${mnemonic}: encoding is ${enc.length} bits (expected 16 or 32)`);
+      }
+    }
+  }
+  assert.deepEqual(bad, [], `malformed encodings:\n  ${bad.join('\n  ')}`);
+});
+
+test('instructions carry hex match/mask and an extension attribution', () => {
+  const bad = [];
+  for (const [, ext] of allExtensions()) {
+    for (const [mnemonic, details] of Object.entries(ext.instructions ?? {})) {
+      for (const field of ['match', 'mask']) {
+        const v = details?.[field];
+        if (typeof v !== 'string' || !/^0x[0-9a-fA-F]+$/.test(v)) {
+          bad.push(`${ext.id}/${mnemonic}: ${field} is not a hex string (got ${JSON.stringify(v)})`);
+        }
+      }
+      if (!Array.isArray(details?.extension) || details.extension.length === 0) {
+        bad.push(`${ext.id}/${mnemonic}: missing extension attribution`);
+      }
+      if (details?.variable_fields !== undefined && !Array.isArray(details.variable_fields)) {
+        bad.push(`${ext.id}/${mnemonic}: variable_fields is not an array`);
+      }
+    }
+  }
+  assert.deepEqual(bad, [], `malformed instruction fields:\n  ${bad.join('\n  ')}`);
+});
+
+test('match fits within mask', () => {
+  // A match bit set outside the mask can never be tested by a decoder, so it
+  // indicates a bad entry upstream in riscv-opcodes or in the sync script.
+  const bad = [];
+  for (const [, ext] of allExtensions()) {
+    for (const [mnemonic, details] of Object.entries(ext.instructions ?? {})) {
+      const { match, mask } = details ?? {};
+      if (typeof match !== 'string' || typeof mask !== 'string') continue;
+      if (!/^0x[0-9a-fA-F]+$/.test(match) || !/^0x[0-9a-fA-F]+$/.test(mask)) continue;
+      const m = BigInt(match);
+      const k = BigInt(mask);
+      if ((m & ~k) !== 0n) bad.push(`${ext.id}/${mnemonic}: match ${match} has bits outside mask ${mask}`);
+    }
+  }
+  assert.deepEqual(bad, [], `match/mask inconsistencies:\n  ${bad.join('\n  ')}`);
+});
