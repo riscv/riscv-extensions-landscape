@@ -9,6 +9,7 @@
     "deploy": "gh-pages -d dist --branch gh-pages --dotfiles",
     "graph:check": "node scripts/seed-dependency-graph.mjs --check --udb",
     "links:check": "node scripts/map-doc-links.mjs --check",
+    "opcodes:check": "node scripts/check-opcodes-drift.mjs",
     "predeploy": "npm run build",
     "sync": "node scripts/sync_instructions.mjs",
     "sync:check": "npm run sync -- --strict",

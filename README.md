@@ -78,7 +78,27 @@ Or check for drift without writing anything:
 npm run sync:check
 npm run graph:check -- <path-to-riscv-unified-db>
 npm run links:check
+npm run opcodes:check -- <path-to-riscv-opcodes>
 ```
+
+### What updates itself, and what does not
+
+| | how it refreshes |
+|---|---|
+| extension metadata, CSRs, ratification state | the `sync-udb-extensions` workflow, Mondays at 06:00 UTC, opens a PR |
+| the published site | any push to `main` rebuilds and publishes to `gh-pages` |
+| instruction encodings | **by hand.** The `check-opcodes-drift` workflow, Mondays at 07:00 UTC, files an issue when upstream is ahead |
+
+`src/instr_dict.json` is hand-maintained on purpose and is not regenerated from
+riscv-opcodes. It carries entries upstream does not: the 56 `vlseg` segment
+loads, which riscv-opcodes does not express at all, and the MOP and C.MOP
+encodings expanded from upstream's three `_n` templates. A regenerate would
+delete them, so the drift check reports and leaves the decision to a person.
+
+It compares mnemonics rather than encodings, ignores upstream's 172
+`$pseudo_op` aliases (`mv` is `addi rd, rs, 0`, an encoding we already carry),
+and counts `extensions/unratified/` separately rather than treating drafts as
+gaps to fill.
 
 ## Code layout
 

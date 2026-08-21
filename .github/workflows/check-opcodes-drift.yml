@@ -1,0 +1,136 @@
+name: Check riscv-opcodes Drift
+
+# Instruction encodings come from riscv-opcodes, but unlike the UDB sync this
+# job cannot fix what it finds. src/instr_dict.json is hand-maintained and holds
+# entries upstream does not (the vlseg family, the MOP expansions), so
+# regenerating it would delete them. This reports and files an issue instead.
+on:
+  # An hour after the UDB sync, so a person reading Monday's notifications sees
+  # extension metadata and instruction drift together, without both jobs cloning
+  # large repositories at the same moment.
+  schedule:
+    - cron: '0 7 * * 1'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: check-opcodes-drift
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout landscape repo
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Clone riscv-opcodes
+        id: opcodes
+        run: |
+          git clone --depth 1 https://github.com/riscv/riscv-opcodes.git ../riscv-opcodes
+          echo "sha=$(git -C ../riscv-opcodes rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+
+      - name: Check for drift
+        id: drift
+        run: |
+          # The script exits 1 when upstream has encodings we lack. That is a
+          # report, not a job failure, so capture the status rather than letting
+          # it end the run.
+          set +e
+          node scripts/check-opcodes-drift.mjs ../riscv-opcodes > drift.txt
+          status=$?
+          set -e
+          cat drift.txt
+          if [ "${status}" -eq 0 ]; then
+            echo "in_sync=true" >> "$GITHUB_OUTPUT"
+          elif [ "${status}" -eq 1 ]; then
+            echo "in_sync=false" >> "$GITHUB_OUTPUT"
+          else
+            # Exit 2 means the checkout was missing or unreadable. That is a real
+            # failure and must not be reported as drift.
+            echo "check-opcodes-drift failed with status ${status}"
+            exit "${status}"
+          fi
+
+      - name: Find any existing report
+        id: existing
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Match on a marker in the body, so an unrelated issue with a similar
+          # title cannot be mistaken for this report.
+          number=$(gh issue list --state open --label automated --limit 100 --json number,body \
+            --jq 'map(select(.body | contains("<!-- opcodes-drift-report -->"))) | .[0].number // empty')
+          echo "number=${number}" >> "$GITHUB_OUTPUT"
+
+      - name: Open or update the report
+        if: steps.drift.outputs.in_sync == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UPSTREAM_SHA: ${{ steps.opcodes.outputs.sha }}
+          EXISTING: ${{ steps.existing.outputs.number }}
+        run: |
+          {
+            echo "<!-- opcodes-drift-report -->"
+            echo "riscv-opcodes has ratified encodings that \`src/instr_dict.json\` does not carry."
+            echo
+            echo '```'
+            cat drift.txt
+            echo '```'
+            echo
+            echo "Upstream commit \`${UPSTREAM_SHA}\`. Reproduce locally:"
+            echo
+            echo '```'
+            echo "git clone --depth 1 https://github.com/riscv/riscv-opcodes.git ../riscv-opcodes"
+            echo "npm run opcodes:check"
+            echo '```'
+            echo
+            echo "**Not applied automatically.** \`src/instr_dict.json\` is hand-maintained"
+            echo "and holds entries upstream does not, so regenerating it from riscv-opcodes"
+            echo "would delete them. Add the new encodings by hand, run \`npm run sync\` to"
+            echo "route them onto the catalogue, then \`npm test\`."
+            echo
+            echo "Closed automatically once the two are back in sync."
+          } > body.md
+
+          if [ -n "${EXISTING}" ]; then
+            gh issue edit "${EXISTING}" --body-file body.md
+            gh issue comment "${EXISTING}" \
+              --body "Still drifting as of upstream \`${UPSTREAM_SHA}\`. Report updated."
+          else
+            gh issue create \
+              --title "riscv-opcodes has ratified encodings we do not carry" \
+              --body-file body.md \
+              --label automated,data-sync
+          fi
+
+      - name: Close the report once back in sync
+        if: steps.drift.outputs.in_sync == 'true' && steps.existing.outputs.number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXISTING: ${{ steps.existing.outputs.number }}
+        run: |
+          gh issue close "${EXISTING}" \
+            --comment "Back in sync with riscv-opcodes. Closing automatically."
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ -f drift.txt ]; then
+            {
+              echo '```'
+              cat drift.txt
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
