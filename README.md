@@ -23,6 +23,8 @@ get a dependency-resolved configuration with a valid `-march` string.
   compatible file.
 - **Check an encoding.** The Encoder Validator tests a proposed instruction
   pattern against every existing one and reports overlaps.
+- **See the encoding space.** The Encoding Map draws the 32 base opcode slots,
+  shaded by how many instructions each holds, and shows what is still free.
 - **Link out to the specification.** Each extension links to its section on
   docs.riscv.org.
 
@@ -93,7 +95,7 @@ npm run links:check
 ## Tests
 
 ```bash
-npm test        # 127 tests
+npm test        # 135 tests
 ```
 
 CI runs the tests, builds, then validates every generated `-march` string against
@@ -162,6 +164,19 @@ each other.
 Overlaps are reported as `identical`, `proposed_subset_of_existing`,
 `existing_subset_of_proposed`, or `partial_overlap`, each with a plain-language
 reason and an example 32-bit word that satisfies both patterns.
+
+## Encoding Map
+
+The **Encoding Map**, also in the header, answers the question the extension
+list cannot: how much of the base encoding space is spoken for. It lays the 32
+opcode slots out as the ISA manual does, rows `inst[4:2]` and columns
+`inst[6:5]`, with every cell implying `inst[1:0]=11`, and shades each by
+occupancy on a log scale. Compressed instructions sit outside that grid and are
+summarised by quadrant. Selecting a cell lists its instructions and links
+through to the extensions that define them.
+
+It is computed from `src/riscv_extensions.json` at runtime, so there is nothing
+to regenerate: sync the catalogue and the map follows.
 
 ## Deployment
 

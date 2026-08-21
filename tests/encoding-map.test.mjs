@@ -1,0 +1,130 @@
+/**
+ * The opcode map arithmetic.
+ *
+ * Worth pinning because the width rule is easy to get wrong in a way that still
+ * looks plausible. The first version classified an instruction as compressed
+ * when its mask fitted in 16 bits, which sounds reasonable until you notice an
+ * I-type mask of 0x707f is numerically below 0xffff. That filed ordinary 32-bit
+ * instructions into quadrant 3, which does not exist, and the totals still
+ * looked believable.
+ */
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { buildEncodingMap, distinctInstructions, isThirtyTwoBit, OPCODE_NAMES } from '../src/encodingMap.js';
+
+const here = path.dirname(new URL(import.meta.url).pathname);
+const catalog = JSON.parse(
+  fs.readFileSync(path.join(here, '..', 'src', 'riscv_extensions.json'), 'utf8'),
+);
+const instructions = distinctInstructions(catalog);
+const map = buildEncodingMap(catalog);
+
+test('width is decided by inst[1:0], not by the mask', () => {
+  // The contract, stated in bits: 11 is 32-bit, everything else is compressed.
+  assert.equal(isThirtyTwoBit(0b11n), true);
+  assert.equal(isThirtyTwoBit(0b00n), false);
+  assert.equal(isThirtyTwoBit(0b01n), false);
+  assert.equal(isThirtyTwoBit(0b10n), false);
+
+  // The regression, in real data. ADDI has a mask of 0x707f, comfortably under
+  // 0xffff, so a mask-width test calls it compressed. It is not.
+  const addi = instructions.find((i) => i.mnemonic === 'ADDI');
+  assert.ok(addi, 'ADDI missing from the catalogue');
+  assert.ok(addi.mask < 0x10000n, 'precondition: ADDI mask fits in 16 bits');
+  assert.equal(isThirtyTwoBit(addi.match), true, 'ADDI is a 32-bit instruction');
+
+  // And the genuine article: C.JAL, match 0x2001, quadrant 1.
+  const cjal = instructions.find((i) => i.mnemonic === 'C.JAL');
+  assert.ok(cjal, 'C.JAL missing from the catalogue');
+  assert.equal(isThirtyTwoBit(cjal.match), false, 'C.JAL is compressed');
+});
+
+test('the grid is the opcode map as the manual draws it', () => {
+  assert.equal(map.cells.length, 32, '8 rows of inst[4:2] by 4 columns of inst[6:5]');
+  assert.equal(new Set(map.cells.map((c) => c.opcode)).size, 32, 'no slot appears twice');
+  for (const cell of map.cells) {
+    assert.equal(cell.opcode & 0x3, 0x3, `${cell.name} must imply inst[1:0]=11`);
+    assert.ok(cell.row >= 0 && cell.row < 8, 'row is inst[4:2]');
+    assert.ok(cell.col >= 0 && cell.col < 4, 'col is inst[6:5]');
+    assert.equal(cell.opcode, (cell.col << 5) | (cell.row << 2) | 0x3, 'position matches opcode');
+  }
+});
+
+test('every instruction lands somewhere, exactly once', () => {
+  const { totals } = map;
+  assert.equal(
+    totals.thirtyTwoBit + totals.compressed, totals.distinct,
+    'each instruction is either 32-bit or compressed, never both or neither',
+  );
+  assert.equal(
+    map.cells.reduce((n, c) => n + c.count, 0), totals.thirtyTwoBit,
+    'the grid holds every 32-bit instruction and nothing else',
+  );
+  assert.equal(
+    map.quadrants.reduce((n, q) => n + q.count, 0), totals.compressed,
+    'the quadrants hold every compressed instruction',
+  );
+});
+
+test('quadrant 3 does not exist', () => {
+  // inst[1:0]=11 is the 32-bit encoding, so it cannot also be a quadrant. A
+  // populated quadrant 3 was the visible symptom of the mask-width bug.
+  assert.deepEqual(map.quadrants.map((q) => q.quadrant), [0, 1, 2]);
+});
+
+test('a mnemonic is counted once, however many extensions offer it', () => {
+  // ADD is in RV32I and in every umbrella containing it. Counting catalogue
+  // entries rather than distinct mnemonics would inflate occupancy.
+  const add = instructions.filter((i) => i.mnemonic === 'ADD');
+  assert.equal(add.length, 1, 'ADD should collapse to a single instruction');
+  assert.ok(add[0].extensions.length > 1, 'but should still record every extension offering it');
+  assert.equal(
+    new Set(instructions.map((i) => i.mnemonic)).size, instructions.length,
+    'no mnemonic appears twice',
+  );
+});
+
+test('known opcodes sit in their known slots', () => {
+  const byName = new Map(map.cells.map((c) => [c.name, c]));
+  // Fixed by the ISA, so these are safe to assert literally.
+  assert.equal(byName.get('LOAD').opcode, 0x03);
+  assert.equal(byName.get('OP-IMM').opcode, 0x13);
+  assert.equal(byName.get('OP').opcode, 0x33);
+  assert.equal(byName.get('SYSTEM').opcode, 0x73);
+  assert.equal(OPCODE_NAMES[0x57], 'OP-V');
+
+  const op = byName.get('OP');
+  assert.ok(op.instructions.some((i) => i.mnemonic === 'ADD'), 'ADD belongs to OP');
+  assert.ok(op.extensions.includes('RV32I'), 'and OP should credit the base ISA');
+});
+
+test('occupancy is reported honestly', () => {
+  const { totals } = map;
+  const occupied = map.cells.filter((c) => c.count > 0).length;
+  assert.equal(totals.occupiedSlots, occupied, 'the headline figure matches the cells');
+  assert.equal(totals.totalSlots, 32);
+  assert.ok(occupied > 0 && occupied < 32, 'some slots used, some still free');
+  assert.equal(
+    totals.busiest.count, Math.max(...map.cells.map((c) => c.count)),
+    'busiest really is the maximum',
+  );
+
+  // Ratchet, in the spirit of the catalogue coverage tests: a sync that quietly
+  // stopped delivering instructions would otherwise still produce a valid map.
+  assert.ok(totals.distinct > 1000, `expected over 1000 distinct instructions, found ${totals.distinct}`);
+  assert.ok(occupied >= 20, `expected at least 20 opcode slots in use, found ${occupied}`);
+});
+
+test('empty cells are real slots, not missing data', () => {
+  // The free slots are the interesting half of the map, so they must be present
+  // and nameable rather than simply absent from the grid.
+  const empty = map.cells.filter((c) => c.count === 0);
+  assert.ok(empty.length > 0, 'the encoding space is not full');
+  for (const cell of empty) {
+    assert.ok(cell.name, `slot 0x${cell.opcode.toString(16)} has no name`);
+    assert.deepEqual(cell.instructions, []);
+    assert.deepEqual(cell.extensions, []);
+  }
+});

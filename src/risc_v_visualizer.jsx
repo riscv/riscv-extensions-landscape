@@ -6,6 +6,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   Copy,
+  Grid3x3,
   Link2,
   ChevronLeft,
   ChevronRight,
@@ -41,6 +42,7 @@ import {
   Moon,
 } from 'lucide-react';
 import extensions from './riscv_extensions.json';
+import EncodingMap from './EncodingMap.jsx';
 import WorkspacePanel from './WorkspacePanel.jsx';
 import ExtensionTile from './ExtensionTile.jsx';
 // INCOMPATIBLE_WITH is no longer imported here: conflicts now come back from
@@ -743,6 +745,7 @@ const RISCVExplorer = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchMatches, setSearchMatches] = useState(null);
   const [encoderValidatorOpen, setEncoderValidatorOpen] = useState(false);
+  const [encodingMapOpen, setEncodingMapOpen] = useState(false);
   const [encoderValidatorInput, setEncoderValidatorInput] = useState({
     mnemonic: '',
     encoding: '',
@@ -1930,6 +1933,25 @@ const RISCVExplorer = () => {
                       className="text-indigo-400/80 group-hover:text-indigo-300 transition-colors"
                     />
                     <span className="whitespace-nowrap">Encoder Validator</span>
+                  </button>
+
+                  {/* Beside the validator because they answer neighbouring
+                      questions: one checks a proposed encoding, the other
+                      shows where the space it would occupy already is. */}
+                  <button
+                    type="button"
+                    onClick={() => setEncodingMapOpen(true)}
+                    aria-haspopup="dialog"
+                    aria-expanded={encodingMapOpen}
+                    className="group inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-300 whitespace-nowrap border hover:opacity-90"
+                    // Tokens, not Tailwind amber: text-amber-300 has no light-theme
+                    // remapping and measured 1.33:1 on the pastel ground.
+                    style={{ color: 'var(--riscv-gold)', borderColor: 'var(--riscv-gold-glow)', background: 'var(--riscv-gold-dim)' }}
+                    data-tooltip="See how the 32-bit opcode space is allocated"
+                    title="See how the 32-bit opcode space is allocated"
+                  >
+                    <Grid3x3 size={14} className="opacity-80" />
+                    <span className="whitespace-nowrap">Encoding Map</span>
                   </button>
 
                   {/* Theme toggle relocated to header */}
@@ -3606,6 +3628,16 @@ const RISCVExplorer = () => {
           </div>
         </footer>
       </div>
+
+      <EncodingMap
+        open={encodingMapOpen}
+        onClose={() => setEncodingMapOpen(false)}
+        catalog={extensions}
+        onSelectExtension={(id) => {
+          const target = Object.values(extensions).flat().find((e) => e && e.id === id);
+          if (target) handleSelectExt(target);
+        }}
+      />
 
       {encoderValidatorOpen && (
         <div className="fixed inset-0 z-50">

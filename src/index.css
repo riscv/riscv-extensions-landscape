@@ -17,6 +17,7 @@
   --riscv-muted: #414157;
 
   --riscv-gold: #f5c542;
+  --riscv-heat-span: 55%;
   --riscv-gold-dim: rgba(245, 197, 66, 0.12);
   --riscv-gold-glow: rgba(245, 197, 66, 0.20);
 
@@ -34,7 +35,10 @@
 
   --riscv-text: #e2e8f0;
   --riscv-text-2: #aab8ca;
-  --riscv-text-3: #6f7f95;
+  /* Nudged up from #6f7f95, which measured 4.17:1 against the card surface and
+     so missed the 4.5:1 floor for body text. It is the muted token, used for
+     section labels and empty-state text, so it has to clear the bar too. */
+  --riscv-text-3: #7d8da3;
 
   /* Overlay tints. Components paint subtle washes with rgba(255,255,255,0.0x),
      which is invisible on a light ground. Routing them through tokens lets one
@@ -485,6 +489,8 @@ pre,
      0.152. Only the text colour moved, so the dim and glow tints below keep
      the original warmth for borders and halos. */
   --riscv-gold: #8f6408;
+  /* Gentler on light: the mix darkens toward the ink rather than away from it. */
+  --riscv-heat-span: 24%;
   --riscv-gold-dim: rgba(168, 118, 10, 0.10);
   --riscv-gold-glow: rgba(168, 118, 10, 0.18);
 
@@ -700,6 +706,16 @@ pre,
 :root[data-theme='light'] .builder-badge-on {
   background: rgba(0, 0, 0, 0.3) !important;
   color: #fef3c7 !important;
+}
+
+/* Encoding-map heat cells.
+   The span differs per theme because --riscv-gold inverts: it is bright on the
+   dark ground and dark on the light one. A single mix percentage therefore
+   produces a dark cell with dark ink in light mode, which measured 1.5:1. */
+.heat-cell {
+  background: color-mix(in srgb, var(--riscv-gold) calc(12% + var(--heat, 0) * var(--riscv-heat-span)), transparent);
+  border-color: var(--riscv-gold-glow);
+  color: var(--riscv-text);
 }
 
 /* Builder Toolbar Container */
