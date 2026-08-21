@@ -52,6 +52,39 @@ export const OPCODE_NAMES = {
 };
 
 /**
+ * What an unused slot is actually reserved for.
+ *
+ * The nine free slots are the most interesting part of the map and they are not
+ * interchangeable. Drawn as one undifferentiated grey they read as spare
+ * capacity, which three quarters of them are not.
+ *
+ * OP-P is the one that needs sourcing rather than assertion: the slot is
+ * allocated to the packed-SIMD extension, and P is unratified, which is why we
+ * carry no instructions for it. riscv-opcodes files it under
+ * extensions/unratified/rv_p. So the slot is spoken for, not free.
+ */
+export const FREE_SLOT_KINDS = {
+  vendor:
+    'Vendor custom space. Reserved for non-standard extensions and never allocated by RISC-V International.',
+  reserved: 'Reserved by the specification. Not available for use.',
+  wide: 'Reserved for instructions longer than 32 bits, which this map does not cover.',
+  unratified:
+    'Allocated to an extension that is not ratified, so the catalogue carries no instructions for it.',
+};
+
+const FREE_SLOT_CATEGORIES = {
+  0x0b: 'vendor', // custom-0
+  0x2b: 'vendor', // custom-1
+  0x7b: 'vendor', // custom-3
+  0x6b: 'reserved',
+  0x1f: 'wide', // 48b
+  0x3f: 'wide', // 64b
+  0x5f: 'wide', // 48b
+  0x7f: 'wide', // 80b+
+  0x5b: 'unratified', // OP-P
+};
+
+/**
  * Collapse the catalogue to distinct instructions.
  *
  * A mnemonic appears under several extensions (ADD is in RV32I and in every
@@ -141,10 +174,17 @@ export function buildEncodingMap(catalog) {
         opcode,
         row,
         col,
+        // The coordinates as bits, so the grid can be read like the manual's
+        // table rather than requiring the reader to redo the arithmetic.
+        rowBits: row.toString(2).padStart(3, '0'),
+        colBits: col.toString(2).padStart(2, '0'),
         name: OPCODE_NAMES[opcode] || 'unassigned',
         count: held.length,
         instructions: held,
         extensions: [...new Set(held.flatMap((i) => i.extensions))].sort(),
+        // Only meaningful when the slot is empty. An occupied slot needs no
+        // explanation: its instructions are the explanation.
+        category: held.length === 0 ? (FREE_SLOT_CATEGORIES[opcode] ?? 'unassigned') : null,
       });
     }
   }
@@ -167,6 +207,11 @@ export function buildEncodingMap(catalog) {
       occupiedSlots,
       totalSlots: cells.length,
       busiest: cells.reduce((a, b) => (b.count > a.count ? b : a), cells[0]),
+      // How the free space breaks down, so "9 slots left" cannot be read as
+      // "9 slots available". Most of it is not.
+      freeByKind: cells
+        .filter((c) => c.count === 0)
+        .reduce((acc, c) => ({ ...acc, [c.category]: (acc[c.category] ?? 0) + 1 }), {}),
     },
   };
 }

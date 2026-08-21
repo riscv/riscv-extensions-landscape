@@ -17,7 +17,6 @@
   --riscv-muted: #414157;
 
   --riscv-gold: #f5c542;
-  --riscv-heat-span: 55%;
   --riscv-gold-dim: rgba(245, 197, 66, 0.12);
   --riscv-gold-glow: rgba(245, 197, 66, 0.20);
 
@@ -489,8 +488,6 @@ pre,
      0.152. Only the text colour moved, so the dim and glow tints below keep
      the original warmth for borders and halos. */
   --riscv-gold: #8f6408;
-  /* Gentler on light: the mix darkens toward the ink rather than away from it. */
-  --riscv-heat-span: 24%;
   --riscv-gold-dim: rgba(168, 118, 10, 0.10);
   --riscv-gold-glow: rgba(168, 118, 10, 0.18);
 
@@ -708,14 +705,46 @@ pre,
   color: #fef3c7 !important;
 }
 
-/* Encoding-map heat cells.
-   The span differs per theme because --riscv-gold inverts: it is bright on the
-   dark ground and dark on the light one. A single mix percentage therefore
-   produces a dark cell with dark ink in light mode, which measured 1.5:1. */
-.heat-cell {
-  background: color-mix(in srgb, var(--riscv-gold) calc(12% + var(--heat, 0) * var(--riscv-heat-span)), transparent);
-  border-color: var(--riscv-gold-glow);
-  color: var(--riscv-text);
+/* Encoding map.
+   Row label plus the four inst[6:5] columns. One template shared by the header
+   row and every data row keeps the cells aligned under their headers. */
+.encoding-grid {
+  display: grid;
+  grid-template-columns: 2.75rem repeat(4, minmax(0, 1fr));
+  gap: 0.375rem;
+}
+
+/* Every slot gets the same surface, whatever it holds.
+   An earlier version shaded the cell by occupancy. Because --riscv-gold is
+   bright on the dark theme, the busiest cells became pale plates under pale
+   text and contrast collapsed exactly where the data mattered: OP-V measured
+   2.56:1, and seven more cells failed with it. Density moved to the bar below,
+   so text contrast is now constant and independent of the data. */
+.slot-cell {
+  background: var(--riscv-tint-1);
+  border-width: 1px;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.slot-cell:hover {
+  background: var(--riscv-tint-3);
+}
+
+.slot-bar-track {
+  display: block;
+  flex: 1 1 auto;
+  height: 5px;
+  min-width: 0;
+  border-radius: 999px;
+  background: var(--riscv-tint-4);
+  overflow: hidden;
+}
+
+.slot-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--riscv-gold);
 }
 
 /* Builder Toolbar Container */

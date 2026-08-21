@@ -12,7 +12,13 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { buildEncodingMap, distinctInstructions, isThirtyTwoBit, OPCODE_NAMES } from '../src/encodingMap.js';
+import {
+  buildEncodingMap,
+  distinctInstructions,
+  isThirtyTwoBit,
+  FREE_SLOT_KINDS,
+  OPCODE_NAMES,
+} from '../src/encodingMap.js';
 
 const here = path.dirname(new URL(import.meta.url).pathname);
 const catalog = JSON.parse(
@@ -126,5 +132,54 @@ test('empty cells are real slots, not missing data', () => {
     assert.ok(cell.name, `slot 0x${cell.opcode.toString(16)} has no name`);
     assert.deepEqual(cell.instructions, []);
     assert.deepEqual(cell.extensions, []);
+  }
+});
+
+test('every free slot says what it is reserved for', () => {
+  // Drawn as one undifferentiated grey, the free slots read as spare capacity.
+  // Almost none of them is: they are vendor space, longer-than-32-bit
+  // encodings, an unratified allocation, and one outright reservation. An
+  // uncategorised slot would silently fall back to "unassigned" in the UI, so
+  // this fails rather than letting that pass.
+  const uncategorised = map.cells
+    .filter((c) => c.count === 0 && c.category === 'unassigned')
+    .map((c) => `${c.name} @ 0x${c.opcode.toString(16)}`);
+  assert.deepEqual(uncategorised, [], `free slots with no category:\n  ${uncategorised.join('\n  ')}`);
+
+  for (const cell of map.cells) {
+    if (cell.count > 0) {
+      assert.equal(cell.category, null, `${cell.name} is occupied and needs no category`);
+    } else {
+      assert.ok(FREE_SLOT_KINDS[cell.category], `${cell.name} has no description for ${cell.category}`);
+    }
+  }
+
+  // The tally the summary sentence is built from must match the cells.
+  const counted = Object.values(map.totals.freeByKind).reduce((a, b) => a + b, 0);
+  assert.equal(
+    counted, map.cells.filter((c) => c.count === 0).length,
+    'freeByKind must account for every free slot',
+  );
+});
+
+test('OP-P is free because P is unratified, not because it is spare', () => {
+  // Worth naming: the slot is allocated to packed SIMD, and riscv-opcodes files
+  // rv_p under extensions/unratified/. Calling it vendor space or reserved
+  // would misrepresent why the catalogue has nothing for it.
+  const opP = map.cells.find((c) => c.name === 'OP-P');
+  assert.ok(opP, 'OP-P is missing from the map');
+  assert.equal(opP.count, 0);
+  assert.equal(opP.category, 'unratified');
+});
+
+test('cells carry their coordinates as bits', () => {
+  // The grid is only readable as the manual prints it if a cell states its own
+  // position. Without these the reader has to redo the arithmetic.
+  for (const cell of map.cells) {
+    assert.equal(cell.rowBits, cell.row.toString(2).padStart(3, '0'));
+    assert.equal(cell.colBits, cell.col.toString(2).padStart(2, '0'));
+    // And the bits must reconstruct the opcode, which is the whole point.
+    const rebuilt = (parseInt(cell.colBits, 2) << 5) | (parseInt(cell.rowBits, 2) << 2) | 0b11;
+    assert.equal(rebuilt, cell.opcode, `${cell.name} coordinates do not rebuild its opcode`);
   }
 });
