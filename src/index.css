@@ -747,6 +747,17 @@ pre,
   background: var(--riscv-gold);
 }
 
+/* Reserve room for the widest count so the number cannot steal width from its
+   own bar. Without this a cell showing 349 had a 189px track while one showing
+   4 had 201px, so equal shares rendered as unequal lengths and the busiest
+   cells got the shortest tracks. */
+.slot-count {
+  flex: 0 0 auto;
+  width: 2.25rem;
+  text-align: right;
+  color: var(--riscv-text-2);
+}
+
 /* Builder Toolbar Container */
 :root[data-theme='light'] .builder-toolbar {
   background: #ffffff !important;

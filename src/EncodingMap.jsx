@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid3x3, X } from 'lucide-react';
-import { buildEncodingMap, FREE_SLOT_KINDS } from './encodingMap.js';
+import { barWidth, buildEncodingMap, FREE_SLOT_KINDS } from './encodingMap.js';
 
 /**
  * The RISC-V opcode map, drawn from the catalogue.
@@ -24,12 +24,6 @@ import { buildEncodingMap, FREE_SLOT_KINDS } from './encodingMap.js';
  * beside the bar when the bar is too short to compare.
  */
 
-/** Log scale, because OP-V holds 349 and the median occupied slot holds single digits. */
-function barWidth(count, max) {
-  if (count <= 0) return 0;
-  // Floor at 6% so a slot holding one instruction is still visibly not empty.
-  return 6 + (Math.log(count + 1) / Math.log(max + 1)) * 94;
-}
 
 const CATEGORY_LABEL = {
   vendor: 'vendor custom',
@@ -50,7 +44,7 @@ const CATEGORY_COLOUR = {
   unassigned: 'var(--riscv-text-3)',
 };
 
-function Cell({ cell, max, selected, onSelect }) {
+function Cell({ cell, total, selected, onSelect }) {
   const isFree = cell.count === 0;
   const colour = CATEGORY_COLOUR[cell.category] ?? 'var(--riscv-text-3)';
   const label = CATEGORY_LABEL[cell.category] ?? 'unassigned';
@@ -86,14 +80,13 @@ function Cell({ cell, max, selected, onSelect }) {
       ) : (
         <div className="flex items-center gap-1.5 mt-1">
           <span className="slot-bar-track" aria-hidden="true">
-            <span className="slot-bar-fill" style={{ width: `${barWidth(cell.count, max)}%` }} />
+            <span className="slot-bar-fill" style={{ width: `${barWidth(cell.count, total)}%` }} />
           </span>
-          <span
-            className="font-mono text-[10px] tabular-nums shrink-0"
-            style={{ color: 'var(--riscv-text-2)' }}
-          >
-            {cell.count}
-          </span>
+          {/* Fixed width, or the number steals track from its own bar: a cell
+              showing 349 had a 189px track while one showing 4 had 201px, so
+              equal shares rendered as unequal lengths and the busiest cells got
+              the shortest tracks. */}
+          <span className="slot-count font-mono text-[10px] tabular-nums">{cell.count}</span>
         </div>
       )}
     </button>
@@ -158,7 +151,6 @@ export default function EncodingMap({ open, onClose, catalog, onSelectExtension 
   if (!open || !map) return null;
 
   const { cells, quadrants, totals } = map;
-  const max = totals.busiest.count;
   const free = totals.freeByKind;
   const freeTotal = Object.values(free).reduce((a, b) => a + b, 0);
   const rows = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -202,7 +194,8 @@ export default function EncodingMap({ open, onClose, catalog, onSelectExtension 
                 style={{ color: 'var(--riscv-text-3)' }}
               >
                 The base opcode map, laid out as the ISA manual prints it. Every cell implies{' '}
-                <span className="font-mono">inst[1:0]=11</span>. Longer bars mean busier.
+                <span className="font-mono">inst[1:0]=11</span>. Each bar is the slot&rsquo;s share
+                of all {totals.thirtyTwoBit} 32-bit instructions.
               </p>
             </div>
             <button
@@ -236,7 +229,8 @@ export default function EncodingMap({ open, onClose, catalog, onSelectExtension 
               <span>
                 busiest is{' '}
                 <strong style={{ color: 'var(--riscv-text)' }}>{totals.busiest.name}</strong> with{' '}
-                {totals.busiest.count}
+                {totals.busiest.count}, or{' '}
+                {((totals.busiest.count / totals.thirtyTwoBit) * 100).toFixed(1)}% of them
               </span>
             </div>
 
@@ -286,7 +280,7 @@ export default function EncodingMap({ open, onClose, catalog, onSelectExtension 
                         <Cell
                           key={cell.opcode}
                           cell={cell}
-                          max={max}
+                          total={totals.thirtyTwoBit}
                           selected={selected?.opcode === cell.opcode}
                           onSelect={setSelected}
                         />

@@ -85,6 +85,34 @@ const FREE_SLOT_CATEGORIES = {
 };
 
 /**
+ * Bar length as a share of every 32-bit instruction.
+ *
+ * The denominator matters more than the curve, and the first two versions got
+ * it wrong in the same way. Both divided by the busiest slot, so a full bar
+ * meant "ties OP-V" — a circular reference that says nothing about the encoding
+ * space and that moves when a different slot gains instructions. A slot's bar
+ * would shrink because OP-V grew.
+ *
+ * Dividing by the total gives a real interval. A full bar means the slot holds
+ * every 32-bit instruction there is, the bars sum to the whole, and the figure
+ * is sayable: OP-V holds 30% of all 32-bit instructions.
+ *
+ * Linear, so length is proportional to count. The earlier log curve gave a slot
+ * holding one instruction 17% of the track and rendered a 349x difference as a
+ * 5.6x difference in length, which flattered the empty slots and hid how
+ * lopsided the space actually is.
+ */
+export function barWidth(count, total) {
+  if (count <= 0 || total <= 0) return 0;
+  const share = (count / total) * 100;
+  // A hairline so an occupied slot never reads as empty: one instruction is
+  // 0.09%, which rounds to nothing on a 171px track. Kept well below the
+  // smallest real share on the map (OP-VE at 1.83%) so the stub cannot be
+  // mistaken for a measurement. The exact count is printed alongside.
+  return Math.max(share, 0.8);
+}
+
+/**
  * Collapse the catalogue to distinct instructions.
  *
  * A mnemonic appears under several extensions (ADD is in RV32I and in every

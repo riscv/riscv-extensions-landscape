@@ -13,6 +13,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import {
+  barWidth,
   buildEncodingMap,
   distinctInstructions,
   isThirtyTwoBit,
@@ -170,6 +171,46 @@ test('OP-P is free because P is unratified, not because it is spare', () => {
   assert.ok(opP, 'OP-P is missing from the map');
   assert.equal(opP.count, 0);
   assert.equal(opP.category, 'unratified');
+});
+
+test('the bar measures share of the whole, not share of the busiest slot', () => {
+  // The defect this pins is a denominator, not a curve. Two earlier versions
+  // divided by the busiest slot, so a full bar meant "ties OP-V": circular, and
+  // unstable, because a slot's bar would shrink when a *different* slot gained
+  // instructions. Dividing by the total gives a fixed interval.
+  const total = map.totals.thirtyTwoBit;
+
+  // Proportional: doubling the count doubles the length.
+  assert.equal(barWidth(200, 1000), 20);
+  assert.equal(barWidth(400, 1000), 40);
+
+  // A slot holding everything fills the track. Nothing on this map does, which
+  // is the point: the endpoint is real rather than whatever the maximum happens
+  // to be today.
+  assert.equal(barWidth(total, total), 100);
+  const busiest = map.totals.busiest;
+  assert.ok(
+    barWidth(busiest.count, total) < 100,
+    `${busiest.name} should not fill the track: it holds ${busiest.count} of ${total}`,
+  );
+
+  // The regression itself. Under the old rule the busiest slot always measured
+  // 100% whatever it held, so these two would be equal.
+  assert.notEqual(barWidth(busiest.count, total), barWidth(total, total));
+
+  // And a slot's bar must not depend on any other slot. Same count, same width.
+  assert.equal(barWidth(40, total), barWidth(40, total));
+
+  // Empty stays empty; the stub is only for occupied slots.
+  assert.equal(barWidth(0, total), 0);
+  assert.equal(barWidth(1, total), 0.8, 'one instruction gets the hairline stub');
+  assert.ok(
+    barWidth(1, total) < barWidth(21, total),
+    'the stub must stay below the smallest real share, or it reads as a measurement',
+  );
+
+  // Guard against a zero denominator rather than emitting NaN into a style.
+  assert.equal(barWidth(5, 0), 0);
 });
 
 test('cells carry their coordinates as bits', () => {
