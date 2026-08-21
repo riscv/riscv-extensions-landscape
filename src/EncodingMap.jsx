@@ -24,12 +24,10 @@ import { barWidth, buildEncodingMap, FREE_SLOT_KINDS } from './encodingMap.js';
  * beside the bar when the bar is too short to compare.
  */
 
-
 const CATEGORY_LABEL = {
-  vendor: 'vendor custom',
+  vendor: 'custom',
   reserved: 'reserved',
   wide: '> 32-bit',
-  unratified: 'unratified',
   unassigned: 'unassigned',
 };
 
@@ -37,10 +35,6 @@ const CATEGORY_COLOUR = {
   vendor: 'var(--riscv-accent-4)',
   reserved: 'var(--riscv-text-3)',
   wide: 'var(--riscv-accent-8)',
-  // Not --riscv-warn: its light value #b06f05 measured 3.95:1 on the cell
-  // surface, under the 4.5:1 floor. accent-7 is the same warning register and
-  // clears it at 4.99:1.
-  unratified: 'var(--riscv-accent-7)',
   unassigned: 'var(--riscv-text-3)',
 };
 
@@ -193,9 +187,11 @@ export default function EncodingMap({ open, onClose, catalog, onSelectExtension 
                 className="text-[12px] mt-1"
                 style={{ color: 'var(--riscv-text-3)' }}
               >
-                The base opcode map, laid out as the ISA manual prints it. Every cell implies{' '}
-                <span className="font-mono">inst[1:0]=11</span>. Each bar is the slot&rsquo;s share
-                of all {totals.thirtyTwoBit} 32-bit instructions.
+                The base 32-bit opcode map. Every cell implies{' '}
+                <span className="font-mono">inst[1:0]=11</span>. Slot names and categories come from
+                the specification; the counts and bars come from this site&rsquo;s catalogue, so a
+                bar is a slot&rsquo;s share of the instruction definitions we carry, not a measure
+                of how much encoding space it consumes.
               </p>
             </div>
             <button
@@ -217,30 +213,31 @@ export default function EncodingMap({ open, onClose, catalog, onSelectExtension 
                 <strong style={{ color: 'var(--riscv-text)' }}>
                   {totals.occupiedSlots}/{totals.totalSlots}
                 </strong>{' '}
-                opcode slots used
+                major opcodes assigned to standard 32-bit classes
               </span>
               <span>
                 <strong style={{ color: 'var(--riscv-text)' }}>{totals.thirtyTwoBit}</strong> 32-bit
+                definitions
               </span>
               <span>
-                <strong style={{ color: 'var(--riscv-text)' }}>{totals.compressed}</strong>{' '}
-                compressed
+                <strong style={{ color: 'var(--riscv-text)' }}>{totals.compressed}</strong> with{' '}
+                <span className="font-mono">inst[1:0]≠11</span>
               </span>
               <span>
                 busiest is{' '}
-                <strong style={{ color: 'var(--riscv-text)' }}>{totals.busiest.name}</strong> with{' '}
-                {totals.busiest.count}, or{' '}
-                {((totals.busiest.count / totals.thirtyTwoBit) * 100).toFixed(1)}% of them
+                <strong style={{ color: 'var(--riscv-text)' }}>{totals.busiest.name}</strong>, with{' '}
+                {totals.busiest.count} of them (
+                {((totals.busiest.count / totals.thirtyTwoBit) * 100).toFixed(1)}%)
               </span>
             </div>
 
-            {/* The headline figure invites the wrong conclusion on its own: the
-                free slots are almost all spoken for. */}
+            {/* "23 of 32 assigned" invites the wrong conclusion on its own: the
+                remaining nine are allocated too, just not to standard classes. */}
             <p className="text-[11.5px] mb-4" style={{ color: 'var(--riscv-text-3)' }}>
-              The {freeTotal} unused slots are not spare capacity. {free.vendor ?? 0} are vendor
-              custom space, {free.wide ?? 0} are reserved for instructions longer than 32 bits,{' '}
-              {free.unratified ?? 0} is allocated to an unratified extension, and{' '}
-              {free.reserved ?? 0} is reserved outright. None is available for a new standard
+              The other {freeTotal} are not spare capacity. {free.vendor ?? 0} are custom opcodes,
+              set aside for non-standard extensions and avoided by future standard ones,{' '}
+              {free.wide ?? 0} are reserved for instructions longer than 32 bits, and{' '}
+              {free.reserved ?? 0} is reserved outright. None is available for a new standard 32-bit
               extension.
             </p>
 
@@ -295,7 +292,7 @@ export default function EncodingMap({ open, onClose, catalog, onSelectExtension 
               className="mt-3 flex flex-wrap gap-x-4 gap-y-1 items-center text-[10.5px]"
               style={{ color: 'var(--riscv-text-3)' }}
             >
-              {['vendor', 'wide', 'unratified', 'reserved'].map((kind) => (
+              {['vendor', 'wide', 'reserved'].map((kind) => (
                 <span key={kind} className="flex items-center gap-1">
                   <span
                     aria-hidden="true"
@@ -316,7 +313,11 @@ export default function EncodingMap({ open, onClose, catalog, onSelectExtension 
               className="mt-3 flex flex-wrap gap-2 items-center text-[11px]"
               style={{ color: 'var(--riscv-text-3)' }}
             >
-              <span>Compressed, outside the 32-bit map:</span>
+              {/* Not "compressed". RISC-V uses the low bits to encode
+                  instruction length, so inst[1:0]!=11 means "not 32 bits", which
+                  is a wider statement than "the C extension" once Zc* and other
+                  16-bit encodings are in the dataset. */}
+              <span>Definitions outside the 32-bit map:</span>
               {quadrants.map((q) => (
                 <span
                   key={q.quadrant}
@@ -331,6 +332,27 @@ export default function EncodingMap({ open, onClose, catalog, onSelectExtension 
                 </span>
               ))}
             </div>
+
+            {/* Name the dataset. Without this the counts read as properties of
+                the ISA, which they are not: a different selection of upstream
+                files, or a different upstream revision, gives different numbers.
+                The slot names and categories above are not affected, being
+                architectural. */}
+            <p className="mt-3 text-[10.5px]" style={{ color: 'var(--riscv-text-3)' }}>
+              Counts are instruction definitions in this site&rsquo;s catalogue, built from the
+              ratified files of{' '}
+              <a
+                href="https://github.com/riscv/riscv-opcodes"
+                target="_blank"
+                rel="noreferrer noopener"
+                style={{ color: 'var(--riscv-gold)' }}
+              >
+                riscv-opcodes
+              </a>{' '}
+              plus corrections recorded in the repository. One definition can constrain anything
+              from a handful of encodings to a large region of the slot, so these are not a measure
+              of encoding-space consumption.
+            </p>
 
             {selected && (
               <div

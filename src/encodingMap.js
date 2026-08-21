@@ -39,7 +39,10 @@ export const OPCODE_NAMES = {
   0x4f: 'NMADD',
   0x53: 'OP-FP',
   0x57: 'OP-V',
-  0x5b: 'OP-P',
+  // custom-2, not OP-P. The manual assigns all four custom opcodes
+  // 0x0b/0x2b/0x5b/0x7b, and P does not use this slot at all: riscv-opcodes
+  // encodes rv_p under OP-IMM, OP-IMM-32 and OP-32 (0x13, 0x1b, 0x3b).
+  0x5b: 'custom-2',
   0x5f: '48b',
   0x63: 'BRANCH',
   0x67: 'JALR',
@@ -52,36 +55,37 @@ export const OPCODE_NAMES = {
 };
 
 /**
- * What an unused slot is actually reserved for.
+ * What a slot with no standard 32-bit class is set aside for.
  *
- * The nine free slots are the most interesting part of the map and they are not
+ * These nine are the most interesting part of the map and they are not
  * interchangeable. Drawn as one undifferentiated grey they read as spare
- * capacity, which three quarters of them are not.
+ * capacity, which none of them is.
  *
- * OP-P is the one that needs sourcing rather than assertion: the slot is
- * allocated to the packed-SIMD extension, and P is unratified, which is why we
- * carry no instructions for it. riscv-opcodes files it under
- * extensions/unratified/rv_p. So the slot is spoken for, not free.
+ * This is architectural allocation, fixed by the specification, and it is a
+ * different question from whether our dataset happens to carry instructions for
+ * a slot. Conflating the two produced a real error: an earlier version labelled
+ * 0x5b "OP-P, unratified" on the strength of the name in the table alone. That
+ * was wrong twice over. The manual assigns 0x5b to custom-2, one of four custom
+ * opcodes, and P does not use the slot at all: riscv-opcodes encodes rv_p under
+ * OP-IMM, OP-IMM-32 and OP-32 (0x13, 0x1b, 0x3b).
  */
 export const FREE_SLOT_KINDS = {
   vendor:
-    'Vendor custom space. Reserved for non-standard extensions and never allocated by RISC-V International.',
+    'Custom space. The specification sets all four custom opcodes aside for non-standard extensions, and undertakes that future standard extensions will avoid them.',
   reserved: 'Reserved by the specification. Not available for use.',
   wide: 'Reserved for instructions longer than 32 bits, which this map does not cover.',
-  unratified:
-    'Allocated to an extension that is not ratified, so the catalogue carries no instructions for it.',
 };
 
 const FREE_SLOT_CATEGORIES = {
   0x0b: 'vendor', // custom-0
   0x2b: 'vendor', // custom-1
+  0x5b: 'vendor', // custom-2
   0x7b: 'vendor', // custom-3
   0x6b: 'reserved',
   0x1f: 'wide', // 48b
   0x3f: 'wide', // 64b
   0x5f: 'wide', // 48b
   0x7f: 'wide', // 80b+
-  0x5b: 'unratified', // OP-P
 };
 
 /**

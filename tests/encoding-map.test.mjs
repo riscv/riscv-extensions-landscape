@@ -163,14 +163,35 @@ test('every free slot says what it is reserved for', () => {
   );
 });
 
-test('OP-P is free because P is unratified, not because it is spare', () => {
-  // Worth naming: the slot is allocated to packed SIMD, and riscv-opcodes files
-  // rv_p under extensions/unratified/. Calling it vendor space or reserved
-  // would misrepresent why the catalogue has nothing for it.
-  const opP = map.cells.find((c) => c.name === 'OP-P');
-  assert.ok(opP, 'OP-P is missing from the map');
-  assert.equal(opP.count, 0);
-  assert.equal(opP.category, 'unratified');
+test('there are four custom opcodes, and 0x5b is one of them', () => {
+  // This encodes a correction. An earlier version named 0x5b "OP-P" and filed
+  // it as an unratified allocation, which was wrong twice over: the manual
+  // assigns 0x5b to custom-2, and P does not use the slot at all, encoding
+  // under OP-IMM, OP-IMM-32 and OP-32 (0x13, 0x1b, 0x3b) in riscv-opcodes. The
+  // mistake came from treating a name in our own table as a source, so the fix
+  // is pinned rather than merely applied.
+  const byOpcode = new Map(map.cells.map((c) => [c.opcode, c]));
+  for (const [i, opcode] of [0x0b, 0x2b, 0x5b, 0x7b].entries()) {
+    const cell = byOpcode.get(opcode);
+    assert.equal(cell.name, `custom-${i}`, `0x${opcode.toString(16)} should be custom-${i}`);
+    assert.equal(cell.category, 'vendor', `custom-${i} is custom space`);
+  }
+  assert.equal(map.totals.freeByKind.vendor, 4, 'all four custom opcodes counted');
+  assert.equal(map.cells.find((c) => c.name === 'OP-P'), undefined, 'nothing should claim to be OP-P');
+});
+
+test('the free-slot taxonomy describes the specification, not our dataset', () => {
+  // Whether we hold instructions for a slot is a fact about this catalogue;
+  // what the slot is set aside for is a fact about the specification. Only the
+  // second belongs in a category, which is why "unratified" is not one.
+  assert.deepEqual(
+    Object.keys(FREE_SLOT_KINDS).sort(), ['reserved', 'vendor', 'wide'],
+    'categories cover specification allocation only',
+  );
+  assert.deepEqual(
+    map.totals.freeByKind, { vendor: 4, wide: 4, reserved: 1 },
+    'four custom, four longer-than-32-bit, one reserved',
+  );
 });
 
 test('the bar measures share of the whole, not share of the busiest slot', () => {
