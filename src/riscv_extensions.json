@@ -21537,7 +21537,8 @@
           "match": "0x58002057",
           "mask": "0xfc00707f"
         }
-      }
+      },
+      "state": "frozen"
     },
     {
       "id": "Zvbb",
@@ -26824,7 +26825,8 @@
           "match": "0x3063",
           "mask": "0x707f"
         }
-      }
+      },
+      "state": "frozen"
     },
     {
       "id": "Zicntr",
@@ -28805,7 +28807,21 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2024-11"
+      "ratification_date": "2024-11",
+      "csrs": {
+        "sctrctl": {
+          "address": "334",
+          "priv_mode": "S",
+          "length": 64,
+          "desc": "Supervisor Control Transfer Records Control Register"
+        },
+        "vsctrctl": {
+          "address": "590",
+          "priv_mode": "VS",
+          "length": 64,
+          "desc": "Virtual Supervisor Control Transfer Records Control Register"
+        }
+      }
     },
     {
       "id": "Sddbltrp",
