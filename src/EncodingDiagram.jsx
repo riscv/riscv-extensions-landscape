@@ -168,9 +168,17 @@ export default function EncodingDiagram({ encoding, diffMask }) {
       </div>
 
       <div ref={scrollRef} className="overflow-x-auto">
-        <div className="inline-block pr-2">
+        <div className="block w-full">
           {/* Bit cells */}
-          <div className="inline-grid grid-flow-col auto-cols-[20px] rounded-md border border-[var(--riscv-border-2)] overflow-hidden">
+          {/* All 32 bits share the available width rather than each taking a
+              fixed 20px. At 20px the row was 640px wide, which does not fit the
+              detail panel, so reading an encoding meant scrolling a 32-cell
+              strip through a window a dozen cells wide — the one view where
+              seeing the whole word at once is the entire point.
+              minmax(0,1fr) lets the cells shrink; the min-width below keeps
+              them legible, and the scroller survives underneath it for
+              viewports narrower than that floor. */}
+          <div className="riscv-bit-row grid w-full rounded-md border border-[var(--riscv-border-2)] overflow-hidden">
             {normalized.split('').map((bit, i) => {
               const isVar = bit === '-';
               const isGroupEnd = (i + 1) % 4 === 0 && i !== 31;
@@ -183,7 +191,7 @@ export default function EncodingDiagram({ encoding, diffMask }) {
                   key={`${i}-${bit}`}
                   data-diff={isDiff ? '1' : undefined}
                   className={[
-                    'h-7 flex items-center justify-center font-mono text-[12px] font-medium border-r',
+                    'riscv-bit-cell h-7 flex items-center justify-center font-mono font-medium border-r',
                     fieldCls,
                     i === 31 ? 'border-r-0' : isGroupEnd ? 'border-r-2' : '',
                     isDiff ? 'riscv-bit-diff' : '',
