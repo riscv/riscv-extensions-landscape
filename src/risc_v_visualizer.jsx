@@ -18,6 +18,7 @@ import {
   Layers,
   Braces,
   FlaskConical,
+  PanelRightOpen,
   Bug,
   ExternalLink,
   Network,
@@ -37,7 +38,6 @@ import {
   KeyRound,
   Trash2,
   Download,
-  Maximize2,
   Sun,
   Moon,
   Columns,
@@ -2099,7 +2099,19 @@ const RISCVExplorer = () => {
                             onClick={() => setWorkspacePanelOpen(true)}
                             className={`builder-action-amber ${workspaceIds.size === 0 ? 'flex-none px-4' : 'flex-1'} flex items-center justify-center py-1.5 text-amber-300 hover:bg-amber-500/30 hover:text-amber-100 transition-all duration-300 rounded-lg hover:shadow-[0_0_12px_rgba(251,191,36,0.3)]`}
                           >
-                            <Maximize2 size={14} className="transition-transform hover:scale-110" />
+                            {/* PanelRightOpen, not Maximize2. The diagonal
+                                arrows are the universal "go fullscreen" gesture,
+                                but this opens a drawer that slides in from the
+                                right — the icon was describing the wrong motion.
+                                The label carries the rest: three unlabelled icons
+                                in a row make the reader guess, and this is the
+                                primary action of the three. */}
+                            <PanelRightOpen size={14} className="flex-shrink-0" />
+                            {workspaceIds.size > 0 && (
+                              <span className="ml-1.5 text-[11px] font-bold whitespace-nowrap hidden sm:inline">
+                                Open panel
+                              </span>
+                            )}
                           </button>
 
                           {/* Profile Menu */}
