@@ -54,6 +54,7 @@ import {
   parseInstructionKey,
   buildExtensionComparison,
   buildInstructionComparison,
+  buildProfileComparison,
   buildComparePermalink,
   parseComparePermalink,
 } from './compareModel.js';
@@ -525,6 +526,14 @@ const RISCVExplorer = () => {
     () => new Set(comparePermalinkSeed.kind === 'instr' ? comparePermalinkSeed.resolved : []),
   );
   const [compareKind, setCompareKind] = useState(comparePermalinkSeed.kind || 'ext');
+  // Compare mode keeps the pin affordances out of the way until asked for.
+  // A shared ?cmp= link switches it on at mount, so a comparison someone sent
+  // still opens for a reader who has never turned the mode on themselves.
+  const [compareMode, setCompareMode] = useState(comparePermalinkSeed.resolved.length > 0);
+  const [compareProfileNames, setCompareProfileNames] = useState(
+    () => new Set(comparePermalinkSeed.kind === 'profile' ? comparePermalinkSeed.resolved : []),
+  );
+  const [compareExpandDeps, setCompareExpandDeps] = useState(false);
   const [compareOpen, setCompareOpen] = useState(comparePermalinkSeed.resolved.length >= 2);
 
   // A shared comparison outlives the catalog it was made from. Unresolvable
@@ -1432,8 +1441,36 @@ const RISCVExplorer = () => {
     [showToast],
   );
 
+  const toggleCompareProfile = React.useCallback(
+    (name) => {
+      setCompareProfileNames((current) => {
+        const next = new Set(current);
+        if (next.has(name)) {
+          next.delete(name);
+          return next;
+        }
+        if (next.size >= COMPARE_MAX) {
+          showToast(`Comparison holds ${COMPARE_MAX} profiles at most`);
+          return current;
+        }
+        next.add(name);
+        return next;
+      });
+      setCompareKind('profile');
+    },
+    [showToast],
+  );
+
   const removeCompareItem = React.useCallback((kind, key) => {
-    const setter = kind === 'instr' ? setCompareInstrKeys : setCompareExtIds;
+    // Chosen inline rather than from a lookup object: a lookup declared in the
+    // render body would be a fresh object each render, captured stale by this
+    // empty-dependency callback.
+    const setter =
+      kind === 'instr'
+        ? setCompareInstrKeys
+        : kind === 'profile'
+          ? setCompareProfileNames
+          : setCompareExtIds;
     setter((current) => {
       const next = new Set(current);
       next.delete(key);
@@ -1443,6 +1480,7 @@ const RISCVExplorer = () => {
 
   const clearCompare = React.useCallback((kind) => {
     if (kind === 'instr') setCompareInstrKeys(new Set());
+    else if (kind === 'profile') setCompareProfileNames(new Set());
     else setCompareExtIds(new Set());
   }, []);
 
@@ -1463,6 +1501,7 @@ const RISCVExplorer = () => {
       workspaceIds,
       lockedExtensions,
       compareIds: compareExtIds,
+      compareMode,
       builderMode,
       isHighlighted,
       isDimmed,
@@ -1476,6 +1515,7 @@ const RISCVExplorer = () => {
       workspaceIds,
       lockedExtensions,
       compareExtIds,
+      compareMode,
       builderMode,
       isHighlighted,
       isDimmed,
@@ -1485,13 +1525,19 @@ const RISCVExplorer = () => {
     ],
   );
 
-  const compareKeys = React.useMemo(
-    () => (compareKind === 'instr' ? [...compareInstrKeys] : [...compareExtIds]),
-    [compareKind, compareInstrKeys, compareExtIds],
-  );
+  const comparePinnedTotal = compareExtIds.size + compareInstrKeys.size + compareProfileNames.size;
+
+  const compareKeys = React.useMemo(() => {
+    if (compareKind === 'instr') return [...compareInstrKeys];
+    if (compareKind === 'profile') return [...compareProfileNames];
+    return [...compareExtIds];
+  }, [compareKind, compareInstrKeys, compareProfileNames, compareExtIds]);
 
   const compareModel = React.useMemo(() => {
     if (compareKeys.length === 0) return null;
+    if (compareKind === 'profile') {
+      return buildProfileComparison(compareKeys, { expandDependencies: compareExpandDeps });
+    }
     if (compareKind === 'ext') {
       return buildExtensionComparison(
         compareKeys.map((id) => findExtensionById(id)).filter(Boolean),
@@ -1507,7 +1553,7 @@ const RISCVExplorer = () => {
         })
         .filter(Boolean),
     );
-  }, [compareKind, compareKeys]);
+  }, [compareKind, compareKeys, compareExpandDeps]);
 
   // Mirrors the existing `ext` permalink effect: replaceState, never push, so
   // pinning does not fill the back button with intermediate states.
@@ -1761,29 +1807,61 @@ const RISCVExplorer = () => {
                       </span>
                       <div className="flex flex-wrap gap-1.5">
                         {Object.keys(profiles).map((profile) => (
-                          <button
-                            key={profile}
-                            onClick={() =>
-                              setActiveProfile((current) => {
-                                // Profile and volume are mutually exclusive. With
-                                // both live, highlight matched either one while
-                                // dimming followed only the volume, so the grid
-                                // gave no clue which filter was acting.
-                                setActiveVolume(null);
-                                setSelectedInstruction(null);
-                                setSearchMatches(null);
-                                return current === profile ? null : profile;
-                              })
-                            }
-                            className={[
-                              'px-3 py-1.5 text-[12px] rounded-lg transition-all duration-200 font-medium',
-                              activeProfile === profile
-                                ? 'bg-slate-700/80 text-white shadow-inner border border-slate-500/50'
-                                : 'text-slate-300 hover:text-white hover:bg-slate-700/40 border border-transparent hover:border-slate-600/30',
-                            ].join(' ')}
-                          >
-                            {profile}
-                          </button>
+                          <span key={profile} className="inline-flex items-center">
+                            <button
+                              onClick={() =>
+                                setActiveProfile((current) => {
+                                  // Profile and volume are mutually exclusive. With
+                                  // both live, highlight matched either one while
+                                  // dimming followed only the volume, so the grid
+                                  // gave no clue which filter was acting.
+                                  setActiveVolume(null);
+                                  setSelectedInstruction(null);
+                                  setSearchMatches(null);
+                                  return current === profile ? null : profile;
+                                })
+                              }
+                              className={[
+                                'px-3 py-1.5 text-[12px] rounded-lg transition-all duration-200 font-medium',
+                                activeProfile === profile
+                                  ? 'bg-slate-700/80 text-white shadow-inner border border-slate-500/50'
+                                  : 'text-slate-300 hover:text-white hover:bg-slate-700/40 border border-transparent hover:border-slate-600/30',
+                              ].join(' ')}
+                            >
+                              {profile}
+                            </button>
+                            {/* Sibling, not nested: a button inside a button is
+                              invalid HTML and React warns about it. */}
+                            {compareMode && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleCompareProfile(profile);
+                                }}
+                                aria-pressed={compareProfileNames.has(profile)}
+                                className="ml-0.5 px-1 py-0.5 rounded border text-[11px]"
+                                style={{
+                                  borderColor: compareProfileNames.has(profile)
+                                    ? 'var(--riscv-check-edge)'
+                                    : 'var(--riscv-border-2)',
+                                  background: compareProfileNames.has(profile)
+                                    ? 'var(--riscv-check-fill)'
+                                    : 'var(--riscv-surface-2)',
+                                  color: compareProfileNames.has(profile)
+                                    ? 'var(--riscv-check)'
+                                    : 'var(--riscv-text-3)',
+                                }}
+                                title={
+                                  compareProfileNames.has(profile)
+                                    ? `Remove ${profile} from comparison`
+                                    : `Compare ${profile}`
+                                }
+                              >
+                                <Columns size={9} />
+                              </button>
+                            )}
+                          </span>
                         ))}
                       </div>
                     </div>
@@ -1870,6 +1948,52 @@ const RISCVExplorer = () => {
                   </button>
 
                   {/* Theme toggle relocated to header */}
+
+                  {/* Compare mode. Deliberately a mode rather than always-on
+                    affordances: a pin on every one of 227 tiles, every
+                    instruction chip and every profile button is a lot of
+                    permanent furniture for an occasional task. Turning it off
+                    hides the affordances and the tray but keeps the pinned set
+                    and the ?cmp= URL, so it never destroys a comparison. */}
+                  <button
+                    type="button"
+                    aria-pressed={compareMode}
+                    onClick={() => setCompareMode((v) => !v)}
+                    className={[
+                      'compare-mode-toggle relative inline-flex items-center gap-2 px-3 py-2 text-xs font-bold rounded-xl transition-all duration-300 whitespace-nowrap',
+                      compareMode
+                        ? 'bg-gradient-to-b from-violet-400 to-violet-500 text-slate-900 hover:from-violet-300 hover:to-violet-400'
+                        : 'bg-slate-800/80 text-violet-300/90 border border-violet-400/30 hover:bg-slate-700/80 hover:text-violet-200',
+                    ].join(' ')}
+                    style={{
+                      boxShadow: compareMode
+                        ? '0 4px 18px rgba(167,139,250,0.35)'
+                        : '0 2px 10px rgba(0,0,0,0.2)',
+                    }}
+                    data-tooltip={
+                      compareMode
+                        ? 'Compare mode is ON — pin extensions, instructions or profiles to compare them. Click here to turn off; pinned items are kept.'
+                        : 'Turn on Compare mode to pin extensions, instructions or profiles side by side'
+                    }
+                  >
+                    <Columns size={14} className="opacity-80 flex-shrink-0" />
+                    <span className="whitespace-nowrap hidden sm:inline">Compare</span>
+                    <span
+                      className={[
+                        'inline-flex items-center justify-center px-1.5 h-[16px] rounded-full text-[10px] font-black tracking-wide',
+                        compareMode
+                          ? 'bg-slate-900/75 text-violet-300'
+                          : 'bg-slate-900/60 text-slate-400',
+                      ].join(' ')}
+                    >
+                      {compareMode ? 'ON' : 'OFF'}
+                    </span>
+                    {comparePinnedTotal > 0 && (
+                      <span className="inline-flex items-center justify-center min-w-[18px] px-1 h-[18px] rounded-full text-[10px] font-black bg-slate-900/75 text-violet-300">
+                        {comparePinnedTotal}
+                      </span>
+                    )}
+                  </button>
 
                   {/* ISA Configuration Builder — fused action group */}
                   <div className="relative inline-flex items-stretch rounded-xl">
@@ -3592,6 +3716,8 @@ const RISCVExplorer = () => {
       <CompareTray
         extIds={compareExtIds}
         instrKeys={compareInstrKeys}
+        profileNames={compareProfileNames}
+        visible={compareMode}
         kind={compareKind}
         onKindChange={setCompareKind}
         onRemove={removeCompareItem}
@@ -3605,6 +3731,8 @@ const RISCVExplorer = () => {
         onClose={closeCompareView}
         onCopyMarkdown={copyCompareMarkdown}
         onCopyLink={copyCompareLink}
+        expandDeps={compareExpandDeps}
+        onToggleExpandDeps={setCompareExpandDeps}
       />
 
       {encoderValidatorOpen && (

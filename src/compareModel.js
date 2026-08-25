@@ -12,6 +12,7 @@
  * not in the view.
  */
 import { closure } from './isaGraph.js';
+import { PROFILES } from './profiles.js';
 
 /** Columns past this are refused rather than silently truncated. */
 export const COMPARE_MAX = 6;
@@ -187,8 +188,60 @@ export function buildInstructionComparison(items) {
   };
 }
 
-const KIND_FOR_PREFIX = { e: 'ext', i: 'instr' };
-const PREFIX_FOR_KIND = { ext: 'e', instr: 'i' };
+/**
+ * The extensions a profile mandates, optionally widened by the dependency graph.
+ *
+ * profiles.js is a faithful transcription of the profile specification and
+ * deliberately does NOT expand dependencies — the graph owns that. So the two
+ * modes answer different questions: the literal list is what the profile
+ * document enumerates, the expanded one is what a conforming implementation
+ * actually provides. A row reading "absent" means different things in each,
+ * which is why the view says which mode it is in rather than swapping silently.
+ */
+function profileExtensions(name, expandDependencies) {
+  const listed = PROFILES[name] || [];
+  if (!expandDependencies) return listed;
+  const out = new Set(listed);
+  for (const id of listed) for (const implied of closure(id)) out.add(implied);
+  return [...out];
+}
+
+/**
+ * @param {string[]} names profile ids, in the order the user pinned them
+ * @param {{expandDependencies?: boolean}} [options]
+ */
+export function buildProfileComparison(names, { expandDependencies = false } = {}) {
+  const kept = (names || []).filter((n) => PROFILES[n]);
+  const sets = kept.map((n) => new Set(profileExtensions(n, expandDependencies)));
+
+  // The union, sorted, so the row order is stable and independent of which
+  // profile happens to be pinned first.
+  const union = [...new Set(sets.flatMap((s) => [...s]))].sort();
+
+  const countRow = {
+    key: 'extension_count',
+    label: 'Extensions',
+    render: 'mono',
+    cells: sets.map((s) => s.size),
+  };
+
+  return {
+    kind: 'profile',
+    expandedDependencies: Boolean(expandDependencies),
+    columns: kept.map((n) => ({ key: n, label: n, sublabel: null })),
+    rows: [
+      { ...countRow, allSame: cellsAllSame(countRow.cells) },
+      ...union.map((id) => {
+        const cells = sets.map((s) => s.has(id));
+        return { key: `ext:${id}`, label: id, render: 'presence', cells, allSame: cellsAllSame(cells) };
+      }),
+    ],
+    bitDiff: null,
+  };
+}
+
+const KIND_FOR_PREFIX = { e: 'ext', i: 'instr', p: 'profile' };
+const PREFIX_FOR_KIND = { ext: 'e', instr: 'i', profile: 'p' };
 
 /**
  * Encodes a comparison for the `cmp` URL parameter.
@@ -240,7 +293,9 @@ export function parseComparePermalink(value, allExts) {
   for (const segment of segments) {
     let key = null;
 
-    if (kind === 'ext') {
+    if (kind === 'profile') {
+      key = Object.keys(PROFILES).find((n) => n.toLowerCase() === segment.toLowerCase()) || null;
+    } else if (kind === 'ext') {
       const ext = byExtId.get(segment.toLowerCase());
       if (ext) key = ext.id;
     } else {
@@ -280,7 +335,10 @@ export function parseComparePermalink(value, allExts) {
  * escaped because an unescaped one silently invents a column. `null` renders as
  * an em dash so an absent value reads as absent rather than as a gap.
  */
-function cellText(value) {
+function cellText(value, render) {
+  // Presence is a claim about membership, so it renders as a mark rather than
+  // the word "true" — and false must not fall through to String(false).
+  if (render === 'presence') return value ? '\u2713' : '—';
   if (value === null || value === undefined) return '—';
   const text = Array.isArray(value) ? value.join(', ') : String(value);
   const flat = text.replace(/\s*\n\s*/g, ' ').trim();
@@ -305,6 +363,8 @@ export function toMarkdown(model, { differencesOnly = false } = {}) {
   return [
     `| Attribute | ${headers.map(cellText).join(' | ')} |`,
     `| --- | ${headers.map(() => '---').join(' | ')} |`,
-    ...rows.map((r) => `| ${cellText(r.label)} | ${r.cells.map(cellText).join(' | ')} |`),
+    ...rows.map(
+      (r) => `| ${cellText(r.label)} | ${r.cells.map((c) => cellText(c, r.render)).join(' | ')} |`,
+    ),
   ].join('\n');
 }

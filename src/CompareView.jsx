@@ -16,12 +16,27 @@ import { toMarkdown } from './compareModel.js';
 import EncodingDiagram from './EncodingDiagram.jsx';
 
 function Cell({ row, value, bitDiff }) {
-  if (value === null || value === undefined) {
+  if (row.render !== 'presence' && (value === null || value === undefined)) {
     return <span style={{ color: 'var(--riscv-text-3)' }}>—</span>;
   }
 
   if (row.render === 'encoding') {
     return <EncodingDiagram encoding={value} diffMask={bitDiff} />;
+  }
+
+  if (row.render === 'presence') {
+    // A mark rather than the word "true": the question a presence row answers
+    // is "is this in the profile", and a column of `true`/`false` reads far
+    // worse across forty rows than a column of ticks and dashes.
+    return value ? (
+      <span aria-label="present" style={{ color: 'var(--riscv-check)' }}>
+        &#10003;
+      </span>
+    ) : (
+      <span aria-label="absent" style={{ color: 'var(--riscv-text-3)' }}>
+        &mdash;
+      </span>
+    );
   }
 
   if (row.render === 'chips') {
@@ -65,7 +80,15 @@ function Cell({ row, value, bitDiff }) {
   return <span className="text-[12px] leading-snug">{value}</span>;
 }
 
-export default function CompareView({ open, model, onClose, onCopyMarkdown, onCopyLink }) {
+export default function CompareView({
+  open,
+  model,
+  onClose,
+  onCopyMarkdown,
+  onCopyLink,
+  expandDeps,
+  onToggleExpandDeps,
+}) {
   const [differencesOnly, setDifferencesOnly] = React.useState(false);
   const dialogRef = React.useRef(null);
   const restoreFocusRef = React.useRef(null);
@@ -100,7 +123,12 @@ export default function CompareView({ open, model, onClose, onCopyMarkdown, onCo
 
   const rows = differencesOnly ? model.rows.filter((r) => !r.allSame) : model.rows;
   const differing = model.rows.filter((r) => !r.allSame).length;
-  const heading = model.kind === 'instr' ? 'Compare instructions' : 'Compare extensions';
+  const heading =
+    model.kind === 'instr'
+      ? 'Compare instructions'
+      : model.kind === 'profile'
+        ? 'Compare profiles'
+        : 'Compare extensions';
   const gridColumns = `minmax(140px, 180px) repeat(${model.columns.length}, minmax(260px, 1fr))`;
 
   return (
@@ -136,7 +164,12 @@ export default function CompareView({ open, model, onClose, onCopyMarkdown, onCo
                 className="font-mono normal-case tracking-normal text-[11px]"
                 style={{ color: 'var(--riscv-text-3)' }}
               >
-                {differing} of {model.rows.length} attributes differ
+                {differing} of {model.rows.length}{' '}
+                {model.kind === 'profile' ? 'rows' : 'attributes'} differ
+                {model.kind === 'profile' &&
+                  (model.expandedDependencies
+                    ? ' \u00b7 including implied extensions'
+                    : ' \u00b7 as listed in the specification')}
               </span>
             </h2>
 
@@ -152,6 +185,20 @@ export default function CompareView({ open, model, onClose, onCopyMarkdown, onCo
                 />
                 Show only differences
               </label>
+              {model.kind === 'profile' && (
+                <label
+                  className="inline-flex items-center gap-1.5 text-[11px]"
+                  style={{ color: 'var(--riscv-text-2)' }}
+                  title="profiles.js lists what the specification enumerates. Expanding runs each list through the dependency graph to show what a conforming implementation actually provides."
+                >
+                  <input
+                    type="checkbox"
+                    checked={Boolean(expandDeps)}
+                    onChange={(e) => onToggleExpandDeps(e.target.checked)}
+                  />
+                  Include implied extensions
+                </label>
+              )}
               <button
                 type="button"
                 className="riscv-btn px-2 py-1 text-[11px] inline-flex items-center gap-1"

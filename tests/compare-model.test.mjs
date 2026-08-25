@@ -24,6 +24,7 @@ import {
   buildComparePermalink,
   parseComparePermalink,
   toMarkdown,
+  buildProfileComparison,
 } from '../src/compareModel.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -329,4 +330,97 @@ test('a newline inside a description does not break the row', () => {
 test('an empty model exports nothing rather than a headerless table', () => {
   assert.equal(toMarkdown(buildExtensionComparison([])), '');
   assert.equal(toMarkdown(null), '');
+});
+
+// ---------------------------------------------------------------------------
+// Profile comparison
+// ---------------------------------------------------------------------------
+
+import { PROFILES } from '../src/profiles.js';
+
+test('the profile model has one row per extension across the union, sorted', () => {
+  const model = buildProfileComparison(['RVA20', 'RVA22']);
+  assert.equal(model.kind, 'profile');
+  assert.deepEqual(model.columns.map((c) => c.key), ['RVA20', 'RVA22']);
+
+  const union = [...new Set([...PROFILES.RVA20, ...PROFILES.RVA22])].sort();
+  const presenceRows = model.rows.filter((r) => r.render === 'presence');
+  assert.deepEqual(presenceRows.map((r) => r.label), union);
+});
+
+test('a summary row reports each profile\'s extension count', () => {
+  const model = buildProfileComparison(['RVA20', 'RVA22']);
+  const counts = model.rows.find((r) => r.key === 'extension_count');
+  assert.ok(counts, 'expected an extension_count row');
+  assert.deepEqual(counts.cells, [PROFILES.RVA20.length, PROFILES.RVA22.length]);
+  assert.equal(counts.allSame, false, 'RVA20 and RVA22 list different numbers');
+});
+
+test('an extension in every profile is dimmed, one that differs is not', () => {
+  const model = buildProfileComparison(['RVA20', 'RVA22']);
+  const rowFor = (id) => model.rows.find((r) => r.render === 'presence' && r.label === id);
+
+  // RV64I is mandatory in both.
+  assert.equal(rowFor('RV64I').allSame, true);
+  assert.deepEqual(rowFor('RV64I').cells, [true, true]);
+
+  // Zba arrived with RVA22.
+  const added = PROFILES.RVA22.filter((id) => !PROFILES.RVA20.includes(id));
+  assert.ok(added.length > 0, 'expected RVA22 to add something over RVA20');
+  const row = rowFor(added[0]);
+  assert.equal(row.allSame, false);
+  assert.deepEqual(row.cells, [false, true]);
+});
+
+test('comparing a profile with itself marks every row as agreeing', () => {
+  const model = buildProfileComparison(['RVA23', 'RVA23']);
+  assert.deepEqual(model.rows.filter((r) => !r.allSame).map((r) => r.key), []);
+});
+
+test('expanding dependencies widens the union and never narrows it', () => {
+  const literal = buildProfileComparison(['RVA20', 'RVA22']);
+  const expanded = buildProfileComparison(['RVA20', 'RVA22'], { expandDependencies: true });
+
+  const ids = (m) => m.rows.filter((r) => r.render === 'presence').map((r) => r.label);
+  const literalIds = new Set(ids(literal));
+  for (const id of literalIds) {
+    assert.ok(ids(expanded).includes(id), `${id} vanished when dependencies were expanded`);
+  }
+  assert.ok(
+    ids(expanded).length >= literalIds.size,
+    'expansion should not produce fewer extensions than the spec lists',
+  );
+  assert.equal(expanded.expandedDependencies, true);
+  assert.equal(literal.expandedDependencies, false);
+});
+
+test('an unknown profile name is skipped rather than throwing', () => {
+  assert.doesNotThrow(() => buildProfileComparison(['RVA20', 'NOPE']));
+  const model = buildProfileComparison(['RVA20', 'NOPE']);
+  assert.deepEqual(model.columns.map((c) => c.key), ['RVA20']);
+  assert.equal(buildProfileComparison([]).columns.length, 0);
+  assert.doesNotThrow(() => buildProfileComparison(undefined));
+});
+
+test('a profile comparison round-trips through the permalink', () => {
+  const encoded = buildComparePermalink('profile', ['RVA22', 'RVA23']);
+  assert.equal(encoded, 'p:RVA22,RVA23');
+  const parsed = parseComparePermalink(encoded, allExts);
+  assert.equal(parsed.kind, 'profile');
+  assert.deepEqual(parsed.resolved, ['RVA22', 'RVA23']);
+  assert.deepEqual(parsed.dropped, []);
+});
+
+test('profile names resolve case-insensitively and unknown ones are dropped', () => {
+  const parsed = parseComparePermalink('p:rva22,NOPE,RVB23', allExts);
+  assert.deepEqual(parsed.resolved, ['RVA22', 'RVB23']);
+  assert.deepEqual(parsed.dropped, ['NOPE']);
+});
+
+test('markdown renders presence as a check or a dash, never as true/false', () => {
+  const md = toMarkdown(buildProfileComparison(['RVA20', 'RVA22']));
+  const line = md.split('\n').find((l) => l.startsWith('| RV64I |'));
+  assert.ok(line, 'expected an RV64I row in the export');
+  assert.ok(!/true|false/.test(line), `presence leaked a boolean: ${line}`);
+  assert.ok(line.includes('\u2713'), `expected a check mark in: ${line}`);
 });

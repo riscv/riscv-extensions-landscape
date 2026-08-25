@@ -223,6 +223,19 @@ test('clicking pins, opening Compare, and unpinning drives the whole tray/dialog
   };
   const tick = () => new Promise((resolve) => setTimeout(resolve, 50));
 
+  // 0. Switch compare mode on — the pins do not exist until it is.
+  const modeToggle = doc.querySelector('.compare-mode-toggle');
+  assert.ok(modeToggle, 'no compare mode toggle in the toolbar');
+  assert.equal(modeToggle.getAttribute('aria-pressed'), 'false', 'mode should start off');
+  assert.equal(
+    doc.querySelectorAll('.ext-tile-compare').length,
+    0,
+    'pins must not render before the mode is on',
+  );
+  click(modeToggle);
+  await tick();
+  assert.equal(modeToggle.getAttribute('aria-pressed'), 'true', 'mode did not switch on');
+
   // 1. Pin two different extension tiles.
   const pins = doc.querySelectorAll('.ext-tile-compare');
   assert.ok(pins.length >= 2, `need at least 2 compare pins to drive this test, found ${pins.length}`);
@@ -275,15 +288,81 @@ test('clicking pins, opening Compare, and unpinning drives the whole tray/dialog
   assert.deepEqual(realErrors(errors), [], 'console errors while driving the pin/compare/remove flow');
 });
 
-test('the compare pin renders on every tile, discontinued or not', () => {
-  // Comparison is read-only inspection, not ISA configuration: pinning a
-  // discontinued extension for comparison is legitimate (it's already
-  // resolvable from a `?cmp=` permalink), unlike the workspace "+" button,
-  // which stays gated because you cannot build a shippable config from an
-  // EOL extension. So, unlike that button, the pin count must equal the
-  // tile count exactly, not merely approach it.
+test('compare mode is off by default, so no pins clutter the grid', () => {
   const tiles = dom.window.document.querySelectorAll('.ext-tile').length;
-  const pins = dom.window.document.querySelectorAll('.ext-tile-compare').length;
-  assert.ok(pins > 0, 'no compare pins rendered');
-  assert.equal(pins, tiles, `expected a pin on every tile, got ${pins} of ${tiles}`);
+  assert.ok(tiles > 200, 'expected the catalogue to render');
+  assert.equal(
+    dom.window.document.querySelectorAll('.ext-tile-compare').length,
+    0,
+    'pins must stay hidden until compare mode is switched on',
+  );
+  assert.ok(
+    dom.window.document.querySelector('.compare-mode-toggle'),
+    'the compare mode toggle should be in the toolbar',
+  );
+});
+
+test('switching compare mode off hides the pins and tray but keeps the comparison', async () => {
+  // The promise the mode makes: turning it off is never destructive. The pins
+  // and the ?cmp= URL survive, so switching back on restores the same
+  // comparison rather than making the user rebuild it.
+  const { dom: d, errors } = await mountAt('https://example.test/');
+  const doc = d.window.document;
+  const click = (el) =>
+    el.dispatchEvent(new d.window.MouseEvent('click', { bubbles: true, cancelable: true }));
+  const tick = () => new Promise((resolve) => setTimeout(resolve, 50));
+
+  const modeToggle = doc.querySelector('.compare-mode-toggle');
+  click(modeToggle);
+  await tick();
+
+  const pins = doc.querySelectorAll('.ext-tile-compare');
+  click(pins[0]);
+  await tick();
+  click(pins[1]);
+  await tick();
+
+  const pinnedUrl = d.window.location.search;
+  assert.ok(pinnedUrl.includes('cmp='), `expected a cmp param, got ${pinnedUrl}`);
+  assert.ok(doc.querySelector('[aria-label="Comparison tray"]'), 'tray should be docked');
+
+  // Off: affordances gone, comparison retained.
+  click(modeToggle);
+  await tick();
+  assert.equal(doc.querySelectorAll('.ext-tile-compare').length, 0, 'pins should be hidden');
+  assert.equal(doc.querySelector('[aria-label="Comparison tray"]'), null, 'tray should be hidden');
+  assert.equal(d.window.location.search, pinnedUrl, 'the comparison must survive in the URL');
+
+  // On again: the same two pins are still there.
+  click(modeToggle);
+  await tick();
+  const tray = doc.querySelector('[aria-label="Comparison tray"]');
+  assert.ok(tray, 'tray should come back');
+  const compareBtn = [...tray.querySelectorAll('button')].find((b) =>
+    b.textContent.trim().startsWith('Compare ('),
+  );
+  assert.ok(compareBtn.textContent.includes('(2)'), `expected 2 pins retained: ${compareBtn.textContent}`);
+
+  assert.deepEqual(realErrors(errors), [], 'console errors while toggling compare mode');
+});
+
+test('a profile comparison permalink opens a membership matrix', async () => {
+  const { dom: d, errors } = await mountAt('https://example.test/?cmp=p:RVA20,RVA22');
+  const dialog = compareDialog(d);
+  assert.ok(dialog, 'the profile comparison did not open');
+
+  // One attribute-column header plus one per profile.
+  assert.equal(dialog.querySelectorAll('.compare-head').length, 3);
+  assert.ok(dialog.textContent.includes('RVA20'));
+  assert.ok(dialog.textContent.includes('RVA22'));
+  assert.ok(
+    dialog.textContent.includes('as listed in the specification'),
+    'the view should say which dependency mode it is in',
+  );
+
+  // Presence renders as marks, never as the words true/false.
+  assert.ok(!/\btrue\b|\bfalse\b/.test(dialog.textContent), 'a boolean leaked into the matrix');
+  assert.ok(dialog.querySelector('[aria-label="present"]'), 'expected at least one present mark');
+
+  assert.deepEqual(realErrors(errors), [], 'console errors rendering a profile comparison');
 });

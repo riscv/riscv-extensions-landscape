@@ -33,6 +33,7 @@ function ExtensionTile({
   selectedExtId,
   workspaceIds,
   compareIds,
+  compareMode,
   lockedExtensions,
   builderMode,
   isHighlighted,
@@ -115,34 +116,41 @@ function ExtensionTile({
             EOL extension, but comparing one against its successor is a
             legitimate use, and parseComparePermalink already resolves
             discontinued extensions from a `?cmp=` link. Gating this button
-            would make them pinnable by URL but not by mouse. */}
-        <button
-          type="button"
-          tabIndex={-1}
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleCompare(data.id);
-          }}
-          className="workspace-tile-btn ext-tile-compare"
-          aria-pressed={inCompare}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 18,
-            height: 18,
-            borderRadius: 5,
-            border: `1px solid ${inCompare ? 'var(--riscv-check-edge)' : 'var(--riscv-border-2)'}`,
-            background: inCompare ? 'var(--riscv-check-fill)' : 'var(--riscv-surface-2)',
-            color: inCompare ? 'var(--riscv-check)' : 'var(--riscv-text-3)',
-            cursor: 'pointer',
-            transition: 'all 0.15s',
-            padding: 0,
-          }}
-          title={inCompare ? `Remove ${data.id} from comparison` : `Compare ${data.id}`}
-        >
-          <Columns size={9} />
-        </button>
+            would make them pinnable by URL but not by mouse.
+
+            It IS gated on compareMode: the pin is a secondary affordance for a
+            mode the user has asked to be in, and 227 tiles each carrying an
+            always-visible extra control is the clutter that mode exists to
+            avoid. */}
+        {compareMode && (
+          <button
+            type="button"
+            tabIndex={-1}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleCompare(data.id);
+            }}
+            className="workspace-tile-btn ext-tile-compare"
+            aria-pressed={inCompare}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 18,
+              height: 18,
+              borderRadius: 5,
+              border: `1px solid ${inCompare ? 'var(--riscv-check-edge)' : 'var(--riscv-border-2)'}`,
+              background: inCompare ? 'var(--riscv-check-fill)' : 'var(--riscv-surface-2)',
+              color: inCompare ? 'var(--riscv-check)' : 'var(--riscv-text-3)',
+              cursor: 'pointer',
+              transition: 'all 0.15s',
+              padding: 0,
+            }}
+            title={inCompare ? `Remove ${data.id} from comparison` : `Compare ${data.id}`}
+          >
+            <Columns size={9} />
+          </button>
+        )}
 
         {builderMode &&
           !isDiscontinued &&

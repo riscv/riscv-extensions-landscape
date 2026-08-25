@@ -19,6 +19,7 @@ export function tilePropsAreEqual(prev, next) {
   if (prev.colorClass !== next.colorClass) return false;
   if (prev.searchQuery !== next.searchQuery) return false;
   if (prev.builderMode !== next.builderMode) return false;
+  if (prev.compareMode !== next.compareMode) return false;
   if (prev.selectedExtId !== next.selectedExtId) return false;
   if (prev.searchIndex !== next.searchIndex) return false;
   if (prev.onSelect !== next.onSelect) return false;

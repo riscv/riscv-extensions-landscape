@@ -15,13 +15,13 @@ import { Columns, X, Trash2 } from 'lucide-react';
 import { COMPARE_MAX, parseInstructionKey } from './compareModel.js';
 
 const chipLabel = (kind, key) => {
-  if (kind === 'ext') return key;
+  if (kind === 'ext' || kind === 'profile') return key;
   const parsed = parseInstructionKey(key);
   return parsed ? parsed.mnemonic : key;
 };
 
 const chipTitle = (kind, key) => {
-  if (kind === 'ext') return `Remove ${key} from the comparison`;
+  if (kind === 'ext' || kind === 'profile') return `Remove ${key} from the comparison`;
   const parsed = parseInstructionKey(key);
   return parsed
     ? `Remove ${parsed.mnemonic} (${parsed.extId}) from the comparison`
@@ -31,16 +31,22 @@ const chipTitle = (kind, key) => {
 export default function CompareTray({
   extIds,
   instrKeys,
+  profileNames,
+  visible,
   kind,
   onKindChange,
   onRemove,
   onClear,
   onOpen,
 }) {
-  const counts = { ext: extIds.size, instr: instrKeys.size };
-  if (counts.ext === 0 && counts.instr === 0) return null;
+  const counts = { ext: extIds.size, instr: instrKeys.size, profile: profileNames.size };
+  // Hidden with the mode off, but the pin sets are untouched — flipping the
+  // mode back on brings the same comparison straight back.
+  if (!visible) return null;
+  if (counts.ext === 0 && counts.instr === 0 && counts.profile === 0) return null;
 
-  const active = kind === 'instr' ? [...instrKeys] : [...extIds];
+  const active =
+    kind === 'instr' ? [...instrKeys] : kind === 'profile' ? [...profileNames] : [...extIds];
   const canCompare = active.length >= 2;
 
   const tab = (value, label) => (
@@ -84,6 +90,7 @@ export default function CompareTray({
         <Columns size={13} style={{ color: 'var(--riscv-gold)' }} />
         {tab('ext', 'Extensions')}
         {tab('instr', 'Instructions')}
+        {tab('profile', 'Profiles')}
       </div>
 
       <div className="flex items-center gap-1 flex-wrap" style={{ flex: 1, minWidth: 120 }}>
