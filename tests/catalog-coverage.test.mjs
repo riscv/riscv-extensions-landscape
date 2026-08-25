@@ -242,17 +242,46 @@ test('ratification labelling does not regress', () => {
   }
 });
 
-test('the base ISAs are labelled ratified', () => {
+test('the ratified base ISAs are labelled ratified', () => {
   // UDB models the base integer ISA as one extension, I, parameterised by XLEN,
   // so the concrete bases a reader looks for come back unlabelled without an
   // explicit alias. Left that way they read as though their status were in
   // doubt, which is wrong: I was ratified in 2019.
   const byId = new Map(entries.map((e) => [e.id, e]));
-  for (const id of ['RV32I', 'RV64I', 'RV128I']) {
+  for (const id of ['RV32I', 'RV64I']) {
     const entry = byId.get(id);
     assert.ok(entry, `${id} is missing from the catalogue`);
     assert.equal(entry.state, 'ratified', `${id} should be labelled ratified`);
   }
+});
+
+test('RV128I is not labelled ratified, because it is not', () => {
+  // This test used to assert the opposite. RV128I inherited I's ratification
+  // because it is aliased onto I, but that 2019-06 ratification covers RV32I
+  // and RV64I. The RV128 chapter carries version 1.7 against the bases' 2.1 and
+  // says so directly: "We have not frozen the RV128 spec at this time, as there
+  // might be need to evolve the design based on actual usage of 128-bit address
+  // spaces."
+  const rv128 = entries.find((e) => e.id === 'RV128I');
+  assert.ok(rv128, 'RV128I is missing from the catalogue');
+  assert.notEqual(rv128.state, 'ratified');
+  assert.equal(rv128.state, 'draft');
+  assert.equal(rv128.ratification_date, undefined, 'it has no ratification to date');
+  assert.match(rv128.url, /rv128\.html$/, 'it should link to its own chapter');
+});
+
+test('RV128I does not borrow another extension\'s instruction set', () => {
+  // It carried RV64I's 52 instructions verbatim, each stamped extension
+  // ["rv64_i"], and none of the instructions RV128 actually defines — LQ, SQ,
+  // LDU, or the *D family. Neither riscv-opcodes nor riscv-unified-db models
+  // RV128, so there is nothing to sync; showing RV64I's set in its place was
+  // the one answer that is certainly wrong.
+  const rv128 = entries.find((e) => e.id === 'RV128I');
+  assert.deepEqual(Object.keys(rv128.instructions || {}), []);
+
+  // No routing tags either: `tags` is what pulls an upstream tag's instructions
+  // onto an entry, so leaving rv64_i here would repopulate it on the next sync.
+  assert.equal(rv128.tags, undefined, 'RV128I must not route to an upstream tag');
 });
 
 test('extension ids are unique', () => {

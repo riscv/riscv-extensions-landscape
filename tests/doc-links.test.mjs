@@ -42,7 +42,14 @@ test('every entry has a usable URL', () => {
 test('doc links are unversioned, so they follow the current snapshot', () => {
   // docs.riscv.org serves dated snapshots (…/isa/v20260120/…) behind unversioned
   // redirects. Linking to a dated path would rot at the next release.
-  const dated = docLinked.filter((e) => /\/v\d{8}\//.test(e.url));
+  // RV128I is the one exemption, and it earns it: the RV128 chapter is not
+  // served by the unversioned snapshot at all — /isa/unpriv/rv128.html is a
+  // 404, under that name or any near variant — while the dated v20240411 path
+  // resolves. It is an unfrozen draft ("We have not frozen the RV128 spec at
+  // this time"), so its presence in the manual moves between releases and a
+  // dated link is the only one that resolves today. If a later snapshot serves
+  // it undated, drop this exemption and the link with it.
+  const dated = docLinked.filter((e) => e.id !== 'RV128I' && /\/v\d{8}\//.test(e.url));
   assert.deepEqual(
     dated.map((e) => `${e.id} -> ${e.url}`),
     [],
