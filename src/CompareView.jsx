@@ -41,17 +41,11 @@ function Cell({ row, value, bitDiff }) {
         ? 'var(--riscv-success)'
         : 'var(--riscv-danger)';
     return value ? (
-      <span
-        aria-label="present"
-        style={{ color: tone, fontWeight: row.allSame ? 400 : 700 }}
-      >
+      <span aria-label="present" style={{ color: tone, fontWeight: row.allSame ? 400 : 700 }}>
         &#10003;
       </span>
     ) : (
-      <span
-        aria-label="absent"
-        style={{ color: tone, fontWeight: row.allSame ? 400 : 700 }}
-      >
+      <span aria-label="absent" style={{ color: tone, fontWeight: row.allSame ? 400 : 700 }}>
         &mdash;
       </span>
     );
@@ -169,17 +163,17 @@ export default function CompareView({
           style={{ boxShadow: '0 0 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(245,197,66,0.12)' }}
         >
           <div
-            className="flex items-center justify-between gap-3 px-4 py-3"
+            className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 py-3"
             style={{ borderBottom: '1px solid var(--riscv-border-2)' }}
           >
             <h2
               id="compare-view-title"
-              className="text-[13px] font-bold uppercase tracking-wider inline-flex items-center gap-2"
+              className="text-[13px] font-bold uppercase tracking-wider inline-flex items-center gap-2 min-w-0"
               style={{ color: 'var(--riscv-gold)' }}
             >
               <Columns size={14} /> {heading}
               <span
-                className="font-mono normal-case tracking-normal text-[11px]"
+                className="font-mono normal-case tracking-normal text-[11px] hidden sm:inline"
                 style={{ color: 'var(--riscv-text-3)' }}
               >
                 {differing} of {model.rows.length}{' '}
@@ -191,7 +185,7 @@ export default function CompareView({
               </span>
             </h2>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 ml-auto">
               <label
                 className="inline-flex items-center gap-1.5 text-[11px]"
                 style={{ color: 'var(--riscv-text-2)' }}
