@@ -23,6 +23,7 @@ export function tilePropsAreEqual(prev, next) {
   if (prev.searchIndex !== next.searchIndex) return false;
   if (prev.onSelect !== next.onSelect) return false;
   if (prev.onToggleWorkspace !== next.onToggleWorkspace) return false;
+  if (prev.onToggleCompare !== next.onToggleCompare) return false;
   if (prev.isHighlighted !== next.isHighlighted) return false;
   if (prev.isDimmed !== next.isDimmed) return false;
 
@@ -30,6 +31,7 @@ export function tilePropsAreEqual(prev, next) {
   const id = next.data?.id;
   if (prev.workspaceIds.has(id) !== next.workspaceIds.has(id)) return false;
   if (prev.lockedExtensions.has(id) !== next.lockedExtensions.has(id)) return false;
+  if (prev.compareIds.has(id) !== next.compareIds.has(id)) return false;
 
   // The tooltip names who requires this extension, so a change in the reason is
   // user-visible even when the locked flag itself has not moved.

@@ -82,6 +82,14 @@ const BIT_MASK_32 = (1n << BIT_WIDTH) - 1n;
  */
 const PERMALINK_PARAM = 'ext';
 
+// The comparison feature's own selection state and view land in a later task;
+// this task only adds the pin control and the comparator support. Until then,
+// a stable empty Set and a stable no-op keep every tile's props referentially
+// stable — the whole point of tileMemo.js — rather than a fresh literal each
+// render, which would re-render all 227 tiles on every change.
+const EMPTY_COMPARE_IDS = new Set();
+const noop = () => {};
+
 const allExtensionsFlat = Object.values(extensions).flat().filter(Boolean);
 
 const findExtensionById = (id) => {
@@ -1345,11 +1353,13 @@ const RISCVExplorer = () => {
       selectedExtId: selectedExt?.id ?? null,
       workspaceIds,
       lockedExtensions,
+      compareIds: EMPTY_COMPARE_IDS,
       builderMode,
       isHighlighted,
       isDimmed,
       onSelect: handleSelectExt,
       onToggleWorkspace: handleToggleWorkspace,
+      onToggleCompare: noop,
     }),
     [
       searchQuery,

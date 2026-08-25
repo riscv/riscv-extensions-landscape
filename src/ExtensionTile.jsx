@@ -22,7 +22,7 @@
  *      "did membership change for THIS id" re-renders only what changed.
  */
 import React from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Columns } from 'lucide-react';
 import { tilePropsAreEqual } from './tileMemo.js';
 
 function ExtensionTile({
@@ -32,12 +32,14 @@ function ExtensionTile({
   searchIndex,
   selectedExtId,
   workspaceIds,
+  compareIds,
   lockedExtensions,
   builderMode,
   isHighlighted,
   isDimmed,
   onSelect,
   onToggleWorkspace,
+  onToggleCompare,
 }) {
   const q = searchQuery.trim().toLowerCase();
   const matchesSearch = q.length ? (searchIndex || '').includes(q) : false;
@@ -47,6 +49,7 @@ function ExtensionTile({
   const highlighted = isHighlighted(data.id) || matchesSearch || isSelected;
   const dimmed = isDimmed(data.id) && !matchesSearch && !isSelected;
   const inWorkspace = workspaceIds.has(data.id);
+  const inCompare = compareIds.has(data.id);
 
   return (
     <div
@@ -86,74 +89,103 @@ function ExtensionTile({
         transition: 'border-color 0.2s, box-shadow 0.2s',
       }}
     >
-      {/* EOL badge */}
-      {isDiscontinued && (
-        <span
-          className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded text-[9px] font-mono uppercase tracking-wider"
-          style={{
-            background: 'rgba(255,77,107,0.12)',
-            color: '#ff7a8a',
-            border: '1px solid rgba(255,77,107,0.25)',
-          }}
-        >
-          EOL
-        </span>
-      )}
+      {/* Corner controls. One flex row rather than three absolutely-positioned
+          elements fighting over the same point. */}
+      <div className="absolute top-1.5 right-1.5 flex items-center gap-1">
+        {isDiscontinued && (
+          <span
+            className="px-1.5 py-0.5 rounded text-[9px] font-mono uppercase tracking-wider"
+            style={{
+              background: 'rgba(255,77,107,0.12)',
+              color: '#ff7a8a',
+              border: '1px solid rgba(255,77,107,0.25)',
+            }}
+          >
+            EOL
+          </span>
+        )}
 
-      {/* Add/remove control — only while the builder is switched on */}
-      {builderMode && !isDiscontinued && (() => {
-        const isLocked = inWorkspace && lockedExtensions.has(data.id);
-        const lockedBy = isLocked ? lockedExtensions.get(data.id) : [];
-
-        // Amber says "you can add this"; green says "it is in". Using one colour
-        // for both made a full configuration a wall of undifferentiated amber.
-        // Locked tiles stay dimmed to read as unavailable.
-        const accent = '#f5c542';
-        return (
+        {!isDiscontinued && (
           <button
             type="button"
             tabIndex={-1}
             onClick={(e) => {
               e.stopPropagation();
-              // The handler reports lock rejections itself.
-              onToggleWorkspace(data.id);
+              onToggleCompare(data.id);
             }}
-            className="workspace-tile-btn absolute top-1.5 right-1.5"
+            className="workspace-tile-btn ext-tile-compare"
+            aria-pressed={inCompare}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               width: 18, height: 18,
               borderRadius: 5,
-              border: `1px solid ${
-                isLocked ? 'rgba(245,197,66,0.3)'
-                  : inWorkspace ? 'var(--riscv-check-edge)' : 'rgba(245,197,66,0.6)'
-              }`,
-              background: inWorkspace
-                ? (isLocked ? 'rgba(245,197,66,0.08)' : 'var(--riscv-check-fill)')
-                : 'rgba(245,197,66,0.14)',
-              backdropFilter: 'blur(4px)',
-              boxShadow: inWorkspace || isLocked ? 'none' : '0 0 0 2px rgba(245,197,66,0.12)',
-              color: isLocked ? 'rgba(245,197,66,0.5)' : (inWorkspace ? 'var(--riscv-check)' : accent),
-              cursor: isLocked ? 'not-allowed' : 'pointer',
+              border: `1px solid ${inCompare ? 'var(--riscv-check-edge)' : 'var(--riscv-border-2)'}`,
+              background: inCompare ? 'var(--riscv-check-fill)' : 'var(--riscv-surface-2)',
+              color: inCompare ? 'var(--riscv-check)' : 'var(--riscv-text-3)',
+              cursor: 'pointer',
               transition: 'all 0.15s',
               padding: 0,
             }}
-            title={isLocked
-              ? `Required by ${lockedBy.join(', ')} — remove dependent first`
-              : (inWorkspace
-                ? `Remove ${data.id} from ISA Configuration Builder`
-                : `Add ${data.id} to ISA Configuration Builder`)}
+            title={inCompare ? `Remove ${data.id} from comparison` : `Compare ${data.id}`}
           >
-            {inWorkspace
-              ? (
-                <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
-                  <path d="M1.5 4.5L3.5 6.5L7.5 2.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )
-              : <Plus size={9} />
-            }
+            <Columns size={9} />
           </button>
-        );
-      })()}
+        )}
+
+        {builderMode && !isDiscontinued && (() => {
+          const isLocked = inWorkspace && lockedExtensions.has(data.id);
+          const lockedBy = isLocked ? lockedExtensions.get(data.id) : [];
+
+          // Amber says "you can add this"; green says "it is in". Using one colour
+          // for both made a full configuration a wall of undifferentiated amber.
+          // Locked tiles stay dimmed to read as unavailable.
+          const accent = '#f5c542';
+          return (
+            <button
+              type="button"
+              tabIndex={-1}
+              onClick={(e) => {
+                e.stopPropagation();
+                // The handler reports lock rejections itself.
+                onToggleWorkspace(data.id);
+              }}
+              className="workspace-tile-btn"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                width: 18, height: 18,
+                borderRadius: 5,
+                border: `1px solid ${
+                  isLocked ? 'rgba(245,197,66,0.3)'
+                    : inWorkspace ? 'var(--riscv-check-edge)' : 'rgba(245,197,66,0.6)'
+                }`,
+                background: inWorkspace
+                  ? (isLocked ? 'rgba(245,197,66,0.08)' : 'var(--riscv-check-fill)')
+                  : 'rgba(245,197,66,0.14)',
+                backdropFilter: 'blur(4px)',
+                boxShadow: inWorkspace || isLocked ? 'none' : '0 0 0 2px rgba(245,197,66,0.12)',
+                color: isLocked ? 'rgba(245,197,66,0.5)' : (inWorkspace ? 'var(--riscv-check)' : accent),
+                cursor: isLocked ? 'not-allowed' : 'pointer',
+                transition: 'all 0.15s',
+                padding: 0,
+              }}
+              title={isLocked
+                ? `Required by ${lockedBy.join(', ')} — remove dependent first`
+                : (inWorkspace
+                  ? `Remove ${data.id} from ISA Configuration Builder`
+                  : `Add ${data.id} to ISA Configuration Builder`)}
+            >
+              {inWorkspace
+                ? (
+                  <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+                    <path d="M1.5 4.5L3.5 6.5L7.5 2.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )
+                : <Plus size={9} />
+              }
+            </button>
+          );
+        })()}
+      </div>
 
       <div className="flex items-start justify-between mb-1">
         <span
