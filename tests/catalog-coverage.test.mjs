@@ -255,6 +255,29 @@ test('the ratified base ISAs are labelled ratified', () => {
   }
 });
 
+test('the E bases are labelled ratified, locally', () => {
+  // These carry a state that no sync produced, and that is deliberate.
+  // riscv-unified-db has no E extension under any name and riscv-opcodes has no
+  // rv_e tag, so both syncs are silent and the entries fell through to the
+  // panel's "Status unconfirmed" badge — which was honest about the gap but
+  // understated what the specification says. The chapter is titled "RV32E and
+  // RV64E Base Integer Instruction Sets, Version 2.0" and sits in the ratified
+  // library, covering both bases in one place.
+  //
+  // No ratification_date: the chapter gives a version, not a date, and an
+  // invented one would be the RV128I mistake in a new costume.
+  const byId = new Map(entries.map((e) => [e.id, e]));
+  for (const id of ['RV32E', 'RV64E']) {
+    const entry = byId.get(id);
+    assert.ok(entry, `${id} is missing from the catalogue`);
+    assert.equal(entry.state, 'ratified', `${id} should be labelled ratified`);
+    assert.equal(entry.ratification_date, undefined, `${id} has no date we can source`);
+  }
+
+  // One chapter covers both, so sharing its URL is correct rather than sloppy.
+  assert.equal(byId.get('RV64E').url, byId.get('RV32E').url);
+});
+
 test('RV128I is not labelled ratified, because it is not', () => {
   // This test used to assert the opposite. RV128I inherited I's ratification
   // because it is aliased onto I, but that 2019-06 ratification covers RV32I

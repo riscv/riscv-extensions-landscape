@@ -3122,9 +3122,18 @@ const RISCVExplorer = () => {
                               ? state.charAt(0).toUpperCase() + state.slice(1)
                               : 'Status unconfirmed';
                           const tip = ratified
-                            ? 'Ratified per riscv-unified-db'
+                            ? // Deliberately does not name a source. Most states
+                              // are synced from riscv-unified-db, but not all:
+                              // UDB has no E extension and no RV128, so RV32E,
+                              // RV64E and RV128I carry states set here against
+                              // the specification itself. Crediting UDB for
+                              // those would be a false claim about provenance —
+                              // the same mistake as RV128I inheriting I's
+                              // ratification. The linked chapter is the source
+                              // a reader can actually check.
+                              'Ratified — see the linked specification chapter'
                             : state
-                              ? `riscv-unified-db reports this extension as ${state}`
+                              ? `Reported as ${state}; see the linked specification chapter`
                               : 'Neither riscv-unified-db nor riscv-opcodes describes this extension, so its status could not be confirmed';
                           return (
                             <span

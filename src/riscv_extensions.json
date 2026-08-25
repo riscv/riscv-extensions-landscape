@@ -1756,7 +1756,8 @@
           "mask": "0xfe00707f"
         }
       },
-      "url": "https://docs.riscv.org/reference/isa/unpriv/rv32e.html"
+      "url": "https://docs.riscv.org/reference/isa/unpriv/rv32e.html",
+      "state": "ratified"
     },
     {
       "id": "RV64E",
@@ -2446,7 +2447,8 @@
           "mask": "0x707f"
         }
       },
-      "url": "https://docs.riscv.org/reference/isa/unpriv/rv32e.html"
+      "url": "https://docs.riscv.org/reference/isa/unpriv/rv32e.html",
+      "state": "ratified"
     },
     {
       "id": "RV128I",
