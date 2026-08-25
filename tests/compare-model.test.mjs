@@ -57,10 +57,25 @@ test('absent normalizes to null and stays distinct from empty', () => {
   assert.notEqual(normalizeCell(''), null);
 });
 
-test('arrays compare as sets, because tag order is not meaningful', () => {
+test('arrays compare as sets, because list order is not meaningful', () => {
   assert.equal(normalizeCell(['bit', 'addr']), normalizeCell(['addr', 'bit']));
   assert.equal(cellsAllSame([['bit', 'addr'], ['addr', 'bit']]), true);
   assert.equal(cellsAllSame([['bit'], ['addr']]), false);
+});
+
+test('the sync-internal tags field is never shown as an attribute', () => {
+  // `tags` routes riscv-opcodes instructions onto entries; it is not a property
+  // of the extension. RV64E and RV128I both carry `rv64_i`, so displaying it
+  // showed two different base ISAs with identical tags belonging to neither.
+  const model = buildExtensionComparison([byId('RV64E'), byId('RV128I')]);
+  assert.deepEqual(
+    model.rows.filter((r) => /tag/i.test(r.key) || /tag/i.test(r.label)),
+    [],
+    'the comparison must not surface the tags routing key',
+  );
+
+  // Both entries do still carry the field, for the sync.
+  assert.ok(byId('RV64E').tags.includes('rv64_i'));
 });
 
 test('a single column always agrees with itself', () => {

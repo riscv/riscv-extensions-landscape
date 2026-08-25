@@ -88,7 +88,14 @@ const EXTENSION_FIELDS = [
     get: (e) => orNull(e.ratification_date),
   },
   { key: 'type', label: 'Type', render: 'text', get: (e) => orNull(e.type) },
-  { key: 'tags', label: 'Tags', render: 'chips', get: (e) => listOrNull(e.tags) },
+  // No Tags row. `tags` is a sync-internal routing key — it names which
+  // riscv-opcodes tag an entry's instructions are pulled from, not a property
+  // of the extension — and reading it as an attribute is misleading. RV64E and
+  // RV128I both carry `rv64_i` because upstream has no rv64_e or rv128 tag to
+  // route from, so a comparison showed two different base ISAs with identical
+  // tags belonging to neither. marchUtils.js:591 already special-cases those
+  // same base tags at runtime for the same reason. The field stays because the
+  // sync needs it; it just has no business on screen.
   { key: 'use', label: 'Use', render: 'text', get: (e) => orNull(e.use) },
   {
     key: 'instruction_count',
