@@ -342,7 +342,12 @@ function cellText(value, render) {
   if (value === null || value === undefined) return '—';
   const text = Array.isArray(value) ? value.join(', ') : String(value);
   const flat = text.replace(/\s*\n\s*/g, ' ').trim();
-  return flat === '' ? '—' : flat.replace(/\|/g, '\\|');
+  // Backslash first, then pipe — in one pass so neither escapes the other's
+  // output. Escaping the delimiter without escaping the escape character is
+  // the classic incomplete sanitization: `a\|b` would become `a\\|b`, which
+  // Markdown reads as a literal backslash followed by an UNESCAPED pipe, and
+  // the cell silently splits the row into an extra column.
+  return flat === '' ? '—' : flat.replace(/[\\|]/g, (c) => `\\${c}`);
 }
 
 /**

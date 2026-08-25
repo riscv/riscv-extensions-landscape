@@ -315,6 +315,50 @@ test('pipes in a value are escaped so the table survives', () => {
   assert.equal((line.match(/(?<!\\)\|/g) || []).length, 4);
 });
 
+test('a backslash before a pipe cannot smuggle in an extra column', () => {
+  // The bug CodeQL caught: escaping the delimiter without escaping the escape
+  // character. `a\|b` naively becomes `a\\|b` — Markdown reads that as a
+  // literal backslash followed by an UNESCAPED pipe, so the cell quietly
+  // splits the row. Both characters have to be escaped.
+  const model = {
+    kind: 'ext',
+    columns: [
+      { key: 'A', label: 'A', sublabel: null },
+      { key: 'B', label: 'B', sublabel: null },
+    ],
+    rows: [
+      {
+        key: 'desc',
+        label: 'Description',
+        render: 'text',
+        cells: ['a\\|b', 'plain'],
+        allSame: false,
+      },
+    ],
+    bitDiff: null,
+  };
+  const line = toMarkdown(model).split('\n')[2];
+  assert.equal(
+    (line.match(/(?<!\\)\|/g) || []).length,
+    4,
+    `a backslash-pipe pair broke the row into extra columns: ${line}`,
+  );
+  assert.ok(line.includes('a\\\\\\|b'), `backslash was not escaped: ${line}`);
+});
+
+test('a lone backslash survives the export', () => {
+  const model = {
+    kind: 'ext',
+    columns: [{ key: 'A', label: 'A', sublabel: null }],
+    rows: [
+      { key: 'desc', label: 'Description', render: 'text', cells: ['C:\\\\path'], allSame: true },
+    ],
+    bitDiff: null,
+  };
+  const line = toMarkdown(model).split('\n')[2];
+  assert.equal((line.match(/(?<!\\)\|/g) || []).length, 3, `row shape changed: ${line}`);
+});
+
 test('a newline inside a description does not break the row', () => {
   const model = {
     kind: 'ext',
