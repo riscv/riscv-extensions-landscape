@@ -186,3 +186,82 @@ export function buildInstructionComparison(items) {
     bitDiff: encodingBitDiff(list.map((it) => it.instr.encoding)),
   };
 }
+
+const KIND_FOR_PREFIX = { e: 'ext', i: 'instr' };
+const PREFIX_FOR_KIND = { ext: 'e', instr: 'i' };
+
+/**
+ * Encodes a comparison for the `cmp` URL parameter.
+ *
+ * @param {'ext'|'instr'} kind
+ * @param {string[]} keys extension ids, or extId.MNEMONIC keys
+ * @returns {string} '' when there is nothing to encode
+ */
+export function buildComparePermalink(kind, keys) {
+  const prefix = PREFIX_FOR_KIND[kind];
+  const list = (keys || []).filter(Boolean);
+  if (!prefix || list.length === 0) return '';
+  return `${prefix}:${list.join(',')}`;
+}
+
+/**
+ * Reads a `cmp` parameter back into resolvable keys.
+ *
+ * Never throws. A shared link outlives the catalog it was made from, so an id
+ * that no longer exists must degrade to a shorter comparison rather than to a
+ * blank page. Everything unresolvable comes back in `dropped` so the caller can
+ * say what it discarded.
+ */
+export function parseComparePermalink(value, allExts) {
+  const raw = typeof value === 'string' ? value.trim() : '';
+  if (!raw) return { kind: null, resolved: [], dropped: [] };
+
+  const colon = raw.indexOf(':');
+  const kind = colon > 0 ? KIND_FOR_PREFIX[raw.slice(0, colon).toLowerCase()] : undefined;
+  if (!kind) return { kind: null, resolved: [], dropped: [raw] };
+
+  const byExtId = new Map(
+    (allExts || []).filter((e) => e && e.id).map((e) => [e.id.toLowerCase(), e]),
+  );
+  const segments = raw
+    .slice(colon + 1)
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const resolved = [];
+  const dropped = [];
+  const seen = new Set();
+
+  for (const segment of segments) {
+    let key = null;
+
+    if (kind === 'ext') {
+      const ext = byExtId.get(segment.toLowerCase());
+      if (ext) key = ext.id;
+    } else {
+      const parsed = parseInstructionKey(segment);
+      const ext = parsed ? byExtId.get(parsed.extId.toLowerCase()) : null;
+      const mnemonic = ext
+        ? Object.keys(ext.instructions || {}).find(
+            (m) => m.toLowerCase() === parsed.mnemonic.toLowerCase(),
+          )
+        : null;
+      if (ext && mnemonic) key = instructionKey(ext.id, mnemonic);
+    }
+
+    if (!key) {
+      dropped.push(segment);
+      continue;
+    }
+    if (seen.has(key)) continue;
+    if (resolved.length >= COMPARE_MAX) {
+      dropped.push(segment);
+      continue;
+    }
+    seen.add(key);
+    resolved.push(key);
+  }
+
+  return { kind, resolved, dropped };
+}

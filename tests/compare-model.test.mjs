@@ -21,6 +21,8 @@ import {
   buildExtensionComparison,
   encodingBitDiff,
   buildInstructionComparison,
+  buildComparePermalink,
+  parseComparePermalink,
 } from '../src/compareModel.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -181,4 +183,64 @@ test('items with no instruction record are dropped rather than rendered as holes
     { extId: 'Zba', mnemonic: 'NOPE', instr: undefined },
   ]);
   assert.equal(model.columns.length, 1);
+});
+
+test('an extension comparison round-trips through the permalink', () => {
+  const encoded = buildComparePermalink('ext', ['Zba', 'Zbb', 'Zbc']);
+  assert.equal(encoded, 'e:Zba,Zbb,Zbc');
+  const parsed = parseComparePermalink(encoded, allExts);
+  assert.equal(parsed.kind, 'ext');
+  assert.deepEqual(parsed.resolved, ['Zba', 'Zbb', 'Zbc'], 'order must be preserved');
+  assert.deepEqual(parsed.dropped, []);
+});
+
+test('an instruction comparison round-trips, dots in mnemonics included', () => {
+  const encoded = buildComparePermalink('instr', ['RV32I.SLLI', 'Zba.ADD.UW']);
+  assert.equal(encoded, 'i:RV32I.SLLI,Zba.ADD.UW');
+  const parsed = parseComparePermalink(encoded, allExts);
+  assert.equal(parsed.kind, 'instr');
+  assert.deepEqual(parsed.resolved, ['RV32I.SLLI', 'Zba.ADD.UW']);
+});
+
+test('an empty selection encodes to nothing rather than a bare prefix', () => {
+  assert.equal(buildComparePermalink('ext', []), '');
+  assert.equal(buildComparePermalink('instr', []), '');
+  assert.equal(buildComparePermalink('nonsense', ['Zba']), '');
+});
+
+test('ids resolve case-insensitively but come back in catalog casing', () => {
+  const parsed = parseComparePermalink('e:zba,ZBB', allExts);
+  assert.deepEqual(parsed.resolved, ['Zba', 'Zbb']);
+});
+
+test('unknown ids are dropped and reported, never thrown', () => {
+  const parsed = parseComparePermalink('e:Zba,Zqqq,Zbb', allExts);
+  assert.deepEqual(parsed.resolved, ['Zba', 'Zbb']);
+  assert.deepEqual(parsed.dropped, ['Zqqq']);
+});
+
+test('an instruction its named extension does not define is dropped', () => {
+  const parsed = parseComparePermalink('i:RV32I.SLLI,Zba.SLLI', allExts);
+  assert.deepEqual(parsed.resolved, ['RV32I.SLLI']);
+  assert.deepEqual(parsed.dropped, ['Zba.SLLI']);
+});
+
+test('a missing or unknown kind prefix yields no kind and no throw', () => {
+  for (const bad of ['Zba,Zbb', 'x:Zba', ':Zba', '']) {
+    const parsed = parseComparePermalink(bad, allExts);
+    assert.equal(parsed.kind, null, `expected no kind for ${JSON.stringify(bad)}`);
+    assert.deepEqual(parsed.resolved, []);
+  }
+  assert.doesNotThrow(() => parseComparePermalink(undefined, allExts));
+  assert.doesNotThrow(() => parseComparePermalink('e:Zba', undefined));
+});
+
+test('duplicates collapse and the cap is enforced by dropping the overflow', () => {
+  const dup = parseComparePermalink('e:Zba,Zba,Zbb', allExts);
+  assert.deepEqual(dup.resolved, ['Zba', 'Zbb']);
+
+  const ids = allExts.slice(0, COMPARE_MAX + 2).map((e) => e.id);
+  const over = parseComparePermalink(`e:${ids.join(',')}`, allExts);
+  assert.equal(over.resolved.length, COMPARE_MAX);
+  assert.equal(over.dropped.length, 2);
 });
