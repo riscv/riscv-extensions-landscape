@@ -1280,3 +1280,19 @@ pre,
     transition: none;
   }
 }
+
+/* "Tech Preview", set like an exponent on the title.
+   It lives inside the h1, which paints itself with a clipped gradient and a
+   transparent text fill — a child inherits that and would render as nothing,
+   so the fill colour is re-declared here rather than only `color`. */
+.riscv-preview-sup {
+  -webkit-text-fill-color: var(--riscv-danger);
+  color: var(--riscv-danger);
+  font-size: 0.34em;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  vertical-align: super;
+  margin-left: 0.35em;
+  white-space: nowrap;
+}

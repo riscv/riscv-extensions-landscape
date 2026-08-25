@@ -396,9 +396,14 @@ test('the page declares itself a tech preview and offers somewhere to report', (
   // is not the ratified reference, and the link is where findings go. A silent
   // regression in either is worse than a visual one.
   const doc = dom.window.document;
-  const tag = [...doc.querySelectorAll('span')].find((el) => el.textContent.trim() === 'Tech Preview');
-  assert.ok(tag, 'no Tech Preview tag in the header');
-  assert.match(tag.style.color, /riscv-danger/, 'the caveat should be red, not the brand gold');
+  const tag = doc.querySelector('.riscv-preview-sup');
+  assert.ok(tag, 'no Tech Preview mark in the header');
+  assert.equal(tag.textContent.trim(), 'Tech Preview');
+  assert.equal(tag.tagName, 'SUP', 'the caveat should ride the title as an exponent');
+  assert.ok(
+    doc.querySelector('h1').contains(tag),
+    'it must live inside the h1 so it tracks the title at any size',
+  );
 
   const link = doc.querySelector('a[href="https://github.com/riscv/riscv-extensions-landscape/issues"]');
   assert.ok(link, 'no link to the issue tracker');

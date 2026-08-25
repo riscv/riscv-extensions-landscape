@@ -1748,21 +1748,20 @@ const RISCVExplorer = () => {
                     }}
                   >
                     RISC-V Extension Landscape
+                    {/* Rides the title like an exponent. Inside the h1 on
+                        purpose, so it tracks the title's last letter at any
+                        size instead of being positioned against a width that
+                        changes with the viewport. The h1 paints its text with
+                        a clipped gradient and a transparent fill, which a
+                        child inherits — so the class re-declares
+                        -webkit-text-fill-color or this would render invisible. */}
+                    <sup
+                      className="riscv-preview-sup"
+                      title="This site is a technical preview — verify anything load-bearing against the ratified specification."
+                    >
+                      Tech Preview
+                    </sup>
                   </h1>
-                  {/* Says the quiet part out loud: this is not the ratified
-                      reference. Red rather than the site's gold because a
-                      caveat that blends into the brand is not a caveat. */}
-                  <span
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider whitespace-nowrap"
-                    style={{
-                      color: 'var(--riscv-danger)',
-                      border: '1px solid var(--riscv-danger)',
-                      background: 'color-mix(in srgb, var(--riscv-danger) 12%, transparent)',
-                    }}
-                    title="This site is a technical preview — verify anything load-bearing against the ratified specification."
-                  >
-                    Tech Preview
-                  </span>
                 </div>
                 {/* Counts. Wrappable on purpose: this sits inside an
                     overflow-x-hidden root that clips rather than scrolls, so on
