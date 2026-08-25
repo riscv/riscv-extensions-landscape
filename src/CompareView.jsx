@@ -196,7 +196,6 @@ export default function CompareView({ open, model, onClose, onCopyMarkdown, onCo
                     <div
                       key={`${row.key}-${model.columns[i].key}`}
                       className={`compare-cell ${row.allSame ? 'compare-same' : 'compare-diff'}`}
-                      data-diff={row.allSame ? undefined : '1'}
                     >
                       <Cell row={row} value={value} bitDiff={model.bitDiff} />
                     </div>
