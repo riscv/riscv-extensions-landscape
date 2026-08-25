@@ -28,12 +28,30 @@ function Cell({ row, value, bitDiff }) {
     // A mark rather than the word "true": the question a presence row answers
     // is "is this in the profile", and a column of `true`/`false` reads far
     // worse across forty rows than a column of ticks and dashes.
+    //
+    // Colour is spent only where the profiles disagree. When every profile
+    // has an extension the marks go muted, because a green tick that means
+    // "same as everywhere else" is noise competing with the rows that matter.
+    // In a differing row present reads green and absent reads red, so a gap
+    // is findable at a glance. The tick/dash shapes carry the same
+    // information, so nothing depends on telling red from green.
+    const tone = row.allSame
+      ? 'var(--riscv-text-3)'
+      : value
+        ? 'var(--riscv-success)'
+        : 'var(--riscv-danger)';
     return value ? (
-      <span aria-label="present" style={{ color: 'var(--riscv-check)' }}>
+      <span
+        aria-label="present"
+        style={{ color: tone, fontWeight: row.allSame ? 400 : 700 }}
+      >
         &#10003;
       </span>
     ) : (
-      <span aria-label="absent" style={{ color: 'var(--riscv-text-3)' }}>
+      <span
+        aria-label="absent"
+        style={{ color: tone, fontWeight: row.allSame ? 400 : 700 }}
+      >
         &mdash;
       </span>
     );

@@ -56,6 +56,8 @@
      is strong on both grounds — green-500 measures 8.02:1 on the dark tile but
      only 2.03:1 on the light emerald wash, and green-700 the reverse. */
   --riscv-check: #22c55e;
+  --riscv-diff-bg: rgba(245, 197, 66, 0.1);
+  --riscv-diff-edge: #f5c542;
   --riscv-check-fill: rgba(34, 197, 94, 0.20);
   --riscv-check-edge: rgba(34, 197, 94, 0.55);
 
@@ -534,6 +536,8 @@ pre,
   --riscv-plate: rgba(255, 255, 255, 0.75);
 
   --riscv-check: #15803d;
+  --riscv-diff-bg: rgba(143, 100, 8, 0.12);
+  --riscv-diff-edge: #8f6408;
   --riscv-check-fill: rgba(21, 128, 61, 0.14);
   --riscv-check-edge: rgba(21, 128, 61, 0.45);
 
@@ -956,12 +960,21 @@ pre,
   border-bottom: 1px solid var(--riscv-border-2);
   overflow-wrap: anywhere;
 }
-/* Agreement is context, difference is the signal. */
+/* Agreement is context, difference is the signal.
+   tint-3 alone is a 6% white wash — technically a highlight, but invisible
+   when you are scanning fifty rows for the four that matter. A differing row
+   now carries a gold wash AND a gold edge on its sticky label cell, so the
+   rows worth reading are findable from the scrollbar. */
 .compare-same {
-  opacity: 0.45;
+  opacity: 0.38;
 }
 .compare-diff {
-  background: var(--riscv-tint-3);
+  background: var(--riscv-diff-bg);
   color: var(--riscv-text);
+}
+.compare-attr.compare-diff {
+  box-shadow: inset 3px 0 0 var(--riscv-diff-edge);
+  color: var(--riscv-text);
+  font-weight: 600;
 }
 
