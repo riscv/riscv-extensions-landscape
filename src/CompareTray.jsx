@@ -10,7 +10,6 @@
  * Hidden entirely when nothing is pinned: a permanently docked empty bar is a
  * control for a mode the user has not asked to be in.
  */
-import React from 'react';
 import { Columns, X, Trash2 } from 'lucide-react';
 import { COMPARE_MAX, parseInstructionKey } from './compareModel.js';
 
@@ -53,7 +52,7 @@ export default function CompareTray({
       style={{
         border: `1px solid ${kind === value ? 'var(--riscv-gold)' : 'var(--riscv-border-2)'}`,
         background: kind === value ? 'var(--riscv-tint-3)' : 'transparent',
-        color: kind === value ? 'var(--riscv-text-1)' : 'var(--riscv-text-3)',
+        color: kind === value ? 'var(--riscv-text)' : 'var(--riscv-text-3)',
       }}
     >
       {label} ({counts[value]})
@@ -65,12 +64,19 @@ export default function CompareTray({
       role="region"
       aria-label="Comparison tray"
       style={{
-        position: 'fixed', left: 0, right: 0, bottom: 0, zIndex: 30,
+        position: 'fixed',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 30,
         background: 'var(--riscv-panel)',
         borderTop: '1px solid var(--riscv-tint-3)',
         boxShadow: '0 -12px 40px rgba(0,0,0,0.45)',
         padding: '8px 12px',
-        display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 10,
+        flexWrap: 'wrap',
       }}
     >
       <div className="flex items-center gap-1.5">
