@@ -1793,12 +1793,12 @@ const RISCVExplorer = () => {
                     href="https://github.com/riscv/riscv-extensions-landscape/issues"
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="riscv-tool-btn ml-2 inline-flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[11px] font-semibold whitespace-nowrap"
+                    className="riscv-report-btn ml-3 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap"
                     title="Report an issue on GitHub"
                   >
-                    <Bug size={12} className="opacity-80" />
+                    <Bug size={12} />
                     Report an issue
-                    <ExternalLink size={10} className="opacity-60" />
+                    <ExternalLink size={10} className="opacity-70" />
                   </a>
                 </div>
               </div>

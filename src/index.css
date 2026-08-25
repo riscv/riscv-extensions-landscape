@@ -18,7 +18,7 @@
 
   --riscv-gold: #f5c542;
   --riscv-gold-dim: rgba(245, 197, 66, 0.12);
-  --riscv-gold-glow: rgba(245, 197, 66, 0.20);
+  --riscv-gold-glow: rgba(245, 197, 66, 0.2);
 
   /* Wordmark gradient. Bright amber reads on black and disappears on white, so
      the light theme swaps in a deeper pair. */
@@ -30,6 +30,9 @@
 
   --riscv-success: #20d9a0;
   --riscv-danger: #ff4d6b;
+  --riscv-danger-2: #d92c4d;
+  --riscv-report-a: #d4324f;
+  --riscv-report-b: #a81f38;
   --riscv-warn: #f59e0b;
 
   --riscv-text: #e2e8f0;
@@ -58,7 +61,7 @@
   --riscv-check: #22c55e;
   --riscv-diff-bg: rgba(245, 197, 66, 0.1);
   --riscv-diff-edge: #f5c542;
-  --riscv-check-fill: rgba(34, 197, 94, 0.20);
+  --riscv-check-fill: rgba(34, 197, 94, 0.2);
   --riscv-check-edge: rgba(34, 197, 94, 0.55);
 
   /* Source-chip accents in the builder's catalogue. Assigned by hashing the
@@ -106,7 +109,12 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
   background: var(--riscv-bg);
   color: var(--riscv-text);
   -webkit-font-smoothing: antialiased;
@@ -181,7 +189,6 @@ pre,
 }
 
 @keyframes goldPulse {
-
   0%,
   100% {
     box-shadow: 0 0 0 0 rgba(245, 197, 66, 0.3);
@@ -237,7 +244,9 @@ pre,
   border-radius: 8px;
   color: var(--riscv-text);
   font-family: 'Inter', sans-serif;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .riscv-input:focus {
@@ -254,7 +263,10 @@ pre,
   font-weight: 600;
   font-size: 12px;
   letter-spacing: 0.01em;
-  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    transform 0.1s;
   cursor: pointer;
 }
 
@@ -286,7 +298,7 @@ pre,
 
 .riscv-btn-violet:hover {
   border-color: rgba(139, 124, 248, 0.6);
-  background: rgba(139, 124, 248, 0.20);
+  background: rgba(139, 124, 248, 0.2);
 }
 
 /* A bit position the compared instructions disagree on. An inset ring rather
@@ -298,22 +310,31 @@ pre,
 
 /* Extension tile hover lift */
 .ext-tile {
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .ext-tile:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 0 2px var(--riscv-text-3), 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 0 0 2px var(--riscv-text-3),
+    0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .ext-tile-active {
   transform: translateY(-2px) !important;
-  box-shadow: 0 0 0 2px var(--riscv-gold), 0 8px 32px rgba(245, 197, 66, 0.12) !important;
+  box-shadow:
+    0 0 0 2px var(--riscv-gold),
+    0 8px 32px rgba(245, 197, 66, 0.12) !important;
   animation: goldPulse 2s ease-in-out infinite;
 }
 
 .ext-tile-highlighted {
-  box-shadow: 0 0 0 2px var(--riscv-gold), 0 4px 16px rgba(245, 197, 66, 0.08);
+  box-shadow:
+    0 0 0 2px var(--riscv-gold),
+    0 4px 16px rgba(245, 197, 66, 0.08);
 }
 
 /* Top accent border gradient */
@@ -356,9 +377,9 @@ pre,
 
 /* Encoding field colors */
 .enc-opcode {
-  background: rgba(245, 197, 66, 0.30);
+  background: rgba(245, 197, 66, 0.3);
   color: #fef08a;
-  border-right-color: rgba(245, 197, 66, 0.50);
+  border-right-color: rgba(245, 197, 66, 0.5);
 }
 
 .enc-rd {
@@ -392,9 +413,9 @@ pre,
 }
 
 .enc-var {
-  background: rgba(51, 65, 85, 0.60);
+  background: rgba(51, 65, 85, 0.6);
   color: #f8fafc;
-  border-right-color: rgba(71, 85, 105, 0.60);
+  border-right-color: rgba(71, 85, 105, 0.6);
 }
 
 /* ── ISA Workspace ──────────────────────────────────────────────────────── */
@@ -419,8 +440,11 @@ pre,
  */
 .workspace-tile-btn {
   opacity: 1;
-  transition: opacity 0.12s ease, background 0.15s ease, border-color 0.15s ease,
-              transform 0.12s ease;
+  transition:
+    opacity 0.12s ease,
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.12s ease;
   line-height: 1;
   /* Entrance, so switching the builder on visibly changes the page. */
   animation: workspaceTileBtnIn 0.18s ease-out both;
@@ -438,8 +462,14 @@ pre,
 }
 
 @keyframes workspaceTileBtnIn {
-  from { opacity: 0; transform: scale(0.6); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Hovering the tile lifts the control slightly, as a hit-target affordance. */
@@ -448,14 +478,24 @@ pre,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .workspace-tile-btn { animation: none; }
-  .ext-tile:hover .workspace-tile-btn { transform: none; }
+  .workspace-tile-btn {
+    animation: none;
+  }
+  .ext-tile:hover .workspace-tile-btn {
+    transform: none;
+  }
 }
 
 /* Panel slide-in animation (fallback — WorkspacePanel now inlines its own) */
 @keyframes slideInRight {
-  from { transform: translateX(40px); opacity: 0; }
-  to   { transform: translateX(0);    opacity: 1; }
+  from {
+    transform: translateX(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 /* ─── Light theme ────────────────────────────────────────────────────────────
@@ -508,17 +548,20 @@ pre,
      0.152. Only the text colour moved, so the dim and glow tints below keep
      the original warmth for borders and halos. */
   --riscv-gold: #8f6408;
-  --riscv-gold-dim: rgba(168, 118, 10, 0.10);
+  --riscv-gold-dim: rgba(168, 118, 10, 0.1);
   --riscv-gold-glow: rgba(168, 118, 10, 0.18);
 
   --riscv-violet: #6d5bd0;
-  --riscv-violet-dim: rgba(109, 91, 208, 0.10);
+  --riscv-violet-dim: rgba(109, 91, 208, 0.1);
 
   --riscv-title-a: #8a5a00;
   --riscv-title-b: #b8860b;
 
   --riscv-success: #14866a;
   --riscv-danger: #c2334d;
+  --riscv-danger-2: #99203a;
+  --riscv-report-a: #c2334d;
+  --riscv-report-b: #99203a;
   --riscv-warn: #b06f05;
 
   --riscv-text: #2b2a3d;
@@ -555,17 +598,23 @@ pre,
 /* Cards need a real edge on light; on dark the glow did that work. */
 :root[data-theme='light'] .riscv-card,
 :root[data-theme='light'] .riscv-card-2 {
-  box-shadow: 0 1px 2px rgba(45, 40, 80, 0.05), 0 6px 18px rgba(45, 40, 80, 0.05);
+  box-shadow:
+    0 1px 2px rgba(45, 40, 80, 0.05),
+    0 6px 18px rgba(45, 40, 80, 0.05);
 }
 
 :root[data-theme='light'] .ext-tile:hover {
-  box-shadow: 0 0 0 2px var(--riscv-border-2), 0 10px 22px rgba(45, 40, 80, 0.10);
+  box-shadow:
+    0 0 0 2px var(--riscv-border-2),
+    0 10px 22px rgba(45, 40, 80, 0.1);
 }
 
 /* The selected-tile glow is a dark-theme effect; on light a soft amber wash
    reads better than a halo. */
 :root[data-theme='light'] .ext-tile-active {
-  box-shadow: 0 0 0 2px var(--riscv-gold), 0 8px 24px rgba(168, 118, 10, 0.14) !important;
+  box-shadow:
+    0 0 0 2px var(--riscv-gold),
+    0 8px 24px rgba(168, 118, 10, 0.14) !important;
   background: rgba(168, 118, 10, 0.05);
 }
 
@@ -575,13 +624,41 @@ pre,
 
 /* Encoding cells: light pastel fills with darker ink, mirroring the dark theme
    rather than inheriting its translucent-on-black assumptions. */
-:root[data-theme='light'] .enc-opcode { background: #fdf3d8; color: #6b4c05; border-right-color: #e8cf94; }
-:root[data-theme='light'] .enc-rd     { background: #fce4f0; color: #7d2d55; border-right-color: #eeb9d4; }
-:root[data-theme='light'] .enc-funct3 { background: #d8f3ef; color: #0c5c54; border-right-color: #9dd9d0; }
-:root[data-theme='light'] .enc-rs1    { background: #e8e2fb; color: #45338c; border-right-color: #c3b6ef; }
-:root[data-theme='light'] .enc-rs2    { background: #e2e6fb; color: #33408c; border-right-color: #b6c0ef; }
-:root[data-theme='light'] .enc-funct7 { background: #ddecfb; color: #1d4f80; border-right-color: #a9cbec; }
-:root[data-theme='light'] .enc-var    { background: #ecebf2; color: #4a4860; border-right-color: #cfccdd; }
+:root[data-theme='light'] .enc-opcode {
+  background: #fdf3d8;
+  color: #6b4c05;
+  border-right-color: #e8cf94;
+}
+:root[data-theme='light'] .enc-rd {
+  background: #fce4f0;
+  color: #7d2d55;
+  border-right-color: #eeb9d4;
+}
+:root[data-theme='light'] .enc-funct3 {
+  background: #d8f3ef;
+  color: #0c5c54;
+  border-right-color: #9dd9d0;
+}
+:root[data-theme='light'] .enc-rs1 {
+  background: #e8e2fb;
+  color: #45338c;
+  border-right-color: #c3b6ef;
+}
+:root[data-theme='light'] .enc-rs2 {
+  background: #e2e6fb;
+  color: #33408c;
+  border-right-color: #b6c0ef;
+}
+:root[data-theme='light'] .enc-funct7 {
+  background: #ddecfb;
+  color: #1d4f80;
+  border-right-color: #a9cbec;
+}
+:root[data-theme='light'] .enc-var {
+  background: #ecebf2;
+  color: #4a4860;
+  border-right-color: #cfccdd;
+}
 
 /* Tile families in light mode.
    The colorClass props are hardcoded Tailwind dark palettes — bg-*-950/30 with
@@ -589,43 +666,69 @@ pre,
    override by family, keeping the colour coding while making it readable.
    Every pairing below is at least 4.5:1. */
 :root[data-theme='light'] .ext-tile[class*='amber-'] {
-  background: #fdf4de !important; color: #7a5406 !important; border-color: #efdcae !important;
+  background: #fdf4de !important;
+  color: #7a5406 !important;
+  border-color: #efdcae !important;
 }
 :root[data-theme='light'] .ext-tile[class*='blue-'] {
-  background: #e9f1fe !important; color: #1d4a80 !important; border-color: #c5daf7 !important;
+  background: #e9f1fe !important;
+  color: #1d4a80 !important;
+  border-color: #c5daf7 !important;
 }
 :root[data-theme='light'] .ext-tile[class*='cyan-'] {
-  background: #e2f6f9 !important; color: #0f5a68 !important; border-color: #b7e4ec !important;
+  background: #e2f6f9 !important;
+  color: #0f5a68 !important;
+  border-color: #b7e4ec !important;
 }
 :root[data-theme='light'] .ext-tile[class*='emerald-'] {
-  background: #e4f6ec !important; color: #12603f !important; border-color: #b8e3cd !important;
+  background: #e4f6ec !important;
+  color: #12603f !important;
+  border-color: #b8e3cd !important;
 }
 :root[data-theme='light'] .ext-tile[class*='fuchsia-'] {
-  background: #fbe9fa !important; color: #7a2570 !important; border-color: #eec2ec !important;
+  background: #fbe9fa !important;
+  color: #7a2570 !important;
+  border-color: #eec2ec !important;
 }
 :root[data-theme='light'] .ext-tile[class*='indigo-'] {
-  background: #eceafc !important; color: #3b338f !important; border-color: #cbc4f2 !important;
+  background: #eceafc !important;
+  color: #3b338f !important;
+  border-color: #cbc4f2 !important;
 }
 :root[data-theme='light'] .ext-tile[class*='orange-'] {
-  background: #fdefe1 !important; color: #8a4a08 !important; border-color: #f2d4b6 !important;
+  background: #fdefe1 !important;
+  color: #8a4a08 !important;
+  border-color: #f2d4b6 !important;
 }
 :root[data-theme='light'] .ext-tile[class*='pink-'] {
-  background: #fce9f1 !important; color: #8a2a53 !important; border-color: #f0c2d5 !important;
+  background: #fce9f1 !important;
+  color: #8a2a53 !important;
+  border-color: #f0c2d5 !important;
 }
 :root[data-theme='light'] .ext-tile[class*='purple-'] {
-  background: #f2eafc !important; color: #5b2b8f !important; border-color: #d9c5f2 !important;
+  background: #f2eafc !important;
+  color: #5b2b8f !important;
+  border-color: #d9c5f2 !important;
 }
 :root[data-theme='light'] .ext-tile[class*='red-'] {
-  background: #fdeaea !important; color: #8c2230 !important; border-color: #f3c3c3 !important;
+  background: #fdeaea !important;
+  color: #8c2230 !important;
+  border-color: #f3c3c3 !important;
 }
 :root[data-theme='light'] .ext-tile[class*='sky-'] {
-  background: #e6f3fd !important; color: #14557f !important; border-color: #bcdcf5 !important;
+  background: #e6f3fd !important;
+  color: #14557f !important;
+  border-color: #bcdcf5 !important;
 }
 :root[data-theme='light'] .ext-tile[class*='teal-'] {
-  background: #e0f5f1 !important; color: #0d5d51 !important; border-color: #b3e2d8 !important;
+  background: #e0f5f1 !important;
+  color: #0d5d51 !important;
+  border-color: #b3e2d8 !important;
 }
 :root[data-theme='light'] .ext-tile[class*='violet-'] {
-  background: #efeafc !important; color: #4b2f9c !important; border-color: #d3c5f3 !important;
+  background: #efeafc !important;
+  color: #4b2f9c !important;
+  border-color: #d3c5f3 !important;
 }
 
 /* Tailwind's light slate text is baked into the markup in ~33 places and is
@@ -633,12 +736,24 @@ pre,
    four shades in use to theme tokens. The dark theme keeps Tailwind's values,
    so nothing changes there. */
 :root[data-theme='light'] .text-slate-50,
-:root[data-theme='light'] .text-slate-100 { color: var(--riscv-text) !important; }
-:root[data-theme='light'] .text-slate-200 { color: var(--riscv-text) !important; }
-:root[data-theme='light'] .text-slate-300 { color: var(--riscv-text-2) !important; }
-:root[data-theme='light'] .text-slate-400 { color: var(--riscv-text-2) !important; }
-:root[data-theme='light'] .text-slate-500 { color: var(--riscv-text-3) !important; }
-:root[data-theme='light'] .text-white { color: var(--riscv-text) !important; }
+:root[data-theme='light'] .text-slate-100 {
+  color: var(--riscv-text) !important;
+}
+:root[data-theme='light'] .text-slate-200 {
+  color: var(--riscv-text) !important;
+}
+:root[data-theme='light'] .text-slate-300 {
+  color: var(--riscv-text-2) !important;
+}
+:root[data-theme='light'] .text-slate-400 {
+  color: var(--riscv-text-2) !important;
+}
+:root[data-theme='light'] .text-slate-500 {
+  color: var(--riscv-text-3) !important;
+}
+:root[data-theme='light'] .text-white {
+  color: var(--riscv-text) !important;
+}
 
 /* Panels and toolbars that painted a dark plate inline keep their own colour;
    these are the containers that read as holes on light. */
@@ -661,57 +776,112 @@ pre,
 }
 
 :root[data-theme='light'] .text-emerald-200 {
-  color: #047857 !important; 
+  color: #047857 !important;
 }
 
 /* Sidebar Details Panel explicit Tailwind overrides for light theme */
-:root[data-theme='light'] .bg-slate-900 { background: var(--riscv-surface-2) !important; }
+:root[data-theme='light'] .bg-slate-900 {
+  background: var(--riscv-surface-2) !important;
+}
 :root[data-theme='light'] .bg-slate-800,
-:root[data-theme='light'] .bg-slate-800\/70 { background: var(--riscv-surface) !important; }
-:root[data-theme='light'] .border-slate-700 { border-color: var(--riscv-border-2) !important; }
-:root[data-theme='light'] .border-slate-600 { border-color: var(--riscv-border) !important; }
-:root[data-theme='light'] .hover\:border-slate-500:hover { border-color: var(--riscv-muted) !important; }
+:root[data-theme='light'] .bg-slate-800\/70 {
+  background: var(--riscv-surface) !important;
+}
+:root[data-theme='light'] .border-slate-700 {
+  border-color: var(--riscv-border-2) !important;
+}
+:root[data-theme='light'] .border-slate-600 {
+  border-color: var(--riscv-border) !important;
+}
+:root[data-theme='light'] .hover\:border-slate-500:hover {
+  border-color: var(--riscv-muted) !important;
+}
 
 /* Instruction Set Snapshot buttons & headings for light theme */
-:root[data-theme='light'] .text-emerald-400 { color: var(--riscv-success) !important; }
-:root[data-theme='light'] .text-emerald-200 { color: #12603f !important; }
-:root[data-theme='light'] .border-emerald-400 { border-color: #b8e3cd !important; }
-:root[data-theme='light'] .bg-emerald-500\/10 { background: #e4f6ec !important; }
+:root[data-theme='light'] .text-emerald-400 {
+  color: var(--riscv-success) !important;
+}
+:root[data-theme='light'] .text-emerald-200 {
+  color: #12603f !important;
+}
+:root[data-theme='light'] .border-emerald-400 {
+  border-color: #b8e3cd !important;
+}
+:root[data-theme='light'] .bg-emerald-500\/10 {
+  background: #e4f6ec !important;
+}
 
-:root[data-theme='light'] .text-yellow-300 { color: var(--riscv-warn) !important; }
-:root[data-theme='light'] .text-yellow-200 { color: #8a4a08 !important; }
-:root[data-theme='light'] .border-yellow-400 { border-color: #f2d4b6 !important; }
-:root[data-theme='light'] .bg-yellow-500\/10 { background: #fdefe1 !important; }
+:root[data-theme='light'] .text-yellow-300 {
+  color: var(--riscv-warn) !important;
+}
+:root[data-theme='light'] .text-yellow-200 {
+  color: #8a4a08 !important;
+}
+:root[data-theme='light'] .border-yellow-400 {
+  border-color: #f2d4b6 !important;
+}
+:root[data-theme='light'] .bg-yellow-500\/10 {
+  background: #fdefe1 !important;
+}
 
-:root[data-theme='light'] .text-red-200 { color: #8c2230 !important; }
+:root[data-theme='light'] .text-red-200 {
+  color: #8c2230 !important;
+}
 :root[data-theme='light'] .border-red-400,
-:root[data-theme='light'] .border-red-500\/60 { border-color: #f3c3c3 !important; }
+:root[data-theme='light'] .border-red-500\/60 {
+  border-color: #f3c3c3 !important;
+}
 :root[data-theme='light'] .bg-red-500\/10,
-:root[data-theme='light'] .bg-red-500\/5 { background: #fdeaea !important; }
+:root[data-theme='light'] .bg-red-500\/5 {
+  background: #fdeaea !important;
+}
 
-:root[data-theme='light'] .text-sky-300 { color: #1d4f80 !important; }
-:root[data-theme='light'] .text-purple-300 { color: var(--riscv-violet) !important; }
+:root[data-theme='light'] .text-sky-300 {
+  color: #1d4f80 !important;
+}
+:root[data-theme='light'] .text-purple-300 {
+  color: var(--riscv-violet) !important;
+}
 
 /* Grouped Filters Container buttons (Profile/Volume) */
-:root[data-theme='light'] .hover\:text-slate-200:hover { color: #3730a3 !important; }
-:root[data-theme='light'] .hover\:bg-slate-800\/50:hover { background: #e0e7ff !important; }
-:root[data-theme='light'] .bg-slate-700\/50 { background: #4f46e5 !important; color: #ffffff !important; border-color: #4338ca !important; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25) !important; }
+:root[data-theme='light'] .hover\:text-slate-200:hover {
+  color: #3730a3 !important;
+}
+:root[data-theme='light'] .hover\:bg-slate-800\/50:hover {
+  background: #e0e7ff !important;
+}
+:root[data-theme='light'] .bg-slate-700\/50 {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  border-color: #4338ca !important;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25) !important;
+}
 
 /* Encoder Validator button */
 :root[data-theme='light'] .text-indigo-300,
-:root[data-theme='light'] .text-indigo-300\/70 { color: #4338ca !important; }
-:root[data-theme='light'] .hover\:text-indigo-300:hover { color: #312e81 !important; }
-:root[data-theme='light'] .bg-indigo-500\/20 { background: #e0e7ff !important; }
-:root[data-theme='light'] .hover\:bg-indigo-500\/10:hover { background: #c7d2fe !important; }
+:root[data-theme='light'] .text-indigo-300\/70 {
+  color: #4338ca !important;
+}
+:root[data-theme='light'] .hover\:text-indigo-300:hover {
+  color: #312e81 !important;
+}
+:root[data-theme='light'] .bg-indigo-500\/20 {
+  background: #e0e7ff !important;
+}
+:root[data-theme='light'] .hover\:bg-indigo-500\/10:hover {
+  background: #c7d2fe !important;
+}
 :root[data-theme='light'] .border-indigo-500\/20,
-:root[data-theme='light'] .border-indigo-500\/30 { border-color: #a5b4fc !important; }
+:root[data-theme='light'] .border-indigo-500\/30 {
+  border-color: #a5b4fc !important;
+}
 
 /* ISA Configuration Builder button */
 :root[data-theme='light'] .builder-btn-off {
   background: #1e293b !important; /* slate-800 */
   color: #fbbf24 !important; /* bright amber-400 */
   border-color: rgba(245, 158, 11, 0.5) !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
 }
 :root[data-theme='light'] .builder-btn-off:hover {
   background: #334155 !important; /* slate-700 */
@@ -745,7 +915,9 @@ pre,
 .slot-cell {
   background: var(--riscv-tint-1);
   border-width: 1px;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .slot-cell:hover {
@@ -811,7 +983,9 @@ pre,
 .builder-menu {
   background: linear-gradient(145deg, #1a1f2e 0%, #141824 100%);
   border: 1px solid rgba(245, 197, 66, 0.25);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55), 0 0 0 1px var(--riscv-tint-2) inset;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.55),
+    0 0 0 1px var(--riscv-tint-2) inset;
 }
 
 :root[data-theme='light'] .builder-menu {
@@ -819,24 +993,50 @@ pre,
   border-color: #fcd34d;
   /* Matches the toolbar's warm lift. A black drop shadow reads as grime
      against the pastel background. */
-  box-shadow: 0 12px 32px rgba(245, 197, 66, 0.22), 0 0 0 1px rgba(45, 40, 80, 0.04) inset;
+  box-shadow:
+    0 12px 32px rgba(245, 197, 66, 0.22),
+    0 0 0 1px rgba(45, 40, 80, 0.04) inset;
 }
 
 /* Toolbar Action Button - Amber (Open Panel) */
-:root[data-theme='light'] .builder-action-amber.text-amber-300 { color: #d97706 !important; }
-:root[data-theme='light'] .builder-action-amber:hover { background: #fef3c7 !important; color: #b45309 !important; box-shadow: none !important; }
+:root[data-theme='light'] .builder-action-amber.text-amber-300 {
+  color: #d97706 !important;
+}
+:root[data-theme='light'] .builder-action-amber:hover {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+  box-shadow: none !important;
+}
 
 /* Toolbar Action Button - Indigo (Profile Menu) */
-:root[data-theme='light'] .builder-action-indigo.text-indigo-300 { color: #4338ca !important; }
-:root[data-theme='light'] .builder-action-indigo:hover { background: #e0e7ff !important; color: #3730a3 !important; box-shadow: none !important; }
+:root[data-theme='light'] .builder-action-indigo.text-indigo-300 {
+  color: #4338ca !important;
+}
+:root[data-theme='light'] .builder-action-indigo:hover {
+  background: #e0e7ff !important;
+  color: #3730a3 !important;
+  box-shadow: none !important;
+}
 
 /* Toolbar Action Button - Rose (Clear) */
-:root[data-theme='light'] .builder-action-rose.text-rose-300 { color: #e11d48 !important; }
-:root[data-theme='light'] .builder-action-rose:hover { background: #ffe4e6 !important; color: #be123c !important; box-shadow: none !important; }
+:root[data-theme='light'] .builder-action-rose.text-rose-300 {
+  color: #e11d48 !important;
+}
+:root[data-theme='light'] .builder-action-rose:hover {
+  background: #ffe4e6 !important;
+  color: #be123c !important;
+  box-shadow: none !important;
+}
 
 /* Toolbar Action Button - Emerald (Export) */
-:root[data-theme='light'] .builder-action-emerald.text-emerald-300 { color: #059669 !important; }
-:root[data-theme='light'] .builder-action-emerald:hover { background: #d1fae5 !important; color: #047857 !important; box-shadow: none !important; }
+:root[data-theme='light'] .builder-action-emerald.text-emerald-300 {
+  color: #059669 !important;
+}
+:root[data-theme='light'] .builder-action-emerald:hover {
+  background: #d1fae5 !important;
+  color: #047857 !important;
+  box-shadow: none !important;
+}
 
 /* ─── Custom UI Enhancements ─────────────────────────────────────────────── */
 
@@ -859,11 +1059,13 @@ pre,
   font-size: 11px;
   font-weight: 500;
   border: 1px solid var(--riscv-border-2);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   pointer-events: none;
   opacity: 0;
   z-index: 100;
-  transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+  transition:
+    opacity 0.15s ease-out,
+    transform 0.15s ease-out;
   transition-delay: 0.1s;
 }
 
@@ -882,7 +1084,7 @@ pre,
   background: #1e293b;
   color: #f8fafc;
   border-color: #334155;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* 4. Keyboard Accessibility Focus Rings */
@@ -914,15 +1116,15 @@ pre,
     border-right: none;
     border-bottom: none;
     border-top: 1px solid var(--riscv-border);
-    box-shadow: 0 -8px 32px rgba(0,0,0,0.4);
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.4);
     transform: translateY(100%);
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  
+
   #detail-panel.panel-open {
     transform: translateY(0);
   }
-  
+
   :root[data-theme='light'] #detail-panel {
     box-shadow: 0 -8px 32px rgba(45, 40, 80, 0.15);
   }
@@ -978,7 +1180,6 @@ pre,
   font-weight: 600;
 }
 
-
 /* Header toolbar. A full-width plate holding filters on the left and actions
    on the right. Full width on purpose: every clipping bug in this header came
    from packing thirteen controls into a right-hand column narrower than they
@@ -1020,4 +1221,57 @@ pre,
   font-size: clamp(9px, 1.05vw, 12px);
   padding: 0;
   min-width: 0;
+}
+
+/* Report an issue.
+   The one red button on the page, and the only control allowed to outshout an
+   active mode — a preview that hides the way to report things is not really
+   asking. Depth comes from a two-stop gradient plus a hairline inner highlight
+   along the top edge, which is what separates a red button from a red
+   rectangle; the glow is the same hue so it reads as light coming off the
+   button rather than a drop shadow.
+
+   The gradient does NOT run from --riscv-danger. That red is #ff4d6b, which
+   measures 3.22:1 against white — fine for a border or an icon, a failure
+   behind 11px text. These stops were measured instead: dark 4.81:1 and 7.20:1,
+   light 5.42:1 and 8.01:1, so every point of the gradient clears 4.5:1. The
+   glow still uses --riscv-danger, since a shadow carries no text. */
+.riscv-report-btn {
+  color: #fff;
+  border: 1px solid var(--riscv-report-b);
+  background: linear-gradient(180deg, var(--riscv-report-a) 0%, var(--riscv-report-b) 100%);
+  box-shadow:
+    0 2px 10px -2px color-mix(in srgb, var(--riscv-danger) 55%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+.riscv-report-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 18px -4px color-mix(in srgb, var(--riscv-danger) 70%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+.riscv-report-btn:active {
+  transform: translateY(0);
+  filter: brightness(0.96);
+  box-shadow:
+    0 1px 6px -2px color-mix(in srgb, var(--riscv-danger) 50%, transparent),
+    inset 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+.riscv-report-btn:focus-visible {
+  outline: 2px solid var(--riscv-danger);
+  outline-offset: 2px;
+}
+/* Respect a reader who has asked the interface to stop moving. */
+@media (prefers-reduced-motion: reduce) {
+  .riscv-report-btn,
+  .riscv-report-btn:hover,
+  .riscv-report-btn:active {
+    transform: none;
+    transition: none;
+  }
 }
