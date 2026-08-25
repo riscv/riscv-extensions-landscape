@@ -1729,8 +1729,12 @@ const RISCVExplorer = () => {
           >
             {/* Title row */}
             <div className="flex flex-col gap-4">
-              <div>
-                <div className="flex items-center gap-3 mb-1">
+              {/* Identity row. Title left, counts right, one line. The tagline
+                  that used to sit under the title said what the title says, and
+                  the counts are orientation rather than a dashboard — neither
+                  earned a line of its own above the grid. */}
+              <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1">
+                <div className="flex items-center gap-3">
                   <CircuitBoard size={22} style={{ color: 'var(--riscv-gold)' }} />
                   <h1
                     className="text-2xl md:text-3xl font-black tracking-tight"
@@ -1744,20 +1748,11 @@ const RISCVExplorer = () => {
                     RISC-V Extension Landscape
                   </h1>
                 </div>
-                {/* nowrap only once there is room for it: on a phone it pushed the
-                    line past the viewport, and the root clips overflow. */}
-                <p
-                  className="text-xs ml-9 sm:whitespace-nowrap"
-                  style={{ color: 'var(--riscv-text-2)' }}
-                >
-                  Reference for extensions, profiles &amp; per-instruction encoding.
-                </p>
-                {/* Stat bar. One line from `sm` up — the same breakpoint the
-                    tagline above uses. It stays wrappable below that because
-                    this column is inside an overflow-x-hidden root that clips
-                    rather than scrolls, so an unconditional nowrap would put
-                    the last stat somewhere a narrow-screen reader cannot see. */}
-                <div className="flex flex-wrap items-center gap-x-2 mt-1.5 ml-9 text-[11px]">
+                {/* Counts. Wrappable on purpose: this sits inside an
+                    overflow-x-hidden root that clips rather than scrolls, so on
+                    a narrow screen they drop below the title instead of off the
+                    edge. */}
+                <div className="flex flex-wrap items-center gap-x-2 text-[11px]">
                   {[
                     { label: 'Extensions', value: totalExtensions },
                     { label: 'Profiles', value: Object.keys(profiles).length },
