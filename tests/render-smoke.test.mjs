@@ -207,11 +207,83 @@ test('a malformed comparison permalink does not break the page', async () => {
   }
 });
 
-test('the compare pin renders on the tiles', () => {
+/**
+ * Every other comparison test above arrives via a `?cmp=` URL, so nothing
+ * ever exercises the click path: toggleCompareExt, removeCompareItem, the
+ * tray's Compare button, or the auto-close effect when pins drop below two.
+ * This drives it with real DOM events dispatched the way React's delegated
+ * listeners expect, against a mount at the plain URL.
+ */
+test('clicking pins, opening Compare, and unpinning drives the whole tray/dialog flow', async () => {
+  const { dom: d, errors } = await mountAt('https://example.test/');
+  const doc = d.window.document;
+
+  const click = (el) => {
+    el.dispatchEvent(new d.window.MouseEvent('click', { bubbles: true, cancelable: true }));
+  };
+  const tick = () => new Promise((resolve) => setTimeout(resolve, 50));
+
+  // 1. Pin two different extension tiles.
+  const pins = doc.querySelectorAll('.ext-tile-compare');
+  assert.ok(pins.length >= 2, `need at least 2 compare pins to drive this test, found ${pins.length}`);
+  click(pins[0]);
+  await tick();
+  click(pins[1]);
+  await tick();
+
+  // 2. The tray appears and its Compare button is enabled.
+  const tray = doc.querySelector('[aria-label="Comparison tray"]');
+  assert.ok(tray, 'the tray did not appear after pinning two tiles');
+  const findCompareButton = () =>
+    [...doc.querySelectorAll('[aria-label="Comparison tray"] button')].find((b) =>
+      b.textContent.trim().startsWith('Compare ('),
+    );
+  const compareBtn = findCompareButton();
+  assert.ok(compareBtn, 'no Compare button found in the tray');
+  assert.equal(compareBtn.disabled, false, 'Compare button should be enabled with two pins');
+
+  // 3. Click Compare; the dialog opens.
+  click(compareBtn);
+  await tick();
+  const dialog = compareDialog(d);
+  assert.ok(dialog, 'clicking Compare did not open the dialog');
+
+  // 4. The URL gained a cmp parameter.
+  const url = new d.window.URL(d.window.location.href);
+  assert.ok(url.searchParams.get('cmp'), 'the URL should have gained a cmp parameter');
+
+  // 5. Close the dialog, remove one pin via its tray chip, Compare disables again.
+  const closeBtn = dialog.querySelector('[aria-label="Close comparison"]');
+  assert.ok(closeBtn, 'no close button found on the dialog');
+  click(closeBtn);
+  await tick();
+  assert.equal(compareDialog(d), null, 'the dialog should have closed');
+
+  const removeBtn = doc.querySelector('[aria-label="Comparison tray"] button[aria-label^="Remove "]');
+  assert.ok(removeBtn, 'no remove button found on a tray chip');
+  click(removeBtn);
+  await tick();
+
+  const compareBtnAfter = findCompareButton();
+  assert.ok(compareBtnAfter, 'Compare button missing from the tray after removing a pin');
+  assert.equal(
+    compareBtnAfter.disabled,
+    true,
+    'Compare button should be disabled again with fewer than two pins',
+  );
+
+  assert.deepEqual(realErrors(errors), [], 'console errors while driving the pin/compare/remove flow');
+});
+
+test('the compare pin renders on every tile, discontinued or not', () => {
+  // Comparison is read-only inspection, not ISA configuration: pinning a
+  // discontinued extension for comparison is legitimate (it's already
+  // resolvable from a `?cmp=` permalink), unlike the workspace "+" button,
+  // which stays gated because you cannot build a shippable config from an
+  // EOL extension. So, unlike that button, the pin count must equal the
+  // tile count exactly, not merely approach it.
   const tiles = dom.window.document.querySelectorAll('.ext-tile').length;
   const pins = dom.window.document.querySelectorAll('.ext-tile-compare').length;
   assert.ok(pins > 0, 'no compare pins rendered');
-  assert.ok(pins <= tiles, `more pins (${pins}) than tiles (${tiles})`);
-  // Discontinued extensions get no pin, so this is a floor rather than equality.
-  assert.ok(pins > tiles * 0.9, `expected a pin on nearly every tile, got ${pins} of ${tiles}`);
+  assert.equal(pins, tiles, `expected a pin on every tile, got ${pins} of ${tiles}`);
 });

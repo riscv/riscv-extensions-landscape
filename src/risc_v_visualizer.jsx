@@ -512,7 +512,8 @@ const RISCVExplorer = () => {
   // Comparison. Two sets, because extensions and instructions are compared
   // separately and pinning one kind must not discard the other.
   const comparePermalinkSeed = React.useMemo(() => {
-    if (typeof window === 'undefined') return { kind: null, resolved: [], dropped: [] };
+    if (typeof window === 'undefined')
+      return { kind: null, resolved: [], dropped: [], overflow: [] };
     const value = new URL(window.location.href).searchParams.get(COMPARE_PARAM);
     return parseComparePermalink(value, allExtensionsFlat);
   }, []);
@@ -526,13 +527,24 @@ const RISCVExplorer = () => {
   const [compareKind, setCompareKind] = useState(comparePermalinkSeed.kind || 'ext');
   const [compareOpen, setCompareOpen] = useState(comparePermalinkSeed.resolved.length >= 2);
 
-  // A shared comparison outlives the catalog it was made from. Say what was
-  // dropped rather than quietly rendering a shorter comparison than the link
-  // promised.
+  // A shared comparison outlives the catalog it was made from. Unresolvable
+  // ids and ids merely over the cap are different facts and must be reported
+  // separately — conflating them tells the user a real extension "is not in
+  // the catalog" when it was only bumped by COMPARE_MAX.
   React.useEffect(() => {
-    const { dropped } = comparePermalinkSeed;
-    if (dropped.length === 0) return;
-    showToast(`Not in the catalog, left out of the comparison: ${dropped.join(', ')}`);
+    const { dropped, overflow } = comparePermalinkSeed;
+    if (dropped.length === 0 && overflow.length === 0) return;
+    // showToast displays one message at a time, so when both facts are true
+    // they are joined into a single toast rather than the second call
+    // silently clobbering the first.
+    const messages = [];
+    if (dropped.length > 0) {
+      messages.push(`Not in the catalog, left out of the comparison: ${dropped.join(', ')}`);
+    }
+    if (overflow.length > 0) {
+      messages.push(`Comparison holds ${COMPARE_MAX} at most, left out: ${overflow.join(', ')}`);
+    }
+    showToast(messages.join(' '));
   }, [comparePermalinkSeed, showToast]);
 
   // Builder mode. The per-tile "+" affordances only exist while this is on.
@@ -1433,6 +1445,16 @@ const RISCVExplorer = () => {
     if (kind === 'instr') setCompareInstrKeys(new Set());
     else setCompareExtIds(new Set());
   }, []);
+
+  // Stable identities for CompareTray/CompareView, rather than inline arrows
+  // at the JSX call site. CompareView's focus effect depends on `onClose`;
+  // an inline arrow is a new function every render, so any re-render while
+  // the dialog is open (e.g. the toast auto-clearing) would re-run that
+  // effect and steal focus back to the dialog container. CompareView also
+  // holds onClose in a ref for the same reason, so it stays correct even if
+  // a future caller passes an inline handler again.
+  const openCompareView = React.useCallback(() => setCompareOpen(true), []);
+  const closeCompareView = React.useCallback(() => setCompareOpen(false), []);
 
   const tileProps = React.useMemo(
     () => ({
@@ -3574,13 +3596,13 @@ const RISCVExplorer = () => {
         onKindChange={setCompareKind}
         onRemove={removeCompareItem}
         onClear={clearCompare}
-        onOpen={() => setCompareOpen(true)}
+        onOpen={openCompareView}
       />
 
       <CompareView
         open={compareOpen}
         model={compareModel}
-        onClose={() => setCompareOpen(false)}
+        onClose={closeCompareView}
         onCopyMarkdown={copyCompareMarkdown}
         onCopyLink={copyCompareLink}
       />

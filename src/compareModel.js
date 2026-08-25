@@ -210,15 +210,18 @@ export function buildComparePermalink(kind, keys) {
  * Never throws. A shared link outlives the catalog it was made from, so an id
  * that no longer exists must degrade to a shorter comparison rather than to a
  * blank page. Everything unresolvable comes back in `dropped` so the caller can
- * say what it discarded.
+ * say what it discarded. Segments that resolve fine but arrive past
+ * COMPARE_MAX come back in `overflow` instead — being over the cap is a
+ * different fact than being unrecognized, and the two must not be reported
+ * with the same message.
  */
 export function parseComparePermalink(value, allExts) {
   const raw = typeof value === 'string' ? value.trim() : '';
-  if (!raw) return { kind: null, resolved: [], dropped: [] };
+  if (!raw) return { kind: null, resolved: [], dropped: [], overflow: [] };
 
   const colon = raw.indexOf(':');
   const kind = colon > 0 ? KIND_FOR_PREFIX[raw.slice(0, colon).toLowerCase()] : undefined;
-  if (!kind) return { kind: null, resolved: [], dropped: [raw] };
+  if (!kind) return { kind: null, resolved: [], dropped: [raw], overflow: [] };
 
   const byExtId = new Map(
     (allExts || []).filter((e) => e && e.id).map((e) => [e.id.toLowerCase(), e]),
@@ -231,6 +234,7 @@ export function parseComparePermalink(value, allExts) {
 
   const resolved = [];
   const dropped = [];
+  const overflow = [];
   const seen = new Set();
 
   for (const segment of segments) {
@@ -254,16 +258,19 @@ export function parseComparePermalink(value, allExts) {
       dropped.push(segment);
       continue;
     }
+    // A duplicate segment is intentionally collapsed here — it lands in
+    // neither `resolved` (a second time) nor `dropped`, since re-pinning the
+    // same item is neither new data nor a problem worth reporting.
     if (seen.has(key)) continue;
     if (resolved.length >= COMPARE_MAX) {
-      dropped.push(segment);
+      overflow.push(segment);
       continue;
     }
     seen.add(key);
     resolved.push(key);
   }
 
-  return { kind, resolved, dropped };
+  return { kind, resolved, dropped, overflow };
 }
 
 /**

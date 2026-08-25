@@ -70,12 +70,23 @@ export default function CompareView({ open, model, onClose, onCopyMarkdown, onCo
   const dialogRef = React.useRef(null);
   const restoreFocusRef = React.useRef(null);
 
+  // Held in a ref, not a dependency, so a caller passing an inline arrow
+  // (a new function identity on every parent render) cannot re-run this
+  // effect. A re-run while open steals focus: the cleanup restores focus to
+  // the trigger behind the modal, then the effect immediately re-focuses the
+  // dialog container, yanking focus away from whatever the user was doing —
+  // e.g. every parent render while a toast is counting down to auto-clear.
+  const onCloseRef = React.useRef(onClose);
+  React.useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   React.useEffect(() => {
     if (!open) return undefined;
     restoreFocusRef.current = document.activeElement;
     dialogRef.current?.focus();
     const onKey = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') onCloseRef.current();
     };
     window.addEventListener('keydown', onKey);
     return () => {
@@ -83,7 +94,7 @@ export default function CompareView({ open, model, onClose, onCopyMarkdown, onCo
       const restore = restoreFocusRef.current;
       if (restore && typeof restore.focus === 'function') restore.focus();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open || !model || model.columns.length === 0) return null;
 

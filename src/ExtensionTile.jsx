@@ -77,15 +77,19 @@ function ExtensionTile({
         dimmed ? 'opacity-20 grayscale pointer-events-none' : '',
         isDiscontinued && !dimmed
           ? 'border-[var(--riscv-border-2)] bg-[var(--riscv-surface)]'
-          : !dimmed ? colorClass : '',
+          : !dimmed
+            ? colorClass
+            : '',
       ].join(' ')}
       style={{
         padding: '10px',
         // Amber glow ring when in the builder
-        ...(inWorkspace && !isDiscontinued ? {
-          borderColor: 'rgba(245,197,66,0.55)',
-          boxShadow: '0 0 0 1px rgba(245,197,66,0.2), inset 0 0 12px rgba(245,197,66,0.04)',
-        } : {}),
+        ...(inWorkspace && !isDiscontinued
+          ? {
+              borderColor: 'rgba(245,197,66,0.55)',
+              boxShadow: '0 0 0 1px rgba(245,197,66,0.2), inset 0 0 12px rgba(245,197,66,0.04)',
+            }
+          : {}),
         transition: 'border-color 0.2s, box-shadow 0.2s',
       }}
     >
@@ -105,86 +109,115 @@ function ExtensionTile({
           </span>
         )}
 
-        {!isDiscontinued && (
-          <button
-            type="button"
-            tabIndex={-1}
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleCompare(data.id);
-            }}
-            className="workspace-tile-btn ext-tile-compare"
-            aria-pressed={inCompare}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              width: 18, height: 18,
-              borderRadius: 5,
-              border: `1px solid ${inCompare ? 'var(--riscv-check-edge)' : 'var(--riscv-border-2)'}`,
-              background: inCompare ? 'var(--riscv-check-fill)' : 'var(--riscv-surface-2)',
-              color: inCompare ? 'var(--riscv-check)' : 'var(--riscv-text-3)',
-              cursor: 'pointer',
-              transition: 'all 0.15s',
-              padding: 0,
-            }}
-            title={inCompare ? `Remove ${data.id} from comparison` : `Compare ${data.id}`}
-          >
-            <Columns size={9} />
-          </button>
-        )}
+        {/* Unlike the workspace "+" button below, this is intentionally NOT
+            gated on !isDiscontinued. Comparison is read-only inspection, not
+            ISA configuration — you cannot build a shippable config from an
+            EOL extension, but comparing one against its successor is a
+            legitimate use, and parseComparePermalink already resolves
+            discontinued extensions from a `?cmp=` link. Gating this button
+            would make them pinnable by URL but not by mouse. */}
+        <button
+          type="button"
+          tabIndex={-1}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleCompare(data.id);
+          }}
+          className="workspace-tile-btn ext-tile-compare"
+          aria-pressed={inCompare}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 18,
+            height: 18,
+            borderRadius: 5,
+            border: `1px solid ${inCompare ? 'var(--riscv-check-edge)' : 'var(--riscv-border-2)'}`,
+            background: inCompare ? 'var(--riscv-check-fill)' : 'var(--riscv-surface-2)',
+            color: inCompare ? 'var(--riscv-check)' : 'var(--riscv-text-3)',
+            cursor: 'pointer',
+            transition: 'all 0.15s',
+            padding: 0,
+          }}
+          title={inCompare ? `Remove ${data.id} from comparison` : `Compare ${data.id}`}
+        >
+          <Columns size={9} />
+        </button>
 
-        {builderMode && !isDiscontinued && (() => {
-          const isLocked = inWorkspace && lockedExtensions.has(data.id);
-          const lockedBy = isLocked ? lockedExtensions.get(data.id) : [];
+        {builderMode &&
+          !isDiscontinued &&
+          (() => {
+            const isLocked = inWorkspace && lockedExtensions.has(data.id);
+            const lockedBy = isLocked ? lockedExtensions.get(data.id) : [];
 
-          // Amber says "you can add this"; green says "it is in". Using one colour
-          // for both made a full configuration a wall of undifferentiated amber.
-          // Locked tiles stay dimmed to read as unavailable.
-          const accent = '#f5c542';
-          return (
-            <button
-              type="button"
-              tabIndex={-1}
-              onClick={(e) => {
-                e.stopPropagation();
-                // The handler reports lock rejections itself.
-                onToggleWorkspace(data.id);
-              }}
-              className="workspace-tile-btn"
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                width: 18, height: 18,
-                borderRadius: 5,
-                border: `1px solid ${
-                  isLocked ? 'rgba(245,197,66,0.3)'
-                    : inWorkspace ? 'var(--riscv-check-edge)' : 'rgba(245,197,66,0.6)'
-                }`,
-                background: inWorkspace
-                  ? (isLocked ? 'rgba(245,197,66,0.08)' : 'var(--riscv-check-fill)')
-                  : 'rgba(245,197,66,0.14)',
-                backdropFilter: 'blur(4px)',
-                boxShadow: inWorkspace || isLocked ? 'none' : '0 0 0 2px rgba(245,197,66,0.12)',
-                color: isLocked ? 'rgba(245,197,66,0.5)' : (inWorkspace ? 'var(--riscv-check)' : accent),
-                cursor: isLocked ? 'not-allowed' : 'pointer',
-                transition: 'all 0.15s',
-                padding: 0,
-              }}
-              title={isLocked
-                ? `Required by ${lockedBy.join(', ')} — remove dependent first`
-                : (inWorkspace
-                  ? `Remove ${data.id} from ISA Configuration Builder`
-                  : `Add ${data.id} to ISA Configuration Builder`)}
-            >
-              {inWorkspace
-                ? (
+            // Amber says "you can add this"; green says "it is in". Using one colour
+            // for both made a full configuration a wall of undifferentiated amber.
+            // Locked tiles stay dimmed to read as unavailable.
+            const accent = '#f5c542';
+            return (
+              <button
+                type="button"
+                tabIndex={-1}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // The handler reports lock rejections itself.
+                  onToggleWorkspace(data.id);
+                }}
+                className="workspace-tile-btn"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 18,
+                  height: 18,
+                  borderRadius: 5,
+                  border: `1px solid ${
+                    isLocked
+                      ? 'rgba(245,197,66,0.3)'
+                      : inWorkspace
+                        ? 'var(--riscv-check-edge)'
+                        : 'rgba(245,197,66,0.6)'
+                  }`,
+                  background: inWorkspace
+                    ? isLocked
+                      ? 'rgba(245,197,66,0.08)'
+                      : 'var(--riscv-check-fill)'
+                    : 'rgba(245,197,66,0.14)',
+                  backdropFilter: 'blur(4px)',
+                  boxShadow: inWorkspace || isLocked ? 'none' : '0 0 0 2px rgba(245,197,66,0.12)',
+                  color: isLocked
+                    ? 'rgba(245,197,66,0.5)'
+                    : inWorkspace
+                      ? 'var(--riscv-check)'
+                      : accent,
+                  cursor: isLocked ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.15s',
+                  padding: 0,
+                }}
+                title={
+                  isLocked
+                    ? `Required by ${lockedBy.join(', ')} — remove dependent first`
+                    : inWorkspace
+                      ? `Remove ${data.id} from ISA Configuration Builder`
+                      : `Add ${data.id} to ISA Configuration Builder`
+                }
+              >
+                {inWorkspace ? (
                   <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
-                    <path d="M1.5 4.5L3.5 6.5L7.5 2.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
+                    <path
+                      d="M1.5 4.5L3.5 6.5L7.5 2.5"
+                      stroke="currentColor"
+                      strokeWidth="1.75"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
-                )
-                : <Plus size={9} />
-              }
-            </button>
-          );
-        })()}
+                ) : (
+                  <Plus size={9} />
+                )}
+              </button>
+            );
+          })()}
       </div>
 
       <div className="flex items-start justify-between mb-1">

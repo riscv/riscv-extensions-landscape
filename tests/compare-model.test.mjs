@@ -193,6 +193,7 @@ test('an extension comparison round-trips through the permalink', () => {
   assert.equal(parsed.kind, 'ext');
   assert.deepEqual(parsed.resolved, ['Zba', 'Zbb', 'Zbc'], 'order must be preserved');
   assert.deepEqual(parsed.dropped, []);
+  assert.deepEqual(parsed.overflow, []);
 });
 
 test('an instruction comparison round-trips, dots in mnemonics included', () => {
@@ -236,14 +237,40 @@ test('a missing or unknown kind prefix yields no kind and no throw', () => {
   assert.doesNotThrow(() => parseComparePermalink('e:Zba', undefined));
 });
 
-test('duplicates collapse and the cap is enforced by dropping the overflow', () => {
+test('duplicates collapse without landing in resolved twice, dropped, or overflow', () => {
   const dup = parseComparePermalink('e:Zba,Zba,Zbb', allExts);
   assert.deepEqual(dup.resolved, ['Zba', 'Zbb']);
+  assert.deepEqual(dup.dropped, []);
+  assert.deepEqual(dup.overflow, []);
+});
 
+test('segments past COMPARE_MAX land in overflow, not dropped', () => {
+  // Regression: these ids are real, resolvable catalog entries. Reporting
+  // them as "not in the catalog" (the `dropped` message) would be false —
+  // they were only bumped by the cap, which is a different fact.
   const ids = allExts.slice(0, COMPARE_MAX + 2).map((e) => e.id);
   const over = parseComparePermalink(`e:${ids.join(',')}`, allExts);
   assert.equal(over.resolved.length, COMPARE_MAX);
-  assert.equal(over.dropped.length, 2);
+  assert.deepEqual(over.dropped, []);
+  assert.equal(over.overflow.length, 2);
+  assert.deepEqual(over.overflow, ids.slice(COMPARE_MAX));
+});
+
+test('unresolvable ids still land in dropped, not overflow', () => {
+  const parsed = parseComparePermalink('e:Zba,Zqqq,Zbb', allExts);
+  assert.deepEqual(parsed.dropped, ['Zqqq']);
+  assert.deepEqual(parsed.overflow, []);
+});
+
+test('a mixed input of unresolvable ids and overflow populates both arrays correctly', () => {
+  const ids = allExts.slice(0, COMPARE_MAX).map((e) => e.id);
+  // Six resolvable ids fill the cap, then one bogus id (dropped) and one more
+  // real, resolvable id (overflow) follow.
+  const raw = `e:${ids.join(',')},Zqqq,${allExts[COMPARE_MAX].id}`;
+  const parsed = parseComparePermalink(raw, allExts);
+  assert.equal(parsed.resolved.length, COMPARE_MAX);
+  assert.deepEqual(parsed.dropped, ['Zqqq']);
+  assert.deepEqual(parsed.overflow, [allExts[COMPARE_MAX].id]);
 });
 
 test('the markdown export is a well-formed table with an attribute column', () => {
