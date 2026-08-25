@@ -978,3 +978,30 @@ pre,
   font-weight: 600;
 }
 
+
+/* Header toolbar. A full-width plate holding filters on the left and actions
+   on the right. Full width on purpose: every clipping bug in this header came
+   from packing thirteen controls into a right-hand column narrower than they
+   needed, where an overflow-x-hidden root cut the surplus off instead of
+   wrapping it. A full-width row wraps. */
+.riscv-toolbar {
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--riscv-border-2);
+  background: var(--riscv-plate);
+  backdrop-filter: blur(8px);
+}
+
+/* A tool opens a dialog and hands you back. It never advertises state, because
+   it has none — which is why the Encoding Map's old gold fill was misleading:
+   it read as "on" while doing nothing. Modes carry the colour instead. */
+.riscv-tool-btn {
+  border-color: var(--riscv-border-2);
+  color: var(--riscv-text-2);
+  background: transparent;
+}
+.riscv-tool-btn:hover {
+  border-color: var(--riscv-tint-4);
+  color: var(--riscv-text);
+  background: var(--riscv-tint-3);
+}

@@ -366,3 +366,27 @@ test('a profile comparison permalink opens a membership matrix', async () => {
 
   assert.deepEqual(realErrors(errors), [], 'console errors rendering a profile comparison');
 });
+
+test('the header is an identity row plus one full-width toolbar', () => {
+  // The header's shape is load-bearing, not decoration. Every clipping bug it
+  // had came from packing its controls into a right-hand column narrower than
+  // they needed, inside an overflow-x-hidden root that cuts rather than
+  // scrolls. A single full-width toolbar wraps instead.
+  const toolbar = dom.window.document.querySelector('.riscv-toolbar');
+  assert.ok(toolbar, 'no header toolbar');
+  assert.equal(toolbar.children.length, 2, 'toolbar should hold a filters group and an actions group');
+
+  const [filters, actions] = [...toolbar.children].map((g) =>
+    [...g.querySelectorAll('button')].map((b) => b.textContent.trim()),
+  );
+  for (const profile of ['RVA20', 'RVA22', 'RVA23', 'RVB23']) {
+    assert.ok(filters.some((t) => t === profile), `${profile} missing from the filters group`);
+  }
+  for (const action of ['Encoder Validator', 'Encoding Map']) {
+    assert.ok(actions.some((t) => t.startsWith(action)), `${action} missing from the actions group`);
+  }
+  assert.ok(
+    actions.some((t) => t.startsWith('Compare')),
+    'the Compare mode toggle should live in the actions group',
+  );
+});

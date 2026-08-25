@@ -1728,7 +1728,7 @@ const RISCVExplorer = () => {
             style={{ borderBottom: '1px solid var(--riscv-border)' }}
           >
             {/* Title row */}
-            <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-4">
+            <div className="flex flex-col gap-4">
               <div>
                 <div className="flex items-center gap-3 mb-1">
                   <CircuitBoard size={22} style={{ color: 'var(--riscv-gold)' }} />
@@ -1757,24 +1757,22 @@ const RISCVExplorer = () => {
                     this column is inside an overflow-x-hidden root that clips
                     rather than scrolls, so an unconditional nowrap would put
                     the last stat somewhere a narrow-screen reader cannot see. */}
-                <div className="flex flex-wrap sm:flex-nowrap items-center gap-x-4 gap-y-1.5 mt-3 ml-9">
+                <div className="flex flex-wrap items-center gap-x-2 mt-1.5 ml-9 text-[11px]">
                   {[
                     { label: 'Extensions', value: totalExtensions },
                     { label: 'Profiles', value: Object.keys(profiles).length },
                     { label: 'Instructions', value: `${(totalInstructions / 1000).toFixed(1)}k+` },
                     { label: 'Volumes', value: 2 },
                   ].map(({ label, value }) => (
-                    <div key={label} className="flex items-baseline gap-1.5 whitespace-nowrap">
-                      <span className="text-base font-black" style={{ color: 'var(--riscv-gold)' }}>
-                        {value}
-                      </span>
-                      <span
-                        className="text-[11px] uppercase tracking-wider"
-                        style={{ color: 'var(--riscv-text-3)' }}
-                      >
-                        {label}
-                      </span>
-                    </div>
+                    <span
+                      key={label}
+                      className="whitespace-nowrap"
+                      style={{ color: 'var(--riscv-text-3)' }}
+                    >
+                      <span style={{ color: 'var(--riscv-text-2)', fontWeight: 600 }}>{value}</span>{' '}
+                      {label}
+                      {label !== 'Volumes' && <span className="mx-1 opacity-50">&middot;</span>}
+                    </span>
                   ))}
                 </div>
               </div>
@@ -1788,13 +1786,13 @@ const RISCVExplorer = () => {
                   all. Stretch until there is room to right-align.
                   min-w-0 because a flex item defaults to min-width:auto and
                   refuses to shrink below its content. */}
-              <div className="flex flex-col items-stretch gap-3 min-w-0 xl:shrink-0">
-                {/* Controls - Row 1 */}
-                <div className="flex flex-wrap items-center justify-start xl:justify-end gap-x-3 gap-y-3">
+              <div className="riscv-toolbar flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+                {/* Filters — what you are looking at. */}
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-3">
                   {/* Grouped Filters Container. Wraps on narrow screens; without
                       it this row stays one 557px line that cannot shrink. */}
                   <div
-                    className="flex flex-1 flex-wrap items-center gap-x-3 gap-y-2 px-3.5 py-2 rounded-xl border shadow-lg backdrop-blur-md"
+                    className="flex flex-wrap items-center gap-x-3 gap-y-2"
                     style={{
                       background: 'var(--riscv-plate)',
                       borderColor: 'rgba(255,255,255,0.08)',
@@ -1908,14 +1906,13 @@ const RISCVExplorer = () => {
                   </div>
                 </div>
 
-                {/* Controls - Row 2: the actions.
-                    Split out from the filters above because adding the Compare
-                    toggle pushed the single row wider than this column, and the
-                    column right-aligns inside an overflow-x-hidden root — so
-                    the surplus was clipped off the edge instead of wrapping,
-                    cutting the ISA Configuration Builder in half. Two rows keep
-                    both groups whole and right-aligned. */}
-                <div className="flex flex-wrap items-center justify-start xl:justify-end gap-x-3 gap-y-3">
+                {/* Actions — what you can do. Tools open a dialog and return
+                    you to where you were; modes latch and change how the whole
+                    page behaves. They are deliberately not styled alike: a tool
+                    stays neutral at all times, a mode takes its accent only
+                    while it is ON, so the loudest control in the toolbar is
+                    always a mode that is actually running. */}
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-3">
                   {/* Encoder Validator - Sleek Outline Button */}
                   <button
                     type="button"
@@ -1927,13 +1924,10 @@ const RISCVExplorer = () => {
                     ref={encoderTriggerRef}
                     aria-haspopup="dialog"
                     aria-expanded={encoderValidatorOpen}
-                    className="group inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-300 whitespace-nowrap border border-indigo-500/40 text-indigo-300 hover:bg-indigo-500/15 hover:border-indigo-400 hover:shadow-[0_0_15px_rgba(99,102,241,0.2)]"
+                    className="riscv-tool-btn group inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-300 whitespace-nowrap border"
                     data-tooltip="Validate a proposed instruction encoding against the existing instruction set"
                   >
-                    <ScanSearch
-                      size={14}
-                      className="text-indigo-400/80 group-hover:text-indigo-300 transition-colors"
-                    />
+                    <ScanSearch size={14} className="opacity-80" />
                     <span className="whitespace-nowrap">Encoder Validator</span>
                   </button>
 
@@ -1945,13 +1939,14 @@ const RISCVExplorer = () => {
                     onClick={() => setEncodingMapOpen(true)}
                     aria-haspopup="dialog"
                     aria-expanded={encodingMapOpen}
-                    className="group inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-300 whitespace-nowrap border hover:opacity-90"
+                    className="riscv-tool-btn group inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-300 whitespace-nowrap border"
                     // Tokens, not Tailwind amber: text-amber-300 has no light-theme
                     // remapping and measured 1.33:1 on the pastel ground.
                     style={{
                       color: 'var(--riscv-gold)',
-                      borderColor: 'var(--riscv-gold-glow)',
-                      background: 'var(--riscv-gold-dim)',
+                      borderColor: 'var(--riscv-border-2)',
+                      background: 'transparent',
+                      color: 'var(--riscv-text-2)',
                     }}
                     data-tooltip="See how the 32-bit opcode space is allocated"
                     title="See how the 32-bit opcode space is allocated"
@@ -1961,6 +1956,9 @@ const RISCVExplorer = () => {
                   </button>
 
                   {/* Theme toggle relocated to header */}
+
+                  {/* Tools end, modes begin. */}
+                  <div className="h-6 w-px" style={{ background: 'var(--riscv-border-2)' }} />
 
                   {/* Compare mode. Deliberately a mode rather than always-on
                     affordances: a pin on every one of 227 tiles, every
