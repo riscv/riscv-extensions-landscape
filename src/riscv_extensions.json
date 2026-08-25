@@ -14554,6 +14554,1378 @@
       },
       "state": "ratified",
       "ratification_date": "2021-11"
+    },
+    {
+      "id": "Sm",
+      "name": "Sm",
+      "tags": [
+        "rv_system"
+      ],
+      "desc": "Machine ISA",
+      "use": "Machine privilege level (Volume II)",
+      "instructions": {
+        "MRET": {
+          "encoding": "00110000001000000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_system"
+          ],
+          "match": "0x30200073",
+          "mask": "0xffffffff"
+        },
+        "WFI": {
+          "encoding": "00010000010100000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_system"
+          ],
+          "match": "0x10500073",
+          "mask": "0xffffffff"
+        }
+      },
+      "url": "https://docs.riscv.org/reference/isa/priv/machine.html",
+      "state": "ratified",
+      "ratification_date": "2021-12",
+      "csrs": {
+        "henvcfg": {
+          "address": "1546",
+          "priv_mode": "S",
+          "length": 64,
+          "desc": "Hypervisor Environment Configuration"
+        },
+        "henvcfgh": {
+          "address": "1562",
+          "priv_mode": "S",
+          "length": 32,
+          "desc": "most-significant 32 bits of Hypervisor Environment Configuration"
+        },
+        "marchid": {
+          "address": "3858",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "Machine Architecture ID"
+        },
+        "mcause": {
+          "address": "834",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "Machine Cause"
+        },
+        "mconfigptr": {
+          "address": "3861",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "Machine Configuration Pointer"
+        },
+        "mcountinhibit": {
+          "address": "800",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Counter Inhibit"
+        },
+        "mcycle": {
+          "address": "2816",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Cycle Counter"
+        },
+        "mcycleh": {
+          "address": "2944",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "High-half machine Cycle Counter"
+        },
+        "menvcfg": {
+          "address": "778",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Environment Configuration"
+        },
+        "menvcfgh": {
+          "address": "794",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Environment Configuration"
+        },
+        "mepc": {
+          "address": "833",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "Machine Exception Program Counter"
+        },
+        "mhartid": {
+          "address": "3860",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "Machine Hart ID"
+        },
+        "mhpmcounter10": {
+          "address": "2826",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 10"
+        },
+        "mhpmcounter10h": {
+          "address": "2954",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 10, Upper half"
+        },
+        "mhpmcounter11": {
+          "address": "2827",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 11"
+        },
+        "mhpmcounter11h": {
+          "address": "2955",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 11, Upper half"
+        },
+        "mhpmcounter12": {
+          "address": "2828",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 12"
+        },
+        "mhpmcounter12h": {
+          "address": "2956",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 12, Upper half"
+        },
+        "mhpmcounter13": {
+          "address": "2829",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 13"
+        },
+        "mhpmcounter13h": {
+          "address": "2957",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 13, Upper half"
+        },
+        "mhpmcounter14": {
+          "address": "2830",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 14"
+        },
+        "mhpmcounter14h": {
+          "address": "2958",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 14, Upper half"
+        },
+        "mhpmcounter15": {
+          "address": "2831",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 15"
+        },
+        "mhpmcounter15h": {
+          "address": "2959",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 15, Upper half"
+        },
+        "mhpmcounter16": {
+          "address": "2832",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 16"
+        },
+        "mhpmcounter16h": {
+          "address": "2960",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 16, Upper half"
+        },
+        "mhpmcounter17": {
+          "address": "2833",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 17"
+        },
+        "mhpmcounter17h": {
+          "address": "2961",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 17, Upper half"
+        },
+        "mhpmcounter18": {
+          "address": "2834",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 18"
+        },
+        "mhpmcounter18h": {
+          "address": "2962",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 18, Upper half"
+        },
+        "mhpmcounter19": {
+          "address": "2835",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 19"
+        },
+        "mhpmcounter19h": {
+          "address": "2963",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 19, Upper half"
+        },
+        "mhpmcounter20": {
+          "address": "2836",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 20"
+        },
+        "mhpmcounter20h": {
+          "address": "2964",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 20, Upper half"
+        },
+        "mhpmcounter21": {
+          "address": "2837",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 21"
+        },
+        "mhpmcounter21h": {
+          "address": "2965",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 21, Upper half"
+        },
+        "mhpmcounter22": {
+          "address": "2838",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 22"
+        },
+        "mhpmcounter22h": {
+          "address": "2966",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 22, Upper half"
+        },
+        "mhpmcounter23": {
+          "address": "2839",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 23"
+        },
+        "mhpmcounter23h": {
+          "address": "2967",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 23, Upper half"
+        },
+        "mhpmcounter24": {
+          "address": "2840",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 24"
+        },
+        "mhpmcounter24h": {
+          "address": "2968",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 24, Upper half"
+        },
+        "mhpmcounter25": {
+          "address": "2841",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 25"
+        },
+        "mhpmcounter25h": {
+          "address": "2969",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 25, Upper half"
+        },
+        "mhpmcounter26": {
+          "address": "2842",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 26"
+        },
+        "mhpmcounter26h": {
+          "address": "2970",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 26, Upper half"
+        },
+        "mhpmcounter27": {
+          "address": "2843",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 27"
+        },
+        "mhpmcounter27h": {
+          "address": "2971",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 27, Upper half"
+        },
+        "mhpmcounter28": {
+          "address": "2844",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 28"
+        },
+        "mhpmcounter28h": {
+          "address": "2972",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 28, Upper half"
+        },
+        "mhpmcounter29": {
+          "address": "2845",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 29"
+        },
+        "mhpmcounter29h": {
+          "address": "2973",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 29, Upper half"
+        },
+        "mhpmcounter3": {
+          "address": "2819",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 3"
+        },
+        "mhpmcounter30": {
+          "address": "2846",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 30"
+        },
+        "mhpmcounter30h": {
+          "address": "2974",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 30, Upper half"
+        },
+        "mhpmcounter31": {
+          "address": "2847",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 31"
+        },
+        "mhpmcounter31h": {
+          "address": "2975",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 31, Upper half"
+        },
+        "mhpmcounter3h": {
+          "address": "2947",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 3, Upper half"
+        },
+        "mhpmcounter4": {
+          "address": "2820",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 4"
+        },
+        "mhpmcounter4h": {
+          "address": "2948",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 4, Upper half"
+        },
+        "mhpmcounter5": {
+          "address": "2821",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 5"
+        },
+        "mhpmcounter5h": {
+          "address": "2949",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 5, Upper half"
+        },
+        "mhpmcounter6": {
+          "address": "2822",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 6"
+        },
+        "mhpmcounter6h": {
+          "address": "2950",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 6, Upper half"
+        },
+        "mhpmcounter7": {
+          "address": "2823",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 7"
+        },
+        "mhpmcounter7h": {
+          "address": "2951",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 7, Upper half"
+        },
+        "mhpmcounter8": {
+          "address": "2824",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 8"
+        },
+        "mhpmcounter8h": {
+          "address": "2952",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 8, Upper half"
+        },
+        "mhpmcounter9": {
+          "address": "2825",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 9"
+        },
+        "mhpmcounter9h": {
+          "address": "2953",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 9, Upper half"
+        },
+        "mhpmevent10": {
+          "address": "810",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 10 Control"
+        },
+        "mhpmevent10h": {
+          "address": "1834",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 10 Control, High half"
+        },
+        "mhpmevent11": {
+          "address": "811",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 11 Control"
+        },
+        "mhpmevent11h": {
+          "address": "1835",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 11 Control, High half"
+        },
+        "mhpmevent12": {
+          "address": "812",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 12 Control"
+        },
+        "mhpmevent12h": {
+          "address": "1836",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 12 Control, High half"
+        },
+        "mhpmevent13": {
+          "address": "813",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 13 Control"
+        },
+        "mhpmevent13h": {
+          "address": "1837",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 13 Control, High half"
+        },
+        "mhpmevent14": {
+          "address": "814",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 14 Control"
+        },
+        "mhpmevent14h": {
+          "address": "1838",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 14 Control, High half"
+        },
+        "mhpmevent15": {
+          "address": "815",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 15 Control"
+        },
+        "mhpmevent15h": {
+          "address": "1839",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 15 Control, High half"
+        },
+        "mhpmevent16": {
+          "address": "816",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 16 Control"
+        },
+        "mhpmevent16h": {
+          "address": "1840",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 16 Control, High half"
+        },
+        "mhpmevent17": {
+          "address": "817",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 17 Control"
+        },
+        "mhpmevent17h": {
+          "address": "1841",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 17 Control, High half"
+        },
+        "mhpmevent18": {
+          "address": "818",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 18 Control"
+        },
+        "mhpmevent18h": {
+          "address": "1842",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 18 Control, High half"
+        },
+        "mhpmevent19": {
+          "address": "819",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 19 Control"
+        },
+        "mhpmevent19h": {
+          "address": "1843",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 19 Control, High half"
+        },
+        "mhpmevent20": {
+          "address": "820",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 20 Control"
+        },
+        "mhpmevent20h": {
+          "address": "1844",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 20 Control, High half"
+        },
+        "mhpmevent21": {
+          "address": "821",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 21 Control"
+        },
+        "mhpmevent21h": {
+          "address": "1845",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 21 Control, High half"
+        },
+        "mhpmevent22": {
+          "address": "822",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 22 Control"
+        },
+        "mhpmevent22h": {
+          "address": "1846",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 22 Control, High half"
+        },
+        "mhpmevent23": {
+          "address": "823",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 23 Control"
+        },
+        "mhpmevent23h": {
+          "address": "1847",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 23 Control, High half"
+        },
+        "mhpmevent24": {
+          "address": "824",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 24 Control"
+        },
+        "mhpmevent24h": {
+          "address": "1848",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 24 Control, High half"
+        },
+        "mhpmevent25": {
+          "address": "825",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 25 Control"
+        },
+        "mhpmevent25h": {
+          "address": "1849",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 25 Control, High half"
+        },
+        "mhpmevent26": {
+          "address": "826",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 26 Control"
+        },
+        "mhpmevent26h": {
+          "address": "1850",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 26 Control, High half"
+        },
+        "mhpmevent27": {
+          "address": "827",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 27 Control"
+        },
+        "mhpmevent27h": {
+          "address": "1851",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 27 Control, High half"
+        },
+        "mhpmevent28": {
+          "address": "828",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 28 Control"
+        },
+        "mhpmevent28h": {
+          "address": "1852",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 28 Control, High half"
+        },
+        "mhpmevent29": {
+          "address": "829",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 29 Control"
+        },
+        "mhpmevent29h": {
+          "address": "1853",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 29 Control, High half"
+        },
+        "mhpmevent3": {
+          "address": "803",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 3 Control"
+        },
+        "mhpmevent30": {
+          "address": "830",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 30 Control"
+        },
+        "mhpmevent30h": {
+          "address": "1854",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 30 Control, High half"
+        },
+        "mhpmevent31": {
+          "address": "831",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 31 Control"
+        },
+        "mhpmevent31h": {
+          "address": "1855",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 31 Control, High half"
+        },
+        "mhpmevent3h": {
+          "address": "1827",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 3 Control, High half"
+        },
+        "mhpmevent4": {
+          "address": "804",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 4 Control"
+        },
+        "mhpmevent4h": {
+          "address": "1828",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 4 Control, High half"
+        },
+        "mhpmevent5": {
+          "address": "805",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 5 Control"
+        },
+        "mhpmevent5h": {
+          "address": "1829",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 5 Control, High half"
+        },
+        "mhpmevent6": {
+          "address": "806",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 6 Control"
+        },
+        "mhpmevent6h": {
+          "address": "1830",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 6 Control, High half"
+        },
+        "mhpmevent7": {
+          "address": "807",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 7 Control"
+        },
+        "mhpmevent7h": {
+          "address": "1831",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 7 Control, High half"
+        },
+        "mhpmevent8": {
+          "address": "808",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 8 Control"
+        },
+        "mhpmevent8h": {
+          "address": "1832",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 8 Control, High half"
+        },
+        "mhpmevent9": {
+          "address": "809",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Hardware Performance Counter 9 Control"
+        },
+        "mhpmevent9h": {
+          "address": "1833",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Hardware Performance Counter 9 Control, High half"
+        },
+        "mideleg": {
+          "address": "771",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "Machine Interrupt Delegation"
+        },
+        "mie": {
+          "address": "772",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "Machine Interrupt Enable"
+        },
+        "mimpid": {
+          "address": "3859",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "Machine Implementation ID"
+        },
+        "minstret": {
+          "address": "2818",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Instructions Retired Counter"
+        },
+        "minstreth": {
+          "address": "2946",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Instructions Retired Counter"
+        },
+        "mip": {
+          "address": "836",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "Machine Interrupt Pending"
+        },
+        "misa": {
+          "address": "769",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "Machine ISA Control"
+        },
+        "mscratch": {
+          "address": "832",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "Machine Scratch Register"
+        },
+        "mseccfg": {
+          "address": "1863",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Security Configuration"
+        },
+        "mseccfgh": {
+          "address": "1879",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Most significant 32 bits of Machine Security Configuration"
+        },
+        "mstatus": {
+          "address": "768",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "Machine Status"
+        },
+        "mstatush": {
+          "address": "784",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Status High"
+        },
+        "mtval": {
+          "address": "835",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "Machine Trap Value"
+        },
+        "mtvec": {
+          "address": "773",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "Machine Trap Vector Control"
+        },
+        "mvendorid": {
+          "address": "3857",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Vendor ID"
+        },
+        "pmpaddr0": {
+          "address": "944",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 0"
+        },
+        "pmpaddr1": {
+          "address": "945",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 1"
+        },
+        "pmpaddr10": {
+          "address": "954",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 10"
+        },
+        "pmpaddr11": {
+          "address": "955",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 11"
+        },
+        "pmpaddr12": {
+          "address": "956",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 12"
+        },
+        "pmpaddr13": {
+          "address": "957",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 13"
+        },
+        "pmpaddr14": {
+          "address": "958",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 14"
+        },
+        "pmpaddr15": {
+          "address": "959",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 15"
+        },
+        "pmpaddr16": {
+          "address": "960",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 16"
+        },
+        "pmpaddr17": {
+          "address": "961",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 17"
+        },
+        "pmpaddr18": {
+          "address": "962",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 18"
+        },
+        "pmpaddr19": {
+          "address": "963",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 19"
+        },
+        "pmpaddr2": {
+          "address": "946",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 2"
+        },
+        "pmpaddr20": {
+          "address": "964",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 20"
+        },
+        "pmpaddr21": {
+          "address": "965",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 21"
+        },
+        "pmpaddr22": {
+          "address": "966",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 22"
+        },
+        "pmpaddr23": {
+          "address": "967",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 23"
+        },
+        "pmpaddr24": {
+          "address": "968",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 24"
+        },
+        "pmpaddr25": {
+          "address": "969",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 25"
+        },
+        "pmpaddr26": {
+          "address": "970",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 26"
+        },
+        "pmpaddr27": {
+          "address": "971",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 27"
+        },
+        "pmpaddr28": {
+          "address": "972",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 28"
+        },
+        "pmpaddr29": {
+          "address": "973",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 29"
+        },
+        "pmpaddr3": {
+          "address": "947",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 3"
+        },
+        "pmpaddr30": {
+          "address": "974",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 30"
+        },
+        "pmpaddr31": {
+          "address": "975",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 31"
+        },
+        "pmpaddr32": {
+          "address": "976",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 32"
+        },
+        "pmpaddr33": {
+          "address": "977",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 33"
+        },
+        "pmpaddr34": {
+          "address": "978",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 34"
+        },
+        "pmpaddr35": {
+          "address": "979",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 35"
+        },
+        "pmpaddr36": {
+          "address": "980",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 36"
+        },
+        "pmpaddr37": {
+          "address": "981",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 37"
+        },
+        "pmpaddr38": {
+          "address": "982",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 38"
+        },
+        "pmpaddr39": {
+          "address": "983",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 39"
+        },
+        "pmpaddr4": {
+          "address": "948",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 4"
+        },
+        "pmpaddr40": {
+          "address": "984",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 40"
+        },
+        "pmpaddr41": {
+          "address": "985",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 41"
+        },
+        "pmpaddr42": {
+          "address": "986",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 42"
+        },
+        "pmpaddr43": {
+          "address": "987",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 43"
+        },
+        "pmpaddr44": {
+          "address": "988",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 44"
+        },
+        "pmpaddr45": {
+          "address": "989",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 45"
+        },
+        "pmpaddr46": {
+          "address": "990",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 46"
+        },
+        "pmpaddr47": {
+          "address": "991",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 47"
+        },
+        "pmpaddr48": {
+          "address": "992",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 48"
+        },
+        "pmpaddr49": {
+          "address": "993",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 49"
+        },
+        "pmpaddr5": {
+          "address": "949",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 5"
+        },
+        "pmpaddr50": {
+          "address": "994",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 50"
+        },
+        "pmpaddr51": {
+          "address": "995",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 51"
+        },
+        "pmpaddr52": {
+          "address": "996",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 52"
+        },
+        "pmpaddr53": {
+          "address": "997",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 53"
+        },
+        "pmpaddr54": {
+          "address": "998",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 54"
+        },
+        "pmpaddr55": {
+          "address": "999",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 55"
+        },
+        "pmpaddr56": {
+          "address": "1000",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 56"
+        },
+        "pmpaddr57": {
+          "address": "1001",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 57"
+        },
+        "pmpaddr58": {
+          "address": "1002",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 58"
+        },
+        "pmpaddr59": {
+          "address": "1003",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 59"
+        },
+        "pmpaddr6": {
+          "address": "950",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 6"
+        },
+        "pmpaddr60": {
+          "address": "1004",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 60"
+        },
+        "pmpaddr61": {
+          "address": "1005",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 61"
+        },
+        "pmpaddr62": {
+          "address": "1006",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 62"
+        },
+        "pmpaddr63": {
+          "address": "1007",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 63"
+        },
+        "pmpaddr7": {
+          "address": "951",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 7"
+        },
+        "pmpaddr8": {
+          "address": "952",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 8"
+        },
+        "pmpaddr9": {
+          "address": "953",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Address 9"
+        },
+        "pmpcfg0": {
+          "address": "928",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Configuration Register 0"
+        },
+        "pmpcfg1": {
+          "address": "929",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Configuration Register 1"
+        },
+        "pmpcfg10": {
+          "address": "938",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Configuration Register 10"
+        },
+        "pmpcfg11": {
+          "address": "939",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Configuration Register 11"
+        },
+        "pmpcfg12": {
+          "address": "940",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Configuration Register 12"
+        },
+        "pmpcfg13": {
+          "address": "941",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Configuration Register 13"
+        },
+        "pmpcfg14": {
+          "address": "942",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Configuration Register 14"
+        },
+        "pmpcfg15": {
+          "address": "943",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Configuration Register 15"
+        },
+        "pmpcfg2": {
+          "address": "930",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Configuration Register 2"
+        },
+        "pmpcfg3": {
+          "address": "931",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Configuration Register 3"
+        },
+        "pmpcfg4": {
+          "address": "932",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Configuration Register 4"
+        },
+        "pmpcfg5": {
+          "address": "933",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Configuration Register 5"
+        },
+        "pmpcfg6": {
+          "address": "934",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Configuration Register 6"
+        },
+        "pmpcfg7": {
+          "address": "935",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Configuration Register 7"
+        },
+        "pmpcfg8": {
+          "address": "936",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Configuration Register 8"
+        },
+        "pmpcfg9": {
+          "address": "937",
+          "priv_mode": "M",
+          "length": "MXLEN",
+          "desc": "PMP Configuration Register 9"
+        }
+      }
     }
   ],
   "z_bit": [
@@ -20775,7 +22147,8 @@
           "match": "0x480f9057",
           "mask": "0xfc0ff07f"
         }
-      }
+      },
+      "state": "draft"
     },
     {
       "id": "Zvabd",

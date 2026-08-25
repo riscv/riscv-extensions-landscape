@@ -255,6 +255,30 @@ test('the ratified base ISAs are labelled ratified', () => {
   }
 });
 
+test('an extension that ships instructions is never left unlabelled', () => {
+  // Policy, now enforceable: if a reader can see encodings, they can see
+  // whether the thing is ratified. Zvfofp8min was the last holdout — three real
+  // encodings reading as "status unconfirmed" — and it is a draft: zero
+  // mentions in the ratified unprivileged manual and no UDB entry.
+  const unlabelled = entries
+    .filter((e) => Object.keys(e.instructions || {}).length > 0 && !e.state)
+    .map((e) => `${e.id} (${Object.keys(e.instructions).length} instructions)`);
+  assert.deepEqual(unlabelled, [], 'these ship encodings with no ratification status');
+});
+
+test('Sm exists and owns MRET and WFI', () => {
+  // The catalogue had 25 Sm-prefixed entries and no Sm, so the two most basic
+  // machine-mode instructions were in instr_dict.json and reachable from
+  // nowhere. UDB defines both as `definedBy: extension: name: Sm`, and the
+  // privileged manual carries them 17 and 33 times respectively.
+  const sm = entries.find((e) => e.id === 'Sm');
+  assert.ok(sm, 'Sm is missing; MRET and WFI have no home without it');
+  assert.equal(sm.state, 'ratified');
+  for (const m of ['MRET', 'WFI']) {
+    assert.ok(sm.instructions[m], `Sm should own ${m}`);
+  }
+});
+
 test('the E bases are labelled ratified, locally', () => {
   // These carry a state that no sync produced, and that is deliberate.
   // riscv-unified-db has no E extension under any name and riscv-opcodes has no
