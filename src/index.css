@@ -1404,3 +1404,39 @@ pre,
     transform: none;
   }
 }
+
+/* Skip link. Off-screen until focused, then pinned to the top-left — the
+   standard pattern, and the only affordance here aimed squarely at someone who
+   never touches a mouse. Without it the header's filters and four action
+   controls sit between the tab order and the 227 tiles, on every load. */
+.riscv-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 0 0 8px 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--riscv-bg);
+  background: var(--riscv-gold);
+  text-decoration: none;
+}
+.riscv-skip-link:focus {
+  left: 0;
+  outline: 2px solid var(--riscv-text);
+  outline-offset: 2px;
+}
+
+/* Visually hidden, still announced. For meaning carried only by colour. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

@@ -13,6 +13,7 @@
 import React from 'react';
 import { X, Copy, Link2, Columns } from 'lucide-react';
 import { toMarkdown } from './compareModel.js';
+import { focusableWithin, nextFocus } from './focusTrap.js';
 import EncodingDiagram from './EncodingDiagram.jsx';
 
 function Cell({ row, value, bitDiff }) {
@@ -121,7 +122,22 @@ export default function CompareView({
     restoreFocusRef.current = document.activeElement;
     dialogRef.current?.focus();
     const onKey = (e) => {
-      if (e.key === 'Escape') onCloseRef.current();
+      if (e.key === 'Escape') {
+        onCloseRef.current();
+        return;
+      }
+      // Hold Tab inside the dialog. Without this it walks out into the page
+      // behind the backdrop, which is still focusable and now invisible.
+      if (e.key !== 'Tab') return;
+      const target = nextFocus(
+        focusableWithin(dialogRef.current),
+        document.activeElement,
+        e.shiftKey,
+      );
+      if (target) {
+        e.preventDefault();
+        target.focus();
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => {

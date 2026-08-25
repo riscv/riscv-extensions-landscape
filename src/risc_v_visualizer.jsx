@@ -1715,6 +1715,14 @@ const RISCVExplorer = () => {
       className="min-h-screen relative overflow-x-hidden"
       style={{ background: 'var(--riscv-bg)', color: 'var(--riscv-text)' }}
     >
+      {/* Skip link. First thing in the tab order, visible only once focused.
+          Without it a keyboard user pays for the whole header — filters, four
+          action controls, the search field — on every page load before reaching
+          the 227 tiles they came for. */}
+      <a href="#extension-grid" className="riscv-skip-link">
+        Skip to the extension grid
+      </a>
+
       {/* Gradient top border */}
       <div className="riscv-top-border" />
       <div className="px-3 md:px-6 py-4 md:py-6 max-w-[1700px] mx-auto">
@@ -1843,6 +1851,7 @@ const RISCVExplorer = () => {
                                   return current === profile ? null : profile;
                                 })
                               }
+                              aria-pressed={activeProfile === profile}
                               className={[
                                 'px-3 py-1.5 text-[12px] rounded-lg transition-all duration-200 font-medium',
                                 activeProfile === profile
@@ -1900,6 +1909,7 @@ const RISCVExplorer = () => {
                                 return current === vol ? null : vol;
                               })
                             }
+                            aria-pressed={activeVolume === vol}
                             className={[
                               'px-3 py-1.5 text-[12px] rounded-lg transition-all duration-200 font-medium',
                               activeVolume === vol
@@ -2468,7 +2478,13 @@ const RISCVExplorer = () => {
             </div>
           </div>
           {/* ─── Main Grid ───────────────────────────────────────────────── */}
-          <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-min">
+          <div
+            id="extension-grid"
+            tabIndex={-1}
+            role="region"
+            aria-label="Extension catalogue"
+            className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-min"
+          >
             {/* Search Bar */}
             <div className="col-span-full mb-2 flex items-center gap-3">
               <div className="relative flex-1">
@@ -2479,7 +2495,8 @@ const RISCVExplorer = () => {
                 />
                 <input
                   ref={searchInputRef}
-                  type="text"
+                  type="search"
+                  aria-label="Search extensions, instructions and encodings"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search extensions, instructions, encodings…"
@@ -3039,6 +3056,9 @@ const RISCVExplorer = () => {
           {/* ─── Sidebar ─────────────────────────────────────────────────── */}
           <div
             id="detail-panel"
+            role="region"
+            aria-label="Selected extension details"
+            aria-live="polite"
             className={`lg:col-span-4 mt-6 lg:mt-0 ${selectedExt ? 'panel-open' : ''}`}
           >
             <div
