@@ -265,3 +265,39 @@ export function parseComparePermalink(value, allExts) {
 
   return { kind, resolved, dropped };
 }
+
+/**
+ * Flattens a cell to table text.
+ *
+ * Newlines collapse because a pipe table is one row per line, and `|` is
+ * escaped because an unescaped one silently invents a column. `null` renders as
+ * an em dash so an absent value reads as absent rather than as a gap.
+ */
+function cellText(value) {
+  if (value === null || value === undefined) return '—';
+  const text = Array.isArray(value) ? value.join(', ') : String(value);
+  const flat = text.replace(/\s*\n\s*/g, ' ').trim();
+  return flat === '' ? '—' : flat.replace(/\|/g, '\\|');
+}
+
+/**
+ * Renders a comparison as a GitHub-flavoured pipe table.
+ *
+ * @param {object} model from buildExtensionComparison or buildInstructionComparison
+ * @param {{differencesOnly?: boolean}} [options] pass the view's current toggle
+ *   so the export matches what the user is looking at
+ */
+export function toMarkdown(model, { differencesOnly = false } = {}) {
+  if (!model || !Array.isArray(model.columns) || model.columns.length === 0) return '';
+
+  const headers = model.columns.map((c) =>
+    c.sublabel && c.sublabel !== c.label ? `${c.label} (${c.sublabel})` : c.label,
+  );
+  const rows = differencesOnly ? model.rows.filter((r) => !r.allSame) : model.rows;
+
+  return [
+    `| Attribute | ${headers.map(cellText).join(' | ')} |`,
+    `| --- | ${headers.map(() => '---').join(' | ')} |`,
+    ...rows.map((r) => `| ${cellText(r.label)} | ${r.cells.map(cellText).join(' | ')} |`),
+  ].join('\n');
+}

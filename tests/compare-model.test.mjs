@@ -23,6 +23,7 @@ import {
   buildInstructionComparison,
   buildComparePermalink,
   parseComparePermalink,
+  toMarkdown,
 } from '../src/compareModel.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -243,4 +244,62 @@ test('duplicates collapse and the cap is enforced by dropping the overflow', () 
   const over = parseComparePermalink(`e:${ids.join(',')}`, allExts);
   assert.equal(over.resolved.length, COMPARE_MAX);
   assert.equal(over.dropped.length, 2);
+});
+
+test('the markdown export is a well-formed table with an attribute column', () => {
+  const model = buildExtensionComparison([byId('Zba'), byId('Zbb')]);
+  const lines = toMarkdown(model).split('\n');
+  assert.ok(lines[0].startsWith('| Attribute |'), `header was ${lines[0]}`);
+  assert.equal(lines[1], '| --- | --- | --- |');
+  assert.equal(lines.length, model.rows.length + 2);
+  for (const line of lines) {
+    assert.equal((line.match(/(?<!\\)\|/g) || []).length, 4, `wrong cell count: ${line}`);
+  }
+});
+
+test('differences-only drops the rows where everything agrees', () => {
+  const model = buildExtensionComparison([byId('Zba'), byId('Zbb')]);
+  const differing = model.rows.filter((r) => !r.allSame).length;
+  assert.equal(toMarkdown(model, { differencesOnly: true }).split('\n').length, differing + 2);
+});
+
+test('an absent value renders as an em dash, not as blank', () => {
+  const stateless = allExts.find((e) => e.state === undefined);
+  const md = toMarkdown(buildExtensionComparison([stateless, byId('Zba')]));
+  const stateLine = md.split('\n').find((l) => l.startsWith('| State |'));
+  assert.ok(stateLine.includes('—'), `expected an em dash in: ${stateLine}`);
+});
+
+test('pipes in a value are escaped so the table survives', () => {
+  const model = {
+    kind: 'ext',
+    columns: [
+      { key: 'A', label: 'A', sublabel: null },
+      { key: 'B', label: 'B', sublabel: null },
+    ],
+    rows: [
+      { key: 'desc', label: 'Description', render: 'text', cells: ['a | b', 'c'], allSame: false },
+    ],
+    bitDiff: null,
+  };
+  const line = toMarkdown(model).split('\n')[2];
+  assert.ok(line.includes('a \\| b'), `pipe was not escaped: ${line}`);
+  assert.equal((line.match(/(?<!\\)\|/g) || []).length, 4);
+});
+
+test('a newline inside a description does not break the row', () => {
+  const model = {
+    kind: 'ext',
+    columns: [{ key: 'A', label: 'A', sublabel: null }],
+    rows: [
+      { key: 'desc', label: 'Description', render: 'text', cells: ['one\ntwo'], allSame: true },
+    ],
+    bitDiff: null,
+  };
+  assert.equal(toMarkdown(model).split('\n').length, 3);
+});
+
+test('an empty model exports nothing rather than a headerless table', () => {
+  assert.equal(toMarkdown(buildExtensionComparison([])), '');
+  assert.equal(toMarkdown(null), '');
 });
