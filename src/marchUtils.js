@@ -40,8 +40,9 @@
  *   Base / gc extensions (Zicsr, Zifencei, C, M, A, F, D, etc.):
  *     Universally stable across all modern RISC-V toolchains.
  *
- *   Live binary testing (compiling an empty file with each generated -march string)
- *   has NOT yet been implemented in CI. That is the remaining gap.
+ *   CI does compile-check the generated -march strings against clang. Rows that
+ *   need a newer clang than the job provides are skipped and reported, so the
+ *   check is a floor rather than full coverage — that is the remaining gap.
  */
 
 // ============================================================================

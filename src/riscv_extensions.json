@@ -25343,7 +25343,7 @@
       ],
       "desc": "Vector SHA-2 (full)",
       "use": "Vector SHA-256/512",
-      "url": "https://docs.riscv.org/reference/isa/unpriv/colophon.html",
+      "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {
         "VSHA2CH.VV": {
           "encoding": "1011101----------010-----1110111",
@@ -27114,11 +27114,11 @@
       "use": "2-level page tables (RV32 Linux)",
       "url": "https://docs.riscv.org/reference/isa/priv/supervisor.html",
       "instructions": {},
-      "long_name": "32-bit virtual address translation (3 level)",
+      "long_name": "32-bit virtual address translation (2 level)",
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2019-05",
-      "behavior": "32-bit virtual address translation (3 level)"
+      "behavior": "32-bit virtual address translation (2 level)"
     },
     {
       "id": "Sv39",

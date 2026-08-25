@@ -56,6 +56,12 @@ const EXPLICIT = {
   F: 'unpriv/f-st-ext', M: 'unpriv/m-st-ext', Q: 'unpriv/q-st-ext', V: 'unpriv/v-st-ext',
   H: 'priv/hypervisor', S: 'priv/supervisor', U: 'priv/machine',
   RV32I: 'unpriv/rv32', RV64I: 'unpriv/rv64', RV32E: 'unpriv/rv32e', RV64E: 'unpriv/rv32e',
+
+  // Zvknhb is "Vector SHA-2 (full)" and lives in the vector-crypto chapter with
+  // the rest of the Zvk family. Its id appears nowhere in the text the word
+  // matcher scans, so without this it falls through to the colophon — which is
+  // where it had been sending readers.
+  Zvknhb: 'unpriv/vector-crypto',
 };
 
 /** Extensions whose home is a different ratified specification. */
@@ -64,6 +70,14 @@ const OTHER_SPECS = {
   Sdext: `${REF}/debug/index.html`,      Sdtrig: `${REF}/debug/index.html`,
   Sdtrigepm: `${REF}/debug/index.html`,  Sdtrigpend: `${REF}/debug/index.html`,
   Ssqosid: `${REF}/cbqri/index.html`,    RERI: `${REF}/ras-eri/index.html`,
+
+  // RV128 is not served by the unversioned snapshot at all — /isa/unpriv/rv128
+  // is a 404, as are rv128i, rv-128 and quad — while the dated v20240411 path
+  // resolves. It is an unfrozen draft ("We have not frozen the RV128 spec at
+  // this time"), so its presence in the manual moves between releases. Pinned
+  // here so the mapper stops proposing the colophon; tests/doc-links.test.mjs
+  // carries the matching exemption. Remove both if a later snapshot serves it.
+  RV128I: `${REF}/isa/v20240411/unpriv/rv128.html`,
 };
 
 const get = async (url) => {

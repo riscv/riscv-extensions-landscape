@@ -115,11 +115,12 @@ gaps to fill.
 ## Tests
 
 ```bash
-npm test        # 135 tests
+npm test        # 209 tests
 ```
 
-CI runs the tests, builds, then validates every generated `-march` string against
-clang. The suite covers dependency closure, graph integrity, profile
+CI runs the tests, builds, then validates the generated `-march` strings against
+clang. Rows needing a newer clang than the job provides are skipped and reported
+rather than failed, so the check is a floor rather than full coverage. The suite covers dependency closure, graph integrity, profile
 correctness, `riscv-config` conventions, export formats, documentation links, and
 a jsdom smoke test that fails if the page renders blank.
 
