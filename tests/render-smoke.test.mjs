@@ -390,3 +390,19 @@ test('the header is an identity row plus one full-width toolbar', () => {
     'the Compare mode toggle should live in the actions group',
   );
 });
+
+test('the page declares itself a tech preview and offers somewhere to report', () => {
+  // Both are promises to the reader, not decoration: the caveat says the data
+  // is not the ratified reference, and the link is where findings go. A silent
+  // regression in either is worse than a visual one.
+  const doc = dom.window.document;
+  const tag = [...doc.querySelectorAll('span')].find((el) => el.textContent.trim() === 'Tech Preview');
+  assert.ok(tag, 'no Tech Preview tag in the header');
+  assert.match(tag.style.color, /riscv-danger/, 'the caveat should be red, not the brand gold');
+
+  const link = doc.querySelector('a[href="https://github.com/riscv/riscv-extensions-landscape/issues"]');
+  assert.ok(link, 'no link to the issue tracker');
+  assert.equal(link.target, '_blank', 'the issue tracker should open in a new tab');
+  assert.match(link.rel, /noreferrer/, 'external link needs rel=noreferrer');
+  assert.match(link.rel, /noopener/, 'external link needs rel=noopener');
+});

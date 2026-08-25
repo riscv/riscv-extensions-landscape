@@ -18,6 +18,8 @@ import {
   Layers,
   Braces,
   FlaskConical,
+  Bug,
+  ExternalLink,
   Network,
   Activity,
   BookOpen,
@@ -1747,6 +1749,20 @@ const RISCVExplorer = () => {
                   >
                     RISC-V Extension Landscape
                   </h1>
+                  {/* Says the quiet part out loud: this is not the ratified
+                      reference. Red rather than the site's gold because a
+                      caveat that blends into the brand is not a caveat. */}
+                  <span
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider whitespace-nowrap"
+                    style={{
+                      color: 'var(--riscv-danger)',
+                      border: '1px solid var(--riscv-danger)',
+                      background: 'color-mix(in srgb, var(--riscv-danger) 12%, transparent)',
+                    }}
+                    title="This site is a technical preview — verify anything load-bearing against the ratified specification."
+                  >
+                    Tech Preview
+                  </span>
                 </div>
                 {/* Counts. Wrappable on purpose: this sits inside an
                     overflow-x-hidden root that clips rather than scrolls, so on
@@ -1769,6 +1785,21 @@ const RISCVExplorer = () => {
                       {label !== 'Volumes' && <span className="mx-1 opacity-50">&middot;</span>}
                     </span>
                   ))}
+
+                  {/* A preview needs somewhere for the findings to go, and it
+                      should be reachable from the caveat rather than buried in
+                      a footer nobody scrolls to. */}
+                  <a
+                    href="https://github.com/riscv/riscv-extensions-landscape/issues"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="riscv-tool-btn ml-2 inline-flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[11px] font-semibold whitespace-nowrap"
+                    title="Report an issue on GitHub"
+                  >
+                    <Bug size={12} className="opacity-80" />
+                    Report an issue
+                    <ExternalLink size={10} className="opacity-60" />
+                  </a>
                 </div>
               </div>
 
