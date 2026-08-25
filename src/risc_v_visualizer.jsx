@@ -38,12 +38,25 @@ import {
   Maximize2,
   Sun,
   Moon,
+  Columns,
 } from 'lucide-react';
 import extensions from './riscv_extensions.json';
 import EncodingMap from './EncodingMap.jsx';
 import WorkspacePanel from './WorkspacePanel.jsx';
 import ExtensionTile from './ExtensionTile.jsx';
 import EncodingDiagram from './EncodingDiagram.jsx';
+import CompareTray from './CompareTray.jsx';
+import CompareView from './CompareView.jsx';
+import {
+  COMPARE_MAX,
+  COMPARE_PARAM,
+  instructionKey,
+  parseInstructionKey,
+  buildExtensionComparison,
+  buildInstructionComparison,
+  buildComparePermalink,
+  parseComparePermalink,
+} from './compareModel.js';
 // INCOMPATIBLE_WITH is no longer imported here: conflicts now come back from
 // resolveSelection(), which checks them over the resolved closure rather than
 // only over what the user clicked.
@@ -81,14 +94,6 @@ const BIT_MASK_32 = (1n << BIT_WIDTH) - 1n;
  * index.html. ?ext=Zba needs no server cooperation at all.
  */
 const PERMALINK_PARAM = 'ext';
-
-// The comparison feature's own selection state and view land in a later task;
-// this task only adds the pin control and the comparator support. Until then,
-// a stable empty Set and a stable no-op keep every tile's props referentially
-// stable — the whole point of tileMemo.js — rather than a fresh literal each
-// render, which would re-render all 227 tiles on every change.
-const EMPTY_COMPARE_IDS = new Set();
-const noop = () => {};
 
 const allExtensionsFlat = Object.values(extensions).flat().filter(Boolean);
 
@@ -503,6 +508,33 @@ const RISCVExplorer = () => {
     setWorkspaceNotice(msg);
     toastTimerRef.current = setTimeout(() => setWorkspaceNotice(null), 3500);
   }, []);
+
+  // Comparison. Two sets, because extensions and instructions are compared
+  // separately and pinning one kind must not discard the other.
+  const comparePermalinkSeed = React.useMemo(() => {
+    if (typeof window === 'undefined') return { kind: null, resolved: [], dropped: [] };
+    const value = new URL(window.location.href).searchParams.get(COMPARE_PARAM);
+    return parseComparePermalink(value, allExtensionsFlat);
+  }, []);
+
+  const [compareExtIds, setCompareExtIds] = useState(
+    () => new Set(comparePermalinkSeed.kind === 'ext' ? comparePermalinkSeed.resolved : []),
+  );
+  const [compareInstrKeys, setCompareInstrKeys] = useState(
+    () => new Set(comparePermalinkSeed.kind === 'instr' ? comparePermalinkSeed.resolved : []),
+  );
+  const [compareKind, setCompareKind] = useState(comparePermalinkSeed.kind || 'ext');
+  const [compareOpen, setCompareOpen] = useState(comparePermalinkSeed.resolved.length >= 2);
+
+  // A shared comparison outlives the catalog it was made from. Say what was
+  // dropped rather than quietly rendering a shorter comparison than the link
+  // promised.
+  React.useEffect(() => {
+    const { dropped } = comparePermalinkSeed;
+    if (dropped.length === 0) return;
+    showToast(`Not in the catalog, left out of the comparison: ${dropped.join(', ')}`);
+  }, [comparePermalinkSeed, showToast]);
+
   // Builder mode. The per-tile "+" affordances only exist while this is on.
   // Previously they were always rendered, in a low-contrast grey, with nothing
   // explaining what they did — a permanent control for a mode the user had not
@@ -1347,32 +1379,147 @@ const RISCVExplorer = () => {
     });
   }, []);
 
+  const toggleCompareExt = React.useCallback(
+    (id) => {
+      setCompareExtIds((current) => {
+        const next = new Set(current);
+        if (next.has(id)) {
+          next.delete(id);
+          return next;
+        }
+        if (next.size >= COMPARE_MAX) {
+          showToast(`Comparison holds ${COMPARE_MAX} extensions at most`);
+          return current;
+        }
+        next.add(id);
+        return next;
+      });
+      setCompareKind('ext');
+    },
+    [showToast],
+  );
+
+  const toggleCompareInstruction = React.useCallback(
+    (extId, mnemonic) => {
+      const key = instructionKey(extId, mnemonic);
+      setCompareInstrKeys((current) => {
+        const next = new Set(current);
+        if (next.has(key)) {
+          next.delete(key);
+          return next;
+        }
+        if (next.size >= COMPARE_MAX) {
+          showToast(`Comparison holds ${COMPARE_MAX} instructions at most`);
+          return current;
+        }
+        next.add(key);
+        return next;
+      });
+      setCompareKind('instr');
+    },
+    [showToast],
+  );
+
+  const removeCompareItem = React.useCallback((kind, key) => {
+    const setter = kind === 'instr' ? setCompareInstrKeys : setCompareExtIds;
+    setter((current) => {
+      const next = new Set(current);
+      next.delete(key);
+      return next;
+    });
+  }, []);
+
+  const clearCompare = React.useCallback((kind) => {
+    if (kind === 'instr') setCompareInstrKeys(new Set());
+    else setCompareExtIds(new Set());
+  }, []);
+
   const tileProps = React.useMemo(
     () => ({
       searchQuery,
       selectedExtId: selectedExt?.id ?? null,
       workspaceIds,
       lockedExtensions,
-      compareIds: EMPTY_COMPARE_IDS,
+      compareIds: compareExtIds,
       builderMode,
       isHighlighted,
       isDimmed,
       onSelect: handleSelectExt,
       onToggleWorkspace: handleToggleWorkspace,
-      onToggleCompare: noop,
+      onToggleCompare: toggleCompareExt,
     }),
     [
       searchQuery,
       selectedExt,
       workspaceIds,
       lockedExtensions,
+      compareExtIds,
       builderMode,
       isHighlighted,
       isDimmed,
       handleSelectExt,
       handleToggleWorkspace,
+      toggleCompareExt,
     ],
   );
+
+  const compareKeys = React.useMemo(
+    () => (compareKind === 'instr' ? [...compareInstrKeys] : [...compareExtIds]),
+    [compareKind, compareInstrKeys, compareExtIds],
+  );
+
+  const compareModel = React.useMemo(() => {
+    if (compareKeys.length === 0) return null;
+    if (compareKind === 'ext') {
+      return buildExtensionComparison(
+        compareKeys.map((id) => findExtensionById(id)).filter(Boolean),
+      );
+    }
+    return buildInstructionComparison(
+      compareKeys
+        .map((key) => {
+          const parsed = parseInstructionKey(key);
+          const ext = parsed && findExtensionById(parsed.extId);
+          const instr = ext && ext.instructions?.[parsed.mnemonic];
+          return instr ? { extId: ext.id, mnemonic: parsed.mnemonic, instr } : null;
+        })
+        .filter(Boolean),
+    );
+  }, [compareKind, compareKeys]);
+
+  // Mirrors the existing `ext` permalink effect: replaceState, never push, so
+  // pinning does not fill the back button with intermediate states.
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const url = new URL(window.location.href);
+    const current = url.searchParams.get(COMPARE_PARAM);
+    const next = buildComparePermalink(compareKind, compareKeys);
+    if ((current || '') === next) return;
+    if (next) url.searchParams.set(COMPARE_PARAM, next);
+    else url.searchParams.delete(COMPARE_PARAM);
+    window.history.replaceState(null, '', url.toString());
+  }, [compareKind, compareKeys]);
+
+  const copyCompareMarkdown = React.useCallback(
+    async (markdown) => {
+      const ok = await copyTextToClipboard(markdown);
+      showToast(ok ? 'Comparison copied as Markdown' : 'Could not copy to the clipboard');
+    },
+    [copyTextToClipboard, showToast],
+  );
+
+  const copyCompareLink = React.useCallback(async () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set(COMPARE_PARAM, buildComparePermalink(compareKind, compareKeys));
+    const ok = await copyTextToClipboard(url.toString());
+    showToast(ok ? 'Comparison link copied' : 'Could not copy to the clipboard');
+  }, [compareKind, compareKeys, copyTextToClipboard, showToast]);
+
+  // Unpinning down to one item leaves nothing to compare. Closing beats showing
+  // a single column and calling it a comparison.
+  React.useEffect(() => {
+    if (compareOpen && compareKeys.length < 2) setCompareOpen(false);
+  }, [compareOpen, compareKeys]);
 
   // Calculate if search has any matching extensions
   const hasSearchMatches = React.useMemo(() => {
@@ -1688,7 +1835,11 @@ const RISCVExplorer = () => {
                     className="group inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-300 whitespace-nowrap border hover:opacity-90"
                     // Tokens, not Tailwind amber: text-amber-300 has no light-theme
                     // remapping and measured 1.33:1 on the pastel ground.
-                    style={{ color: 'var(--riscv-gold)', borderColor: 'var(--riscv-gold-glow)', background: 'var(--riscv-gold-dim)' }}
+                    style={{
+                      color: 'var(--riscv-gold)',
+                      borderColor: 'var(--riscv-gold-glow)',
+                      background: 'var(--riscv-gold-dim)',
+                    }}
                     data-tooltip="See how the 32-bit opcode space is allocated"
                     title="See how the 32-bit opcode space is allocated"
                   >
@@ -2941,47 +3092,80 @@ const RISCVExplorer = () => {
                               const isClickable = Boolean(instructionDetails);
                               const isDeprecated = Boolean(instructionDetails?.deprecated);
                               return (
-                                <button
-                                  key={mnemonic}
-                                  type="button"
-                                  onClick={() => {
-                                    if (!isClickable) return;
-                                    setSelectedInstruction(
-                                      isActive ? null : { mnemonic, ...instructionDetails },
-                                    );
-                                    setSearchMatches((current) => {
-                                      if (
-                                        !current ||
-                                        current.extId !== selectedExt.id ||
-                                        current.query !== searchQuery.trim().toLowerCase()
-                                      ) {
-                                        return current;
-                                      }
-                                      const idx = current.mnemonics.indexOf(mnemonic);
-                                      if (idx === -1) return current;
-                                      return { ...current, index: idx };
-                                    });
-                                  }}
-                                  className={`px-1.5 py-0.5 rounded border text-[11px] font-mono tracking-tight ${
-                                    isActive
-                                      ? isDeprecated
-                                        ? 'border-red-400 bg-red-500/10 text-red-200'
-                                        : 'border-emerald-400 bg-emerald-500/10 text-emerald-200'
-                                      : isHit
-                                        ? 'border-yellow-400 bg-yellow-500/10 text-yellow-200'
-                                        : isDeprecated
-                                          ? 'border-red-500/60 bg-red-500/5 text-red-200'
-                                          : 'border-slate-700 bg-slate-800/70'
-                                  }`}
-                                  title={
-                                    isClickable
-                                      ? `View details for ${mnemonic}`
-                                      : `${mnemonic} (no details yet)`
-                                  }
-                                  disabled={!isClickable}
-                                >
-                                  {mnemonic}
-                                </button>
+                                <span key={mnemonic} className="inline-flex items-center">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      if (!isClickable) return;
+                                      setSelectedInstruction(
+                                        isActive ? null : { mnemonic, ...instructionDetails },
+                                      );
+                                      setSearchMatches((current) => {
+                                        if (
+                                          !current ||
+                                          current.extId !== selectedExt.id ||
+                                          current.query !== searchQuery.trim().toLowerCase()
+                                        ) {
+                                          return current;
+                                        }
+                                        const idx = current.mnemonics.indexOf(mnemonic);
+                                        if (idx === -1) return current;
+                                        return { ...current, index: idx };
+                                      });
+                                    }}
+                                    className={`px-1.5 py-0.5 rounded-l border text-[11px] font-mono tracking-tight ${
+                                      isActive
+                                        ? isDeprecated
+                                          ? 'border-red-400 bg-red-500/10 text-red-200'
+                                          : 'border-emerald-400 bg-emerald-500/10 text-emerald-200'
+                                        : isHit
+                                          ? 'border-yellow-400 bg-yellow-500/10 text-yellow-200'
+                                          : isDeprecated
+                                            ? 'border-red-500/60 bg-red-500/5 text-red-200'
+                                            : 'border-slate-700 bg-slate-800/70'
+                                    }`}
+                                    title={
+                                      isClickable
+                                        ? `View details for ${mnemonic}`
+                                        : `${mnemonic} (no details yet)`
+                                    }
+                                    disabled={!isClickable}
+                                  >
+                                    {mnemonic}
+                                  </button>
+                                  {isClickable &&
+                                    (() => {
+                                      const pinned = compareInstrKeys.has(
+                                        instructionKey(selectedExt.id, mnemonic),
+                                      );
+                                      return (
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            toggleCompareInstruction(selectedExt.id, mnemonic);
+                                          }}
+                                          aria-pressed={pinned}
+                                          className="px-1 py-0.5 rounded-r border border-l-0 border-slate-700 text-[11px]"
+                                          style={{
+                                            background: pinned
+                                              ? 'var(--riscv-check-fill)'
+                                              : 'var(--riscv-surface-2)',
+                                            color: pinned
+                                              ? 'var(--riscv-check)'
+                                              : 'var(--riscv-text-3)',
+                                          }}
+                                          title={
+                                            pinned
+                                              ? `Remove ${mnemonic} from comparison`
+                                              : `Compare ${mnemonic}`
+                                          }
+                                        >
+                                          <Columns size={9} />
+                                        </button>
+                                      );
+                                    })()}
+                                </span>
                               );
                             })}
                           </div>
@@ -3376,9 +3560,29 @@ const RISCVExplorer = () => {
         onClose={() => setEncodingMapOpen(false)}
         catalog={extensions}
         onSelectExtension={(id) => {
-          const target = Object.values(extensions).flat().find((e) => e && e.id === id);
+          const target = Object.values(extensions)
+            .flat()
+            .find((e) => e && e.id === id);
           if (target) handleSelectExt(target);
         }}
+      />
+
+      <CompareTray
+        extIds={compareExtIds}
+        instrKeys={compareInstrKeys}
+        kind={compareKind}
+        onKindChange={setCompareKind}
+        onRemove={removeCompareItem}
+        onClear={clearCompare}
+        onOpen={() => setCompareOpen(true)}
+      />
+
+      <CompareView
+        open={compareOpen}
+        model={compareModel}
+        onClose={() => setCompareOpen(false)}
+        onCopyMarkdown={copyCompareMarkdown}
+        onCopyLink={copyCompareLink}
       />
 
       {encoderValidatorOpen && (

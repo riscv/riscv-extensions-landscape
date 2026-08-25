@@ -10,6 +10,7 @@
  * Hidden entirely when nothing is pinned: a permanently docked empty bar is a
  * control for a mode the user has not asked to be in.
  */
+import React from 'react';
 import { Columns, X, Trash2 } from 'lucide-react';
 import { COMPARE_MAX, parseInstructionKey } from './compareModel.js';
 
