@@ -1752,15 +1752,19 @@ const RISCVExplorer = () => {
                 >
                   Reference for extensions, profiles &amp; per-instruction encoding.
                 </p>
-                {/* Stat bar */}
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-3 ml-9">
+                {/* Stat bar. One line from `sm` up — the same breakpoint the
+                    tagline above uses. It stays wrappable below that because
+                    this column is inside an overflow-x-hidden root that clips
+                    rather than scrolls, so an unconditional nowrap would put
+                    the last stat somewhere a narrow-screen reader cannot see. */}
+                <div className="flex flex-wrap sm:flex-nowrap items-center gap-x-4 gap-y-1.5 mt-3 ml-9">
                   {[
                     { label: 'Extensions', value: totalExtensions },
                     { label: 'Profiles', value: Object.keys(profiles).length },
                     { label: 'Instructions', value: `${(totalInstructions / 1000).toFixed(1)}k+` },
                     { label: 'Volumes', value: 2 },
                   ].map(({ label, value }) => (
-                    <div key={label} className="flex items-baseline gap-1.5">
+                    <div key={label} className="flex items-baseline gap-1.5 whitespace-nowrap">
                       <span className="text-base font-black" style={{ color: 'var(--riscv-gold)' }}>
                         {value}
                       </span>
