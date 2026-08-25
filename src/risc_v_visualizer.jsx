@@ -607,101 +607,96 @@ const RISCVExplorer = () => {
   }, [workspaceIds]);
 
   // Smart dependency and mutually-exclusive handler
-  const addWorkspaceIdsSmart = React.useCallback((idsToAdd, isToggle = false) => {
-    setWorkspaceIds((prev) => {
-      const next = new Set(prev);
-      const autoAdded = [];
-      let baseChanged = false;
+  const addWorkspaceIdsSmart = React.useCallback(
+    (idsToAdd, isToggle = false) => {
+      setWorkspaceIds((prev) => {
+        const next = new Set(prev);
+        const autoAdded = [];
+        let baseChanged = false;
 
-      // Recompute lock state against current `prev` state to ensure up-to-date checks during batch updates
-      const currentLocked = new Map();
-      const currentSelected = Array.from(prev);
-      for (const ext of currentSelected) {
-        const deps = SMART_DEPENDENCIES[ext] || [];
-        for (const dep of deps) {
-          if (prev.has(dep)) {
-            if (!currentLocked.has(dep)) currentLocked.set(dep, []);
-            currentLocked.get(dep).push(ext);
-          }
-        }
-      }
-
-      const arrToAdd = Array.isArray(idsToAdd) ? idsToAdd : [idsToAdd];
-
-      for (const id of arrToAdd) {
-        if (isToggle && next.has(id)) {
-          // If locked, we cannot toggle it off
-          if (currentLocked.has(id)) {
-            setWorkspaceNotice(
-              `Cannot remove ${id}: required by ${currentLocked.get(id).join(', ')}`,
-            );
-            setTimeout(() => setWorkspaceNotice(null), 4500);
-            continue; // block removal
-          }
-          next.delete(id);
-          continue;
-        }
-
-        // 1. Mutually Exclusive Base ISAs
-        if (BASE_ISA_IDS.has(id)) {
-          for (const baseId of BASE_ISA_IDS) {
-            if (baseId !== id && next.has(baseId)) {
-              // Note: Base ISAs aren't typically locked by other extensions in our SMART_DEPENDENCIES,
-              // but if they were, we might need a lock check here too. Safe for now.
-              next.delete(baseId);
-              baseChanged = true;
+        // Recompute lock state against current `prev` state to ensure up-to-date checks during batch updates
+        const currentLocked = new Map();
+        const currentSelected = Array.from(prev);
+        for (const ext of currentSelected) {
+          const deps = SMART_DEPENDENCIES[ext] || [];
+          for (const dep of deps) {
+            if (prev.has(dep)) {
+              if (!currentLocked.has(dep)) currentLocked.set(dep, []);
+              currentLocked.get(dep).push(ext);
             }
           }
         }
 
-        next.add(id);
-      }
+        const arrToAdd = Array.isArray(idsToAdd) ? idsToAdd : [idsToAdd];
 
-      // 2. Dependencies, resolved transitively through the graph.
-      //
-      // This used to walk SMART_DEPENDENCIES one level deep, which is only
-      // correct when a dependency has none of its own. It silently under-selected
-      // everything deeper: picking H added S but not U (H -> S -> U), and picking
-      // Zve64d added D and Zve64f but none of F, Zicsr, Zve32x, Zve64x or the
-      // Zvl*b tokens. resolveSelection() walks the whole closure.
-      const resolution = resolveSelection({
-        selected: Array.from(next),
-        base: Array.from(next).find((x) => BASE_ISA_IDS.has(x)) ?? null,
+        for (const id of arrToAdd) {
+          if (isToggle && next.has(id)) {
+            // If locked, we cannot toggle it off
+            if (currentLocked.has(id)) {
+              showToast(`Cannot remove ${id}: required by ${currentLocked.get(id).join(', ')}`);
+              continue; // block removal
+            }
+            next.delete(id);
+            continue;
+          }
+
+          // 1. Mutually Exclusive Base ISAs
+          if (BASE_ISA_IDS.has(id)) {
+            for (const baseId of BASE_ISA_IDS) {
+              if (baseId !== id && next.has(baseId)) {
+                // Note: Base ISAs aren't typically locked by other extensions in our SMART_DEPENDENCIES,
+                // but if they were, we might need a lock check here too. Safe for now.
+                next.delete(baseId);
+                baseChanged = true;
+              }
+            }
+          }
+
+          next.add(id);
+        }
+
+        // 2. Dependencies, resolved transitively through the graph.
+        //
+        // This used to walk SMART_DEPENDENCIES one level deep, which is only
+        // correct when a dependency has none of its own. It silently under-selected
+        // everything deeper: picking H added S but not U (H -> S -> U), and picking
+        // Zve64d added D and Zve64f but none of F, Zicsr, Zve32x, Zve64x or the
+        // Zvl*b tokens. resolveSelection() walks the whole closure.
+        const resolution = resolveSelection({
+          selected: Array.from(next),
+          base: Array.from(next).find((x) => BASE_ISA_IDS.has(x)) ?? null,
+        });
+
+        // 3. Incompatibility check, over the fully resolved set — so a conflict
+        // reached only through a dependency is caught too. The path is what makes
+        // the message useful: the offending extension is often one the user never
+        // picked (Zve64d -> D -> F on an E-base).
+        if (resolution.conflicts.length > 0) {
+          const c = resolution.conflicts[0];
+          const via = c.path.length > 1 ? ` (pulled in by ${c.path.join(' -> ')})` : '';
+          showToast(`Architecturally Invalid: ${c.with} is incompatible with ${c.ext}${via}`);
+          return prev; // revert the whole batch, as before
+        }
+
+        for (const dep of resolution.resolved) {
+          // Skip graph-only nodes the catalog cannot show.
+          if (!CATALOG_IDS.has(dep)) continue;
+          if (next.has(dep)) continue;
+          next.add(dep);
+          autoAdded.push(dep);
+        }
+
+        if (autoAdded.length > 0) {
+          showToast(`Auto-added: ${autoAdded.join(', ')} (Required dependency)`);
+        } else if (baseChanged) {
+          showToast('Base ISA is mutually exclusive. Previous base removed.');
+        }
+
+        return next;
       });
-
-      // 3. Incompatibility check, over the fully resolved set — so a conflict
-      // reached only through a dependency is caught too. The path is what makes
-      // the message useful: the offending extension is often one the user never
-      // picked (Zve64d -> D -> F on an E-base).
-      if (resolution.conflicts.length > 0) {
-        const c = resolution.conflicts[0];
-        const via = c.path.length > 1 ? ` (pulled in by ${c.path.join(' -> ')})` : '';
-        setWorkspaceNotice(
-          `Architecturally Invalid: ${c.with} is incompatible with ${c.ext}${via}`,
-        );
-        setTimeout(() => setWorkspaceNotice(null), 4500);
-        return prev; // revert the whole batch, as before
-      }
-
-      for (const dep of resolution.resolved) {
-        // Skip graph-only nodes the catalog cannot show.
-        if (!CATALOG_IDS.has(dep)) continue;
-        if (next.has(dep)) continue;
-        next.add(dep);
-        autoAdded.push(dep);
-      }
-
-      if (autoAdded.length > 0) {
-        setWorkspaceNotice(`Auto-added: ${autoAdded.join(', ')} (Required dependency)`);
-        setTimeout(() => setWorkspaceNotice(null), 4500);
-      } else if (baseChanged) {
-        setWorkspaceNotice('Base ISA is mutually exclusive. Previous base removed.');
-        setTimeout(() => setWorkspaceNotice(null), 4500);
-      }
-
-      return next;
-    });
-  }, []);
+    },
+    [showToast],
+  );
 
   // Flat list of all extensions — stable reference for workspace utilities
   const allExtsList = React.useMemo(() => Object.values(extensions).flat().filter(Boolean), []);
