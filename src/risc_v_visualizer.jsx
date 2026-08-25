@@ -2468,7 +2468,7 @@ const RISCVExplorer = () => {
             </div>
           </div>
           {/* ─── Main Grid ───────────────────────────────────────────────── */}
-          <div className="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-min">
+          <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-min">
             {/* Search Bar */}
             <div className="col-span-full mb-2 flex items-center gap-3">
               <div className="relative flex-1">
@@ -3039,7 +3039,7 @@ const RISCVExplorer = () => {
           {/* ─── Sidebar ─────────────────────────────────────────────────── */}
           <div
             id="detail-panel"
-            className={`lg:col-span-3 mt-6 lg:mt-0 ${selectedExt ? 'panel-open' : ''}`}
+            className={`lg:col-span-4 mt-6 lg:mt-0 ${selectedExt ? 'panel-open' : ''}`}
           >
             <div
               className="sticky top-6 riscv-card backdrop-blur-sm min-h-[400px] max-h-[calc(100vh-3rem)] flex flex-col overflow-hidden"

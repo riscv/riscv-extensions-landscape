@@ -1214,15 +1214,19 @@ pre,
 /* The 32-bit encoding row.
    Each cell takes an equal share of the width instead of a fixed 20px, so a
    whole instruction word is visible at once — the reason the diagram exists.
-   The floor is 12px per cell: below roughly 400px the row keeps its size and
-   the surrounding scroller takes over, which beats shrinking the digits past
-   readable. */
+   The floor is 9px per cell. It was 12px, which the Selected Details panel
+   could not clear at its old width — the row hit the floor and went straight
+   back to scrolling, which was the whole complaint. Two changes meet in the
+   middle: the panel widened from a quarter of the grid to a third, and this
+   floor came down. From roughly a 1200px window up, all 32 bits fit with no
+   scrolling; below that the scroller still takes over, because digits smaller
+   than this stop being readable and that trades one problem for another. */
 .riscv-bit-row {
   grid-template-columns: repeat(32, minmax(0, 1fr));
-  min-width: 384px;
+  min-width: 288px;
 }
 .riscv-bit-cell {
-  font-size: clamp(9px, 1.05vw, 12px);
+  font-size: clamp(8px, 0.85vw, 12px);
   padding: 0;
   min-width: 0;
 }
