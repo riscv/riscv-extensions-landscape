@@ -193,6 +193,23 @@ for (const entry of extEntries) {
   }
 }
 
+// Pass 1c: Shared ownership of SCTRCLR (priv ISA, Control Transfer Records)
+// riscv-unified-db declares `definedBy: {anyOf: [Smctr, Ssctr]}` — both extensions
+// define the instruction. A riscv-opcodes tag names exactly one owner, so rv_ssctr
+// routes SCTRCLR to Ssctr alone and Smctr, which has no tag of its own, renders
+// empty. Copied from the Ssctr entry rather than restated so the two cannot drift.
+const SCTRCLR_SHARED_OWNERS = new Set(['Smctr']);
+const sctrclrSource = extMap.get('Ssctr')?.instructions?.SCTRCLR;
+assert(!!sctrclrSource, 'Ssctr must supply SCTRCLR before it can be shared with Smctr');
+
+if (sctrclrSource) {
+  for (const entry of extEntries) {
+    if (!SCTRCLR_SHARED_OWNERS.has(entry.id)) continue;
+    assert(!('SCTRCLR' in entry.instructions), `Upstream instr_dict now provides SCTRCLR for ${entry.id}. Remove this injection.`);
+    entry.instructions.SCTRCLR = JSON.parse(JSON.stringify(sctrclrSource));
+  }
+}
+
 // Pass 2: Umbrella Topological Resolution
 const umbrellaEntries = extEntries.filter(e => e.members?.length > 0);
 const MAX_UMBRELLA_PASSES = 10;
@@ -279,6 +296,8 @@ assertExtension('Zalrsc', { mustInclude: ['LR.W', 'SC.W', 'LR.D', 'SC.D'] });
 assertExtension('Zmmul', { mustInclude: ['MUL'], mustExclude: ['DIV', 'DIVU', 'REM', 'REMU', 'DIVW', 'DIVUW', 'REMW', 'REMUW'] });
 assertExtension('Zicbom', { mustExclude: ['CBO.ZERO'] });
 assertExtension('Zicboz', { mustInclude: ['CBO.ZERO'], mustExclude: ['CBO.CLEAN'] });
+assertExtension('Smctr', { mustInclude: ['SCTRCLR'] });
+assertExtension('Ssctr', { mustInclude: ['SCTRCLR'] });
 
 const rv32iExt = extMap.get('RV32I');
 assert(!!rv32iExt, 'RV32I extension entry must exist in catalog');
@@ -375,7 +394,10 @@ if (dryRun) {
   fs.renameSync(tmpPath, catalogPath);
 }
 
-const totalPopulated = tagsPopulated + splitRulePopulated + umbrellaPopulated;
+// Counted from the catalog itself, not by summing the pass counters: injection
+// passes populate entries no pass counter owns, so the sum understates coverage.
+const totalPopulated = extEntries.filter(e => Object.keys(e.instructions ?? {}).length > 0).length;
+const injected = totalPopulated - (tagsPopulated + splitRulePopulated + umbrellaPopulated);
 const emptyExts = totalExts - totalPopulated;
 const coverage = ((totalPopulated / totalExts) * 100).toFixed(1);
 
@@ -386,6 +408,7 @@ console.log(`  Total extensions:        ${totalExts}`);
 console.log(`  Populated via tags:      ${tagsPopulated}`);
 console.log(`  Populated via split:     ${splitRulePopulated}`);
 console.log(`  Populated via umbrella:  ${umbrellaPopulated}`);
+console.log(`  Populated via injection: ${injected}`);
 console.log(`  Still empty:             ${emptyExts}`);
 console.log(`  Coverage:                ${totalPopulated} / ${totalExts} (${coverage}%)`);
 console.log(`  Instructions written:    ${instructionsWritten}\n`);

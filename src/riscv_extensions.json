@@ -29452,7 +29452,17 @@
       "desc": "Control Transfer Records (M)",
       "use": "Hardware CFI logs (M)",
       "url": "https://docs.riscv.org/reference/isa/priv/smctr.html",
-      "instructions": {},
+      "instructions": {
+        "SCTRCLR": {
+          "encoding": "00010000010000000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_ssctr"
+          ],
+          "match": "0x10400073",
+          "mask": "0xffffffff"
+        }
+      },
       "long_name": "Control Transfer Records",
       "type": "privileged",
       "state": "ratified",

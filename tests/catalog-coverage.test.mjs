@@ -340,3 +340,28 @@ test('extension ids are unique', () => {
   }
   assert.deepEqual(dupes, [], `duplicate extension ids: ${dupes.join(', ')}`);
 });
+
+test('an instruction with two owners is attributed to both', () => {
+  // riscv-unified-db declares SCTRCLR as `definedBy: {anyOf: [Smctr, Ssctr]}`.
+  // riscv-opcodes tags name a single owner, so rv_ssctr routed it to Ssctr and
+  // left Smctr — which defines the same instruction — rendering as empty (#206).
+  // Guards the committed catalogue directly, so it fails even without a sync run.
+  const owners = ['Smctr', 'Ssctr'].map((id) => {
+    const entry = entries.find((e) => e.id === id);
+    assert.ok(entry, `${id} must exist in the catalogue`);
+    return entry;
+  });
+
+  for (const entry of owners) {
+    assert.ok(
+      entry.instructions?.SCTRCLR,
+      `${entry.id} defines SCTRCLR and must carry it`,
+    );
+  }
+
+  assert.deepEqual(
+    owners[0].instructions.SCTRCLR,
+    owners[1].instructions.SCTRCLR,
+    'both owners must describe SCTRCLR identically',
+  );
+});
