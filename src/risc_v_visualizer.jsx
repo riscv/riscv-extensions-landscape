@@ -1940,14 +1940,12 @@ const RISCVExplorer = () => {
                     aria-haspopup="dialog"
                     aria-expanded={encodingMapOpen}
                     className="riscv-tool-btn group inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-300 whitespace-nowrap border"
-                    // Tokens, not Tailwind amber: text-amber-300 has no light-theme
-                    // remapping and measured 1.33:1 on the pastel ground.
-                    style={{
-                      color: 'var(--riscv-gold)',
-                      borderColor: 'var(--riscv-border-2)',
-                      background: 'transparent',
-                      color: 'var(--riscv-text-2)',
-                    }}
+                    // Colour, border and hover all come from .riscv-tool-btn.
+                    // Deliberately no inline style: an inline `color` outranks
+                    // the class's :hover rule, so the button would never light
+                    // up under the cursor. The class uses tokens rather than
+                    // Tailwind amber, which has no light-theme remapping and
+                    // measured 1.33:1 on the pastel ground.
                     data-tooltip="See how the 32-bit opcode space is allocated"
                     title="See how the 32-bit opcode space is allocated"
                   >
