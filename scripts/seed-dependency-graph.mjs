@@ -401,6 +401,15 @@ const graph = {
   sources: {
     udb: { repo: 'riscv/riscv-unified-db', commit, branch, path: 'spec/std/isa/ext' },
     'isa-manual': { repo: 'riscv/riscv-isa-manual', note: 'section cited per edge' },
+    // Edges carry src: 'clang' where neither UDB nor the manual states the
+    // relation outright and the toolchain's own implication is the backing —
+    // see LOCAL for Zvfh -> Zvfhmin. Declared here so a reader meeting that
+    // src on an edge can tell what it rests on, and that it is the weakest of
+    // the three.
+    clang: {
+      repo: 'llvm/llvm-project',
+      note: 'RISCVISAInfo implication, cited per edge; weaker backing than udb or isa-manual',
+    },
   },
   // Sorted so a regeneration produces a reviewable diff rather than a reshuffle.
   nodes: Object.fromEntries(

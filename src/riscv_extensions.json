@@ -23565,7 +23565,7 @@
       ],
       "desc": "Scalar Crypto Base",
       "use": "Top-level scalar crypto bundle",
-      "url": "https://github.com/riscv/riscv-isa-manual",
+      "url": "https://docs.riscv.org/reference/isa/unpriv/scalar-crypto.html",
       "instructions": {
         "PACKW": {
           "encoding": "0000100----------100-----0111011",

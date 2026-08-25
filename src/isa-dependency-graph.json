@@ -11,6 +11,10 @@
     "isa-manual": {
       "repo": "riscv/riscv-isa-manual",
       "note": "section cited per edge"
+    },
+    "clang": {
+      "repo": "llvm/llvm-project",
+      "note": "RISCVISAInfo implication, cited per edge; weaker backing than udb or isa-manual"
     }
   },
   "nodes": {
@@ -288,7 +292,6 @@
     },
     "Sm": {
       "requires": [],
-      "catalogued": false,
       "verified": "udb"
     },
     "Sm1p11": {

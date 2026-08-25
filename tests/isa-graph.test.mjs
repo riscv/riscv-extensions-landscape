@@ -51,6 +51,22 @@ const cite = (ext, ref = 'test fixture') => ({ ext, src: 'udb', ref });
 // The shipped graph
 // ---------------------------------------------------------------------------
 
+test('every edge source is declared in the graph provenance block', () => {
+  // An edge carrying src: "clang" while `sources` lists only udb and isa-manual
+  // leaves a reader unable to tell what that edge rests on — and the three do
+  // not carry equal weight. Whatever an edge cites, the block must explain.
+  const used = new Set();
+  for (const node of Object.values(DEPENDENCY_GRAPH.nodes ?? {})) {
+    for (const e of node.requires ?? []) if (e.src) used.add(e.src);
+    for (const e of node.conflicts ?? []) if (e.src) used.add(e.src);
+    for (const c of node.choices ?? []) for (const o of c.options ?? []) if (o?.src) used.add(o.src);
+  }
+  const declared = new Set(Object.keys(DEPENDENCY_GRAPH.sources ?? {}));
+  const undeclared = [...used].filter((s) => !declared.has(s)).sort();
+  assert.deepEqual(undeclared, [], 'edges cite sources the provenance block does not describe');
+  assert.ok(used.size > 0, 'expected at least one sourced edge');
+});
+
 test('shipped graph is structurally valid', () => {
   const { errors, stats } = validateGraph(DEPENDENCY_GRAPH);
   assert.deepEqual(errors, [], `graph has structural errors:\n  ${errors.join('\n  ')}`);

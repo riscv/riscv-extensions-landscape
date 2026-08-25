@@ -62,6 +62,14 @@ const EXPLICIT = {
   // matcher scans, so without this it falls through to the colophon — which is
   // where it had been sending readers.
   Zvknhb: 'unpriv/vector-crypto',
+
+  // Zk is the scalar-crypto umbrella — "shorthand for the following set of
+  // other extensions", per the chapter that defines it. Its whole family
+  // (Zkn, Zknd, Zkne, Zknh, Zkr, Zks, Zksed, Zksh, Zkt) already resolves to
+  // that chapter, but the two-letter id is below the matcher's length floor,
+  // so it fell through to the generic repo link despite being ratified and
+  // carrying 51 instructions.
+  Zk: 'unpriv/scalar-crypto',
 };
 
 /** Extensions whose home is a different ratified specification. */
