@@ -196,7 +196,16 @@ export default function EncodingDiagram({ encoding, diffMask }) {
                     i === 31 ? 'border-r-0' : isGroupEnd ? 'border-r-2' : '',
                     isDiff ? 'riscv-bit-diff' : '',
                   ].join(' ')}
-                  data-tooltip={
+                  /* Native title, not the site's data-tooltip. The custom
+                     tooltip is a ::after pseudo-element, so it is a descendant
+                     of whatever clips it — and this diagram renders inside the
+                     Selected Details panel and the comparison dialog, both
+                     overflow-hidden. Roughly nine of the thirty-two cells sit
+                     within a tooltip's width of an edge, so their labels were
+                     cut off, including the funct7 bits where "which field is
+                     this" is most often the question. A title renders in
+                     browser chrome and cannot be clipped. */
+                  title={
                     isDiff
                       ? `bit[${31 - i}] — ${fieldName} — differs`
                       : `bit[${31 - i}] — ${fieldName}`

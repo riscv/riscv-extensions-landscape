@@ -179,9 +179,20 @@ test('SLLI across RV32I and RV64I renders exactly one differing bit', async () =
   const marked = dialog.querySelectorAll('[data-diff="1"]');
   assert.equal(marked.length, 2, `expected one marked bit per column, found ${marked.length}`);
   for (const cell of marked) {
+    // Native title, not data-tooltip: the diagram renders inside overflow-hidden
+    // containers, where a ::after tooltip is clipped at the edges.
     assert.ok(
-      cell.getAttribute('data-tooltip').startsWith('bit[25]'),
-      `marked the wrong bit: ${cell.getAttribute('data-tooltip')}`,
+      cell.getAttribute('title').startsWith('bit[25]'),
+      `marked the wrong bit: ${cell.getAttribute('title')}`,
+    );
+    assert.ok(
+      cell.getAttribute('title').endsWith('differs'),
+      'a marked bit should say that it differs',
+    );
+    assert.equal(
+      cell.getAttribute('data-tooltip'),
+      null,
+      'bit cells must not carry both tooltips, or the reader gets two',
     );
   }
 });

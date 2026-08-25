@@ -54,7 +54,7 @@ export default function CompareTray({
       key={value}
       type="button"
       onClick={() => onKindChange(value)}
-      className="px-2 py-1 rounded text-[11px] font-mono"
+      className="riscv-tray-tab px-2 py-1 rounded text-[11px] font-mono"
       aria-pressed={kind === value}
       style={{
         border: `1px solid ${kind === value ? 'var(--riscv-gold)' : 'var(--riscv-border-2)'}`,
@@ -102,12 +102,7 @@ export default function CompareTray({
         {active.map((key) => (
           <span
             key={key}
-            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-mono"
-            style={{
-              border: '1px solid var(--riscv-border-2)',
-              background: 'var(--riscv-surface-2)',
-              color: 'var(--riscv-text-2)',
-            }}
+            className="riscv-tray-chip inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-mono"
           >
             {chipLabel(kind, key)}
             <button
@@ -115,7 +110,7 @@ export default function CompareTray({
               onClick={() => onRemove(kind, key)}
               title={chipTitle(kind, key)}
               aria-label={chipTitle(kind, key)}
-              style={{ display: 'flex', color: 'var(--riscv-text-3)' }}
+              className="riscv-tray-chip-x flex"
             >
               <X size={10} />
             </button>

@@ -1867,18 +1867,7 @@ const RISCVExplorer = () => {
                                   toggleCompareProfile(profile);
                                 }}
                                 aria-pressed={compareProfileNames.has(profile)}
-                                className="ml-0.5 px-1 py-0.5 rounded border text-[11px]"
-                                style={{
-                                  borderColor: compareProfileNames.has(profile)
-                                    ? 'var(--riscv-check-edge)'
-                                    : 'var(--riscv-border-2)',
-                                  background: compareProfileNames.has(profile)
-                                    ? 'var(--riscv-check-fill)'
-                                    : 'var(--riscv-surface-2)',
-                                  color: compareProfileNames.has(profile)
-                                    ? 'var(--riscv-check)'
-                                    : 'var(--riscv-text-3)',
-                                }}
+                                className="riscv-pin-btn ml-0.5 px-1 py-0.5 rounded border text-[11px]"
                                 title={
                                   compareProfileNames.has(profile)
                                     ? `Remove ${profile} from comparison`
@@ -3350,15 +3339,7 @@ const RISCVExplorer = () => {
                                             toggleCompareInstruction(selectedExt.id, mnemonic);
                                           }}
                                           aria-pressed={pinned}
-                                          className="px-1 py-0.5 rounded-r border border-l-0 border-slate-700 text-[11px]"
-                                          style={{
-                                            background: pinned
-                                              ? 'var(--riscv-check-fill)'
-                                              : 'var(--riscv-surface-2)',
-                                            color: pinned
-                                              ? 'var(--riscv-check)'
-                                              : 'var(--riscv-text-3)',
-                                          }}
+                                          className="riscv-pin-btn px-1 py-0.5 rounded-r border-l-0 text-[11px]"
                                           title={
                                             pinned
                                               ? `Remove ${mnemonic} from comparison`

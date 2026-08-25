@@ -1328,3 +1328,79 @@ pre,
   margin-left: 0.35em;
   white-space: nowrap;
 }
+
+/* Pin buttons — the compare affordance on instruction chips, profile buttons
+   and tray chips.
+   State lives here rather than in an inline style on purpose: these carried
+   their pinned/unpinned colours inline, and an inline declaration outranks a
+   class rule, so no :hover could ever repaint them. That is the same trap the
+   Encoding Map button fell into. Keying off aria-pressed keeps the DOM the
+   single source of truth for the state and leaves hover free to work. */
+.riscv-pin-btn {
+  border: 1px solid var(--riscv-border-2);
+  background: var(--riscv-surface-2);
+  color: var(--riscv-text-3);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+.riscv-pin-btn:hover {
+  border-color: var(--riscv-check-edge);
+  background: var(--riscv-tint-3);
+  color: var(--riscv-check);
+}
+.riscv-pin-btn[aria-pressed='true'] {
+  border-color: var(--riscv-check-edge);
+  background: var(--riscv-check-fill);
+  color: var(--riscv-check);
+}
+.riscv-pin-btn[aria-pressed='true']:hover {
+  border-color: var(--riscv-check);
+  background: var(--riscv-tint-4);
+}
+.riscv-pin-btn:focus-visible {
+  outline: 2px solid var(--riscv-check-edge);
+  outline-offset: 1px;
+}
+
+/* Tray chips and their remove buttons, and the kind tabs. Same reasoning. */
+.riscv-tray-chip {
+  border: 1px solid var(--riscv-border-2);
+  background: var(--riscv-surface-2);
+  color: var(--riscv-text-2);
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+.riscv-tray-chip:hover {
+  border-color: var(--riscv-tint-4);
+  background: var(--riscv-tint-3);
+}
+.riscv-tray-chip-x {
+  color: var(--riscv-text-3);
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+.riscv-tray-chip-x:hover {
+  color: var(--riscv-danger);
+  transform: scale(1.15);
+}
+.riscv-tray-tab {
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+}
+.riscv-tray-tab[aria-pressed='false']:hover {
+  border-color: var(--riscv-tint-4);
+  background: var(--riscv-tint-3);
+  color: var(--riscv-text-2);
+}
+@media (prefers-reduced-motion: reduce) {
+  .riscv-tray-chip-x:hover {
+    transform: none;
+  }
+}
