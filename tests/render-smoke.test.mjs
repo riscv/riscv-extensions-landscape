@@ -99,3 +99,119 @@ test('nothing threw during the first render', () => {
   const real = consoleErrors.filter((line) => !/DevTools|deprecat|not wrapped in act/i.test(line));
   assert.deepEqual(real, [], `console errors during render:\n  ${real.join('\n  ')}`);
 });
+
+/**
+ * A second mount, at a comparison permalink.
+ *
+ * Going in through the URL rather than through synthetic clicks tests the whole
+ * chain — parse, resolve, build model, render — and matches how a shared
+ * comparison actually arrives.
+ *
+ * These exist because the suite above cannot see the comparison feature at all:
+ * nothing on the landing page mounts CompareView, so a component that throws on
+ * render passes 179 tests. One did. CompareTray had its React import removed as
+ * "unused" — correct for the automatic JSX runtime, wrong here, because
+ * webpack.config.js uses @babel/preset-react with no runtime option and so
+ * compiles JSX to React.createElement. Lint and build both stayed green; the
+ * page only broke when a comparison opened.
+ */
+async function mountAt(url) {
+  const win = new JSDOM(fs.readFileSync(path.join(dist, 'index.html'), 'utf8'), {
+    runScripts: 'outside-only',
+    pretendToBeVisual: true,
+    url,
+  });
+  const errors = [];
+  win.window.console.error = (...args) => errors.push(args.join(' '));
+  win.window.Element.prototype.scrollIntoView = () => {};
+  win.window.matchMedia ??= () => ({
+    matches: false,
+    addListener() {}, removeListener() {},
+    addEventListener() {}, removeEventListener() {},
+  });
+  win.window.eval(fs.readFileSync(bundlePath, 'utf8'));
+  await new Promise((resolve) => setTimeout(resolve, 400));
+  return { dom: win, errors };
+}
+
+const compareDialog = (d) =>
+  d.window.document.querySelector('[role="dialog"][aria-labelledby="compare-view-title"]');
+
+const realErrors = (errors) =>
+  errors.filter((line) => !/DevTools|deprecat|not wrapped in act/i.test(line));
+
+test('an extension comparison permalink opens the comparison', async () => {
+  const { dom: d, errors } = await mountAt('https://example.test/?cmp=e:Zba,Zbb');
+  const dialog = compareDialog(d);
+  assert.ok(dialog, 'the comparison did not open');
+
+  // One attribute-column header plus one per item.
+  const headers = dialog.querySelectorAll('.compare-head');
+  assert.equal(headers.length, 3, `expected 3 header cells, found ${headers.length}`);
+  assert.ok(dialog.textContent.includes('Zba'));
+  assert.ok(dialog.textContent.includes('Zbb'));
+
+  assert.deepEqual(realErrors(errors), [], 'console errors while rendering the comparison');
+});
+
+test('the tray appears with a comparison and stays hidden without one', async () => {
+  const withPins = await mountAt('https://example.test/?cmp=e:Zba,Zbb');
+  assert.ok(
+    withPins.dom.window.document.querySelector('[aria-label="Comparison tray"]'),
+    'the tray should be docked when items are pinned',
+  );
+  assert.equal(
+    dom.window.document.querySelector('[aria-label="Comparison tray"]'),
+    null,
+    'the tray must not render when nothing is pinned',
+  );
+});
+
+test('SLLI across RV32I and RV64I renders exactly one differing bit', async () => {
+  // RV64 widens shamt by one bit, so bit 25 goes from a fixed 0 to part of a
+  // variable field. Keyed by (extId, mnemonic) precisely because SLLI is
+  // defined by five different base ISAs.
+  const { dom: d } = await mountAt('https://example.test/?cmp=i:RV32I.SLLI,RV64I.SLLI');
+  const dialog = compareDialog(d);
+  assert.ok(dialog, 'the comparison did not open');
+
+  // Two encodings are drawn, each marking the same single differing position.
+  const marked = dialog.querySelectorAll('[data-diff="1"]');
+  assert.equal(marked.length, 2, `expected one marked bit per column, found ${marked.length}`);
+  for (const cell of marked) {
+    assert.ok(
+      cell.getAttribute('data-tooltip').startsWith('bit[25]'),
+      `marked the wrong bit: ${cell.getAttribute('data-tooltip')}`,
+    );
+  }
+});
+
+test('a comparison permalink naming nothing real does not open a comparison', async () => {
+  const { dom: d, errors } = await mountAt('https://example.test/?cmp=e:Zqqq,Zwww');
+  assert.equal(compareDialog(d), null, 'opened a comparison with no resolvable items');
+  assert.ok(
+    d.window.document.getElementById('root').children.length > 0,
+    'the page should still render',
+  );
+  assert.deepEqual(realErrors(errors), [], 'console errors on an unresolvable comparison');
+});
+
+test('a malformed comparison permalink does not break the page', async () => {
+  for (const bad of ['?cmp=', '?cmp=x:Zba', '?cmp=:::', '?cmp=i:...']) {
+    const { dom: d, errors } = await mountAt(`https://example.test/${bad}`);
+    assert.ok(
+      d.window.document.getElementById('root').children.length > 0,
+      `the page went blank on ${bad}`,
+    );
+    assert.deepEqual(realErrors(errors), [], `console errors on ${bad}`);
+  }
+});
+
+test('the compare pin renders on the tiles', () => {
+  const tiles = dom.window.document.querySelectorAll('.ext-tile').length;
+  const pins = dom.window.document.querySelectorAll('.ext-tile-compare').length;
+  assert.ok(pins > 0, 'no compare pins rendered');
+  assert.ok(pins <= tiles, `more pins (${pins}) than tiles (${tiles})`);
+  // Discontinued extensions get no pin, so this is a floor rather than equality.
+  assert.ok(pins > tiles * 0.9, `expected a pin on nearly every tile, got ${pins} of ${tiles}`);
+});
