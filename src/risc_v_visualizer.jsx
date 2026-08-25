@@ -1788,13 +1788,13 @@ const RISCVExplorer = () => {
                   all. Stretch until there is room to right-align.
                   min-w-0 because a flex item defaults to min-width:auto and
                   refuses to shrink below its content. */}
-              <div className="flex flex-col items-stretch xl:items-end gap-3 min-w-0 xl:shrink-0">
+              <div className="flex flex-col items-stretch gap-3 min-w-0 xl:shrink-0">
                 {/* Controls - Row 1 */}
                 <div className="flex flex-wrap items-center justify-start xl:justify-end gap-x-3 gap-y-3">
                   {/* Grouped Filters Container. Wraps on narrow screens; without
                       it this row stays one 557px line that cannot shrink. */}
                   <div
-                    className="flex flex-wrap items-center gap-x-3 gap-y-2 px-3.5 py-2 rounded-xl border shadow-lg backdrop-blur-md"
+                    className="flex flex-1 flex-wrap items-center gap-x-3 gap-y-2 px-3.5 py-2 rounded-xl border shadow-lg backdrop-blur-md"
                     style={{
                       background: 'var(--riscv-plate)',
                       borderColor: 'rgba(255,255,255,0.08)',
