@@ -57,7 +57,6 @@ export default function WorkspacePanel({
   workspaceIds,
   lockedExtensions,
   allExts,
-  onAddId,
   onSetVlen,
   onRemoveId,
   onClear,

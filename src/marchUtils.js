@@ -411,7 +411,7 @@ export function parseMarchString(marchStr, allExts) {
  * @param {Array}    allExts
  * @returns {{ march: string|null, excluded: {id,reason}[], warnings: string[] }}
  */
-export function buildMarchString(selectedIds, allExts) {
+export function buildMarchString(selectedIds, _allExts) {
   const out = { march: null, excluded: [], warnings: [] };
 
   if (!selectedIds || selectedIds.length === 0) {

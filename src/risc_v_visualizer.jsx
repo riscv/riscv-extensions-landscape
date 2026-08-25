@@ -4151,7 +4151,6 @@ const RISCVExplorer = () => {
         workspaceIds={workspaceIds}
         lockedExtensions={lockedExtensions}
         allExts={allExtsList}
-        onAddId={(id) => addWorkspaceIdsSmart(id)}
         onSetVlen={handleSetVlen}
         onRemoveId={(id) =>
           setWorkspaceIds((prev) => {
