@@ -19,6 +19,8 @@ import {
   normalizeCell,
   cellsAllSame,
   buildExtensionComparison,
+  encodingBitDiff,
+  buildInstructionComparison,
 } from '../src/compareModel.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -117,4 +119,66 @@ test('every row declares a renderer the view knows', () => {
   for (const r of model.rows) {
     assert.ok(known.has(r.render), `row ${r.key} has unknown renderer ${r.render}`);
   }
+});
+
+const instrItem = (extId, mnemonic) => ({
+  extId,
+  mnemonic,
+  instr: byId(extId).instructions[mnemonic],
+});
+
+test('SLLI differs between RV32I and RV64I at exactly bit 25', () => {
+  // RV64 widens shamt by one bit, so bit 25 goes from a fixed 0 to part of a
+  // variable field. This is the case the feature exists to make visible, and
+  // the reason items are keyed by (extId, mnemonic) rather than by mnemonic.
+  const model = buildInstructionComparison([instrItem('RV32I', 'SLLI'), instrItem('RV64I', 'SLLI')]);
+  assert.ok(Array.isArray(model.bitDiff));
+  assert.equal(model.bitDiff.length, 32);
+  const differing = model.bitDiff.map((d, i) => (d ? 31 - i : null)).filter((b) => b !== null);
+  assert.deepEqual(differing, [25]);
+});
+
+test('the instruction columns carry the mnemonic and its owning extension', () => {
+  const model = buildInstructionComparison([instrItem('RV32I', 'SLLI'), instrItem('RV64I', 'SLLI')]);
+  assert.equal(model.kind, 'instr');
+  assert.deepEqual(model.columns, [
+    { key: 'RV32I.SLLI', label: 'SLLI', sublabel: 'RV32I' },
+    { key: 'RV64I.SLLI', label: 'SLLI', sublabel: 'RV64I' },
+  ]);
+  assert.equal(rowOf(model, 'owner').allSame, false);
+  assert.equal(rowOf(model, 'encoding').allSame, false);
+});
+
+test('an instruction compared with itself has an all-false bit diff', () => {
+  const model = buildInstructionComparison([instrItem('Zba', 'ADD.UW'), instrItem('Zba', 'ADD.UW')]);
+  assert.deepEqual(model.bitDiff, new Array(32).fill(false));
+  assert.deepEqual(model.rows.filter((r) => !r.allSame).map((r) => r.key), []);
+});
+
+test('a non-32-character encoding yields no bit diff rather than a wrong one', () => {
+  assert.equal(encodingBitDiff(['0000', '0001']), null);
+  assert.equal(encodingBitDiff(['0'.repeat(32), 'nonsense']), null);
+  assert.equal(encodingBitDiff([]), null);
+  assert.equal(encodingBitDiff(['0'.repeat(32)]), null, 'one encoding has nothing to differ from');
+});
+
+test('whitespace in an encoding does not shift the bit alignment', () => {
+  const spaced = '0000000 ---------- 001 ----- 0010011';
+  const plain = '0000000----------001-----0010011';
+  assert.deepEqual(encodingBitDiff([spaced, plain]), new Array(32).fill(false));
+});
+
+test('deprecated reads as yes or no, never as absent', () => {
+  const model = buildInstructionComparison([instrItem('Zba', 'ADD.UW'), instrItem('Zba', 'SH1ADD')]);
+  for (const cell of rowOf(model, 'deprecated').cells) {
+    assert.ok(cell === 'yes' || cell === 'no', `unexpected deprecated cell ${cell}`);
+  }
+});
+
+test('items with no instruction record are dropped rather than rendered as holes', () => {
+  const model = buildInstructionComparison([
+    instrItem('Zba', 'ADD.UW'),
+    { extId: 'Zba', mnemonic: 'NOPE', instr: undefined },
+  ]);
+  assert.equal(model.columns.length, 1);
 });

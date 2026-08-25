@@ -123,3 +123,66 @@ export function buildExtensionComparison(exts) {
     bitDiff: null,
   };
 }
+
+const INSTRUCTION_FIELDS = [
+  { key: 'owner', label: 'Extension', render: 'text', get: (it) => orNull(it.extId) },
+  {
+    key: 'encoding',
+    label: 'Encoding',
+    render: 'encoding',
+    get: (it) => orNull(it.instr.encoding),
+  },
+  { key: 'match', label: 'Match', render: 'mono', get: (it) => orNull(it.instr.match) },
+  { key: 'mask', label: 'Mask', render: 'mono', get: (it) => orNull(it.instr.mask) },
+  {
+    key: 'variable_fields',
+    label: 'Variable fields',
+    render: 'chips',
+    get: (it) => listOrNull(it.instr.variable_fields),
+  },
+  { key: 'alias_of', label: 'Alias of', render: 'text', get: (it) => orNull(it.instr.alias_of) },
+  {
+    key: 'deprecated',
+    label: 'Deprecated',
+    render: 'text',
+    get: (it) => (it.instr.deprecated ? 'yes' : 'no'),
+  },
+];
+
+const normalizeEncoding = (value) => String(value ?? '').replace(/\s+/g, '');
+
+/**
+ * Which of the 32 bit positions the items disagree on.
+ *
+ * Index 0 is bit 31, matching both the stored string and EncodingDiagram's
+ * left-to-right rendering. Returns null unless there are at least two items and
+ * every one is exactly 32 characters: a short or malformed encoding has no bit
+ * positions to align against, and a wrong alignment is worse than none.
+ *
+ * @param {string[]} encodings
+ * @returns {boolean[] | null} 32 entries, or null
+ */
+export function encodingBitDiff(encodings) {
+  const normalized = (encodings || []).map(normalizeEncoding);
+  if (normalized.length < 2) return null;
+  if (normalized.some((e) => e.length !== 32)) return null;
+  const [first] = normalized;
+  return Array.from({ length: 32 }, (_, i) => normalized.some((e) => e[i] !== first[i]));
+}
+
+/**
+ * @param {Array<{extId: string, mnemonic: string, instr: object}>} items
+ */
+export function buildInstructionComparison(items) {
+  const list = (items || []).filter((it) => it && it.instr);
+  return {
+    kind: 'instr',
+    columns: list.map((it) => ({
+      key: instructionKey(it.extId, it.mnemonic),
+      label: it.mnemonic,
+      sublabel: it.extId,
+    })),
+    rows: INSTRUCTION_FIELDS.map((field) => makeRow(field, list)),
+    bitDiff: encodingBitDiff(list.map((it) => it.instr.encoding)),
+  };
+}
