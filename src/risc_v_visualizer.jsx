@@ -2086,9 +2086,13 @@ const RISCVExplorer = () => {
 
                       {/* Builder Contextual Actions Toolbar.
                         Hidden while the full panel is open: this toolbar belongs to the
-                        header, but it sits at z-50 against the panel's z-40, so leaving it
-                        mounted floats it on top of the modal. Its actions are redundant
-                        there too, one of them being "open the panel". */}
+                        header. It used to float on top of the panel modal, which
+                        was the original reason to unmount it; since .riscv-toolbar
+                        took z-index 30 — to stop its backdrop-filter trapping the
+                        profile menu — everything in this toolbar now paints below
+                        the panel's z-40 instead. The guard stays because the
+                        actions are redundant while the panel is open, one of them
+                        being "open the panel". */}
                       {builderMode && !workspacePanelOpen && (
                         <div className="builder-toolbar absolute top-[calc(100%+6px)] left-0 right-0 flex items-center justify-between p-1 bg-slate-800/90 border border-amber-500/40 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] backdrop-blur-xl z-50 animate-fade-in-up gap-1">
                           {/* Open the full panel */}
@@ -3325,7 +3329,15 @@ const RISCVExplorer = () => {
                                   >
                                     {mnemonic}
                                   </button>
-                                  {isClickable &&
+                                  {/* Gated on compareMode like the tile pin, the
+                                      profile pin and the tray. Without it a
+                                      reader with Compare OFF could pin an
+                                      instruction — the chip lit up and the URL
+                                      gained ?cmp=i:… — while the tray stayed
+                                      hidden, so nothing could open the
+                                      comparison they had just built. */}
+                                  {compareMode &&
+                                    isClickable &&
                                     (() => {
                                       const pinned = compareInstrKeys.has(
                                         instructionKey(selectedExt.id, mnemonic),

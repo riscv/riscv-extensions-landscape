@@ -302,6 +302,34 @@ test('compare mode is off by default, so no pins clutter the grid', () => {
   );
 });
 
+test('with compare mode off, no pin of any kind is reachable', async () => {
+  // Counting tile pins alone was not enough: the instruction-chip pin was
+  // rendered regardless of the mode, so a reader could pin an instruction,
+  // watch ?cmp=i:… appear in the URL, and have no tray to open it with. A
+  // control that half-works is worse than one that is absent.
+  const { dom: d, errors } = await mountAt('https://example.test/?ext=Zba');
+  const doc = d.window.document;
+
+  assert.equal(doc.querySelectorAll('.ext-tile-compare').length, 0, 'tile pins should be hidden');
+  assert.equal(
+    doc.querySelector('[aria-label="Comparison tray"]'),
+    null,
+    'the tray should be hidden',
+  );
+
+  // The detail panel is open for Zba, so its instruction chips are on screen.
+  const chips = [...doc.querySelectorAll('button')].filter((b) =>
+    /^Compare |^Remove .* from comparison$/.test(b.getAttribute('title') || ''),
+  );
+  assert.deepEqual(
+    chips.map((b) => b.getAttribute('title')),
+    [],
+    'no instruction or profile pin may be reachable while compare mode is off',
+  );
+
+  assert.deepEqual(realErrors(errors), [], 'console errors with compare mode off');
+});
+
 test('switching compare mode off hides the pins and tray but keeps the comparison', async () => {
   // The promise the mode makes: turning it off is never destructive. The pins
   // and the ?cmp= URL survive, so switching back on restores the same

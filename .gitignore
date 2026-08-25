@@ -3,3 +3,6 @@ dist/
 .DS_Store
 .env
 *.log
+
+# Scratch workspace for agent-driven development runs.
+.superpowers/

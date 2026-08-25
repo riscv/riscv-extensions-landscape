@@ -30,7 +30,6 @@
 
   --riscv-success: #20d9a0;
   --riscv-danger: #ff4d6b;
-  --riscv-danger-2: #d92c4d;
   --riscv-report-fg: #ff4d6b;
   --riscv-report-tint: rgba(255, 77, 107, 0.14);
   --riscv-report-tint-hover: rgba(255, 77, 107, 0.18);
@@ -561,7 +560,6 @@ pre,
 
   --riscv-success: #14866a;
   --riscv-danger: #c2334d;
-  --riscv-danger-2: #99203a;
   --riscv-report-fg: #99203a;
   --riscv-report-tint: rgba(194, 51, 77, 0.12);
   --riscv-report-tint-hover: rgba(194, 51, 77, 0.18);
@@ -887,6 +885,18 @@ pre,
   border-color: rgba(245, 158, 11, 0.5) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
 }
+/* The Compare toggle's OFF state used bg-slate-800/80, a Tailwind alpha with
+   no light-theme remap, so in light it rendered a washed grey chip beside the
+   builder's solid one and its label measured 3.79:1. Same treatment as the
+   builder, in violet rather than amber, because Compare is a different mode
+   and should not look like the builder in either theme. */
+:root[data-theme='light'] .compare-mode-toggle[aria-pressed='false'] {
+  background: #1e293b !important;
+  color: #a78bfa !important;
+  border-color: rgba(139, 124, 248, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
 :root[data-theme='light'] .builder-btn-off:hover {
   background: #334155 !important; /* slate-700 */
   color: #fcd34d !important; /* bright amber-300 */
@@ -1172,7 +1182,13 @@ pre,
    now carries a gold wash AND a gold edge on its sticky label cell, so the
    rows worth reading are findable from the scrollbar. */
 .compare-same {
-  opacity: 0.38;
+  /* Dimmed with a colour token rather than opacity. Opacity composites the
+     whole cell, so at 0.38 the agreeing rows measured 2.20:1 in light and
+     3.11:1 in dark, and the presence marks — already muted — were dimmed a
+     second time down to 1.69:1. Agreeing rows are still content: a reader
+     compares RVA22 against RVA23 precisely to see what they share. The gold
+     wash and gold edge on the differing rows carry the emphasis instead. */
+  color: var(--riscv-text-2);
 }
 .compare-diff {
   background: var(--riscv-diff-bg);
@@ -1257,7 +1273,9 @@ pre,
   color: var(--riscv-report-fg);
   border: 1px solid var(--riscv-report-edge);
   background: var(--riscv-report-tint);
-  backdrop-filter: blur(8px);
+  /* No backdrop-filter: this sits in the identity row over the flat page
+     background, so a blur would composite a layer and open a stacking context
+     to blur nothing. */
   box-shadow:
     0 2px 12px -4px var(--riscv-report-tint-hover),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
