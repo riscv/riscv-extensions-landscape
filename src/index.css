@@ -924,4 +924,44 @@ pre,
   }
 }
 
+/* Comparison grid. The attribute column is sticky horizontally and the header
+   row sticky vertically, so a wide comparison stays readable while scrolled. */
+.compare-grid {
+  display: grid;
+  min-width: max-content;
+}
+.compare-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 8px 10px;
+  background: var(--riscv-panel);
+  border-bottom: 1px solid var(--riscv-border-2);
+}
+.compare-attr {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--riscv-panel);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--riscv-text-3);
+}
+.compare-head.compare-attr {
+  z-index: 3;
+}
+.compare-cell {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--riscv-border-2);
+  overflow-wrap: anywhere;
+}
+/* Agreement is context, difference is the signal. */
+.compare-same {
+  opacity: 0.45;
+}
+.compare-diff {
+  background: var(--riscv-tint-3);
+  color: var(--riscv-text);
+}
 
