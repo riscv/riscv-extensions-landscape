@@ -287,6 +287,13 @@ pre,
   background: rgba(139, 124, 248, 0.20);
 }
 
+/* A bit position the compared instructions disagree on. An inset ring rather
+   than a background, so the field colouring underneath stays readable. */
+.riscv-bit-diff {
+  box-shadow: inset 0 0 0 2px var(--riscv-gold);
+  position: relative;
+}
+
 /* Extension tile hover lift */
 .ext-tile {
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;

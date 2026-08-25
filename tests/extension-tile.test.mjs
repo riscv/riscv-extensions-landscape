@@ -126,3 +126,22 @@ test('no component is declared inside another component', () => {
       + offenders.join('\n  '),
   );
 });
+
+test('EncodingDiagram lives in its own module, not in the visualizer', () => {
+  // It has two consumers now — the instruction detail panel and the comparison
+  // view. A component defined inside one consumer's file is not shared, it is
+  // borrowed. Same reasoning that moved the tile out.
+  const visualizer = fs.readFileSync(path.join(srcDir, 'risc_v_visualizer.jsx'), 'utf8');
+  assert.ok(
+    !/^const EncodingDiagram = /m.test(visualizer),
+    'EncodingDiagram is still declared inside risc_v_visualizer.jsx',
+  );
+  assert.ok(
+    /import EncodingDiagram from '\.\/EncodingDiagram\.jsx'/.test(visualizer),
+    'risc_v_visualizer.jsx should import EncodingDiagram',
+  );
+
+  const diagram = fs.readFileSync(path.join(srcDir, 'EncodingDiagram.jsx'), 'utf8');
+  assert.ok(/export default function EncodingDiagram/.test(diagram), 'no default export');
+  assert.ok(/diffMask/.test(diagram), 'the diff mask prop is missing');
+});
