@@ -1906,7 +1906,16 @@ const RISCVExplorer = () => {
                       </div>
                     </div>
                   </div>
+                </div>
 
+                {/* Controls - Row 2: the actions.
+                    Split out from the filters above because adding the Compare
+                    toggle pushed the single row wider than this column, and the
+                    column right-aligns inside an overflow-x-hidden root — so
+                    the surplus was clipped off the edge instead of wrapping,
+                    cutting the ISA Configuration Builder in half. Two rows keep
+                    both groups whole and right-aligned. */}
+                <div className="flex flex-wrap items-center justify-start xl:justify-end gap-x-3 gap-y-3">
                   {/* Encoder Validator - Sleek Outline Button */}
                   <button
                     type="button"
