@@ -1195,6 +1195,16 @@ pre,
   border: 1px solid var(--riscv-border-2);
   background: var(--riscv-plate);
   backdrop-filter: blur(8px);
+
+  /* backdrop-filter creates a stacking context, which traps every z-index
+     inside this toolbar. The builder's "Start from a ratified profile" menu
+     asks for z-index 50, but confined to a context that is itself z-auto and
+     earlier in the DOM than the detail panel, so the panel painted over the
+     open menu. Raising the whole toolbar fixes every popup it contains at
+     once. Below the detail panel's mobile z-50 on purpose: there the panel is
+     a bottom sheet and should cover the toolbar. */
+  position: relative;
+  z-index: 30;
 }
 
 /* A tool opens a dialog and hands you back. It never advertises state, because
