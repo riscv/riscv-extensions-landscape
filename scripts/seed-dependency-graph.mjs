@@ -218,11 +218,36 @@ function readUdb(root) {
       };
     }
   }
+  // Branch as well as commit. A commit hash alone cannot tell you whether you
+  // are looking at upstream or at somebody's work in progress, and that
+  // distinction decides what a drift report means: against main it is a real
+  // divergence to reconcile, against a feature branch it is noise. A checkout
+  // sitting on a WIP branch once produced 18 "drifted" nodes that read as this
+  // repo being stale; main matched exactly.
   let commit = 'unknown';
+  let branch = 'unknown';
   try {
     commit = execFileSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+    branch = execFileSync('git', ['-C', root, 'rev-parse', '--abbrev-ref', 'HEAD'], {
+      encoding: 'utf8',
+    }).trim();
+    if (branch === 'HEAD') {
+      // Detached — a worktree pinned to a ref, which is exactly how you check
+      // against main without disturbing someone's working branch. Recover the
+      // name from the refs pointing at this commit, or the warning below fires
+      // on the one workflow it should stay quiet for.
+      const at = execFileSync(
+        'git',
+        ['-C', root, 'branch', '-a', '--points-at', 'HEAD', '--format=%(refname:short)'],
+        { encoding: 'utf8' },
+      )
+        .split('\n')
+        .map((l) => l.trim().replace(/^origin\//, ''))
+        .filter(Boolean);
+      branch = at.find((b) => b === 'main' || b === 'master') || at[0] || 'detached';
+    }
   } catch { /* not a git checkout — provenance degrades, extraction still works */ }
-  return { graph, known, commit, conditionalNodes };
+  return { graph, known, commit, branch, conditionalNodes };
 }
 
 /** Extension ids in the shipped catalog. */
@@ -262,7 +287,7 @@ const CONFLICTS = {
 // ---------------------------------------------------------------------------
 // Build
 // ---------------------------------------------------------------------------
-const { graph: udb, known: udbKnown, commit, conditionalNodes } = readUdb(udbRoot);
+const { graph: udb, known: udbKnown, commit, branch, conditionalNodes } = readUdb(udbRoot);
 const catalogIds = readCatalogIds();
 
 /**
@@ -374,7 +399,7 @@ const graph = {
     'Reconcile against upstream with scripts/seed-dependency-graph.mjs --check.',
   version: 1,
   sources: {
-    udb: { repo: 'riscv/riscv-unified-db', commit, path: 'spec/std/isa/ext' },
+    udb: { repo: 'riscv/riscv-unified-db', commit, branch, path: 'spec/std/isa/ext' },
     'isa-manual': { repo: 'riscv/riscv-isa-manual', note: 'section cited per edge' },
   },
   // Sorted so a regeneration produces a reviewable diff rather than a reshuffle.
@@ -402,11 +427,24 @@ if (checkOnly) {
     const theirs = summarize(nodes[id]);
     if (mine !== theirs) drift.push(`  ${id}: committed [${mine || '-'}] vs upstream [${theirs || '-'}]`);
   }
+  // Name the branch on every outcome. Without it a drift report is ambiguous
+  // between "this repo is stale" and "you are pointed at a feature branch".
+  const TRUNK = ['main', 'master'];
+  const where = `UDB ${commit.slice(0, 8)} (${branch})`;
+  const offTrunk = branch !== 'unknown' && !TRUNK.includes(branch);
+  const warning = offTrunk
+    ? `\n\nNOTE: that checkout is on '${branch}', not main. Drift against a branch` +
+      `\nother than the trunk usually says more about the branch than about this` +
+      `\nrepository. Re-check against main before changing anything here:` +
+      `\n  git -C <udb> worktree add /tmp/udb-main origin/main` +
+      `\n  npm run graph:check -- /tmp/udb-main`
+    : '';
+
   if (drift.length) {
-    console.error(`upstream drift in ${drift.length} node(s):\n${drift.join('\n')}`);
+    console.error(`drift vs ${where} in ${drift.length} node(s):\n${drift.join('\n')}${warning}`);
     process.exit(1);
   }
-  console.log(`no drift — ${Object.keys(nodes).length} nodes match UDB ${commit.slice(0, 8)}`);
+  console.log(`no drift — ${Object.keys(nodes).length} nodes match ${where}${warning}`);
 } else {
   fs.writeFileSync(GRAPH_PATH, JSON.stringify(graph, null, 2) + '\n');
   const withDeps = Object.values(nodes).filter((n) => n.requires.length).length;
