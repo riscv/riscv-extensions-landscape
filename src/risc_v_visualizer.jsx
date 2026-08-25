@@ -3705,7 +3705,7 @@ const RISCVExplorer = () => {
 
         {/* ─── Footer ─────────────────────────────────────────────────── */}
         <footer
-          className="mt-10 pb-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px]"
+          className="mt-10 pb-8 flex flex-col sm:flex-row items-center justify-center gap-x-3 gap-y-2 text-[12px]"
           style={{
             borderTop: '1px solid var(--riscv-border)',
             paddingTop: '1.5rem',
@@ -3721,25 +3721,25 @@ const RISCVExplorer = () => {
             <span>
               Data sourced from{' '}
               <a
-                href="https://github.com/riscv/riscv-isa-manual"
+                href="https://github.com/riscv/riscv-unified-db"
                 target="_blank"
-                rel="noreferrer"
+                rel="noreferrer noopener"
                 className="hover:underline"
                 style={{ color: 'var(--riscv-violet)' }}
               >
-                riscv/riscv-isa-manual
+                riscv/riscv-unified-db
               </a>
             </span>
           </div>
           <div className="flex items-center gap-3">
             <a
-              href="https://github.com/riscv/riscv-isa-manual"
+              href="https://github.com/riscv/riscv-unified-db"
               target="_blank"
-              rel="noreferrer"
+              rel="noreferrer noopener"
               className="hover:opacity-80 tooltip-align-right"
               style={{ color: 'var(--riscv-text-2)' }}
-              data-tooltip="View on GitHub"
-              aria-label="View on GitHub"
+              data-tooltip="View riscv-unified-db on GitHub"
+              aria-label="View riscv-unified-db on GitHub"
             >
               <BookOpen size={14} />
             </a>
