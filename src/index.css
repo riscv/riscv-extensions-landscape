@@ -31,8 +31,10 @@
   --riscv-success: #20d9a0;
   --riscv-danger: #ff4d6b;
   --riscv-danger-2: #d92c4d;
-  --riscv-report-a: #d4324f;
-  --riscv-report-b: #a81f38;
+  --riscv-report-fg: #ff4d6b;
+  --riscv-report-tint: rgba(255, 77, 107, 0.14);
+  --riscv-report-tint-hover: rgba(255, 77, 107, 0.18);
+  --riscv-report-edge: rgba(255, 77, 107, 0.55);
   --riscv-warn: #f59e0b;
 
   --riscv-text: #e2e8f0;
@@ -560,8 +562,10 @@ pre,
   --riscv-success: #14866a;
   --riscv-danger: #c2334d;
   --riscv-danger-2: #99203a;
-  --riscv-report-a: #c2334d;
-  --riscv-report-b: #99203a;
+  --riscv-report-fg: #99203a;
+  --riscv-report-tint: rgba(194, 51, 77, 0.12);
+  --riscv-report-tint-hover: rgba(194, 51, 77, 0.18);
+  --riscv-report-edge: rgba(194, 51, 77, 0.5);
   --riscv-warn: #b06f05;
 
   --riscv-text: #2b2a3d;
@@ -1224,46 +1228,47 @@ pre,
 }
 
 /* Report an issue.
-   The one red button on the page, and the only control allowed to outshout an
-   active mode — a preview that hides the way to report things is not really
-   asking. Depth comes from a two-stop gradient plus a hairline inner highlight
-   along the top edge, which is what separates a red button from a red
-   rectangle; the glow is the same hue so it reads as light coming off the
-   button rather than a drop shadow.
+   Glass rather than paint: a translucent red wash over whatever it sits on,
+   with a blur behind it, so it belongs to the same material as the toolbar
+   plate instead of being a sticker on top of it. The red is carried by the
+   label and the edge, which is what keeps it emphatic at 14% fill.
 
-   The gradient does NOT run from --riscv-danger. That red is #ff4d6b, which
-   measures 3.22:1 against white — fine for a border or an icon, a failure
-   behind 11px text. These stops were measured instead: dark 4.81:1 and 7.20:1,
-   light 5.42:1 and 8.01:1, so every point of the gradient clears 4.5:1. The
-   glow still uses --riscv-danger, since a shadow carries no text. */
+   Contrast is measured, and it is the reason the fill stays low. Translucent
+   means the text sits on the page showing through, so the label was checked
+   against the actual blend: dark #ff4d6b on a 14% wash is 4.84:1, and light
+   uses the deeper #99203a because #c2334d only reached 4.30:1 there. Hover
+   raises the tint to 18% and no further — at 22% the dark pairing falls to
+   4.25:1, so hover leans on the edge and the glow instead of more fill. */
 .riscv-report-btn {
-  color: #fff;
-  border: 1px solid var(--riscv-report-b);
-  background: linear-gradient(180deg, var(--riscv-report-a) 0%, var(--riscv-report-b) 100%);
+  color: var(--riscv-report-fg);
+  border: 1px solid var(--riscv-report-edge);
+  background: var(--riscv-report-tint);
+  backdrop-filter: blur(8px);
   box-shadow:
-    0 2px 10px -2px color-mix(in srgb, var(--riscv-danger) 55%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    0 2px 12px -4px var(--riscv-report-tint-hover),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
   transition:
     transform 0.15s ease,
     box-shadow 0.2s ease,
-    filter 0.2s ease;
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 .riscv-report-btn:hover {
-  filter: brightness(1.08);
+  background: var(--riscv-report-tint-hover);
+  border-color: var(--riscv-report-fg);
   transform: translateY(-1px);
   box-shadow:
-    0 6px 18px -4px color-mix(in srgb, var(--riscv-danger) 70%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    0 8px 22px -6px var(--riscv-report-edge),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 .riscv-report-btn:active {
   transform: translateY(0);
-  filter: brightness(0.96);
   box-shadow:
-    0 1px 6px -2px color-mix(in srgb, var(--riscv-danger) 50%, transparent),
-    inset 0 1px 2px rgba(0, 0, 0, 0.18);
+    0 1px 6px -3px var(--riscv-report-edge),
+    inset 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 .riscv-report-btn:focus-visible {
-  outline: 2px solid var(--riscv-danger);
+  outline: 2px solid var(--riscv-report-fg);
   outline-offset: 2px;
 }
 /* Respect a reader who has asked the interface to stop moving. */
