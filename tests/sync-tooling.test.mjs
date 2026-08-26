@@ -118,11 +118,14 @@ test('the UDB sync captures the extension version, when a UDB checkout is availa
   assert.match(stdout, /--dry-run: catalogue not written/, 'dry-run should say so');
   assert.equal(hashCatalog(), before, '--dry-run must not touch the catalogue');
 
-  const reported = stdout.match(/Version pass: (\d+) extension\(s\) carry a UDB version/);
-  assert.ok(reported, `the sync should report version coverage:\n${stdout}`);
-  assert.ok(
-    Number(reported[1]) > 100,
-    `expected most of the catalogue to carry a version, got ${reported[1]}`
+  // Asserts the pass runs and reports, not how many it wrote: the count is
+  // "gained a version", so it is large on a catalogue that has none and zero
+  // once the data is committed. Coverage of the committed catalogue is
+  // asserted in data-integrity.test.mjs, where the data lives.
+  assert.match(
+    stdout,
+    /Version pass: \d+ extension\(s\) gained a version/,
+    `the sync should report a version pass:\n${stdout}`
   );
 });
 

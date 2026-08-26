@@ -606,7 +606,7 @@ for (const [id, found] of csrIndex) {
 
 console.log('');
 console.log('CSR coverage pass: ' + extsGainedCsrs + ' extension(s) gained ' + csrsAdded + ' CSR(s)');
-console.log('Version pass: ' + versionsWritten + ' extension(s) carry a UDB version');
+console.log('Version pass: ' + versionsWritten + ' extension(s) gained a version');
 
 // This guard runs BEFORE the write: past the threshold, the in-memory catalog is
 // half-synced (real fields silently dropped), so persisting it would corrupt the
