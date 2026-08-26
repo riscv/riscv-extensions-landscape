@@ -59,9 +59,12 @@ export default function WorkspacePanel({
   allExts,
   onSetVlen,
   onRemoveId,
+  onAddId,
   onClear,
   onLoadIds,
   onSelectInstruction,
+  seedProfile,
+  profileOptional,
 }) {
   const [marchTab, setMarchTab] = React.useState('encode');
   const [marchInput, setMarchInput] = React.useState('');
@@ -75,6 +78,20 @@ export default function WorkspacePanel({
   const [includeInstructions, setIncludeInstructions] = React.useState(true);
 
   const marchInputRef = React.useRef(null);
+
+  // Extensions the seeding profile lists as optional and that are not already
+  // in the workspace. A profile's optional set is the menu of what may be added
+  // while staying compliant, and until now it was invisible: the panel showed
+  // the mandatory set it had seeded and nothing else, so there was no way to
+  // discover that RVA23 permits Zvkng or Zabha (#217).
+  const optionalToAdd = React.useMemo(() => {
+    if (!seedProfile || !profileOptional) return [];
+    const ids = new Set(profileOptional[seedProfile] || []);
+    if (ids.size === 0) return [];
+    return allExts
+      .filter((e) => ids.has(e.id) && !workspaceIds.has(e.id))
+      .sort((a, b) => a.id.localeCompare(b.id));
+  }, [seedProfile, profileOptional, allExts, workspaceIds]);
 
   // Derived
   const workspaceExts = React.useMemo(() => {
@@ -550,6 +567,21 @@ export default function WorkspacePanel({
                     lockedBy={lockedExtensions?.get(ext.id)}
                     onRemove={() => onRemoveId(ext.id)}
                   />
+                ))}
+              </div>
+            </Section>
+          )}
+
+          {/* Optional extensions offered by the seeding profile */}
+          {optionalToAdd.length > 0 && (
+            <Section
+              label={`Optional in ${seedProfile}`}
+              count={optionalToAdd.length}
+              icon={<Sliders size={11} />}
+            >
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {optionalToAdd.map((ext) => (
+                  <OptionalChip key={ext.id} ext={ext} onAdd={() => onAddId(ext.id)} />
                 ))}
               </div>
             </Section>
@@ -1106,6 +1138,42 @@ function InfoPill({ icon, children }) {
 // ============================================================================
 // Extension chip with remove button
 // ============================================================================
+function OptionalChip({ ext, onAdd }) {
+  const [hovered, setHovered] = React.useState(false);
+  return (
+    <button
+      type="button"
+      onClick={onAdd}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      title={`${ext.desc || ext.name} — optional in this profile, click to add`}
+      aria-label={`Add ${ext.id}, optional in this profile`}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 5,
+        paddingLeft: 9, paddingRight: 8, paddingTop: 4, paddingBottom: 4,
+        borderRadius: 7,
+        background: hovered ? 'rgba(139,124,248,0.14)' : 'transparent',
+        // Dashed, and violet rather than the gold the selected chips use: these
+        // are on offer, not in the configuration, and the two must not be
+        // mistaken for each other at a glance.
+        border: `1px dashed ${hovered ? 'var(--riscv-violet)' : 'var(--riscv-tint-4)'}`,
+        cursor: 'pointer',
+        transition: 'all 0.15s',
+      }}
+    >
+      <span style={{
+        fontFamily: 'JetBrains Mono, monospace',
+        fontSize: 12, fontWeight: 600,
+        color: hovered ? 'var(--riscv-violet)' : 'var(--riscv-text-2)',
+        letterSpacing: '0.02em',
+      }}>
+        {ext.id}
+      </span>
+      <span style={{ fontSize: 13, lineHeight: 1, color: hovered ? 'var(--riscv-violet)' : 'var(--riscv-text-3)' }}>+</span>
+    </button>
+  );
+}
+
 function ExtChip({ ext, lockedBy, onRemove }) {
   const [hovered, setHovered] = React.useState(false);
   const isLocked = lockedBy && lockedBy.length > 0;

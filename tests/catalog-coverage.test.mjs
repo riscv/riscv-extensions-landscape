@@ -365,3 +365,44 @@ test('an instruction with two owners is attributed to both', () => {
     'both owners must describe SCTRCLR identically',
   );
 });
+
+test('every profile-optional extension exists in the catalogue', () => {
+  // The builder renders these as add-chips by id. An id with no catalogue entry
+  // would silently render nothing, so the profile would appear to offer fewer
+  // options than the spec grants.
+  const optional = JSON.parse(
+    fs.readFileSync(path.join(here, '..', 'src', 'profile-optional.json'), 'utf8'),
+  );
+  const ids = new Set(entries.map((e) => e.id));
+  for (const [profile, list] of Object.entries(optional)) {
+    for (const id of list) {
+      assert.ok(ids.has(id), `${profile} lists optional ${id}, which is not in the catalogue`);
+    }
+  }
+});
+
+test('optional and mandatory sets do not overlap', () => {
+  // An extension the profile mandates cannot also be offered as optional: the
+  // builder would show it as available to add while it is already selected.
+  const optional = JSON.parse(
+    fs.readFileSync(path.join(here, '..', 'src', 'profile-optional.json'), 'utf8'),
+  );
+  const profiles = fs.readFileSync(path.join(here, '..', 'src', 'profiles.js'), 'utf8');
+  for (const [profile, list] of Object.entries(optional)) {
+    const block = profiles.match(new RegExp(`\\n  ${profile}: \\[([\\s\\S]*?)\\n  \\]`));
+    if (!block) continue;
+    const mandatory = new Set([...block[1].matchAll(/'([^']+)'/g)].map((m) => m[1]));
+    const both = list.filter((id) => mandatory.has(id));
+    assert.deepEqual(both, [], `${profile} lists ${both.join(', ')} as both mandatory and optional`);
+  }
+});
+
+test('RVA23 offers the optional extensions the ratified profile names', () => {
+  // The two the report named (#217), plus the count from the spec document.
+  const optional = JSON.parse(
+    fs.readFileSync(path.join(here, '..', 'src', 'profile-optional.json'), 'utf8'),
+  );
+  for (const id of ['Zvkng', 'Zabha']) {
+    assert.ok(optional.RVA23.includes(id), `RVA23 should offer ${id}`);
+  }
+});

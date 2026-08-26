@@ -73,6 +73,7 @@ import {
 } from './marchUtils.js';
 import { resolveSelection } from './isaGraph.js';
 import { PROFILES } from './profiles.js';
+import PROFILE_OPTIONAL from './profile-optional.json';
 import { buildIsaConfigYaml } from './exportUtils.js';
 
 // Ids the catalog can actually render. The dependency graph carries a few nodes
@@ -633,6 +634,10 @@ const RISCVExplorer = () => {
   const [workspacePanelOpen, setWorkspacePanelOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const profileMenuRef = React.useRef(null);
+  // Which profile seeded the workspace, so the panel can offer that profile's
+  // optional extensions (#217). Null once the workspace is cleared: the offer
+  // only makes sense while the configuration still descends from the profile.
+  const [seedProfile, setSeedProfile] = useState(null);
 
   // Keep the profile menu inside the viewport (#232).
   //
@@ -2265,6 +2270,7 @@ const RISCVExplorer = () => {
                                       // a configuration matching neither.
                                       setWorkspaceIds(new Set());
                                       addWorkspaceIdsSmart(list);
+                                      setSeedProfile(name);
                                       setProfileMenuOpen(false);
                                     }}
                                     style={{
@@ -2317,7 +2323,10 @@ const RISCVExplorer = () => {
                                 type="button"
                                 data-tooltip="Clear all extensions"
                                 aria-label="Clear all extensions"
-                                onClick={() => setWorkspaceIds(new Set())}
+                                onClick={() => {
+                                  setWorkspaceIds(new Set());
+                                  setSeedProfile(null);
+                                }}
                                 className="builder-action-rose flex-1 flex items-center justify-center py-1.5 text-rose-300 hover:bg-rose-500/30 hover:text-rose-100 hover:shadow-[0_0_12px_rgba(244,63,94,0.3)] transition-all duration-300 rounded-lg"
                               >
                                 <Trash2
@@ -4809,6 +4818,9 @@ const RISCVExplorer = () => {
         lockedExtensions={lockedExtensions}
         allExts={allExtsList}
         onSetVlen={handleSetVlen}
+        seedProfile={seedProfile}
+        profileOptional={PROFILE_OPTIONAL}
+        onAddId={(id) => addWorkspaceIdsSmart(id, true)}
         onRemoveId={(id) =>
           setWorkspaceIds((prev) => {
             const next = new Set(prev);
@@ -4831,7 +4843,10 @@ const RISCVExplorer = () => {
             return next;
           })
         }
-        onClear={() => setWorkspaceIds(new Set())}
+        onClear={() => {
+          setWorkspaceIds(new Set());
+          setSeedProfile(null);
+        }}
         onLoadIds={(ids) => {
           setWorkspaceIds(new Set()); // clear
           addWorkspaceIdsSmart(ids); // smartly add all

@@ -17,7 +17,9 @@
     "test": "node --test tests/*.test.mjs",
     "dev": "webpack serve --mode development",
     "lint": "eslint .",
-    "format": "prettier --write \"src/**/*.{js,jsx,css}\""
+    "format": "prettier --write \"src/**/*.{js,jsx,css}\"",
+    "profiles:optional": "node scripts/sync-profile-optional.mjs",
+    "profiles:check": "node scripts/sync-profile-optional.mjs ../riscv-unified-db --check"
   },
   "keywords": [],
   "author": "",
