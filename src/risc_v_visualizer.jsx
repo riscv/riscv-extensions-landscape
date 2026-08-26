@@ -38,6 +38,7 @@ import {
   KeyRound,
   Trash2,
   Download,
+  Maximize2,
   Sun,
   Moon,
   Columns,
@@ -47,6 +48,7 @@ import EncodingMap from './EncodingMap.jsx';
 import WorkspacePanel from './WorkspacePanel.jsx';
 import ExtensionTile from './ExtensionTile.jsx';
 import EncodingDiagram from './EncodingDiagram.jsx';
+import { focusableWithin, nextFocus } from './focusTrap.js';
 import CompareTray from './CompareTray.jsx';
 import CompareView from './CompareView.jsx';
 import {
@@ -502,6 +504,49 @@ const RISCVExplorer = () => {
   });
   const [encoderValidatorResult, setEncoderValidatorResult] = useState(null);
   const [encoderValidatorCopyStatus, setEncoderValidatorCopyStatus] = useState(null);
+  // ── Instruction Expand Modal ───────────────────────────────────────────────
+  const [instructionExpandOpen, setInstructionExpandOpen] = useState(false);
+  const expandedModalRef = React.useRef(null);
+  const restoreModalFocusRef = React.useRef(null);
+  const onCloseExpandedModalRef = React.useRef(() => setInstructionExpandOpen(false));
+  onCloseExpandedModalRef.current = () => setInstructionExpandOpen(false);
+
+  // Expanded instruction modal: focus trap and Escape, in one listener.
+  //
+  // Both live here rather than in separate effects — an earlier pass had a
+  // second capture-phase listener closing on Escape as well, which was
+  // harmless only because setState is idempotent. CompareView.jsx keeps the
+  // same shape: one window listener owning both keys for the dialog.
+  React.useEffect(() => {
+    if (!instructionExpandOpen) return undefined;
+    restoreModalFocusRef.current = document.activeElement;
+    expandedModalRef.current?.focus();
+
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        onCloseExpandedModalRef.current();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const target = nextFocus(
+        focusableWithin(expandedModalRef.current),
+        document.activeElement,
+        e.shiftKey,
+      );
+      if (target) {
+        e.preventDefault();
+        target.focus();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      const restore = restoreModalFocusRef.current;
+      if (restore && typeof restore.focus === 'function') {
+        restore.focus();
+      }
+    };
+  }, [instructionExpandOpen]);
   // ── ISA Workspace state ────────────────────────────────────────────────────
   const [workspaceIds, setWorkspaceIds] = useState(new Set());
   const [workspaceNotice, setWorkspaceNotice] = useState(null);
@@ -3173,7 +3218,14 @@ const RISCVExplorer = () => {
                           );
                         })()}
                         {selectedExt.discontinued === 1 && (
-                          <span className="px-2 py-1 rounded-md text-[11px] font-mono uppercase tracking-wide border bg-red-950/40 text-red-200 border-red-600/60">
+                          <span
+                            className="px-2 py-1 rounded-md text-[11px] font-mono uppercase tracking-wide border"
+                            style={{
+                              background: 'var(--riscv-report-tint)',
+                              color: 'var(--riscv-danger)',
+                              borderColor: 'var(--riscv-report-edge)',
+                            }}
+                          >
                             Discontinued
                           </span>
                         )}
@@ -3442,7 +3494,7 @@ const RISCVExplorer = () => {
                             <div className="flex items-center gap-2">
                               <button
                                 type="button"
-                                className="inline-flex items-center gap-1 px-2 py-1 rounded border border-slate-600 bg-slate-800 text-[11px] font-mono text-slate-100 hover:border-slate-500"
+                                className="inline-flex items-center gap-1 px-2 py-1 riscv-btn tooltip-align-right"
                                 onClick={async () => {
                                   const text = formatInstructionForClipboard(
                                     selectedExt,
@@ -3466,6 +3518,17 @@ const RISCVExplorer = () => {
                                   : copyStatus === 'failed'
                                     ? 'Copy failed'
                                     : 'Copy'}
+                              </button>
+                              {/* Expand to full-screen detail view */}
+                              <button
+                                type="button"
+                                className="inline-flex items-center gap-1 px-2 py-1 riscv-btn riscv-btn-violet tooltip-align-right"
+                                onClick={() => setInstructionExpandOpen(true)}
+                                data-tooltip="Expand instruction details to full view"
+                                aria-label="Expand instruction details to full view"
+                              >
+                                <Maximize2 size={12} />
+                                Expand
                               </button>
                               <button
                                 type="button"
@@ -4153,6 +4216,463 @@ const RISCVExplorer = () => {
                     </div>
                   )}
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Instruction Details Expand Modal ────────────────────────────── */}
+      {instructionExpandOpen && selectedInstruction && selectedExt && (
+        <div className="fixed inset-0 z-50" role="presentation">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0"
+            style={{ background: 'rgba(7,7,14,0.92)', backdropFilter: 'blur(6px)' }}
+            onClick={() => setInstructionExpandOpen(false)}
+            role="presentation"
+          />
+
+          <div className="absolute inset-0 p-3 md:p-8 flex items-start justify-center overflow-y-auto">
+            <div
+              ref={expandedModalRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="instr-expand-title"
+              tabIndex={-1}
+              className="animate-scale-in w-full max-w-5xl riscv-card overflow-hidden mb-8 outline-none"
+              style={{ boxShadow: '0 0 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(245,197,66,0.12)' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+
+              {/* ── Modal Header ── */}
+              <div
+                className="p-5 flex items-start justify-between gap-4"
+                style={{ borderBottom: '1px solid var(--riscv-border)' }}
+              >
+                <div className="min-w-0">
+                  <div className="flex items-center gap-3 flex-wrap mb-1.5">
+                    <Binary size={18} style={{ color: 'var(--riscv-gold)', flexShrink: 0 }} />
+                    <h2
+                      id="instr-expand-title"
+                      className="font-black tracking-tight font-mono"
+                      style={{ fontSize: '1.75rem', lineHeight: 1.1, color: 'var(--riscv-gold)' }}
+                    >
+                      {selectedInstruction.mnemonic}
+                    </h2>
+                    {selectedInstruction.alias_of && (
+                      <span
+                        className="px-2 py-0.5 rounded font-mono text-[11px]"
+                        style={{
+                          background: 'var(--riscv-tint-3)',
+                          color: 'var(--riscv-text-2)',
+                          border: '1px solid var(--riscv-tint-4)',
+                        }}
+                        title={`Defines no new opcode: this is a specific encoding of ${selectedInstruction.alias_of}`}
+                      >
+                        alias of {selectedInstruction.alias_of}
+                      </span>
+                    )}
+                    {selectedInstruction.deprecated && (
+                      <span
+                        className="px-2 py-1 rounded-md text-[11px] font-mono uppercase tracking-wide border"
+                        style={{
+                          background: 'var(--riscv-report-tint)',
+                          color: 'var(--riscv-danger)',
+                          borderColor: 'var(--riscv-report-edge)',
+                        }}
+                      >
+                        Discontinued
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 flex-wrap" style={{ marginLeft: '2.1rem' }}>
+                    <a
+                      href={selectedExt.url || 'https://github.com/riscv/riscv-isa-manual'}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 text-[13px] hover:opacity-80 transition-opacity font-semibold"
+                      style={{ color: 'var(--riscv-violet)' }}
+                    >
+                      {selectedExt.name}
+                      <ArrowUpRight size={13} className="opacity-70" />
+                    </a>
+                    {selectedExt.desc && (
+                      <span
+                        className="text-[12px] hidden sm:inline"
+                        style={{ color: 'var(--riscv-text-3)' }}
+                      >
+                        — {selectedExt.desc}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 riscv-btn tooltip-bottom-right"
+                    onClick={async () => {
+                      const text = formatInstructionForClipboard(selectedExt, selectedInstruction);
+                      const ok = await copyTextToClipboard(text);
+                      setCopyStatus(ok ? 'copied' : 'failed');
+                      if (ok) showToast('Copied instruction details!');
+                      if (copyStatusTimerRef.current) window.clearTimeout(copyStatusTimerRef.current);
+                      copyStatusTimerRef.current = window.setTimeout(() => {
+                        copyStatusTimerRef.current = null;
+                        setCopyStatus(null);
+                      }, 1500);
+                    }}
+                    data-tooltip="Copy extension + instruction details"
+                  >
+                    <Copy size={13} />
+                    {copyStatus === 'copied' ? 'Copied!' : copyStatus === 'failed' ? 'Failed' : 'Copy'}
+                  </button>
+                  <button
+                    type="button"
+                    className="riscv-btn p-1.5 tooltip-bottom-right"
+                    onClick={() => setInstructionExpandOpen(false)}
+                    data-tooltip="Close expanded view (Esc)"
+                    aria-label="Close expanded instruction view"
+                  >
+                    <X size={15} />
+                  </button>
+                </div>
+              </div>
+
+              {/* ── Modal Body ── */}
+              <div className="p-5 space-y-6 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 100px)' }}>
+
+                {/* ── Encoding Diagram — full width, no scroll on wide screens ── */}
+                <div>
+                  <div
+                    className="flex items-center gap-2 text-[11px] uppercase tracking-widest font-semibold mb-3"
+                    style={{ color: 'var(--riscv-text-3)' }}
+                  >
+                    <Binary size={12} />
+                    <span>32-bit Instruction Encoding</span>
+                  </div>
+                  <div
+                    className="rounded-xl p-4"
+                    style={{
+                      background: 'var(--riscv-surface-2)',
+                      border: '1px solid var(--riscv-border-2)',
+                    }}
+                  >
+                    <EncodingDiagram encoding={selectedInstruction.encoding} />
+                    <div className="mt-2 text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>
+                      Fixed bits are <span className="font-mono">0/1</span>, variable bits are{' '}
+                      <span className="font-mono">x</span>.
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── Match / Mask / Variable Fields / Extension Tags ── */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div className="space-y-4">
+                    <div>
+                      <div
+                        className="text-[11px] uppercase tracking-widest font-semibold mb-2"
+                        style={{ color: 'var(--riscv-text-3)' }}
+                      >
+                        Match
+                      </div>
+                      <div
+                        className={`font-mono text-[14px] px-4 py-3 rounded-lg border flex items-center justify-between group ${
+                          searchQuery.trim().length &&
+                          String(selectedInstruction.match || '')
+                            .toLowerCase()
+                            .includes(searchQuery.trim().toLowerCase())
+                            ? 'border-yellow-400 bg-yellow-500/10 text-yellow-200'
+                            : 'border-slate-700 bg-slate-800/70 text-slate-100'
+                        }`}
+                      >
+                        <span>{selectedInstruction.match || '—'}</span>
+                        {selectedInstruction.match && (
+                          <button
+                            type="button"
+                            className="riscv-btn p-1.5 tooltip-align-right"
+                            onClick={async () => {
+                              const ok = await copyTextToClipboard(selectedInstruction.match);
+                              if (ok) showToast('Copied Match value!');
+                            }}
+                            data-tooltip="Copy Match"
+                          >
+                            <Copy size={14} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        className="text-[11px] uppercase tracking-widest font-semibold mb-2"
+                        style={{ color: 'var(--riscv-text-3)' }}
+                      >
+                        Mask
+                      </div>
+                      <div
+                        className={`font-mono text-[14px] px-4 py-3 rounded-lg border flex items-center justify-between group ${
+                          searchQuery.trim().length &&
+                          String(selectedInstruction.mask || '')
+                            .toLowerCase()
+                            .includes(searchQuery.trim().toLowerCase())
+                            ? 'border-yellow-400 bg-yellow-500/10 text-yellow-200'
+                            : 'border-slate-700 bg-slate-800/70 text-slate-100'
+                        }`}
+                      >
+                        <span>{selectedInstruction.mask || '—'}</span>
+                        {selectedInstruction.mask && (
+                          <button
+                            type="button"
+                            className="riscv-btn p-1.5 tooltip-align-right"
+                            onClick={async () => {
+                              const ok = await copyTextToClipboard(selectedInstruction.mask);
+                              if (ok) showToast('Copied Mask value!');
+                            }}
+                            data-tooltip="Copy Mask"
+                          >
+                            <Copy size={14} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <div
+                        className="text-[11px] uppercase tracking-widest font-semibold mb-2"
+                        style={{ color: 'var(--riscv-text-3)' }}
+                      >
+                        Variable Fields
+                      </div>
+                      <div className="flex flex-wrap gap-1.5 min-h-[36px] items-start content-start">
+                        {(selectedInstruction.variable_fields || []).length > 0 ? (
+                          (selectedInstruction.variable_fields || []).map((field) => (
+                            <span
+                              key={field}
+                              className="px-2.5 py-1 rounded-md border border-slate-700 bg-slate-800/70 text-[12px] font-mono text-slate-200"
+                            >
+                              {field}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-[13px]" style={{ color: 'var(--riscv-text-3)' }}>
+                            None
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {Array.isArray(selectedInstruction.extension) &&
+                      selectedInstruction.extension.length > 0 && (
+                        <div>
+                          <div
+                            className="text-[11px] uppercase tracking-widest font-semibold mb-2"
+                            style={{ color: 'var(--riscv-text-3)' }}
+                          >
+                            Extension Tags
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {selectedInstruction.extension.map((tag) => (
+                              <span
+                                key={tag}
+                                className="px-2.5 py-1 rounded-md text-[12px] font-mono"
+                                style={{
+                                  background: 'var(--riscv-violet-dim)',
+                                  color: 'var(--riscv-violet)',
+                                  border: '1px solid rgba(139,124,248,0.25)',
+                                }}
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                  </div>
+                </div>
+
+                {/* ── Compressed Mapping ── */}
+                {compressedMapping && (
+                  <div
+                    className="rounded-xl p-4"
+                    style={{
+                      border: '1px solid rgba(34,211,238,0.2)',
+                      background: 'rgba(34,211,238,0.04)',
+                    }}
+                  >
+                    <div
+                      className="text-[11px] uppercase tracking-widest font-semibold mb-4 text-cyan-400"
+                    >
+                      Compressed Mapping
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <div
+                          className="text-[11px] uppercase tracking-wider font-semibold mb-1.5"
+                          style={{ color: 'var(--riscv-text-3)' }}
+                        >
+                          Compressed Form
+                        </div>
+                        <div className="font-mono text-[13px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded-lg px-3 py-2">
+                          {compressedMapping.compressed}
+                        </div>
+                      </div>
+                      <div>
+                        <div
+                          className="text-[11px] uppercase tracking-wider font-semibold mb-1.5"
+                          style={{ color: 'var(--riscv-text-3)' }}
+                        >
+                          Standard Equivalent
+                        </div>
+                        {hasStandardEquivalent ? (
+                          <button
+                            type="button"
+                            className="w-full text-left font-mono text-[13px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded-lg px-3 py-2 hover:border-cyan-400/60 transition-colors inline-flex items-center justify-between group"
+                            onClick={() => {
+                              selectStandardEquivalent(standardEquivalentMnemonic);
+                            }}
+                            data-tooltip="Open standard instruction details"
+                          >
+                            <span>{compressedMapping.standard}</span>
+                            <ArrowUpRight size={14} className="opacity-0 group-hover:opacity-70 shrink-0 transition-opacity" />
+                          </button>
+                        ) : (
+                          <div className="font-mono text-[13px] text-slate-100 bg-slate-800/70 border border-slate-700 rounded-lg px-3 py-2">
+                            {compressedMapping.standard}
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <div
+                          className="text-[11px] uppercase tracking-wider font-semibold mb-1.5"
+                          style={{ color: 'var(--riscv-text-3)' }}
+                        >
+                          Equivalent Instruction
+                        </div>
+                        {standardEquivalentMnemonic ? (
+                          hasStandardEquivalent ? (
+                            <button
+                              type="button"
+                              className="inline-flex items-center gap-1 text-[13px] font-mono text-cyan-400 hover:text-cyan-300 underline decoration-cyan-400/30 underline-offset-4 hover:decoration-cyan-300 transition-colors tooltip-align-left"
+                              onClick={() => {
+                                selectStandardEquivalent(standardEquivalentMnemonic);
+                              }}
+                              data-tooltip="Open standard instruction details"
+                            >
+                              {standardEquivalentMnemonic}
+                              <ArrowUpRight size={13} className="opacity-70 shrink-0" />
+                            </button>
+                          ) : (
+                            <div className="font-mono text-[13px] text-slate-400">
+                              {standardEquivalentMnemonic}
+                            </div>
+                          )
+                        ) : (
+                          <div className="text-[13px] text-slate-500">Unavailable</div>
+                        )}
+                      </div>
+                      <div>
+                        <div
+                          className="text-[11px] uppercase tracking-wider font-semibold mb-1.5"
+                          style={{ color: 'var(--riscv-text-3)' }}
+                        >
+                          Description
+                        </div>
+                        <div className="text-[13px]" style={{ color: 'var(--riscv-text-2)' }}>
+                          {compressedMapping.description}
+                        </div>
+                      </div>
+                      {compressedMapping.notes && (
+                        <div>
+                          <div
+                            className="text-[11px] uppercase tracking-wider font-semibold mb-1.5"
+                            style={{ color: 'var(--riscv-text-3)' }}
+                          >
+                            Notes
+                          </div>
+                          <div className="text-[13px]" style={{ color: 'var(--riscv-text-2)' }}>
+                            {compressedMapping.notes}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Compressed Equivalents ── */}
+                {compressedEquivalents.length > 0 && (
+                  <div
+                    className="rounded-xl p-4"
+                    style={{
+                      border: '1px solid rgba(52,211,153,0.2)',
+                      background: 'rgba(52,211,153,0.04)',
+                    }}
+                  >
+                    <div
+                      className="text-[11px] uppercase tracking-widest font-semibold mb-4"
+                      style={{ color: '#34d399' }}
+                    >
+                      Compressed Equivalents ({compressedEquivalents.length})
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                      {compressedEquivalents.map((entry) => (
+                        <button
+                          key={entry.mnemonic}
+                          type="button"
+                          className="text-left rounded-lg border border-slate-700 bg-slate-900/60 px-3 py-2 hover:border-emerald-400/60 transition-colors"
+                          onClick={() => {
+                            selectCompressedEquivalent(entry.mnemonic);
+                          }}
+                          data-tooltip={`Open ${entry.mnemonic} details`}
+                        >
+                          <div className="flex items-center gap-1 text-[13px] font-mono text-emerald-200">
+                            {normalizeMnemonicKey(entry.mnemonic)}
+                            <ArrowUpRight size={12} className="opacity-70" />
+                          </div>
+                          <div className="text-[11px] font-mono text-slate-400 mt-0.5">
+                            {entry.compressed}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Profile Status ── */}
+                {activeProfile && (
+                  <div
+                    className={`
+                      mt-2 p-4 rounded-xl flex items-center gap-3 border text-[13px]
+                      ${
+                        isHighlighted(selectedExt.id)
+                          ? 'bg-yellow-900/20 border-yellow-700/30 text-yellow-200'
+                          : 'bg-slate-800/50 border-slate-700/50 text-slate-400'
+                      }
+                    `}
+                  >
+                    {isHighlighted(selectedExt.id) ? (
+                      <>
+                        <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
+                        <div>
+                          Required in <strong>{activeProfile}</strong>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div
+                          className="w-2 h-2 rounded-full"
+                          style={{ background: 'var(--riscv-muted)' }}
+                        />
+                        <div>
+                          Not required in <strong>{activeProfile}</strong>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+
               </div>
             </div>
           </div>

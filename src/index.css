@@ -570,6 +570,12 @@ pre,
   --riscv-success: #14866a;
   --riscv-danger: #c2334d;
   --riscv-report-fg: #99203a;
+  /* The Discontinued badge pairs --riscv-danger with this tint. At 0.12 the
+     tint composites to #f8e7ea on a white card, which puts #c2334d at 4.54:1 —
+     AA with 0.04 to spare. It clears only because .riscv-card is #ffffff here;
+     the same badge on --riscv-bg (#f7f5fb) measures 4.22:1 and fails. Raising
+     the alpha or moving the badge off the card breaks it, so re-measure if
+     either changes. */
   --riscv-report-tint: rgba(194, 51, 77, 0.12);
   --riscv-report-tint-hover: rgba(194, 51, 77, 0.18);
   --riscv-report-edge: rgba(194, 51, 77, 0.5);
@@ -786,8 +792,21 @@ pre,
   border-color: var(--riscv-border);
 }
 
-:root[data-theme='light'] .text-cyan-300 {
+:root[data-theme='light'] .text-cyan-300,
+:root[data-theme='light'] .text-cyan-400 {
   color: #0f5a68 !important; /* Matches ext-tile cyan- text for consistency */
+}
+
+/* The underline has to move with the text it sits under. Left alone, the
+   decoration keeps Tailwind's bright cyan (#bdf2fa once the /30 alpha is
+   composited on white) beneath #0f5a68 text, which reads as a stray highlight
+   rather than an underline. */
+:root[data-theme='light'] .decoration-cyan-300,
+:root[data-theme='light'] .decoration-cyan-400\/30 {
+  text-decoration-color: #0f5a68 !important;
+}
+:root[data-theme='light'] .hover\:decoration-cyan-300:hover {
+  text-decoration-color: #0f5a68 !important;
 }
 
 :root[data-theme='light'] .text-emerald-300 {
@@ -803,10 +822,15 @@ pre,
   background: var(--riscv-surface-2) !important;
 }
 :root[data-theme='light'] .bg-slate-800,
-:root[data-theme='light'] .bg-slate-800\/70 {
+:root[data-theme='light'] .bg-slate-800\/70,
+:root[data-theme='light'] .bg-slate-800\/50 {
   background: var(--riscv-surface) !important;
 }
-:root[data-theme='light'] .border-slate-700 {
+:root[data-theme='light'] .bg-slate-600 {
+  background: var(--riscv-muted) !important;
+}
+:root[data-theme='light'] .border-slate-700,
+:root[data-theme='light'] .border-slate-700\/50 {
   border-color: var(--riscv-border-2) !important;
 }
 :root[data-theme='light'] .border-slate-600 {
@@ -833,13 +857,16 @@ pre,
 :root[data-theme='light'] .text-yellow-300 {
   color: var(--riscv-warn) !important;
 }
+:root[data-theme='light'] .text-yellow-100,
 :root[data-theme='light'] .text-yellow-200 {
   color: #8a4a08 !important;
 }
-:root[data-theme='light'] .border-yellow-400 {
+:root[data-theme='light'] .border-yellow-400,
+:root[data-theme='light'] .border-yellow-700\/30 {
   border-color: #f2d4b6 !important;
 }
-:root[data-theme='light'] .bg-yellow-500\/10 {
+:root[data-theme='light'] .bg-yellow-500\/10,
+:root[data-theme='light'] .bg-yellow-900\/20 {
   background: #fdefe1 !important;
 }
 
@@ -847,9 +874,11 @@ pre,
   color: #8c2230 !important;
 }
 :root[data-theme='light'] .border-red-400,
-:root[data-theme='light'] .border-red-500\/60 {
+:root[data-theme='light'] .border-red-500\/60,
+:root[data-theme='light'] .border-red-600\/60 {
   border-color: #f3c3c3 !important;
 }
+:root[data-theme='light'] .bg-red-950\/40,
 :root[data-theme='light'] .bg-red-500\/10,
 :root[data-theme='light'] .bg-red-500\/5 {
   background: #fdeaea !important;
@@ -1108,6 +1137,31 @@ pre,
 .tooltip-align-right[data-tooltip]:hover::after {
   left: auto;
   right: 0;
+  transform: translateX(0) translateY(0);
+}
+
+.tooltip-align-left[data-tooltip]:hover::after {
+  left: 0;
+  transform: translateX(0) translateY(0);
+}
+
+.tooltip-bottom[data-tooltip]::after {
+  bottom: auto;
+  top: calc(100% + 6px);
+  transform: translateX(-50%) translateY(-4px);
+}
+.tooltip-bottom[data-tooltip]:hover::after {
+  transform: translateX(-50%) translateY(0);
+}
+
+.tooltip-bottom-right[data-tooltip]::after {
+  bottom: auto;
+  top: calc(100% + 6px);
+  left: auto;
+  right: 0;
+  transform: translateX(0) translateY(-4px);
+}
+.tooltip-bottom-right[data-tooltip]:hover::after {
   transform: translateX(0) translateY(0);
 }
 
