@@ -511,6 +511,12 @@ const RISCVExplorer = () => {
   const onCloseExpandedModalRef = React.useRef(() => setInstructionExpandOpen(false));
   onCloseExpandedModalRef.current = () => setInstructionExpandOpen(false);
 
+  // Expanded instruction modal: focus trap and Escape, in one listener.
+  //
+  // Both live here rather than in separate effects — an earlier pass had a
+  // second capture-phase listener closing on Escape as well, which was
+  // harmless only because setState is idempotent. CompareView.jsx keeps the
+  // same shape: one window listener owning both keys for the dialog.
   React.useEffect(() => {
     if (!instructionExpandOpen) return undefined;
     restoreModalFocusRef.current = document.activeElement;
@@ -779,19 +785,6 @@ const RISCVExplorer = () => {
     [],
   );
   const searchInputRef = React.useRef(null);
-
-  // Instruction Expand modal keyboard behaviour — Escape closes it.
-  React.useEffect(() => {
-    if (!instructionExpandOpen) return undefined;
-    const onKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        setInstructionExpandOpen(false);
-      }
-    };
-    document.addEventListener('keydown', onKeyDown, true);
-    return () => document.removeEventListener('keydown', onKeyDown, true);
-  }, [instructionExpandOpen]);
 
   // Encoder Validator dialog keyboard behaviour.
   //
