@@ -120,3 +120,45 @@ test('match fits within mask', () => {
   }
   assert.deepEqual(bad, [], `match/mask inconsistencies:\n  ${bad.join('\n  ')}`);
 });
+
+test('extensions carry a UDB version, and it is well formed', () => {
+  // The version is what anything pinning an extension has to quote: an ACT4
+  // DUT config writes `{ name: Zba, version: "= 1.0.0" }`, and without this
+  // field every consumer had to re-derive it from UDB or go without.
+  //
+  // Not every entry can have one. UDB has no E.yaml, and the catalogue lists
+  // proposals that UDB has not accepted yet, so absence is legitimate. What
+  // is not legitimate is a malformed version, or a ratified extension with
+  // none: if UDB ratified it, UDB stated the version it ratified.
+  // UDB carries no E.yaml, so the embedded bases have nothing to inherit and
+  // sync_udb_extensions.cjs excludes them from its alias map for the same
+  // reason. Their ratified state is curated here, not sourced from UDB.
+  const NOT_IN_UDB = new Set(['RV32E', 'RV64E']);
+
+  const malformed = [];
+  const ratifiedWithout = [];
+  let withVersion = 0;
+
+  for (const [, ext] of allExtensions()) {
+    const v = ext.version;
+    if (v === undefined) {
+      if (ext.state === 'ratified' && !NOT_IN_UDB.has(ext.id)) ratifiedWithout.push(ext.id);
+      continue;
+    }
+    withVersion++;
+    if (typeof v !== 'string' || !/^\d+\.\d+(\.\d+)?$/.test(v)) {
+      malformed.push(`${ext.id}: ${JSON.stringify(v)}`);
+    }
+  }
+
+  assert.deepEqual(malformed, [], `malformed versions:\n  ${malformed.join('\n  ')}`);
+  assert.deepEqual(
+    ratifiedWithout,
+    [],
+    `ratified extensions with no version:\n  ${ratifiedWithout.join('\n  ')}`
+  );
+  assert.ok(
+    withVersion > 150,
+    `expected most of the catalogue to carry a version, got ${withVersion}`
+  );
+});

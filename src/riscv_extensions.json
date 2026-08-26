@@ -532,7 +532,8 @@
       },
       "url": "https://docs.riscv.org/reference/isa/unpriv/rv32.html",
       "state": "ratified",
-      "ratification_date": "2019-06"
+      "ratification_date": "2019-06",
+      "version": "2.1.0"
     },
     {
       "id": "RV64I",
@@ -1224,7 +1225,8 @@
       },
       "url": "https://docs.riscv.org/reference/isa/unpriv/rv64.html",
       "state": "ratified",
-      "ratification_date": "2019-06"
+      "ratification_date": "2019-06",
+      "version": "2.1.0"
     },
     {
       "id": "RV32E",
@@ -2457,7 +2459,8 @@
       "use": "Experimental/Research",
       "instructions": {},
       "url": "https://docs.riscv.org/reference/isa/v20240411/unpriv/rv128.html",
-      "state": "draft"
+      "state": "draft",
+      "version": "2.1.0"
     }
   ],
   "standard": [
@@ -2803,7 +2806,8 @@
       },
       "url": "https://docs.riscv.org/reference/isa/unpriv/a-st-ext.html",
       "state": "ratified",
-      "ratification_date": "2019-12"
+      "ratification_date": "2019-12",
+      "version": "2.1.0"
     },
     {
       "id": "B",
@@ -3366,7 +3370,8 @@
         "Zbs"
       ],
       "state": "ratified",
-      "ratification_date": "2024-04"
+      "ratification_date": "2024-04",
+      "version": "1.0.0"
     },
     {
       "id": "C",
@@ -3804,7 +3809,8 @@
       },
       "url": "https://docs.riscv.org/reference/isa/unpriv/c-st-ext.html",
       "state": "ratified",
-      "ratification_date": "2019-12"
+      "ratification_date": "2019-12",
+      "version": "2.0.0"
     },
     {
       "id": "D",
@@ -4246,7 +4252,8 @@
       },
       "url": "https://docs.riscv.org/reference/isa/unpriv/d-st-ext.html",
       "state": "ratified",
-      "ratification_date": "2019-12"
+      "ratification_date": "2019-12",
+      "version": "2.2.0"
     },
     {
       "id": "F",
@@ -4682,7 +4689,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2019-12"
+      "ratification_date": "2019-12",
+      "version": "2.2.0"
     },
     {
       "id": "H",
@@ -5083,7 +5091,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2019-12"
+      "ratification_date": "2019-12",
+      "version": "1.0.0"
     },
     {
       "id": "K",
@@ -5278,7 +5287,8 @@
       },
       "url": "https://docs.riscv.org/reference/isa/unpriv/m-st-ext.html",
       "state": "ratified",
-      "ratification_date": "2019-12"
+      "ratification_date": "2019-12",
+      "version": "2.0.0"
     },
     {
       "id": "N",
@@ -5766,7 +5776,8 @@
       },
       "url": "https://docs.riscv.org/reference/isa/unpriv/q-st-ext.html",
       "state": "ratified",
-      "ratification_date": "2019-04"
+      "ratification_date": "2019-04",
+      "version": "2.2.0"
     },
     {
       "id": "S",
@@ -5900,7 +5911,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2024-10"
+      "ratification_date": "2024-10",
+      "version": "1.13.0"
     },
     {
       "id": "U",
@@ -5950,7 +5962,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2019-12"
+      "ratification_date": "2019-12",
+      "version": "1.0.0"
     },
     {
       "id": "V",
@@ -14553,7 +14566,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Sm",
@@ -15925,7 +15939,8 @@
           "length": "MXLEN",
           "desc": "PMP Configuration Register 9"
         }
-      }
+      },
+      "version": "1.12.0"
     }
   ],
   "z_bit": [
@@ -16046,7 +16061,8 @@
       },
       "url": "https://docs.riscv.org/reference/isa/unpriv/b-st-ext.html",
       "state": "ratified",
-      "ratification_date": "2021-06"
+      "ratification_date": "2021-06",
+      "version": "1.0.0"
     },
     {
       "id": "Zbb",
@@ -16398,7 +16414,8 @@
       },
       "url": "https://docs.riscv.org/reference/isa/unpriv/b-st-ext.html",
       "state": "ratified",
-      "ratification_date": "2021-06"
+      "ratification_date": "2021-06",
+      "version": "1.0.0"
     },
     {
       "id": "Zbc",
@@ -16459,7 +16476,8 @@
       },
       "url": "https://docs.riscv.org/reference/isa/unpriv/b-st-ext.html",
       "state": "ratified",
-      "ratification_date": "2021-06"
+      "ratification_date": "2021-06",
+      "version": "1.0.0"
     },
     {
       "id": "Zbs",
@@ -16578,7 +16596,8 @@
       },
       "url": "https://docs.riscv.org/reference/isa/unpriv/b-st-ext.html",
       "state": "ratified",
-      "ratification_date": "2021-06"
+      "ratification_date": "2021-06",
+      "version": "1.0.0"
     }
   ],
   "z_atomics": [
@@ -16862,7 +16881,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2024-04"
+      "ratification_date": "2024-04",
+      "version": "1.0.0"
     },
     {
       "id": "Zacas",
@@ -16953,7 +16973,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-11"
+      "ratification_date": "2023-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zalasr",
@@ -17071,7 +17092,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2025-10"
+      "ratification_date": "2025-10",
+      "version": "1.0.0"
     },
     {
       "id": "Zalrsc",
@@ -17141,7 +17163,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2024-04"
+      "ratification_date": "2024-04",
+      "version": "1.0.0"
     },
     {
       "id": "Ziccrse",
@@ -17152,7 +17175,8 @@
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2023-03"
+      "ratification_date": "2023-03",
+      "version": "1.0.0"
     }
   ],
   "z_compress": [
@@ -17587,7 +17611,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-04"
+      "ratification_date": "2023-04",
+      "version": "1.0.0"
     },
     {
       "id": "Zcb",
@@ -17745,7 +17770,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-04"
+      "ratification_date": "2023-04",
+      "version": "1.0.0"
     },
     {
       "id": "Zcd",
@@ -17812,7 +17838,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-04"
+      "ratification_date": "2023-04",
+      "version": "1.0.0"
     },
     {
       "id": "Zce",
@@ -17823,7 +17850,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/zc.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2023-04"
+      "ratification_date": "2023-04",
+      "version": "1.0.0"
     },
     {
       "id": "Zcf",
@@ -17890,7 +17918,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-04"
+      "ratification_date": "2023-04",
+      "version": "1.0.0"
     },
     {
       "id": "Zcmp",
@@ -17976,7 +18005,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-04"
+      "ratification_date": "2023-04",
+      "version": "1.0.0"
     },
     {
       "id": "Zcmt",
@@ -18009,7 +18039,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-04"
+      "ratification_date": "2023-04",
+      "version": "1.0.0"
     },
     {
       "id": "Zcmop",
@@ -18095,7 +18126,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2024-03"
+      "ratification_date": "2024-03",
+      "version": "1.0.0"
     },
     {
       "id": "Zclsd",
@@ -18106,7 +18138,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/zilsd.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2025-02"
+      "ratification_date": "2025-02",
+      "version": "1.0"
     },
     {
       "id": "Zcmlsd",
@@ -18504,7 +18537,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zfa",
@@ -18945,7 +18979,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     },
     {
       "id": "Zfbfmin",
@@ -18985,7 +19020,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2024-06"
+      "ratification_date": "2024-06",
+      "version": "1.0.0"
     },
     {
       "id": "Zfh",
@@ -19349,7 +19385,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zfhmin",
@@ -19494,7 +19531,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zfinx",
@@ -19855,7 +19893,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zhinx",
@@ -20242,7 +20281,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zhinxmin",
@@ -20280,7 +20320,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zmmul",
@@ -20357,7 +20398,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2022-06"
+      "ratification_date": "2022-06",
+      "version": "1.0.0"
     }
   ],
   "z_load_store": [
@@ -20370,7 +20412,8 @@
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2023-03"
+      "ratification_date": "2023-03",
+      "version": "1.0.0"
     },
     {
       "id": "Zilsd",
@@ -20381,7 +20424,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/zilsd.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2025-02"
+      "ratification_date": "2025-02",
+      "version": "1.0"
     }
   ],
   "z_integer": [
@@ -20423,7 +20467,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-11"
+      "ratification_date": "2023-11",
+      "version": "1.0.0"
     }
   ],
   "z_vector": [
@@ -20445,7 +20490,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zve32f",
@@ -20456,7 +20502,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/bfloat16.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zve64x",
@@ -20467,7 +20514,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zve64f",
@@ -20478,7 +20526,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zve64d",
@@ -20489,7 +20538,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zv",
@@ -20509,7 +20559,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zvl64b",
@@ -20520,7 +20571,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zvl128b",
@@ -20531,7 +20583,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zvl256b",
@@ -20542,7 +20595,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zvl512b",
@@ -20553,7 +20607,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zvl1024b",
@@ -20564,7 +20619,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zvf",
@@ -21967,7 +22023,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-06"
+      "ratification_date": "2023-06",
+      "version": "1.0.0"
     },
     {
       "id": "Zvfhmin",
@@ -22005,7 +22062,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-06"
+      "ratification_date": "2023-06",
+      "version": "1.0.0"
     },
     {
       "id": "Zvfbfmin",
@@ -22045,7 +22103,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2024-06"
+      "ratification_date": "2024-06",
+      "version": "1.0.0"
     },
     {
       "id": "Zvfbfa",
@@ -22096,7 +22155,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2024-06"
+      "ratification_date": "2024-06",
+      "version": "1.0.0"
     },
     {
       "id": "Zvfofp8min",
@@ -22230,7 +22290,8 @@
           "mask": "0xfc00707f"
         }
       },
-      "state": "frozen"
+      "state": "frozen",
+      "version": "0.7.0"
     },
     {
       "id": "Zvbb",
@@ -22481,7 +22542,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     },
     {
       "id": "Zvbc",
@@ -22551,7 +22613,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     },
     {
       "id": "Zvbc32e",
@@ -22638,7 +22701,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2024-07"
+      "ratification_date": "2024-07",
+      "version": "1.0.0"
     },
     {
       "id": "Zicfiss",
@@ -22690,7 +22754,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2024-07"
+      "ratification_date": "2024-07",
+      "version": "1.0.0"
     },
     {
       "id": "Zimop",
@@ -23192,7 +23257,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2024-03"
+      "ratification_date": "2024-03",
+      "version": "1.0.0"
     }
   ],
   "z_crypto": [
@@ -23459,7 +23525,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2022-02"
+      "ratification_date": "2022-02",
+      "version": "1.0.1"
     },
     {
       "id": "Zbkc",
@@ -23507,7 +23574,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2022-02"
+      "ratification_date": "2022-02",
+      "version": "1.0.1"
     },
     {
       "id": "Zbkx",
@@ -23553,7 +23621,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2022-02"
+      "ratification_date": "2022-02",
+      "version": "1.0.1"
     },
     {
       "id": "Zk",
@@ -24340,7 +24409,8 @@
         "Zkt"
       ],
       "state": "ratified",
-      "ratification_date": "2022-02"
+      "ratification_date": "2022-02",
+      "version": "1.0.1"
     },
     {
       "id": "Zkn",
@@ -25051,7 +25121,8 @@
         "Zknh"
       ],
       "state": "ratified",
-      "ratification_date": "2022-02"
+      "ratification_date": "2022-02",
+      "version": "1.0.1"
     },
     {
       "id": "Zknd",
@@ -25174,7 +25245,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2022-02"
+      "ratification_date": "2022-02",
+      "version": "1.0.1"
     },
     {
       "id": "Zkne",
@@ -25283,7 +25355,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2022-02"
+      "ratification_date": "2022-02",
+      "version": "1.0.1"
     },
     {
       "id": "Zknh",
@@ -25501,7 +25574,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2022-02"
+      "ratification_date": "2022-02",
+      "version": "1.0.1"
     },
     {
       "id": "Zkr",
@@ -25552,7 +25626,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2022-02"
+      "ratification_date": "2022-02",
+      "version": "1.0.1"
     },
     {
       "id": "Zks",
@@ -25945,7 +26020,8 @@
         "Zksh"
       ],
       "state": "ratified",
-      "ratification_date": "2022-02"
+      "ratification_date": "2022-02",
+      "version": "1.0.1"
     },
     {
       "id": "Zksed",
@@ -25989,7 +26065,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2022-02"
+      "ratification_date": "2022-02",
+      "version": "1.0.1"
     },
     {
       "id": "Zksh",
@@ -26029,7 +26106,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2022-02"
+      "ratification_date": "2022-02",
+      "version": "1.0.1"
     },
     {
       "id": "Zkt",
@@ -26040,7 +26118,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/scalar-crypto.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2022-02"
+      "ratification_date": "2022-02",
+      "version": "1.0.1"
     }
   ],
   "z_vector_crypto": [
@@ -26062,7 +26141,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     },
     {
       "id": "Zvkg",
@@ -26101,7 +26181,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     },
     {
       "id": "Zvkgs",
@@ -26457,7 +26538,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     },
     {
       "id": "Zvknc",
@@ -26468,7 +26550,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     },
     {
       "id": "Zvkned",
@@ -26627,7 +26710,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     },
     {
       "id": "Zvknf",
@@ -26647,7 +26731,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     },
     {
       "id": "Zvknha",
@@ -26706,7 +26791,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     },
     {
       "id": "Zvknhb",
@@ -26765,7 +26851,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     },
     {
       "id": "Zvks",
@@ -26990,7 +27077,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     },
     {
       "id": "Zvksc",
@@ -27001,7 +27089,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     },
     {
       "id": "Zvksed",
@@ -27055,7 +27144,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     },
     {
       "id": "Zvksg",
@@ -27066,7 +27156,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     },
     {
       "id": "Zvksh",
@@ -27108,7 +27199,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     },
     {
       "id": "Zvkt",
@@ -27119,7 +27211,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2023-09"
+      "ratification_date": "2023-09",
+      "version": "1.0.0"
     }
   ],
   "z_system": [
@@ -27132,7 +27225,8 @@
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2023-03"
+      "ratification_date": "2023-03",
+      "version": "1.0.0"
     },
     {
       "id": "Za64rs",
@@ -27143,7 +27237,8 @@
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2023-03"
+      "ratification_date": "2023-03",
+      "version": "1.0.0"
     },
     {
       "id": "Zabha",
@@ -27427,7 +27522,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2024-04"
+      "ratification_date": "2024-04",
+      "version": "1.0.0"
     },
     {
       "id": "Zama16b",
@@ -27438,7 +27534,8 @@
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2024-10"
+      "ratification_date": "2024-10",
+      "version": "1.0.0"
     },
     {
       "id": "Zawrs",
@@ -27470,7 +27567,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2022-11"
+      "ratification_date": "2022-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zccid",
@@ -27518,7 +27616,8 @@
           "mask": "0x707f"
         }
       },
-      "state": "frozen"
+      "state": "frozen",
+      "version": "0.7.0"
     },
     {
       "id": "Zicntr",
@@ -27649,7 +27748,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2019-12"
+      "ratification_date": "2019-12",
+      "version": "2.0.0"
     },
     {
       "id": "Zicntrpmf",
@@ -27750,7 +27850,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2019-04"
+      "ratification_date": "2019-04",
+      "version": "2.0.0"
     },
     {
       "id": "Zifencei",
@@ -27777,7 +27878,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2019-04"
+      "ratification_date": "2019-04",
+      "version": "2.0.0"
     },
     {
       "id": "Zihintntl",
@@ -27831,7 +27933,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-05"
+      "ratification_date": "2023-05",
+      "version": "1.0.0"
     },
     {
       "id": "Zihintpause",
@@ -27855,7 +27958,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2021-02"
+      "ratification_date": "2021-02",
+      "version": "2.0.0"
     },
     {
       "id": "Zihpm",
@@ -28216,7 +28320,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2023-03"
+      "ratification_date": "2023-03",
+      "version": "2.0.0"
     },
     {
       "id": "Zilsm*",
@@ -28308,7 +28413,8 @@
       "url": "https://docs.riscv.org/reference/isa/unpriv/ztso-st-ext.html",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2023-01"
+      "ratification_date": "2023-01",
+      "version": "1.0.0"
     }
   ],
   "z_caches": [
@@ -28321,7 +28427,8 @@
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2023-03"
+      "ratification_date": "2023-03",
+      "version": "1.0.0"
     },
     {
       "id": "Zicbom",
@@ -28366,7 +28473,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2022-05"
+      "ratification_date": "2022-05",
+      "version": "1.0.0"
     },
     {
       "id": "Zicbop",
@@ -28419,7 +28527,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2022-05"
+      "ratification_date": "2022-05",
+      "version": "1.0.0"
     },
     {
       "id": "Zicboz",
@@ -28442,7 +28551,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2022-05"
+      "ratification_date": "2022-05",
+      "version": "1.0.0"
     },
     {
       "id": "Ziccamoa",
@@ -28453,7 +28563,8 @@
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2023-03"
+      "ratification_date": "2023-03",
+      "version": "1.0.0"
     },
     {
       "id": "Ziccamoc",
@@ -28464,7 +28575,8 @@
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2024-10"
+      "ratification_date": "2024-10",
+      "version": "1.0.0"
     },
     {
       "id": "Ziccif",
@@ -28475,7 +28587,8 @@
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "state": "ratified",
-      "ratification_date": "2023-03"
+      "ratification_date": "2023-03",
+      "version": "1.0.0"
     }
   ],
   "s_mem": [
@@ -28491,7 +28604,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2019-05",
-      "behavior": "32-bit virtual address translation (2 level)"
+      "behavior": "32-bit virtual address translation (2 level)",
+      "version": "1.0"
     },
     {
       "id": "Sv39",
@@ -28505,7 +28619,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2019-05",
-      "behavior": "39-bit virtual address translation (3 level)"
+      "behavior": "39-bit virtual address translation (3 level)",
+      "version": "1.0"
     },
     {
       "id": "Sv48",
@@ -28519,7 +28634,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2019-05",
-      "behavior": "48-bit virtual address translation (4 level)"
+      "behavior": "48-bit virtual address translation (4 level)",
+      "version": "1.0"
     },
     {
       "id": "Sv57",
@@ -28532,7 +28648,8 @@
       "long_name": "57-bit virtual address translation (5 level)",
       "type": "privileged",
       "state": "ratified",
-      "behavior": "57-bit virtual address translation (5 level)"
+      "behavior": "57-bit virtual address translation (5 level)",
+      "version": "1.0"
     },
     {
       "id": "Svbare",
@@ -28546,7 +28663,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2023-03",
-      "behavior": "This extension mandates that the `satp` mode Bare must\nbe supported.\n\n[NOTE]\nThis extension was ratified as part of the RVA22 profile."
+      "behavior": "This extension mandates that the `satp` mode Bare must\nbe supported.\n\n[NOTE]\nThis extension was ratified as part of the RVA22 profile.",
+      "version": "1.0.0"
     },
     {
       "id": "Svpbmt",
@@ -28573,7 +28691,8 @@
           "length": 32,
           "desc": "Machine Environment Configuration"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Svnapot",
@@ -28587,7 +28706,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2021-11",
-      "behavior": "In Sv39, Sv48, and Sv57, when a PTE has N=1, the PTE represents a\ntranslation that is part of a range of contiguous virtual-to-physical\ntranslations with the same values for PTE bits 5-0. Such ranges must be\nof a naturally aligned power-of-2 (NAPOT) granularity larger than the\nbase page size.\n\nThe"
+      "behavior": "In Sv39, Sv48, and Sv57, when a PTE has N=1, the PTE represents a\ntranslation that is part of a range of contiguous virtual-to-physical\ntranslations with the same values for PTE bits 5-0. Such ranges must be\nof a naturally aligned power-of-2 (NAPOT) granularity larger than the\nbase page size.\n\nThe",
+      "version": "1.0.0"
     },
     {
       "id": "Svinval",
@@ -28631,7 +28751,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2021-11"
+      "ratification_date": "2021-11",
+      "version": "1.0.0"
     },
     {
       "id": "Svade",
@@ -28645,7 +28766,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2023-11",
-      "behavior": "The Svade extension indicates that hardware does *not* update the A/D bits of a page table\nduring a page walk. Rather, encountering a PTE with the A bit clear or the D bit clear when\nan operation is a write will cause a Page Fault."
+      "behavior": "The Svade extension indicates that hardware does *not* update the A/D bits of a page table\nduring a page walk. Rather, encountering a PTE with the A bit clear or the D bit clear when\nan operation is a write will cause a Page Fault.",
+      "version": "1.0.0"
     },
     {
       "id": "Svadu",
@@ -28672,7 +28794,8 @@
           "length": 32,
           "desc": "Machine Environment Configuration"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Svvptc",
@@ -28686,7 +28809,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2024-06",
-      "behavior": "When the Svvptc extension is implemented, explicit stores by a hart that update\nthe Valid bit of leaf and/or non-leaf PTEs from 0 to 1 and are visible to a hart\nwill eventually become visible within a bounded timeframe to subsequent implicit\naccesses by that hart to such PTEs.\n\n[NOTE]\nSvvptc"
+      "behavior": "When the Svvptc extension is implemented, explicit stores by a hart that update\nthe Valid bit of leaf and/or non-leaf PTEs from 0 to 1 and are visible to a hart\nwill eventually become visible within a bounded timeframe to subsequent implicit\naccesses by that hart to such PTEs.\n\n[NOTE]\nSvvptc",
+      "version": "1.0.0"
     },
     {
       "id": "Svrsw60t59b",
@@ -28700,7 +28824,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2025-08",
-      "behavior": "== \"Svrsw60t59b\" Extension for PTE Reserved-for-Software Bits 60-59, Version 1.0\n\nIf the Svrsw60t59b extension is implemented, then bits 60-59 of the page table\nentries (PTEs) are reserved for use by supervisor software and are ignored by\nthe implementation.\n\nIf the Hypervisor (H) extension is also"
+      "behavior": "== \"Svrsw60t59b\" Extension for PTE Reserved-for-Software Bits 60-59, Version 1.0\n\nIf the Svrsw60t59b extension is implemented, then bits 60-59 of the page table\nentries (PTEs) are reserved for use by supervisor software and are ignored by\nthe implementation.\n\nIf the Hypervisor (H) extension is also",
+      "version": "1.0.0"
     },
     {
       "id": "Svatag",
@@ -28735,7 +28860,8 @@
           "length": "MXLEN",
           "desc": "Supervisor Environment Configuration"
         }
-      }
+      },
+      "version": "0.4.0"
     },
     {
       "id": "Supm",
@@ -28749,7 +28875,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2024-10",
-      "behavior": "Indicates that there is pointer-masking support available in user mode,\nwith some facility provided in the application execution environment to control pointer masking.\n\nThis extension describes an execution environment but has no bearing on hardware implementations.\nIt is intended to be used in"
+      "behavior": "Indicates that there is pointer-masking support available in user mode,\nwith some facility provided in the application execution environment to control pointer masking.\n\nThis extension describes an execution environment but has no bearing on hardware implementations.\nIt is intended to be used in",
+      "version": "1.0.0"
     },
     {
       "id": "Ssnpm",
@@ -28763,7 +28890,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2024-10",
-      "behavior": "A supervisor-level extension that provides pointer masking for the next lower privilege mode (U-mode),\nand for VS-modes and VU-modes if the H extension is present."
+      "behavior": "A supervisor-level extension that provides pointer masking for the next lower privilege mode (U-mode),\nand for VS-modes and VU-modes if the H extension is present.",
+      "version": "1.0.0"
     },
     {
       "id": "Sspm",
@@ -28777,7 +28905,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2024-10",
-      "behavior": "Indicates that there is pointer-masking support available in supervisor mode,\nwith some facility provided in the application execution environment to control pointer masking.\n\nThis extension describes an execution environment but has no bearing on hardware implementations.\nIt is intended to be used"
+      "behavior": "Indicates that there is pointer-masking support available in supervisor mode,\nwith some facility provided in the application execution environment to control pointer masking.\n\nThis extension describes an execution environment but has no bearing on hardware implementations.\nIt is intended to be used",
+      "version": "1.0.0"
     }
   ],
   "s_interrupt": [
@@ -28793,7 +28922,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2023-06",
-      "behavior": "Advanced Interrupt Architecture, M-mode extension"
+      "behavior": "Advanced Interrupt Architecture, M-mode extension",
+      "version": "1.0.0"
     },
     {
       "id": "Ssaia",
@@ -28832,7 +28962,8 @@
           "length": 32,
           "desc": "Upper 32 bits of Machine State Enable 0 Register"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Smclic",
@@ -28904,7 +29035,8 @@
           "length": 32,
           "desc": "Machine Environment Configuration"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Smcdeleg",
@@ -28917,7 +29049,8 @@
       "long_name": "Performance counter delegation",
       "type": "privileged",
       "state": "ratified",
-      "ratification_date": "2024-03"
+      "ratification_date": "2024-03",
+      "version": "1.0.0"
     },
     {
       "id": "Smcntrpmf",
@@ -28956,7 +29089,8 @@
           "length": 32,
           "desc": "Machine Instructions-Retired Counter Configuration High"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Ssccfg",
@@ -28970,7 +29104,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2024-03",
-      "behavior": "Supervisor-mode counter configuration"
+      "behavior": "Supervisor-mode counter configuration",
+      "version": "1.0.0"
     },
     {
       "id": "Sscntrcfg",
@@ -28993,7 +29128,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2023-08",
-      "behavior": "For any hpmcounter that is not read-only zero, the corresponding bit in `scounteren` must be writable.\n\n[NOTE]\nThis extension was ratified with the RVA22 profiles."
+      "behavior": "For any hpmcounter that is not read-only zero, the corresponding bit in `scounteren` must be writable.\n\n[NOTE]\nThis extension was ratified with the RVA22 profiles.",
+      "version": "1.0.0"
     },
     {
       "id": "Sscofpmf",
@@ -29014,7 +29150,8 @@
           "length": 32,
           "desc": "Supervisor Count Overflow"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Ssccptr",
@@ -29028,7 +29165,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2023-03",
-      "behavior": "Main memory regions with both the cacheability and coherence PMAs must support hardware page-table reads.\n\n[NOTE]\nThis extension was ratified with the RVA20 profiles."
+      "behavior": "Main memory regions with both the cacheability and coherence PMAs must support hardware page-table reads.\n\n[NOTE]\nThis extension was ratified with the RVA20 profiles.",
+      "version": "1.0.0"
     },
     {
       "id": "Ssqosid",
@@ -29049,7 +29187,8 @@
           "length": "MXLEN",
           "desc": "Supervisor Resource Management Configuration"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Sshpmcfg",
@@ -29107,7 +29246,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2024-06"
+      "ratification_date": "2024-06",
+      "version": "1.0.0"
     }
   ],
   "s_trap": [
@@ -29158,7 +29298,8 @@
         }
       },
       "state": "ratified",
-      "ratification_date": "2025-02"
+      "ratification_date": "2025-02",
+      "version": "1.0.0"
     },
     {
       "id": "Sdtrig",
@@ -29245,7 +29386,8 @@
           "length": "MXLEN",
           "desc": "Trigger Select"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Sdtrigepm",
@@ -29404,7 +29546,8 @@
           "length": "MXLEN",
           "desc": "Virtual Supervisor Indirect Register Select"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Sscsrind",
@@ -29443,7 +29586,8 @@
           "length": 32,
           "desc": "Upper 32 bits of Machine State Enable 0 Register"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Smctr",
@@ -29486,7 +29630,8 @@
           "length": 64,
           "desc": "Virtual Supervisor Control Transfer Records Control Register"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Ssctr",
@@ -29523,7 +29668,8 @@
           "length": 64,
           "desc": "Virtual Supervisor Control Transfer Records Control Register"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Sddbltrp",
@@ -29546,7 +29692,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2024-08",
-      "behavior": "The Ssdbltrp extension addresses a double trap in privilege modes lower than M.\nIt enables HS-mode to invoke a critical error handler in a virtual machine on a double trap in VS-mode.\nIt also allows M-mode to invoke a critical error handler in the OS/Hypervisor on a double trap in S/HS-mode.\n\nThe"
+      "behavior": "The Ssdbltrp extension addresses a double trap in privilege modes lower than M.\nIt enables HS-mode to invoke a critical error handler in a virtual machine on a double trap in VS-mode.\nIt also allows M-mode to invoke a critical error handler in the OS/Hypervisor on a double trap in S/HS-mode.\n\nThe",
+      "version": "1.0.0"
     },
     {
       "id": "Smdbltrp",
@@ -29579,7 +29726,8 @@
           "length": 32,
           "desc": "Machine Status High"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Smstateen",
@@ -29714,7 +29862,8 @@
           "length": "MXLEN",
           "desc": "Supervisor State Enable 3 Register"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Ssstateen",
@@ -29801,7 +29950,8 @@
           "length": "MXLEN",
           "desc": "Supervisor State Enable 3 Register"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Smepmp",
@@ -29828,7 +29978,8 @@
           "length": 32,
           "desc": "Most significant 32 bits of Machine Security Configuration"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Smmpm",
@@ -29855,7 +30006,8 @@
           "length": 32,
           "desc": "Most significant 32 bits of Machine Security Configuration"
         }
-      }
+      },
+      "version": "1.0.0"
     },
     {
       "id": "Sm1p11",
@@ -29923,7 +30075,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2023-03",
-      "behavior": "`stval` must be written with the faulting virtual address for load, store,\nand instruction page-fault, access-fault, and misaligned exceptions,\nand for breakpoint exceptions other than those caused by execution of the\n`ebreak` or `c.ebreak instructions.\n\nFor virtual-instruction and"
+      "behavior": "`stval` must be written with the faulting virtual address for load, store,\nand instruction page-fault, access-fault, and misaligned exceptions,\nand for breakpoint exceptions other than those caused by execution of the\n`ebreak` or `c.ebreak instructions.\n\nFor virtual-instruction and",
+      "version": "1.0.0"
     },
     {
       "id": "Sstvecd",
@@ -29937,7 +30090,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2023-03",
-      "behavior": "`stvec.MODE` must be capable of holding the value 0 (Direct).\nWhen `stvec.MODE`=Direct, `stvec.BASE` must be capable of holding any valid\nfour-byte-aligned address."
+      "behavior": "`stvec.MODE` must be capable of holding the value 0 (Direct).\nWhen `stvec.MODE`=Direct, `stvec.BASE` must be capable of holding any valid\nfour-byte-aligned address.",
+      "version": "1.0.0"
     },
     {
       "id": "Sstvecv",
@@ -29951,7 +30105,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2023-03",
-      "behavior": "`stvec.MODE` must be capable of holding the value 1 (Vectored).\nWhen `stvec.MODE`=Vectored, interrupts set `pc` to `stvec.BASE + 4 * cause`,\nallowing each interrupt source to have its own entry point.\nSynchronous exceptions still use the base address regardless of the mode."
+      "behavior": "`stvec.MODE` must be capable of holding the value 1 (Vectored).\nWhen `stvec.MODE`=Vectored, interrupts set `pc` to `stvec.BASE + 4 * cause`,\nallowing each interrupt source to have its own entry point.\nSynchronous exceptions still use the base address regardless of the mode.",
+      "version": "1.0.0"
     },
     {
       "id": "Ssdtso",
@@ -29983,7 +30138,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2024-10",
-      "behavior": "No non-conforming extensions are present.  Attempts to\nexecute unimplemented opcodes or access unimplemented CSRs in the\nstandard or reserved encoding spaces raises an illegal instruction\nexception that results in a contained trap to the supervisor-mode\ntrap handler.\n\n[NOTE]\nSsstrict does not"
+      "behavior": "No non-conforming extensions are present.  Attempts to\nexecute unimplemented opcodes or access unimplemented CSRs in the\nstandard or reserved encoding spaces raises an illegal instruction\nexception that results in a contained trap to the supervisor-mode\ntrap handler.\n\n[NOTE]\nSsstrict does not",
+      "version": "1.0.0"
     },
     {
       "id": "Ssu32xl",
@@ -29997,7 +30153,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2021-12",
-      "behavior": "`sstatus.UXL` must be capable of holding the value 1 (i.e., UXLEN=32 must be supported).\n\nThis allows U-mode to run 32-bit code on a 64-bit machine by setting `sstatus.UXL` to 1."
+      "behavior": "`sstatus.UXL` must be capable of holding the value 1 (i.e., UXLEN=32 must be supported).\n\nThis allows U-mode to run 32-bit code on a 64-bit machine by setting `sstatus.UXL` to 1.",
+      "version": "1.0.0"
     },
     {
       "id": "Ssu64xl",
@@ -30011,7 +30168,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2023-03",
-      "behavior": "`sstatus.UXL` must be capable of holding the value 2 (i.e., UXLEN=64 must be supported).\n\n[NOTE]\nThis extension is defined by RVA22."
+      "behavior": "`sstatus.UXL` must be capable of holding the value 2 (i.e., UXLEN=64 must be supported).\n\n[NOTE]\nThis extension is defined by RVA22.",
+      "version": "1.0.0"
     },
     {
       "id": "Ssube",
@@ -30025,7 +30183,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2021-12",
-      "behavior": "`sstatus.UBE` must be capable of holding the value 1 (i.e., big-endian user mode must be supported).\n\nWhen `sstatus.UBE` is set to 1, data accesses in U-mode use big-endian byte ordering.\nInstructions are always fetched as little-endian regardless of this setting."
+      "behavior": "`sstatus.UBE` must be capable of holding the value 1 (i.e., big-endian user mode must be supported).\n\nWhen `sstatus.UBE` is set to 1, data accesses in U-mode use big-endian byte ordering.\nInstructions are always fetched as little-endian regardless of this setting.",
+      "version": "1.0.0"
     },
     {
       "id": "Ssvxscr",
@@ -30093,7 +30252,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2024-10",
-      "behavior": "A machine-level extension that provides pointer masking for the next lower privilege mode\n(S/HS if S-mode is implemented, or U-mode otherwise)."
+      "behavior": "A machine-level extension that provides pointer masking for the next lower privilege mode\n(S/HS if S-mode is implemented, or U-mode otherwise).",
+      "version": "1.0.0"
     },
     {
       "id": "Smpmpmt",
@@ -30106,7 +30266,8 @@
       "long_name": "PMP-based Memory Types Extension",
       "type": "privileged",
       "state": "frozen",
-      "behavior": "The Smpmpmt extension provides a mechanism analogous to Svpbmt but associated\nwith the PMP registers rather than page-table entries.\nA new WARL field, MT (Memory Type), is added in the unallocated bits 6--5 in\neach PMP configuration register.\nThe MT field of the lowest-numbered PMP register that an"
+      "behavior": "The Smpmpmt extension provides a mechanism analogous to Svpbmt but associated\nwith the PMP registers rather than page-table entries.\nA new WARL field, MT (Memory Type), is added in the unallocated bits 6--5 in\neach PMP configuration register.\nThe MT field of the lowest-numbered PMP register that an",
+      "version": "0.6"
     },
     {
       "id": "Smsdia",
@@ -30165,7 +30326,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2024-10",
-      "behavior": "*Sha* comprises the following extensions:\n\n** *H* The hypervisor extension.\n\n** *Ssstateen* Supervisor-mode view of the state-enable extension.  The\n   supervisor-mode (`sstateen0-3`) and hypervisor-mode (`hstateen0-3`)\n   state-enable registers must be provided.\n\n** *Shcounterenw* For any"
+      "behavior": "*Sha* comprises the following extensions:\n\n** *H* The hypervisor extension.\n\n** *Ssstateen* Supervisor-mode view of the state-enable extension.  The\n   supervisor-mode (`sstateen0-3`) and hypervisor-mode (`hstateen0-3`)\n   state-enable registers must be provided.\n\n** *Shcounterenw* For any",
+      "version": "1.0.0"
     },
     {
       "id": "Shcounterenw",
@@ -30179,7 +30341,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2023-08",
-      "behavior": "For any hpmcounter that is not read-only zero, the corresponding bit in `hcounteren` must be writable.\n\n[NOTE]\nThis extension was ratified with the RVA22 profiles."
+      "behavior": "For any hpmcounter that is not read-only zero, the corresponding bit in `hcounteren` must be writable.\n\n[NOTE]\nThis extension was ratified with the RVA22 profiles.",
+      "version": "1.0.0"
     },
     {
       "id": "Shgatpa",
@@ -30193,7 +30356,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2023-03",
-      "behavior": "For each supported virtual memory scheme SvNN supported in\n`satp`, the corresponding hgatp SvNNx4 mode must be supported.  The\n`hgatp` mode Bare must also be supported.\n\n[NOTE]\nThis extension was ratified with the RVA22 profiles."
+      "behavior": "For each supported virtual memory scheme SvNN supported in\n`satp`, the corresponding hgatp SvNNx4 mode must be supported.  The\n`hgatp` mode Bare must also be supported.\n\n[NOTE]\nThis extension was ratified with the RVA22 profiles.",
+      "version": "1.0.0"
     },
     {
       "id": "Shtvala",
@@ -30207,7 +30371,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2023-03",
-      "behavior": "htval must be written with the faulting guest physical address in all circumstances permitted by\nthe ISA.\n\n[NOTE]\nThis extension was ratified with the RVA22 profiles."
+      "behavior": "htval must be written with the faulting guest physical address in all circumstances permitted by\nthe ISA.\n\n[NOTE]\nThis extension was ratified with the RVA22 profiles.",
+      "version": "1.0.0"
     },
     {
       "id": "Shvsatpa",
@@ -30221,7 +30386,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2023-03",
-      "behavior": "All translation modes supported in the `satp` CSR must be supported in the `vsatp` CSR.\n\n[NOTE]\nThis extension was ratified with the RVA22 profiles."
+      "behavior": "All translation modes supported in the `satp` CSR must be supported in the `vsatp` CSR.\n\n[NOTE]\nThis extension was ratified with the RVA22 profiles.",
+      "version": "1.0.0"
     },
     {
       "id": "Shvstvala",
@@ -30235,7 +30401,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2023-03",
-      "behavior": "vstval must be written with the faulting virtual address\nfor load, store, and instruction page-fault, access-fault, and\nmisaligned exceptions, and for breakpoint exceptions other than\nthose caused by execution of the `ebreak` or `c.ebreak` instructions.\nFor virtual-instruction and"
+      "behavior": "vstval must be written with the faulting virtual address\nfor load, store, and instruction page-fault, access-fault, and\nmisaligned exceptions, and for breakpoint exceptions other than\nthose caused by execution of the `ebreak` or `c.ebreak` instructions.\nFor virtual-instruction and",
+      "version": "1.0.0"
     },
     {
       "id": "Shvstvecd",
@@ -30249,7 +30416,8 @@
       "type": "privileged",
       "state": "ratified",
       "ratification_date": "2023-03",
-      "behavior": "`vstvec.MODE` must be capable of holding the value 0 (Direct).\nWhen `vstvec.MODE`=Direct, `vstvec.BASE` must be capable of holding\nany valid four-byte-aligned address.\n\n[NOTE]\nThis extension was ratified with the RVA22 profiles."
+      "behavior": "`vstvec.MODE` must be capable of holding the value 0 (Direct).\nWhen `vstvec.MODE`=Direct, `vstvec.BASE` must be capable of holding\nany valid four-byte-aligned address.\n\n[NOTE]\nThis extension was ratified with the RVA22 profiles.",
+      "version": "1.0.0"
     }
   ]
 }
