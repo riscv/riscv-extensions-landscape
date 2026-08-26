@@ -141,14 +141,22 @@ export default function WorkspacePanel({
     setTimeout(() => setCopiedMarch(false), 1500);
   }
 
-  function handleExportYaml() {
-    const { yaml } = buildIsaConfigYaml(Array.from(workspaceIds), allExts, includeInstructions);
+  function handleExportYaml(format = 'landscape') {
+    const { yaml } = buildIsaConfigYaml(
+      Array.from(workspaceIds),
+      allExts,
+      format === 'landscape' ? { includeInstructions } : { format },
+    );
     const blob = new Blob([yaml], { type: 'text/yaml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     const baseProfile = encodeResult?.march ? encodeResult.march.split('_')[0] : 'core';
-    a.download = `riscv_${baseProfile}_config.yaml`;
+    // The UDB file is named for what it is rather than for the ISA string: it
+    // gets dropped into config/cores/<vendor>/<dut>/ and renamed after the core.
+    a.download = format === 'udb'
+      ? `riscv_${baseProfile}_udb_config.yaml`
+      : `riscv_${baseProfile}_config.yaml`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -380,7 +388,7 @@ export default function WorkspacePanel({
                     {/* Download button */}
                     <div style={{ padding: '0 14px 13px' }}>
                       <button
-                        onClick={handleExportYaml}
+                        onClick={() => handleExportYaml('landscape')}
                         style={{
                           width: '100%', padding: '9px 14px', borderRadius: 7,
                           background: 'linear-gradient(135deg, rgba(245,197,66,0.22) 0%, rgba(245,197,66,0.12) 100%)',
@@ -402,6 +410,35 @@ export default function WorkspacePanel({
                       >
                         <Package size={11} />
                         Download .yaml
+                      </button>
+
+                      {/* A second, separate target rather than a format toggle:
+                          the two files are for different audiences. The one
+                          above documents a selection; this one is consumed by
+                          riscv-arch-test as a DUT config and is deliberately
+                          incomplete, so it should not look like a variant of
+                          the same download. */}
+                      <button
+                        onClick={() => handleExportYaml('udb')}
+                        title="UDB architecture configuration for riscv-arch-test. Extension versions and derived params are filled in; implementation params are left as TODO."
+                        style={{
+                          width: '100%', marginTop: 7, padding: '8px 14px', borderRadius: 7,
+                          background: 'rgba(255,255,255,0.03)',
+                          color: 'var(--riscv-text)',
+                          border: '1px solid var(--riscv-tint-3)',
+                          fontSize: 11.5, fontWeight: 600,
+                          cursor: 'pointer', transition: 'all 0.18s',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                        }}
+                        onMouseEnter={e => {
+                          e.currentTarget.style.background = 'rgba(255,255,255,0.07)';
+                        }}
+                        onMouseLeave={e => {
+                          e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+                        }}
+                      >
+                        <Package size={11} />
+                        Download UDB config (arch-test)
                       </button>
                     </div>
                   </div>

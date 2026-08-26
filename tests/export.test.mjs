@@ -86,3 +86,54 @@ test('V absorbs its vector members in the riscv-config format', () => {
   assert.ok(!/Zve|Zvl/i.test(isa), `V should absorb the vector sub-extensions: ${isa}`);
   assert.match(yaml, /folded into V/, 'the omission should be stated in the file');
 });
+
+test('the UDB format pins every extension to a version', () => {
+  const { yaml } = buildIsaConfigYaml(resolve(['RV32I', 'M', 'C', 'Zba']), ALL, { format: 'udb' });
+  // The whole point of the format: arch-test writes `version: "= 1.0.0"`, and
+  // a name without one does not validate.
+  assert.match(yaml, /kind: architecture configuration/);
+  assert.match(yaml, /- \{ name: Zba, version: "= \d+\.\d+(\.\d+)?" \}/);
+  for (const line of yaml.split('\n').filter((l) => l.trim().startsWith('- { name:'))) {
+    assert.match(line, /version: "= \d/, `unpinned extension: ${line}`);
+  }
+});
+
+test('the UDB format separates what it knows from what it cannot', () => {
+  const { yaml, warnings } = buildIsaConfigYaml(resolve(['RV32I', 'M']), ALL, { format: 'udb' });
+  // Someone hand-writing one of these cannot tell which params their extension
+  // picks already forced. Losing that split makes the export a liability: it
+  // would look complete while being roughly half a config.
+  assert.match(yaml, /# GENERATED/, 'derived content should be labelled');
+  assert.match(yaml, /# TODO — implementation choices/, 'undecidable content should be labelled');
+  assert.match(yaml, /THIS FILE IS NOT COMPLETE/, 'the file must not read as ready to run');
+  assert.ok(
+    warnings.some((w) => /must be filled from your design document/.test(w)),
+    'the caller should be warned, not only the file'
+  );
+});
+
+test('the UDB format reports constraints with the extension that forced them', () => {
+  const { yaml } = buildIsaConfigYaml(resolve(['RV64I', 'V', 'Zvl256b']), ALL, { format: 'udb' });
+  // A bare "VLEN: 256" invites someone to lower it. Naming Zvl256b makes the
+  // contradiction visible at the point of editing.
+  assert.match(yaml, /# CONSTRAINED/);
+  assert.match(yaml, /VLEN: 256.*required by .*Zvl256b/);
+});
+
+test('the UDB format flags unratified pins rather than hiding them', () => {
+  // A ratified extension pins to a settled number; an unratified one pins to a
+  // moving target. Both are legitimate, but only one is safe to forget about.
+  const draft = ALL.find((e) => e.version && e.state && e.state !== 'ratified');
+  if (!draft) return;
+  const { yaml, warnings } = buildIsaConfigYaml(resolve(['RV64I', draft.id]), ALL, { format: 'udb' });
+  if (!yaml.includes(`name: ${draft.id},`)) return;
+  assert.match(yaml, new RegExp(`name: ${draft.id},.*version may still change`));
+  assert.ok(warnings.some((w) => /not ratified/.test(w)));
+});
+
+test('the UDB export is reproducible', () => {
+  const a = buildIsaConfigYaml(resolve(['RV64I', 'M', 'A']), ALL, { format: 'udb' }).yaml;
+  const b = buildIsaConfigYaml(resolve(['RV64I', 'M', 'A']), ALL, { format: 'udb' }).yaml;
+  assert.equal(a, b);
+  assert.ok(!/Generated:/.test(a), 'no timestamp');
+});
