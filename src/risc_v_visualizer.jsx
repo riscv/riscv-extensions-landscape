@@ -1872,13 +1872,18 @@ const RISCVExplorer = () => {
                     }}
                   >
                     {/* Profiles. Wraps at 320px, where the label plus four buttons
-                      measured 338px and ran past the edge. */}
+                      measured 338px and ran past the edge — so the label stays one
+                      short word rather than spelling the action out.
+                      "Highlight", not "Profile": these chips are a lens over the
+                      catalogue and write nothing, while the builder's "Start from
+                      profile" replaces the workspace. Both said "profile" and looked
+                      alike, so the pair read as duplication (#212). */}
                     <div className="flex flex-wrap items-center gap-2">
                       <span
                         className="text-[11px] uppercase tracking-widest font-semibold"
                         style={{ color: 'var(--riscv-text-3)' }}
                       >
-                        Profile
+                        Highlight
                       </span>
                       <div className="flex flex-wrap gap-1.5">
                         {Object.keys(profiles).map((profile) => (
@@ -1897,6 +1902,11 @@ const RISCVExplorer = () => {
                                 })
                               }
                               aria-pressed={activeProfile === profile}
+                              title={
+                                activeProfile === profile
+                                  ? `Stop highlighting ${profile}`
+                                  : `Highlight the extensions in ${profile} — does not change your ISA configuration`
+                              }
                               className={[
                                 'px-3 py-1.5 text-[12px] rounded-lg transition-all duration-200 font-medium',
                                 activeProfile === profile
