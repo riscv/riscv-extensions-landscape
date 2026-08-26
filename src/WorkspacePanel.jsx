@@ -306,9 +306,9 @@ export default function WorkspacePanel({
                     zIndex: 50,
                     display: 'flex', flexDirection: 'column', gap: 0,
                     borderRadius: 10,
-                    background: 'linear-gradient(145deg, #1a1f2e 0%, #141824 100%)',
-                    border: '1px solid rgba(245,197,66,0.25)',
-                    boxShadow: '0 12px 32px rgba(0,0,0,0.55), 0 0 0 1px var(--riscv-tint-2) inset',
+                    background: 'var(--riscv-popover-bg)',
+                    border: '1px solid var(--riscv-popover-edge)',
+                    boxShadow: 'var(--riscv-popover-shadow), 0 0 0 1px var(--riscv-tint-2) inset',
                     minWidth: 280, overflow: 'hidden',
                   }}>
 
@@ -317,7 +317,7 @@ export default function WorkspacePanel({
                       display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                       padding: '10px 14px',
                       borderBottom: '1px solid var(--riscv-tint-3)',
-                      background: 'rgba(245,197,66,0.04)',
+                      background: 'var(--riscv-popover-head)',
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                         <Package size={12} style={{ color: 'var(--riscv-gold)', opacity: 0.85 }} />
@@ -356,7 +356,7 @@ export default function WorkspacePanel({
                           </span>
                           <span style={{
                             fontSize: 11, marginTop: 2, display: 'block',
-                            color: totalInstructions > 100 ? '#f59e0b' : '#64748b',
+                            color: totalInstructions > 100 ? 'var(--riscv-warn)' : 'var(--riscv-text-3)',
                             fontVariantNumeric: 'tabular-nums',
                           }}>
                             {totalInstructions.toLocaleString()} instructions{totalInstructions > 100 ? ' · large export' : ''}
@@ -368,7 +368,7 @@ export default function WorkspacePanel({
                           width: 38, height: 21, borderRadius: 11, flexShrink: 0,
                           background: includeInstructions
                             ? 'linear-gradient(135deg, #f5c542 0%, #fde68a 100%)'
-                            : 'rgba(255,255,255,0.08)',
+                            : 'var(--riscv-tint-4)',
                           boxShadow: includeInstructions ? '0 0 8px rgba(245,197,66,0.4)' : 'none',
                           position: 'relative', transition: 'all 0.25s',
                           border: `1px solid ${includeInstructions ? 'rgba(245,197,66,0.7)' : 'var(--riscv-tint-4)'}`,
@@ -423,7 +423,7 @@ export default function WorkspacePanel({
                         title="UDB architecture configuration for riscv-arch-test. Extension versions and derived params are filled in; implementation params are left as TODO."
                         style={{
                           width: '100%', marginTop: 7, padding: '8px 14px', borderRadius: 7,
-                          background: 'rgba(255,255,255,0.03)',
+                          background: 'var(--riscv-tint-2)',
                           color: 'var(--riscv-text)',
                           border: '1px solid var(--riscv-tint-3)',
                           fontSize: 11.5, fontWeight: 600,
@@ -431,10 +431,10 @@ export default function WorkspacePanel({
                           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                         }}
                         onMouseEnter={e => {
-                          e.currentTarget.style.background = 'rgba(255,255,255,0.07)';
+                          e.currentTarget.style.background = 'var(--riscv-tint-4)';
                         }}
                         onMouseLeave={e => {
-                          e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+                          e.currentTarget.style.background = 'var(--riscv-tint-2)';
                         }}
                       >
                         <Package size={11} />

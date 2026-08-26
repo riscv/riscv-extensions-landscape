@@ -36,6 +36,15 @@
   --riscv-report-edge: rgba(255, 77, 107, 0.55);
   --riscv-warn: #f59e0b;
 
+  /* Export popover surface. The card was a hardcoded dark gradient while its
+     contents used the theme tokens, so on light everything inside it resolved
+     dark-on-dark and the header and secondary button became unreadable. The
+     surface is a token now so the two move together. */
+  --riscv-popover-bg: linear-gradient(145deg, #1a1f2e 0%, #141824 100%);
+  --riscv-popover-edge: rgba(245, 197, 66, 0.25);
+  --riscv-popover-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+  --riscv-popover-head: rgba(245, 197, 66, 0.04);
+
   --riscv-text: #e2e8f0;
   --riscv-text-2: #aab8ca;
   /* Nudged up from #6f7f95, which measured 4.17:1 against the card surface and
@@ -565,6 +574,14 @@ pre,
   --riscv-report-tint-hover: rgba(194, 51, 77, 0.18);
   --riscv-report-edge: rgba(194, 51, 77, 0.5);
   --riscv-warn: #b06f05;
+
+  /* On light the popover becomes a raised white plate: the amber edge carries
+     the identity the dark gradient used to, and the shadow is tinted with the
+     same ink as the other light-theme cards rather than pure black. */
+  --riscv-popover-bg: linear-gradient(145deg, #ffffff 0%, #fbf9f3 100%);
+  --riscv-popover-edge: rgba(143, 100, 8, 0.32);
+  --riscv-popover-shadow: 0 12px 32px rgba(45, 40, 80, 0.16);
+  --riscv-popover-head: rgba(143, 100, 8, 0.06);
 
   --riscv-text: #2b2a3d;
   --riscv-text-2: #5c5a72;
