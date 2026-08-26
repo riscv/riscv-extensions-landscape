@@ -161,3 +161,31 @@ test('the graph matches upstream, when a UDB checkout is available', (t) => {
   }
   assert.equal(status, 0, stdout);
 });
+
+test('the sync bot signs off as the same identity it authors as', () => {
+  // The DCO gate compares the Signed-off-by trailer against the commit author
+  // (%an <%ae>), but create-pull-request writes that trailer from the
+  // *committer*, and defaults `author` to whoever triggered the run. Left at
+  // the defaults the two never match and every weekly sync PR fails DCO.
+  //
+  // Worth a test because the failure is invisible until the cron fires: the
+  // workflow only runs on a schedule, so a regression here surfaces as a
+  // blocked PR on a Monday morning rather than a red check on the change
+  // that caused it.
+  const wf = fs.readFileSync(
+    path.join(root, '.github', 'workflows', 'sync-udb-extensions.yml'),
+    'utf8',
+  );
+
+  const author = wf.match(/^\s*author:\s*'(.+)'\s*$/m);
+  const committer = wf.match(/^\s*committer:\s*'(.+)'\s*$/m);
+
+  assert.ok(author, 'the create-pull-request step must pin an explicit author');
+  assert.ok(committer, 'the create-pull-request step must pin an explicit committer');
+  assert.equal(
+    author[1],
+    committer[1],
+    'author and committer must be the same identity, or the sign-off cannot match',
+  );
+  assert.match(wf, /^\s*signoff:\s*true\s*$/m, 'the sync commit must be signed off');
+});
