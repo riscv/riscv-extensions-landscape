@@ -6,13 +6,13 @@
 // been added.
 //
 // Usage:
-//   node scripts/sync_udb_extensions.cjs [path-to-udb]
+//   node scripts/sync_udb_extensions.cjs [path-to-udb] [--dry-run]
 //
 // If no UDB path is given, defaults to ../riscv-unified-db relative to the
 // workspace root.
 //
-// SCOPE: metadata only — CSRs, long_name, type, state, ratification_date and
-// behavior. It deliberately does NOT write dependencies. Those live in
+// SCOPE: metadata only — CSRs, long_name, type, version, state,
+// ratification_date and behavior. It deliberately does NOT write dependencies. Those live in
 // src/isa-dependency-graph.json, produced by scripts/seed-dependency-graph.mjs,
 // which distinguishes the four shapes UDB actually uses (allOf, anyOf/oneOf,
 // if/then, not:). Flattening them into one list inverts meaning — it yields
@@ -24,8 +24,11 @@ const path = require('path');
 
 const workspaceRoot = process.cwd();
 const catalogPath = path.join(workspaceRoot, 'src', 'riscv_extensions.json');
-const udbRoot = process.argv[2]
-  ? path.resolve(process.argv[2])
+const args = process.argv.slice(2);
+const dryRun = args.includes('--dry-run');
+const udbArg = args.find((a) => !a.startsWith('--'));
+const udbRoot = udbArg
+  ? path.resolve(udbArg)
   : path.resolve(workspaceRoot, '..', 'riscv-unified-db');
 
 const UDB_EXT_DIR = path.join(udbRoot, 'spec', 'std', 'isa', 'ext');
@@ -318,6 +321,7 @@ console.log('Checking UDB at: ' + udbRoot);
 console.log('');
 
 let updated = 0;
+let versionsWritten = 0;
 const stillMissing = [];
 const newlyPopulated = [];
 
@@ -346,6 +350,14 @@ for (const id of gaps) {
   if (ext.type) entry.type = ext.type;
   const ver = pickVersion(ext.versions);
   if (ver) {
+    // The version number the rest of the toolchain has to pin against. UDB
+    // states it, pickVersion() already selects the right entry for state and
+    // ratification_date, and dropping the number here forced every downstream
+    // consumer to re-derive it or go without.
+    if (ver.version) {
+      entry.version = ver.version;
+      versionsWritten++;
+    }
     if (ver.state) entry.state = ver.state;
     // UDB writes `ratification_date: null` for unratified versions, which the
     // minimal parser captures as the string "null" — treat that as absent.
@@ -448,7 +460,11 @@ const UDB_ID_ALIASES = { RV32I: 'I', RV64I: 'I', RV128I: 'I' };
 let stateAdded = 0;
 for (const [id, loc] of entryIndex) {
   const entry = loc.entries[loc.index];
-  if (entry.state) continue;                      // already labelled, leave it
+  // Re-parse only when something is still missing. The guard used to be on
+  // state alone, which meant an entry labelled by an earlier run could never
+  // gain a version: the version arrived later than the state, and every
+  // already-labelled entry short-circuited before reaching it.
+  if (entry.state && entry.version) continue;
 
   const udbId = UDB_ID_ALIASES[id] || id;
   const yamlPath = path.join(UDB_EXT_DIR, udbId + '.yaml');
@@ -464,7 +480,19 @@ for (const [id, loc] of entryIndex) {
   }
 
   const ver = pickVersion(doc && doc.versions);
-  if (!ver || !ver.state) continue;
+  if (!ver) continue;
+
+  // The number anything downstream has to pin against. UDB states it and
+  // pickVersion() has already chosen the entry state is read from, so taking
+  // the version from the same place keeps the two consistent by construction.
+  if (ver.version && !entry.version) {
+    entry.version = ver.version;
+    versionsWritten++;
+    updated++;
+  }
+
+  if (!ver.state) continue;
+  if (entry.state) continue;                      // already labelled, leave it
 
   entry.state = ver.state;
   // Only a real year-month is useful. UDB writes null for unratified versions,
@@ -578,6 +606,7 @@ for (const [id, found] of csrIndex) {
 
 console.log('');
 console.log('CSR coverage pass: ' + extsGainedCsrs + ' extension(s) gained ' + csrsAdded + ' CSR(s)');
+console.log('Version pass: ' + versionsWritten + ' extension(s) carry a UDB version');
 
 // This guard runs BEFORE the write: past the threshold, the in-memory catalog is
 // half-synced (real fields silently dropped), so persisting it would corrupt the
@@ -591,7 +620,9 @@ if (parseFailures > PARSE_FAILURE_THRESHOLD) {
 }
 
 // write back only if something changed
-if (updated > 0) {
+if (dryRun) {
+  console.log('--dry-run: catalogue not written');
+} else if (updated > 0) {
   fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2) + '\n');
 }
 
