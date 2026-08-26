@@ -4,7 +4,7 @@
   "sources": {
     "udb": {
       "repo": "riscv/riscv-unified-db",
-      "commit": "3197e3cd00f122a834bdcb1091f628f8f2c4e081",
+      "commit": "4ccbd72ee3f5003e44f695ff0e5f80604481300a",
       "branch": "main",
       "path": "spec/std/isa/ext"
     },
@@ -1626,8 +1626,18 @@
       "verified": "none"
     },
     "Zvfbfa": {
-      "requires": [],
-      "verified": "none"
+      "requires": [
+        {
+          "ext": "Zfbfmin",
+          "src": "udb",
+          "ref": "Zvfbfa.yaml requirements.extension"
+        },
+        {
+          "ext": "Zve32f",
+          "src": "udb",
+          "ref": "Zvfbfa.yaml requirements.extension"
+        }
+      ]
     },
     "Zvfbfmin": {
       "requires": [

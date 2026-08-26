@@ -22113,7 +22113,9 @@
       "desc": "Vector BF16 Arithmetic",
       "use": "BF16 arithmetic in vectors",
       "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
+      "instructions": {},
+      "version": "0.8.0",
+      "state": "development"
     },
     {
       "id": "Zvfbfwma",
