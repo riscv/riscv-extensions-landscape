@@ -632,6 +632,34 @@ const RISCVExplorer = () => {
   const [builderMode, setBuilderMode] = useState(false);
   const [workspacePanelOpen, setWorkspacePanelOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const profileMenuRef = React.useRef(null);
+
+  // Keep the profile menu inside the viewport (#232).
+  //
+  // It is absolutely positioned against a trigger that moves as the toolbar
+  // wraps, so no fixed anchor works: right-aligned it ran off the left edge at
+  // 500px, left-aligned it ran off the right edge at 360px. position: fixed is
+  // not available either — .builder-toolbar and .riscv-toolbar both set
+  // backdrop-filter, which makes them the containing block for fixed
+  // descendants, so the menu would clamp to the toolbar rather than the screen.
+  // So measure once on open and shift it back into view.
+  React.useLayoutEffect(() => {
+    if (!profileMenuOpen) return undefined;
+    const clamp = () => {
+      const el = profileMenuRef.current;
+      if (!el) return;
+      el.style.transform = 'none';
+      const rect = el.getBoundingClientRect();
+      const margin = 8;
+      let dx = 0;
+      if (rect.right > window.innerWidth - margin) dx = window.innerWidth - margin - rect.right;
+      if (rect.left + dx < margin) dx = margin - rect.left;
+      el.style.transform = dx ? `translateX(${Math.round(dx)}px)` : 'none';
+    };
+    clamp();
+    window.addEventListener('resize', clamp);
+    return () => window.removeEventListener('resize', clamp);
+  }, [profileMenuOpen]);
   const [quickExportOpen, setQuickExportOpen] = useState(false);
   const [quickExportIncludeInstr, setQuickExportIncludeInstr] = useState(true);
 
@@ -2198,6 +2226,7 @@ const RISCVExplorer = () => {
 
                             {profileMenuOpen && (
                               <div
+                                ref={profileMenuRef}
                                 className="builder-menu"
                                 style={{
                                   position: 'absolute',
@@ -2207,7 +2236,8 @@ const RISCVExplorer = () => {
                                   display: 'flex',
                                   flexDirection: 'column',
                                   borderRadius: 10,
-                                  minWidth: 300,
+                                  minWidth: 'min(300px, calc(100vw - 24px))',
+                                  maxWidth: 'calc(100vw - 24px)',
                                   overflow: 'hidden',
                                 }}
                               >
