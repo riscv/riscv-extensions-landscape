@@ -27,7 +27,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - name: Checkout landscape repo
+      - name: Checkout the explorer repo
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Clone riscv-opcodes

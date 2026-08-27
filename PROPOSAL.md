@@ -1,4 +1,4 @@
-# RISC-V Extensions Landscape: Project Proposal
+# RISC-V ISA Explorer: Project Proposal
 
 ## 1. Problem Statement
 
@@ -16,7 +16,7 @@ raw data files that require tooling to interpret.
 
 ## 2. Project Vision
 
-The **RISC-V Extensions Landscape** is a web-based, interactive visualization and
+The **RISC-V ISA Explorer** is a web-based, interactive visualization and
 reference tool that makes the full RISC-V extension and instruction catalog
 accessible, searchable, and verifiable in a single page.
 
