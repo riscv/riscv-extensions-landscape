@@ -30,6 +30,7 @@ import {
   vlenExtension,
 } from '../src/isaGraph.js';
 import { PROFILES } from '../src/profiles.js';
+import { buildIsaConfigYaml } from '../src/exportUtils.js';
 
 const catalogIds = (() => {
   const file = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'src', 'riscv_extensions.json');
@@ -444,4 +445,30 @@ test('a vector extension holds the VLEN floor above a lower request', () => {
   desired.add('Zvl32b');
   const { resolved } = resolveSelection({ selected: [...desired], base: 'RV64I' });
   assert.equal(impliedVlen(resolved), 64, 'Zve64x should hold the floor at 64');
+});
+
+test('a chosen oneOf value reaches the exported configuration', () => {
+  // resolveParams narrows the field but cannot pick: LRSC_RESERVATION_STRATEGY
+  // rendered as "one of 2" with no way to choose, which was #216. A choice that
+  // does not survive export is not a configuration decision, just a highlight.
+  // A base ISA is required or the export refuses to build.
+  const ids = ['RV64I', 'Za64rs', 'Zic64b'];
+  const picked = 'reserve naturally-aligned 64-byte region';
+  const catalog = JSON.parse(
+    fs.readFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'src', 'riscv_extensions.json'), 'utf8'),
+  );
+  const allExts = Object.values(catalog).flat();
+
+  const { yaml } = buildIsaConfigYaml(ids, allExts, {
+    paramChoices: { LRSC_RESERVATION_STRATEGY: picked },
+  });
+  assert.match(yaml, /LRSC_RESERVATION_STRATEGY:/);
+  assert.match(yaml, new RegExp(`chosen: "${picked}"`));
+
+  // Without a choice the field is absent rather than guessed at.
+  const { yaml: bare } = buildIsaConfigYaml(ids, allExts, {});
+  assert.ok(!bare.includes('chosen:'), 'nothing should be chosen when the user has not chosen');
+
+  // A parameter with no decision to make never gains one.
+  assert.match(bare, /CACHE_BLOCK_SIZE:/);
 });

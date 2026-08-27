@@ -65,6 +65,8 @@ export default function WorkspacePanel({
   onSelectInstruction,
   seedProfile,
   profileOptional,
+  paramChoices,
+  onSetParam,
 }) {
   const [marchTab, setMarchTab] = React.useState('encode');
   const [marchInput, setMarchInput] = React.useState('');
@@ -162,7 +164,9 @@ export default function WorkspacePanel({
     const { yaml } = buildIsaConfigYaml(
       Array.from(workspaceIds),
       allExts,
-      format === 'landscape' ? { includeInstructions } : { format },
+      format === 'landscape'
+        ? { includeInstructions, paramChoices }
+        : { format, paramChoices },
     );
     const blob = new Blob([yaml], { type: 'text/yaml' });
     const url = URL.createObjectURL(blob);
@@ -890,12 +894,48 @@ export default function WorkspacePanel({
                             <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'var(--riscv-text)' }}>{prm.name}</span>
                             <span style={{ fontFamily: 'monospace', fontSize: 11, color: 'var(--riscv-gold)' }}>
                               {prm.kind === 'greaterThanOrEqual' ? `≥ ${prm.value}`
-                                : Array.isArray(prm.value) ? prm.value.length === 1 ? String(prm.value[0]) : `one of ${prm.value.length}`
-                                : String(prm.value)}
+                                : prm.kind === 'oneOf' && Array.isArray(prm.value)
+                                  ? (paramChoices?.[prm.name] ?? `choose one of ${prm.value.length}`)
+                                  : Array.isArray(prm.value) ? prm.value.join(', ') : String(prm.value)}
                             </span>
                           </div>
+                          {/* A oneOf constraint is the only kind that leaves a
+                              decision open — equal and includes are pinned by the
+                              extension that asks for them. Rendering the options
+                              as a dead "one of 2" was the whole of #216. */}
+                          {prm.kind === 'oneOf' && Array.isArray(prm.value) && prm.value.length > 1 && (
+                            <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginTop: 6 }}>
+                              {prm.value.map((option) => {
+                                const active = paramChoices?.[prm.name] === option;
+                                return (
+                                  <button
+                                    key={String(option)}
+                                    type="button"
+                                    onClick={() => onSetParam(prm.name, active ? null : option)}
+                                    aria-pressed={active}
+                                    title={active ? 'Clear this choice' : `Set ${prm.name} to ${option}`}
+                                    style={{
+                                      fontSize: 10, fontFamily: 'monospace', padding: '3px 8px',
+                                      borderRadius: 6, cursor: 'pointer', textAlign: 'left',
+                                      border: `1px solid ${active ? 'rgba(245,197,66,0.6)' : 'var(--riscv-tint-4)'}`,
+                                      background: active ? 'rgba(245,197,66,0.18)' : 'var(--riscv-tint-2)',
+                                      color: active ? 'var(--riscv-gold)' : 'var(--riscv-text-2)',
+                                    }}
+                                  >
+                                    {String(option)}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          )}
                           <div style={{ fontSize: 10, color: 'var(--riscv-text-3)', marginTop: 3 }}>
-                            required by {prm.from.join(', ')}
+                            {prm.kind === 'oneOf'
+                              ? `narrowed to these by ${prm.from.join(', ')}`
+                              : prm.kind === 'greaterThanOrEqual'
+                                // VLEN is settable — just not here. Saying it was
+                                // fixed would contradict the chips above it.
+                                ? `floor set by ${prm.from.join(', ')} — raise it with the buttons above`
+                                : `fixed by ${prm.from.join(', ')} — not separately settable`}
                           </div>
                           {prm.conflict && (
                             <div style={{ fontSize: 10, color: '#ff7a8a', marginTop: 4 }}>{prm.conflict}</div>

@@ -638,6 +638,18 @@ const RISCVExplorer = () => {
   // optional extensions (#217). Null once the workspace is cleared: the offer
   // only makes sense while the configuration still descends from the profile.
   const [seedProfile, setSeedProfile] = useState(null);
+  // Chosen values for oneOf parameters (#216). Only oneOf leaves a decision
+  // open — equal and includes are pinned by whichever extension asks for them —
+  // so this holds the handful of genuine choices, keyed by parameter name.
+  const [paramChoices, setParamChoices] = useState({});
+  const handleSetParam = React.useCallback((name, value) => {
+    setParamChoices((prev) => {
+      const next = { ...prev };
+      if (value === null || value === undefined) delete next[name];
+      else next[name] = value;
+      return next;
+    });
+  }, []);
 
   // Keep the profile menu inside the viewport (#232).
   //
@@ -2326,6 +2338,7 @@ const RISCVExplorer = () => {
                                 onClick={() => {
                                   setWorkspaceIds(new Set());
                                   setSeedProfile(null);
+                                  setParamChoices({});
                                 }}
                                 className="builder-action-rose flex-1 flex items-center justify-center py-1.5 text-rose-300 hover:bg-rose-500/30 hover:text-rose-100 hover:shadow-[0_0_12px_rgba(244,63,94,0.3)] transition-all duration-300 rounded-lg"
                               >
@@ -4820,6 +4833,8 @@ const RISCVExplorer = () => {
         onSetVlen={handleSetVlen}
         seedProfile={seedProfile}
         profileOptional={PROFILE_OPTIONAL}
+        paramChoices={paramChoices}
+        onSetParam={handleSetParam}
         onAddId={(id) => addWorkspaceIdsSmart(id, true)}
         onRemoveId={(id) =>
           setWorkspaceIds((prev) => {
@@ -4846,6 +4861,7 @@ const RISCVExplorer = () => {
         onClear={() => {
           setWorkspaceIds(new Set());
           setSeedProfile(null);
+          setParamChoices({});
         }}
         onLoadIds={(ids) => {
           setWorkspaceIds(new Set()); // clear

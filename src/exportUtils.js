@@ -107,6 +107,10 @@ export function buildIsaConfigYaml(selectedIds, allExts, options = {}) {
   const {
     includeInstructions = false,
     format = 'landscape',
+    // Values the user picked for oneOf parameters. A constraint list without
+    // the pick is not a configuration — the point of choosing is that the
+    // choice survives leaving the tool.
+    paramChoices = {},
   } = typeof options === 'boolean' ? { includeInstructions: options } : options;
   const warnings = [];
 
@@ -480,6 +484,10 @@ export function buildIsaConfigYaml(selectedIds, allExts, options = {}) {
         : (typeof prm.value === 'string' ? JSON.stringify(prm.value) : prm.value);
       lines.push(`    value: ${value}`);
       lines.push(`    required_by: [${prm.from.join(', ')}]`);
+      if (prm.kind === 'oneOf' && Object.prototype.hasOwnProperty.call(paramChoices, prm.name)) {
+        const picked = paramChoices[prm.name];
+        lines.push(`    chosen: ${typeof picked === 'string' ? JSON.stringify(picked) : picked}`);
+      }
       if (prm.reason) lines.push(`    reason: ${JSON.stringify(prm.reason)}`);
       // A conflict is left in the file on purpose: silently dropping it would
       // produce a configuration that looks valid and is not.
