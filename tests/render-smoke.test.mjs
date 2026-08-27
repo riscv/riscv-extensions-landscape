@@ -80,7 +80,7 @@ test('the header, the counts and the builder control are present', () => {
   // is "Extensions", not "EXTENSIONS". Assert the rendered text, not the styled
   // appearance.
   const text = dom.window.document.body.textContent;
-  for (const expected of ['RISC-V Extension Landscape', 'Extensions', 'ISA Configuration Builder']) {
+  for (const expected of ['RISC-V ISA Explorer', 'Extensions', 'ISA Configuration Builder']) {
     assert.ok(text.includes(expected), `page text is missing "${expected}"`);
   }
 

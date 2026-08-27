@@ -1859,7 +1859,7 @@ const RISCVExplorer = () => {
                       WebkitTextFillColor: 'transparent',
                     }}
                   >
-                    RISC-V Extension Landscape
+                    RISC-V ISA Explorer
                     {/* Rides the title like an exponent. Inside the h1 on
                         purpose, so it tracks the title's last letter at any
                         size instead of being positioned against a width that
@@ -3945,7 +3945,7 @@ const RISCVExplorer = () => {
           <div className="flex items-center gap-2">
             <CircuitBoard size={14} style={{ color: 'var(--riscv-gold)' }} />
             <span className="font-semibold" style={{ color: 'var(--riscv-text-2)' }}>
-              RISC-V Extension Landscape
+              RISC-V ISA Explorer
             </span>
             <span style={{ color: 'var(--riscv-border-2)' }}>·</span>
             <span>

@@ -1,4 +1,4 @@
-# RISC-V Extension Landscape
+# RISC-V ISA Explorer
 
 An interactive reference for RISC-V extensions, profiles, and per-instruction
 encodings. Pick a base ISA or start from a ratified profile, add extensions, and
