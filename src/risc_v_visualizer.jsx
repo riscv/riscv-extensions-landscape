@@ -642,6 +642,12 @@ const RISCVExplorer = () => {
   // open — equal and includes are pinned by whichever extension asks for them —
   // so this holds the handful of genuine choices, keyed by parameter name.
   const [paramChoices, setParamChoices] = useState({});
+  // Whether the seeding profile's mandatory set is held in place (#214).
+  // Certification work needs a floor that cannot be silently reverted — dropping
+  // H from RVA23 leaves something that is no longer RVA23 — but exploring what a
+  // profile would be without one of its extensions is also legitimate, so the
+  // floor is releasable rather than absolute.
+  const [baselineLocked, setBaselineLocked] = useState(true);
   const handleSetParam = React.useCallback((name, value) => {
     setParamChoices((prev) => {
       const next = { ...prev };
@@ -683,6 +689,19 @@ const RISCVExplorer = () => {
   // Smart lock: live reverse-lookup of dependencies
   const lockedExtensions = React.useMemo(() => {
     const locked = new Map(); // ext -> [things requiring it]
+
+    // The seeding profile is itself a reason an extension cannot be removed.
+    // Same map, same UI: tiles and the panel already refuse removal and name
+    // whatever holds a lock, so the floor needs no separate treatment.
+    if (seedProfile && baselineLocked) {
+      for (const id of PROFILES[seedProfile] || []) {
+        if (workspaceIds.has(id)) {
+          if (!locked.has(id)) locked.set(id, []);
+          locked.get(id).push(seedProfile);
+        }
+      }
+    }
+
     const selected = Array.from(workspaceIds);
     for (const ext of selected) {
       const deps = SMART_DEPENDENCIES[ext] || [];
@@ -694,7 +713,7 @@ const RISCVExplorer = () => {
       }
     }
     return locked;
-  }, [workspaceIds]);
+  }, [workspaceIds, seedProfile, baselineLocked]);
 
   // Smart dependency and mutually-exclusive handler
   const addWorkspaceIdsSmart = React.useCallback(
@@ -1895,6 +1914,27 @@ const RISCVExplorer = () => {
                 </div>
               </div>
 
+              {/* What the tool is, and what to do with it (#209). The front page
+                  named the subject and showed counts, but never said what the
+                  page was for or how to drive it — a visitor had to infer the
+                  whole interaction from the controls. Two lines, above the
+                  controls they describe, rather than a tour nobody reads. */}
+              <p
+                className="riscv-usage mt-3 mb-1 text-[12.5px] leading-relaxed"
+                style={{ color: 'var(--riscv-text-2)', maxWidth: '76ch' }}
+              >
+                Browse every ratified RISC-V extension, its instructions and their
+                encodings.{' '}
+                <span style={{ color: 'var(--riscv-text-3)' }}>
+                  Select a tile for details, filter by profile or manual volume, and
+                  turn on <strong style={{ color: 'var(--riscv-text-2)', fontWeight: 600 }}>ISA Builder</strong>{' '}
+                  to assemble a configuration and get a validated{' '}
+                  <code style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.95em' }}>-march</code>{' '}
+                  string. <strong style={{ color: 'var(--riscv-text-2)', fontWeight: 600 }}>Compare</strong>{' '}
+                  puts extensions, instructions or profiles side by side.
+                </span>
+              </p>
+
               {/* Controls Area.
                   items-end right-aligns children, so a child wider than this
                   column is pushed off the LEFT edge rather than overflowing the
@@ -2283,6 +2323,7 @@ const RISCVExplorer = () => {
                                       setWorkspaceIds(new Set());
                                       addWorkspaceIdsSmart(list);
                                       setSeedProfile(name);
+                                      setBaselineLocked(true);
                                       setProfileMenuOpen(false);
                                     }}
                                     style={{
@@ -2339,6 +2380,7 @@ const RISCVExplorer = () => {
                                   setWorkspaceIds(new Set());
                                   setSeedProfile(null);
                                   setParamChoices({});
+                                  setBaselineLocked(true);
                                 }}
                                 className="builder-action-rose flex-1 flex items-center justify-center py-1.5 text-rose-300 hover:bg-rose-500/30 hover:text-rose-100 hover:shadow-[0_0_12px_rgba(244,63,94,0.3)] transition-all duration-300 rounded-lg"
                               >
@@ -4835,6 +4877,8 @@ const RISCVExplorer = () => {
         profileOptional={PROFILE_OPTIONAL}
         paramChoices={paramChoices}
         onSetParam={handleSetParam}
+        baselineLocked={baselineLocked}
+        onToggleBaseline={() => setBaselineLocked((v) => !v)}
         onAddId={(id) => addWorkspaceIdsSmart(id, true)}
         onRemoveId={(id) =>
           setWorkspaceIds((prev) => {
@@ -4862,6 +4906,7 @@ const RISCVExplorer = () => {
           setWorkspaceIds(new Set());
           setSeedProfile(null);
           setParamChoices({});
+          setBaselineLocked(true);
         }}
         onLoadIds={(ids) => {
           setWorkspaceIds(new Set()); // clear

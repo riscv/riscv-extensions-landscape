@@ -67,6 +67,8 @@ export default function WorkspacePanel({
   profileOptional,
   paramChoices,
   onSetParam,
+  baselineLocked,
+  onToggleBaseline,
 }) {
   const [marchTab, setMarchTab] = React.useState('encode');
   const [marchInput, setMarchInput] = React.useState('');
@@ -563,6 +565,37 @@ export default function WorkspacePanel({
           {/* Populated state */}
           {!isEmpty && (
             <Section label="Selected Extensions" count={workspaceIds.size} icon={<Cpu size={11} />}>
+              {seedProfile && (
+                <div style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  gap: 10, marginBottom: 10, padding: '7px 10px', borderRadius: 7,
+                  background: 'var(--riscv-tint-1)', border: '1px solid var(--riscv-tint-3)',
+                }}>
+                  <span style={{ fontSize: 10.5, color: 'var(--riscv-text-3)', lineHeight: 1.45 }}>
+                    {baselineLocked
+                      ? `The ${seedProfile} mandatory set is held in place — removing one would leave a configuration that is no longer ${seedProfile}.`
+                      : `The ${seedProfile} baseline is released. Removing a mandatory extension will leave a configuration that no longer satisfies ${seedProfile}.`}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={onToggleBaseline}
+                    aria-pressed={baselineLocked}
+                    title={baselineLocked
+                      ? `Allow removing extensions ${seedProfile} mandates`
+                      : `Hold the ${seedProfile} mandatory set in place again`}
+                    style={{
+                      flexShrink: 0, fontSize: 10, fontWeight: 700, letterSpacing: '0.04em',
+                      textTransform: 'uppercase', padding: '4px 9px', borderRadius: 6,
+                      cursor: 'pointer',
+                      border: `1px solid ${baselineLocked ? 'rgba(245,197,66,0.5)' : 'var(--riscv-tint-4)'}`,
+                      background: baselineLocked ? 'rgba(245,197,66,0.15)' : 'var(--riscv-tint-2)',
+                      color: baselineLocked ? 'var(--riscv-gold)' : 'var(--riscv-text-2)',
+                    }}
+                  >
+                    {baselineLocked ? 'Locked' : 'Released'}
+                  </button>
+                </div>
+              )}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {workspaceExts.map(ext => (
                   <ExtChip
