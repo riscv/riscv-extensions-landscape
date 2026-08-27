@@ -4,9 +4,9 @@ An interactive reference for RISC-V extensions, profiles, and per-instruction
 encodings. Pick a base ISA or start from a ratified profile, add extensions, and
 get a dependency-resolved configuration with a valid `-march` string.
 
-**[Open the live site](https://riscv.github.io/riscv-extensions-landscape/)**
+**[Open the live site](https://riscv.github.io/riscv-isa-explorer/)**
 
-[![CI](https://github.com/riscv/riscv-extensions-landscape/actions/workflows/ci.yml/badge.svg)](https://github.com/riscv/riscv-extensions-landscape/actions/workflows/ci.yml)
+[![CI](https://github.com/riscv/riscv-isa-explorer/actions/workflows/ci.yml/badge.svg)](https://github.com/riscv/riscv-isa-explorer/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![DCO](https://img.shields.io/badge/DCO-required-brightgreen.svg)](DCO)
 

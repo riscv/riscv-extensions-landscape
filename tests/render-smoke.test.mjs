@@ -444,7 +444,7 @@ test('the page declares itself a tech preview and offers somewhere to report', (
     'it must live inside the h1 so it tracks the title at any size',
   );
 
-  const link = doc.querySelector('a[href="https://github.com/riscv/riscv-extensions-landscape/issues"]');
+  const link = doc.querySelector('a[href="https://github.com/riscv/riscv-isa-explorer/issues"]');
   assert.ok(link, 'no link to the issue tracker');
   assert.equal(link.target, '_blank', 'the issue tracker should open in a new tab');
   assert.match(link.rel, /noreferrer/, 'external link needs rel=noreferrer');

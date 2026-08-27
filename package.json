@@ -1,9 +1,9 @@
 {
-  "name": "riscv-extensions-landscape",
+  "name": "riscv-isa-explorer",
   "version": "1.2.0",
   "description": "",
   "main": "index.js",
-  "homepage": "https://riscv.github.io/riscv-extensions-landscape/",
+  "homepage": "https://riscv.github.io/riscv-isa-explorer/",
   "scripts": {
     "build": "webpack",
     "deploy": "gh-pages -d dist --branch gh-pages --dotfiles",

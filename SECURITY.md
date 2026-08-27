@@ -7,7 +7,7 @@ Please report security issues privately rather than in a public issue.
 Use GitHub's [private vulnerability reporting][ghsa] on this repository, or
 email **rsene@linuxfoundation.org**.
 
-[ghsa]: https://github.com/riscv/riscv-extensions-landscape/security/advisories/new
+[ghsa]: https://github.com/riscv/riscv-isa-explorer/security/advisories/new
 
 Please include what you found, how to reproduce it, and what an attacker could
 do with it. You will get an acknowledgement within a few working days, and an

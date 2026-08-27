@@ -1901,7 +1901,7 @@ const RISCVExplorer = () => {
                       should be reachable from the caveat rather than buried in
                       a footer nobody scrolls to. */}
                   <a
-                    href="https://github.com/riscv/riscv-extensions-landscape/issues"
+                    href="https://github.com/riscv/riscv-isa-explorer/issues"
                     target="_blank"
                     rel="noreferrer noopener"
                     className="riscv-report-btn ml-3 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap"
