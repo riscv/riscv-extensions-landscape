@@ -406,3 +406,17 @@ test('RVA23 offers the optional extensions the ratified profile names', () => {
     assert.ok(optional.RVA23.includes(id), `RVA23 should offer ${id}`);
   }
 });
+
+test('RVB23 mandates bit manipulation', () => {
+  // RVB23's defining feature is B, and its ratified mandatory list names it
+  // outright. It was omitted when the profile was added, so the B profile
+  // generated a -march string with no bit-manipulation at all. Expressed as the
+  // components, matching how RVA22 and RVA23 state the same requirement here.
+  const profiles = fs.readFileSync(path.join(here, '..', 'src', 'profiles.js'), 'utf8');
+  const block = profiles.match(/\n {2}RVB23: \[([\s\S]*?)\n {2}\]/);
+  assert.ok(block, 'RVB23 profile block not found');
+  const ids = new Set([...block[1].matchAll(/'([^']+)'/g)].map((m) => m[1]));
+  for (const id of ['Zba', 'Zbb', 'Zbs']) {
+    assert.ok(ids.has(id), `RVB23 must mandate ${id}`);
+  }
+});

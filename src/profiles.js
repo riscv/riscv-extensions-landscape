@@ -162,6 +162,14 @@ export const PROFILES = {
     'Zicclsm',
     'Za64rs',
     'Zihintpause',
+    // Bit manipulation. The ratified RVB23U64 mandatory list names *B*;
+    // spelled out as its components here to match how RVA22 and RVA23
+    // express the same requirement in this file. Omitted when RVB23 was
+    // added, which left the B profile generating a -march with no
+    // bit-manipulation at all.
+    'Zba',
+    'Zbb',
+    'Zbs',
     'Zic64b',
     'Zicbom',
     'Zicbop',
