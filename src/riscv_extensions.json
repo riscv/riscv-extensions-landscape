@@ -16602,6 +16602,30 @@
   ],
   "z_atomics": [
     {
+      "id": "Za128rs",
+      "name": "Za128rs",
+      "tags": [],
+      "desc": "128B Reservation Set",
+      "use": "Reservation set granularity (128-byte)",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {},
+      "state": "ratified",
+      "ratification_date": "2023-03",
+      "version": "1.0.0"
+    },
+    {
+      "id": "Za64rs",
+      "name": "Za64rs",
+      "tags": [],
+      "desc": "64B Reservation Set",
+      "use": "Reservation set granularity (64-byte)",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {},
+      "state": "ratified",
+      "ratification_date": "2023-03",
+      "version": "1.0.0"
+    },
+    {
       "id": "Zaamo",
       "name": "Zaamo",
       "tags": [],
@@ -16877,6 +16901,291 @@
             "rv64_a"
           ],
           "match": "0xe000302f",
+          "mask": "0xf800707f"
+        }
+      },
+      "state": "ratified",
+      "ratification_date": "2024-04",
+      "version": "1.0.0"
+    },
+    {
+      "id": "Zabha",
+      "name": "Zabha",
+      "tags": [
+        "rv_zabha"
+      ],
+      "desc": "Byte/Halfword AMO",
+      "use": "Subword AMO support",
+      "url": "https://docs.riscv.org/reference/isa/unpriv/zabha.html",
+      "instructions": {
+        "AMOADD.B": {
+          "encoding": "00000------------000-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0x2f",
+          "mask": "0xf800707f"
+        },
+        "AMOADD.H": {
+          "encoding": "00000------------001-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0x102f",
+          "mask": "0xf800707f"
+        },
+        "AMOAND.B": {
+          "encoding": "01100------------000-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0x6000002f",
+          "mask": "0xf800707f"
+        },
+        "AMOAND.H": {
+          "encoding": "01100------------001-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0x6000102f",
+          "mask": "0xf800707f"
+        },
+        "AMOMAX.B": {
+          "encoding": "10100------------000-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0xa000002f",
+          "mask": "0xf800707f"
+        },
+        "AMOMAX.H": {
+          "encoding": "10100------------001-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0xa000102f",
+          "mask": "0xf800707f"
+        },
+        "AMOMAXU.B": {
+          "encoding": "11100------------000-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0xe000002f",
+          "mask": "0xf800707f"
+        },
+        "AMOMAXU.H": {
+          "encoding": "11100------------001-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0xe000102f",
+          "mask": "0xf800707f"
+        },
+        "AMOMIN.B": {
+          "encoding": "10000------------000-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0x8000002f",
+          "mask": "0xf800707f"
+        },
+        "AMOMIN.H": {
+          "encoding": "10000------------001-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0x8000102f",
+          "mask": "0xf800707f"
+        },
+        "AMOMINU.B": {
+          "encoding": "11000------------000-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0xc000002f",
+          "mask": "0xf800707f"
+        },
+        "AMOMINU.H": {
+          "encoding": "11000------------001-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0xc000102f",
+          "mask": "0xf800707f"
+        },
+        "AMOOR.B": {
+          "encoding": "01000------------000-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0x4000002f",
+          "mask": "0xf800707f"
+        },
+        "AMOOR.H": {
+          "encoding": "01000------------001-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0x4000102f",
+          "mask": "0xf800707f"
+        },
+        "AMOSWAP.B": {
+          "encoding": "00001------------000-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0x800002f",
+          "mask": "0xf800707f"
+        },
+        "AMOSWAP.H": {
+          "encoding": "00001------------001-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0x800102f",
+          "mask": "0xf800707f"
+        },
+        "AMOXOR.B": {
+          "encoding": "00100------------000-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0x2000002f",
+          "mask": "0xf800707f"
+        },
+        "AMOXOR.H": {
+          "encoding": "00100------------001-----0101111",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2",
+            "aq",
+            "rl"
+          ],
+          "extension": [
+            "rv_zabha"
+          ],
+          "match": "0x2000102f",
           "mask": "0xf800707f"
         }
       },
@@ -17164,6 +17473,51 @@
       },
       "state": "ratified",
       "ratification_date": "2024-04",
+      "version": "1.0.0"
+    },
+    {
+      "id": "Zama16b",
+      "name": "Zama16b",
+      "tags": [],
+      "desc": "16B Misaligned Atomicity",
+      "use": "Misaligned atomicity granule (16 bytes)",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {},
+      "state": "ratified",
+      "ratification_date": "2024-10",
+      "version": "1.0.0"
+    },
+    {
+      "id": "Zawrs",
+      "name": "Zawrs",
+      "tags": [
+        "rv_zawrs"
+      ],
+      "desc": "Wait-on-Reservation-Set",
+      "use": "Low-power waiting on LR/SC reservations",
+      "url": "https://docs.riscv.org/reference/isa/unpriv/zawrs.html",
+      "instructions": {
+        "WRS.NTO": {
+          "encoding": "00000000110100000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_zawrs"
+          ],
+          "match": "0xd00073",
+          "mask": "0xffffffff"
+        },
+        "WRS.STO": {
+          "encoding": "00000001110100000000000001110011",
+          "variable_fields": [],
+          "extension": [
+            "rv_zawrs"
+          ],
+          "match": "0x1d00073",
+          "mask": "0xffffffff"
+        }
+      },
+      "state": "ratified",
+      "ratification_date": "2022-11",
       "version": "1.0.0"
     },
     {
@@ -27218,360 +27572,6 @@
     }
   ],
   "z_system": [
-    {
-      "id": "Za128rs",
-      "name": "Za128rs",
-      "tags": [],
-      "desc": "128B Reservation Set",
-      "use": "Reservation set granularity (128-byte)",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {},
-      "state": "ratified",
-      "ratification_date": "2023-03",
-      "version": "1.0.0"
-    },
-    {
-      "id": "Za64rs",
-      "name": "Za64rs",
-      "tags": [],
-      "desc": "64B Reservation Set",
-      "use": "Reservation set granularity (64-byte)",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {},
-      "state": "ratified",
-      "ratification_date": "2023-03",
-      "version": "1.0.0"
-    },
-    {
-      "id": "Zabha",
-      "name": "Zabha",
-      "tags": [
-        "rv_zabha"
-      ],
-      "desc": "Byte/Halfword AMO",
-      "use": "Subword AMO support",
-      "url": "https://docs.riscv.org/reference/isa/unpriv/zabha.html",
-      "instructions": {
-        "AMOADD.B": {
-          "encoding": "00000------------000-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0x2f",
-          "mask": "0xf800707f"
-        },
-        "AMOADD.H": {
-          "encoding": "00000------------001-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0x102f",
-          "mask": "0xf800707f"
-        },
-        "AMOAND.B": {
-          "encoding": "01100------------000-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0x6000002f",
-          "mask": "0xf800707f"
-        },
-        "AMOAND.H": {
-          "encoding": "01100------------001-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0x6000102f",
-          "mask": "0xf800707f"
-        },
-        "AMOMAX.B": {
-          "encoding": "10100------------000-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0xa000002f",
-          "mask": "0xf800707f"
-        },
-        "AMOMAX.H": {
-          "encoding": "10100------------001-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0xa000102f",
-          "mask": "0xf800707f"
-        },
-        "AMOMAXU.B": {
-          "encoding": "11100------------000-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0xe000002f",
-          "mask": "0xf800707f"
-        },
-        "AMOMAXU.H": {
-          "encoding": "11100------------001-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0xe000102f",
-          "mask": "0xf800707f"
-        },
-        "AMOMIN.B": {
-          "encoding": "10000------------000-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0x8000002f",
-          "mask": "0xf800707f"
-        },
-        "AMOMIN.H": {
-          "encoding": "10000------------001-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0x8000102f",
-          "mask": "0xf800707f"
-        },
-        "AMOMINU.B": {
-          "encoding": "11000------------000-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0xc000002f",
-          "mask": "0xf800707f"
-        },
-        "AMOMINU.H": {
-          "encoding": "11000------------001-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0xc000102f",
-          "mask": "0xf800707f"
-        },
-        "AMOOR.B": {
-          "encoding": "01000------------000-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0x4000002f",
-          "mask": "0xf800707f"
-        },
-        "AMOOR.H": {
-          "encoding": "01000------------001-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0x4000102f",
-          "mask": "0xf800707f"
-        },
-        "AMOSWAP.B": {
-          "encoding": "00001------------000-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0x800002f",
-          "mask": "0xf800707f"
-        },
-        "AMOSWAP.H": {
-          "encoding": "00001------------001-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0x800102f",
-          "mask": "0xf800707f"
-        },
-        "AMOXOR.B": {
-          "encoding": "00100------------000-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0x2000002f",
-          "mask": "0xf800707f"
-        },
-        "AMOXOR.H": {
-          "encoding": "00100------------001-----0101111",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2",
-            "aq",
-            "rl"
-          ],
-          "extension": [
-            "rv_zabha"
-          ],
-          "match": "0x2000102f",
-          "mask": "0xf800707f"
-        }
-      },
-      "state": "ratified",
-      "ratification_date": "2024-04",
-      "version": "1.0.0"
-    },
-    {
-      "id": "Zama16b",
-      "name": "Zama16b",
-      "tags": [],
-      "desc": "16B Misaligned Atomicity",
-      "use": "Misaligned atomicity granule (16 bytes)",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {},
-      "state": "ratified",
-      "ratification_date": "2024-10",
-      "version": "1.0.0"
-    },
-    {
-      "id": "Zawrs",
-      "name": "Zawrs",
-      "tags": [
-        "rv_zawrs"
-      ],
-      "desc": "Wait-on-Reservation-Set",
-      "use": "Low-power waiting on LR/SC reservations",
-      "url": "https://docs.riscv.org/reference/isa/unpriv/zawrs.html",
-      "instructions": {
-        "WRS.NTO": {
-          "encoding": "00000000110100000000000001110011",
-          "variable_fields": [],
-          "extension": [
-            "rv_zawrs"
-          ],
-          "match": "0xd00073",
-          "mask": "0xffffffff"
-        },
-        "WRS.STO": {
-          "encoding": "00000001110100000000000001110011",
-          "variable_fields": [],
-          "extension": [
-            "rv_zawrs"
-          ],
-          "match": "0x1d00073",
-          "mask": "0xffffffff"
-        }
-      },
-      "state": "ratified",
-      "ratification_date": "2022-11",
-      "version": "1.0.0"
-    },
     {
       "id": "Zccid",
       "name": "Zccid",
