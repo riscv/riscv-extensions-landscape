@@ -237,11 +237,15 @@ function ExtensionTile({
           {data.name}
         </span>
       </div>
+      {/* The short label, not `desc`. The tile is 190px wide - about 32
+          characters a line, 65 in the two-line clamp - so a full description
+          truncates into a fragment here. `desc` is shown in the details panel
+          when a tile is selected, where there is room for it. */}
       <div
         className="text-[11px] leading-snug line-clamp-2"
         style={{ color: 'var(--riscv-text-2)' }}
       >
-        {data.desc}
+        {data.short || data.desc}
       </div>
     </div>
   );
