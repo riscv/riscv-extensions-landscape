@@ -1072,9 +1072,16 @@ const RISCVExplorer = () => {
     for (const ext of extensions.standard || []) {
       if (['S', 'U', 'H', 'N'].includes(ext.id)) vol2Ids.add(ext.id);
     }
-    for (const ext of extensions.s_mem || []) vol2Ids.add(ext.id);
-    for (const ext of extensions.s_interrupt || []) vol2Ids.add(ext.id);
-    for (const ext of extensions.s_trap || []) vol2Ids.add(ext.id);
+    // Every privileged group is Volume II. Derived from the key prefix rather
+    // than listed by name: enumerating them meant a new group could be added to
+    // the catalogue, rendered in the grid, and still fall through to Volume I.
+    // s_counters did exactly that when it was introduced (#251), so its four
+    // counter extensions were dimmed under the Volume II filter and highlighted
+    // under Volume I.
+    for (const [group, members] of Object.entries(extensions)) {
+      if (!group.startsWith('s_')) continue;
+      for (const ext of members || []) vol2Ids.add(ext.id);
+    }
 
     const vol1Ids = new Set(Array.from(allIds).filter((id) => !vol2Ids.has(id)));
     return {

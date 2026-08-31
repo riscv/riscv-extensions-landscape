@@ -162,3 +162,33 @@ test('extensions carry a UDB version, and it is well formed', () => {
     `expected most of the catalogue to carry a version, got ${withVersion}`
   );
 });
+
+/*
+ * The volume filter used to name each privileged group explicitly, so adding
+ * s_counters in #251 rendered its tiles in the grid while leaving them
+ * classified as Volume I: dimmed under the Volume II filter and highlighted
+ * under Volume I. Every s_* group in the catalogue must reach vol2Ids, whether
+ * the code derives them by prefix or lists them one by one.
+ */
+test('every privileged catalog group is classified as Volume II', () => {
+  const src = readFileSync(join(here, '..', 'src', 'risc_v_visualizer.jsx'), 'utf8');
+  const start = src.indexOf('const volumeMembership');
+  assert.ok(start !== -1, 'volumeMembership helper not found');
+  const end = src.indexOf('}, []);', start);
+  assert.ok(end !== -1, 'end of volumeMembership helper not found');
+  const block = src.slice(start, end);
+
+  const privileged = Object.keys(catalog).filter((group) => group.startsWith('s_'));
+  assert.ok(privileged.length > 0, 'expected at least one s_* group in the catalog');
+
+  const derivesByPrefix = /startsWith\('s_'\)/.test(block);
+  if (derivesByPrefix) return;
+
+  for (const group of privileged) {
+    assert.ok(
+      block.includes(`extensions.${group}`),
+      `${group} is a privileged group but volumeMembership never adds it to vol2Ids, ` +
+        'so its extensions would be treated as Volume I',
+    );
+  }
+});
