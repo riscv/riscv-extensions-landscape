@@ -27690,14 +27690,19 @@
   ],
   "z_system": [
     {
-      "id": "Zccid",
-      "name": "Zccid",
-      "short": "Cache-Block ID",
+      "id": "Ziccid",
+      "name": "Ziccid",
+      "short": "Instruction/Data Coherence",
       "tags": [],
-      "desc": "Cache-Block ID",
-      "use": "Cache block identity / debugging",
+      "desc": "Stricter consistency between instruction fetch and data accesses than the base ISA requires, easing run-time code patching.",
+      "use": "Self-modifying and dynamically generated code",
       "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
+      "instructions": {},
+      "state": "ratified",
+      "long_name": "Instruction/Data Coherence and Consistency",
+      "type": "unprivileged",
+      "version": "1.0.0",
+      "ratification_date": "2026-06"
     },
     {
       "id": "Zibi",
@@ -30475,10 +30480,10 @@
     {
       "id": "Smpmpmt",
       "name": "Smpmpmt",
-      "short": "PMP Machine Trap",
+      "short": "PMP-Based Memory Types",
       "tags": [],
       "desc": "A memory-type field in each PMP entry overrides the physical memory attributes for accesses that match it.",
-      "use": "PMP-related trap behavior",
+      "use": "Overriding memory attributes per PMP region",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "long_name": "PMP-based Memory Types Extension",
