@@ -517,10 +517,6 @@
         }
       ]
     },
-    "Ssptead": {
-      "requires": [],
-      "verified": "none"
-    },
     "Ssqosid": {
       "requires": [
         {
@@ -1063,10 +1059,6 @@
         }
       ]
     },
-    "Zcmlsd": {
-      "requires": [],
-      "verified": "none"
-    },
     "Zcmop": {
       "requires": [
         {
@@ -1310,10 +1302,6 @@
           "ref": "Zicntr.yaml requirements.extension"
         }
       ]
-    },
-    "Zicntrpmf": {
-      "requires": [],
-      "verified": "none"
     },
     "Zicond": {
       "requires": [],

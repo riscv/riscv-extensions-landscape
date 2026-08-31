@@ -18537,16 +18537,6 @@
       "state": "ratified",
       "ratification_date": "2025-02",
       "version": "1.0"
-    },
-    {
-      "id": "Zcmlsd",
-      "name": "Zcmlsd",
-      "short": "Compressed Mem-Loop",
-      "tags": [],
-      "desc": "Compressed Mem-Loop",
-      "use": "Compact memcpy/memset-style sequences",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
     }
   ],
   "z_float": [
@@ -27370,16 +27360,6 @@
       "version": "2.0.0"
     },
     {
-      "id": "Zicntrpmf",
-      "name": "Zicntrpmf",
-      "short": "Counter Filtering",
-      "tags": [],
-      "desc": "Counter Filtering",
-      "use": "Mode-based filtering for counters",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
-    },
-    {
       "id": "Zicsr",
       "name": "Zicsr",
       "short": "CSR Access",
@@ -30471,16 +30451,6 @@
       "tags": [],
       "desc": "VS CSR",
       "use": "Vector state control at S-mode",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
-    },
-    {
-      "id": "Ssptead",
-      "name": "Ssptead",
-      "short": "Sup PTE A/D (legacy)",
-      "tags": [],
-      "desc": "Superseded name for Svade, where a page fault is raised so software must set page-table A and D bits.",
-      "use": "Legacy name for Svade-style semantics",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
     },
