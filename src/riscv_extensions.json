@@ -27696,7 +27696,7 @@
       "tags": [],
       "desc": "Stricter consistency between instruction fetch and data accesses than the base ISA requires, easing run-time code patching.",
       "use": "Self-modifying and dynamically generated code",
-      "url": "https://github.com/riscv/riscv-isa-manual",
+      "url": "https://github.com/riscv/riscv-isa-manual/blob/main/src/unpriv/ziccid.adoc",
       "instructions": {},
       "state": "ratified",
       "long_name": "Instruction/Data Coherence and Consistency",
