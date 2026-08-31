@@ -27917,26 +27917,6 @@
       "version": "2.0.0"
     },
     {
-      "id": "Zilsm*",
-      "name": "Zilsm*",
-      "short": "Streaming Mem (pattern)",
-      "tags": [],
-      "desc": "Streaming Mem (pattern)",
-      "use": "Wildcard for Zilsm<x>b family",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
-    },
-    {
-      "id": "Zilsm<x>b",
-      "name": "Zilsm<x>b",
-      "short": "Streaming Mem (x-byte)",
-      "tags": [],
-      "desc": "Streaming Mem (x-byte)",
-      "use": "Line-size specific streaming ops",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
-    },
-    {
       "id": "Zilsme",
       "name": "Zilsme",
       "short": "Streaming Stores (exclusive)",
