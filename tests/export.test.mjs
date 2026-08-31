@@ -138,3 +138,41 @@ test('the UDB export is reproducible', () => {
   assert.equal(a, b);
   assert.ok(!/Generated:/.test(a), 'no timestamp');
 });
+
+/**
+ * A regression test that cannot go red is not a regression test.
+ *
+ * The first attempt at this assertion matched `^  - Sdext$` against the whole
+ * document. Privileged extensions are emitted in the general `extensions:` list
+ * as well, so the match landed there and the test passed even when nothing had
+ * reached `privilege_extensions:` at all. Scope every assertion to the block it
+ * is actually about.
+ */
+const section = (yaml, key) => {
+  const lines = yaml.split('\n');
+  const start = lines.indexOf(`${key}:`);
+  if (start === -1) return null;
+  const items = [];
+  for (let i = start + 1; i < lines.length; i++) {
+    if (/^[A-Za-z_]/.test(lines[i])) break; // next top-level key ends the block
+    const m = /^ {2}- (\S+)$/.exec(lines[i]);
+    if (m) items.push(m[1]);
+  }
+  return items;
+};
+
+test('every S-mode privileged family reaches privilege_extensions', () => {
+  // One representative per S-family. Sd* and Su* were classified as ordinary
+  // multi-letter extensions and silently fell through to `extensions:`.
+  const families = ['Sdext', 'Sdtrig', 'Sddbltrp', 'Supm', 'Smepmp', 'Sv39'];
+  const { yaml } = buildIsaConfigYaml(resolve(['RV64I', ...families]), ALL);
+  const priv = section(yaml, 'privilege_extensions');
+
+  assert.ok(priv, 'the export must contain a privilege_extensions block');
+  for (const ext of families) {
+    assert.ok(
+      priv.includes(ext),
+      `${ext} must appear under privilege_extensions; that block holds [${priv.join(', ')}]`,
+    );
+  }
+});
