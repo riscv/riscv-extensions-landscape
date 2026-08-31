@@ -20728,6 +20728,78 @@
       "state": "ratified",
       "ratification_date": "2021-11",
       "version": "1.0.0"
+    }
+  ],
+  "z_load_store": [
+    {
+      "id": "Zicclsm",
+      "name": "Zicclsm",
+      "short": "Misaligned L/S Support",
+      "tags": [],
+      "desc": "Requires misaligned loads and stores to work in cacheable coherent main memory, though possibly slowly.",
+      "use": "Software that assumes misaligned access works",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {},
+      "state": "ratified",
+      "ratification_date": "2023-03",
+      "version": "1.0.0"
+    },
+    {
+      "id": "Zilsd",
+      "name": "Zilsd",
+      "short": "Load/Store Pair for RV32",
+      "tags": [],
+      "desc": "Loads or stores an even-odd register pair in one RV32 instruction instead of two separate accesses.",
+      "use": "Streaming loads/stores (data)",
+      "url": "https://docs.riscv.org/reference/isa/unpriv/zilsd.html",
+      "instructions": {},
+      "state": "ratified",
+      "ratification_date": "2025-02",
+      "version": "1.0"
+    }
+  ],
+  "z_integer": [
+    {
+      "id": "Zicond",
+      "name": "Zicond",
+      "short": "Integer Conditional Ops",
+      "tags": [
+        "rv_zicond"
+      ],
+      "desc": "Conditional zeroing operations that let compilers build branchless selects in two-instruction sequences.",
+      "use": "Branchless selection on a condition",
+      "url": "https://docs.riscv.org/reference/isa/unpriv/zicond.html",
+      "instructions": {
+        "CZERO.EQZ": {
+          "encoding": "0000111----------101-----0110011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_zicond"
+          ],
+          "match": "0xe005033",
+          "mask": "0xfe00707f"
+        },
+        "CZERO.NEZ": {
+          "encoding": "0000111----------111-----0110011",
+          "variable_fields": [
+            "rd",
+            "rs1",
+            "rs2"
+          ],
+          "extension": [
+            "rv_zicond"
+          ],
+          "match": "0xe007033",
+          "mask": "0xfe00707f"
+        }
+      },
+      "state": "ratified",
+      "ratification_date": "2023-11",
+      "version": "1.0.0"
     },
     {
       "id": "Zmmul",
@@ -20806,78 +20878,6 @@
       },
       "state": "ratified",
       "ratification_date": "2022-06",
-      "version": "1.0.0"
-    }
-  ],
-  "z_load_store": [
-    {
-      "id": "Zicclsm",
-      "name": "Zicclsm",
-      "short": "Misaligned L/S Support",
-      "tags": [],
-      "desc": "Requires misaligned loads and stores to work in cacheable coherent main memory, though possibly slowly.",
-      "use": "Software that assumes misaligned access works",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {},
-      "state": "ratified",
-      "ratification_date": "2023-03",
-      "version": "1.0.0"
-    },
-    {
-      "id": "Zilsd",
-      "name": "Zilsd",
-      "short": "Load/Store Pair for RV32",
-      "tags": [],
-      "desc": "Loads or stores an even-odd register pair in one RV32 instruction instead of two separate accesses.",
-      "use": "Streaming loads/stores (data)",
-      "url": "https://docs.riscv.org/reference/isa/unpriv/zilsd.html",
-      "instructions": {},
-      "state": "ratified",
-      "ratification_date": "2025-02",
-      "version": "1.0"
-    }
-  ],
-  "z_integer": [
-    {
-      "id": "Zicond",
-      "name": "Zicond",
-      "short": "Integer Conditional Ops",
-      "tags": [
-        "rv_zicond"
-      ],
-      "desc": "Conditional zeroing operations that let compilers build branchless selects in two-instruction sequences.",
-      "use": "Branchless selection on a condition",
-      "url": "https://docs.riscv.org/reference/isa/unpriv/zicond.html",
-      "instructions": {
-        "CZERO.EQZ": {
-          "encoding": "0000111----------101-----0110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2"
-          ],
-          "extension": [
-            "rv_zicond"
-          ],
-          "match": "0xe005033",
-          "mask": "0xfe00707f"
-        },
-        "CZERO.NEZ": {
-          "encoding": "0000111----------111-----0110011",
-          "variable_fields": [
-            "rd",
-            "rs1",
-            "rs2"
-          ],
-          "extension": [
-            "rv_zicond"
-          ],
-          "match": "0xe007033",
-          "mask": "0xfe00707f"
-        }
-      },
-      "state": "ratified",
-      "ratification_date": "2023-11",
       "version": "1.0.0"
     }
   ],
@@ -23052,16 +23052,6 @@
       "version": "1.0.0"
     },
     {
-      "id": "Zvbc32e",
-      "name": "Zvbc32e",
-      "short": "Vector CLMUL (32E)",
-      "tags": [],
-      "desc": "Carryless multiply on 32-bit vector elements, bringing GCM and CRC acceleration to ELEN=32 embedded cores.",
-      "use": "Carry-less multiply on 32-bit elements",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
-    },
-    {
       "id": "Zvbdota",
       "name": "Zvbdota",
       "short": "Vector BF16 Dot-Acc",
@@ -23103,6 +23093,16 @@
     }
   ],
   "z_security": [
+    {
+      "id": "Smcfiss",
+      "name": "Smcfiss",
+      "short": "M-Mode Shadow Stack",
+      "tags": [],
+      "desc": "Enables Zicfiss shadow stacks in machine mode through mseccfg.MSSE, protecting firmware return addresses.",
+      "use": "Machine-level shadow stack config",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {}
+    },
     {
       "id": "Zicfilp",
       "name": "Zicfilp",
@@ -26580,6 +26580,16 @@
   ],
   "z_vector_crypto": [
     {
+      "id": "Zvbc32e",
+      "name": "Zvbc32e",
+      "short": "Vector CLMUL (32E)",
+      "tags": [],
+      "desc": "Carryless multiply on 32-bit vector elements, bringing GCM and CRC acceleration to ELEN=32 embedded cores.",
+      "use": "Carry-less multiply on 32-bit elements",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {}
+    },
+    {
       "id": "Zvk",
       "name": "Zvk",
       "short": "Vector Crypto (umbrella)",
@@ -27690,21 +27700,6 @@
   ],
   "z_system": [
     {
-      "id": "Ziccid",
-      "name": "Ziccid",
-      "short": "Instruction/Data Coherence",
-      "tags": [],
-      "desc": "Stricter consistency between instruction fetch and data accesses than the base ISA requires, easing run-time code patching.",
-      "use": "Self-modifying and dynamically generated code",
-      "url": "https://github.com/riscv/riscv-isa-manual/blob/main/src/unpriv/ziccid.adoc",
-      "instructions": {},
-      "state": "ratified",
-      "long_name": "Instruction/Data Coherence and Consistency",
-      "type": "unprivileged",
-      "version": "1.0.0",
-      "ratification_date": "2026-06"
-    },
-    {
       "id": "Zibi",
       "name": "Zibi",
       "short": "Branch with Immediate",
@@ -28728,6 +28723,21 @@
       "version": "1.0.0"
     },
     {
+      "id": "Ziccid",
+      "name": "Ziccid",
+      "short": "Instruction/Data Coherence",
+      "tags": [],
+      "desc": "Stricter consistency between instruction fetch and data accesses than the base ISA requires, easing run-time code patching.",
+      "use": "Self-modifying and dynamically generated code",
+      "url": "https://github.com/riscv/riscv-isa-manual/blob/main/src/unpriv/ziccid.adoc",
+      "instructions": {},
+      "state": "ratified",
+      "long_name": "Instruction/Data Coherence and Consistency",
+      "type": "unprivileged",
+      "version": "1.0.0",
+      "ratification_date": "2026-06"
+    },
+    {
       "id": "Ziccif",
       "name": "Ziccif",
       "short": "Inst-Fetch Atomicity",
@@ -29074,6 +29084,106 @@
       "ratification_date": "2024-10",
       "behavior": "Indicates that there is pointer-masking support available in supervisor mode,\nwith some facility provided in the application execution environment to control pointer masking.\n\nThis extension describes an execution environment but has no bearing on hardware implementations.\nIt is intended to be used",
       "version": "1.0.0"
+    },
+    {
+      "id": "Ssccptr",
+      "name": "Ssccptr",
+      "short": "Page-Table Reads in Main Memory",
+      "tags": [],
+      "desc": "Requires cacheable and coherent main memory to support hardware page-table reads during a walk.",
+      "use": "Hardware page-table walks in cacheable memory",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {},
+      "long_name": "Cacheable and coherent main memory page table reads",
+      "type": "privileged",
+      "state": "ratified",
+      "ratification_date": "2023-03",
+      "behavior": "Main memory regions with both the cacheability and coherence PMAs must support hardware page-table reads.\n\n[NOTE]\nThis extension was ratified with the RVA20 profiles.",
+      "version": "1.0.0"
+    },
+    {
+      "id": "Smvatag",
+      "name": "Smvatag",
+      "short": "VA Tagging (M)",
+      "tags": [],
+      "desc": "Holds M-mode memory-tagging tags in a virtually indexed table located by the new mvitt base register.",
+      "use": "Machine-level virtual-address tagging",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {}
+    },
+    {
+      "id": "Smepmp",
+      "name": "Smepmp",
+      "short": "Enhanced PMP",
+      "tags": [],
+      "desc": "Machine-mode access and execution prevention built on PMP, so firmware cannot reach untrusted memory by default.",
+      "use": "More flexible PMP rules",
+      "url": "https://docs.riscv.org/reference/isa/priv/smepmp.html",
+      "instructions": {},
+      "long_name": "PMP Enhancements for memory access and execution prevention on Machine mode",
+      "type": "privileged",
+      "state": "ratified",
+      "ratification_date": "2021-12",
+      "csrs": {
+        "mseccfg": {
+          "address": "0x747",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Security Configuration"
+        },
+        "mseccfgh": {
+          "address": "0x757",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Most significant 32 bits of Machine Security Configuration"
+        }
+      },
+      "version": "1.0.0"
+    },
+    {
+      "id": "Smmpm",
+      "name": "Smmpm",
+      "short": "Pointer Masking (M-mode)",
+      "tags": [],
+      "desc": "Pointer masking in M-mode, so tags kept in the upper bits of a pointer are ignored when the address is used.",
+      "use": "Tagged pointers in machine-mode software",
+      "url": "https://docs.riscv.org/reference/isa/priv/machine.html",
+      "instructions": {},
+      "long_name": "Pointer masking for M-mode",
+      "type": "privileged",
+      "state": "ratified",
+      "ratification_date": "2024-10",
+      "csrs": {
+        "mseccfg": {
+          "address": "0x747",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Security Configuration"
+        },
+        "mseccfgh": {
+          "address": "0x757",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Most significant 32 bits of Machine Security Configuration"
+        }
+      },
+      "version": "1.0.0"
+    },
+    {
+      "id": "Smnpm",
+      "name": "Smnpm",
+      "short": "Pointer Masking (next mode)",
+      "tags": [],
+      "desc": "Machine-level control of pointer masking for the next privilege level down, S/HS, or U when S is absent.",
+      "use": "Pointer masking below M-mode",
+      "url": "https://docs.riscv.org/reference/isa/priv/machine.html",
+      "instructions": {},
+      "long_name": "Pointer masking for next privilege level less than M-mode",
+      "type": "privileged",
+      "state": "ratified",
+      "ratification_date": "2024-10",
+      "behavior": "A machine-level extension that provides pointer masking for the next lower privilege mode\n(S/HS if S-mode is implemented, or U-mode otherwise).",
+      "version": "1.0.0"
     }
   ],
   "s_interrupt": [
@@ -29214,78 +29324,6 @@
       "version": "1.0.0"
     },
     {
-      "id": "Smcdeleg",
-      "name": "Smcdeleg",
-      "short": "M-Mode Counter Delegation",
-      "tags": [],
-      "desc": "Lets M-mode delegate performance counters and event selectors to S-mode, avoiding traps into machine mode.",
-      "use": "Delegates HPM counters to S",
-      "url": "https://docs.riscv.org/reference/isa/priv/smcdeleg.html",
-      "instructions": {},
-      "long_name": "Performance counter delegation",
-      "type": "privileged",
-      "state": "ratified",
-      "ratification_date": "2024-03",
-      "version": "1.0.0"
-    },
-    {
-      "id": "Smcntrpmf",
-      "name": "Smcntrpmf",
-      "short": "M-Mode Counter Filtering",
-      "tags": [],
-      "desc": "Stops the cycle and instret counters from counting in selected privilege modes, for cleaner measurements.",
-      "use": "Counting only selected privilege modes",
-      "url": "https://docs.riscv.org/reference/isa/priv/smcntrpmf.html",
-      "instructions": {},
-      "long_name": "Cycle and Instret Privilege Mode Filtering",
-      "type": "privileged",
-      "state": "ratified",
-      "ratification_date": "2023-08",
-      "csrs": {
-        "mcyclecfg": {
-          "address": "0x321",
-          "priv_mode": "M",
-          "length": 64,
-          "desc": "Machine Cycle Counter Configuration"
-        },
-        "mcyclecfgh": {
-          "address": "0x721",
-          "priv_mode": "M",
-          "length": 32,
-          "desc": "Machine Cycle Counter Configuration High"
-        },
-        "minstretcfg": {
-          "address": "0x322",
-          "priv_mode": "M",
-          "length": 64,
-          "desc": "Machine Instructions-Retired Counter Configuration"
-        },
-        "minstretcfgh": {
-          "address": "0x722",
-          "priv_mode": "M",
-          "length": 32,
-          "desc": "Machine Instructions-Retired Counter Configuration High"
-        }
-      },
-      "version": "1.0.0"
-    },
-    {
-      "id": "Ssccfg",
-      "name": "Ssccfg",
-      "short": "Counter Configuration (S)",
-      "tags": [],
-      "desc": "Supervisor-mode CSRs for configuring and inhibiting the performance counters that M-mode has delegated.",
-      "use": "Delegating counter configuration to supervisor",
-      "url": "https://docs.riscv.org/reference/isa/priv/smcdeleg.html",
-      "instructions": {},
-      "long_name": "Supervisor-mode counter configuration",
-      "type": "privileged",
-      "state": "ratified",
-      "ratification_date": "2024-03",
-      "behavior": "Supervisor-mode counter configuration",
-      "version": "1.0.0"
-    },
-    {
       "id": "Sscntrcfg",
       "name": "Sscntrcfg",
       "short": "S-Mode Counter Config",
@@ -29294,22 +29332,6 @@
       "use": "Supervisor counter configuration",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
-    },
-    {
-      "id": "Sscounterenw",
-      "name": "Sscounterenw",
-      "short": "Writable scounteren",
-      "tags": [],
-      "desc": "Every implemented hardware performance counter must have a writable enable bit in scounteren.",
-      "use": "Writable enables for HPMs",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {},
-      "long_name": "Support writeable enables for any supported counter",
-      "type": "privileged",
-      "state": "ratified",
-      "ratification_date": "2023-08",
-      "behavior": "For any hpmcounter that is not read-only zero, the corresponding bit in `scounteren` must be writable.\n\n[NOTE]\nThis extension was ratified with the RVA22 profiles.",
-      "version": "1.0.0"
     },
     {
       "id": "Sscofpmf",
@@ -29332,22 +29354,6 @@
           "desc": "Supervisor Count Overflow"
         }
       },
-      "version": "1.0.0"
-    },
-    {
-      "id": "Ssccptr",
-      "name": "Ssccptr",
-      "short": "Page-Table Reads in Main Memory",
-      "tags": [],
-      "desc": "Requires cacheable and coherent main memory to support hardware page-table reads during a walk.",
-      "use": "Hardware page-table walks in cacheable memory",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {},
-      "long_name": "Cacheable and coherent main memory page table reads",
-      "type": "privileged",
-      "state": "ratified",
-      "ratification_date": "2023-03",
-      "behavior": "Main memory regions with both the cacheability and coherence PMAs must support hardware page-table reads.\n\n[NOTE]\nThis extension was ratified with the RVA20 profiles.",
       "version": "1.0.0"
     },
     {
@@ -29432,6 +29438,106 @@
       },
       "state": "ratified",
       "ratification_date": "2024-06",
+      "version": "1.0.0"
+    },
+    {
+      "id": "Smsdia",
+      "name": "Smsdia",
+      "short": "Soft Debug/Instr",
+      "tags": [],
+      "desc": "Assigns IMSIC interrupt files and APLIC domains to individual supervisor domains for isolated delivery.",
+      "use": "Soft-debug / diagnostics assist",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {}
+    }
+  ],
+  "s_counters": [
+    {
+      "id": "Smcdeleg",
+      "name": "Smcdeleg",
+      "short": "M-Mode Counter Delegation",
+      "tags": [],
+      "desc": "Lets M-mode delegate performance counters and event selectors to S-mode, avoiding traps into machine mode.",
+      "use": "Delegates HPM counters to S",
+      "url": "https://docs.riscv.org/reference/isa/priv/smcdeleg.html",
+      "instructions": {},
+      "long_name": "Performance counter delegation",
+      "type": "privileged",
+      "state": "ratified",
+      "ratification_date": "2024-03",
+      "version": "1.0.0"
+    },
+    {
+      "id": "Smcntrpmf",
+      "name": "Smcntrpmf",
+      "short": "M-Mode Counter Filtering",
+      "tags": [],
+      "desc": "Stops the cycle and instret counters from counting in selected privilege modes, for cleaner measurements.",
+      "use": "Counting only selected privilege modes",
+      "url": "https://docs.riscv.org/reference/isa/priv/smcntrpmf.html",
+      "instructions": {},
+      "long_name": "Cycle and Instret Privilege Mode Filtering",
+      "type": "privileged",
+      "state": "ratified",
+      "ratification_date": "2023-08",
+      "csrs": {
+        "mcyclecfg": {
+          "address": "0x321",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Cycle Counter Configuration"
+        },
+        "mcyclecfgh": {
+          "address": "0x721",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Cycle Counter Configuration High"
+        },
+        "minstretcfg": {
+          "address": "0x322",
+          "priv_mode": "M",
+          "length": 64,
+          "desc": "Machine Instructions-Retired Counter Configuration"
+        },
+        "minstretcfgh": {
+          "address": "0x722",
+          "priv_mode": "M",
+          "length": 32,
+          "desc": "Machine Instructions-Retired Counter Configuration High"
+        }
+      },
+      "version": "1.0.0"
+    },
+    {
+      "id": "Ssccfg",
+      "name": "Ssccfg",
+      "short": "Counter Configuration (S)",
+      "tags": [],
+      "desc": "Supervisor-mode CSRs for configuring and inhibiting the performance counters that M-mode has delegated.",
+      "use": "Delegating counter configuration to supervisor",
+      "url": "https://docs.riscv.org/reference/isa/priv/smcdeleg.html",
+      "instructions": {},
+      "long_name": "Supervisor-mode counter configuration",
+      "type": "privileged",
+      "state": "ratified",
+      "ratification_date": "2024-03",
+      "behavior": "Supervisor-mode counter configuration",
+      "version": "1.0.0"
+    },
+    {
+      "id": "Sscounterenw",
+      "name": "Sscounterenw",
+      "short": "Writable scounteren",
+      "tags": [],
+      "desc": "Every implemented hardware performance counter must have a writable enable bit in scounteren.",
+      "use": "Writable enables for HPMs",
+      "url": "https://github.com/riscv/riscv-isa-manual",
+      "instructions": {},
+      "long_name": "Support writeable enables for any supported counter",
+      "type": "privileged",
+      "state": "ratified",
+      "ratification_date": "2023-08",
+      "behavior": "For any hpmcounter that is not read-only zero, the corresponding bit in `scounteren` must be writable.\n\n[NOTE]\nThis extension was ratified with the RVA22 profiles.",
       "version": "1.0.0"
     }
   ],
@@ -30152,64 +30258,6 @@
       "version": "1.0.0"
     },
     {
-      "id": "Smepmp",
-      "name": "Smepmp",
-      "short": "Enhanced PMP",
-      "tags": [],
-      "desc": "Machine-mode access and execution prevention built on PMP, so firmware cannot reach untrusted memory by default.",
-      "use": "More flexible PMP rules",
-      "url": "https://docs.riscv.org/reference/isa/priv/smepmp.html",
-      "instructions": {},
-      "long_name": "PMP Enhancements for memory access and execution prevention on Machine mode",
-      "type": "privileged",
-      "state": "ratified",
-      "ratification_date": "2021-12",
-      "csrs": {
-        "mseccfg": {
-          "address": "0x747",
-          "priv_mode": "M",
-          "length": 64,
-          "desc": "Machine Security Configuration"
-        },
-        "mseccfgh": {
-          "address": "0x757",
-          "priv_mode": "M",
-          "length": 32,
-          "desc": "Most significant 32 bits of Machine Security Configuration"
-        }
-      },
-      "version": "1.0.0"
-    },
-    {
-      "id": "Smmpm",
-      "name": "Smmpm",
-      "short": "Pointer Masking (M-mode)",
-      "tags": [],
-      "desc": "Pointer masking in M-mode, so tags kept in the upper bits of a pointer are ignored when the address is used.",
-      "use": "Tagged pointers in machine-mode software",
-      "url": "https://docs.riscv.org/reference/isa/priv/machine.html",
-      "instructions": {},
-      "long_name": "Pointer masking for M-mode",
-      "type": "privileged",
-      "state": "ratified",
-      "ratification_date": "2024-10",
-      "csrs": {
-        "mseccfg": {
-          "address": "0x747",
-          "priv_mode": "M",
-          "length": 64,
-          "desc": "Machine Security Configuration"
-        },
-        "mseccfgh": {
-          "address": "0x757",
-          "priv_mode": "M",
-          "length": 32,
-          "desc": "Most significant 32 bits of Machine Security Configuration"
-        }
-      },
-      "version": "1.0.0"
-    },
-    {
       "id": "Sm1p11",
       "name": "Sm1p11",
       "short": "Priv Spec M v1.11",
@@ -30422,16 +30470,6 @@
       "instructions": {}
     },
     {
-      "id": "Smcfiss",
-      "name": "Smcfiss",
-      "short": "M-Mode Shadow Stack",
-      "tags": [],
-      "desc": "Enables Zicfiss shadow stacks in machine mode through mseccfg.MSSE, protecting firmware return addresses.",
-      "use": "Machine-level shadow stack config",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
-    },
-    {
       "id": "Smdid",
       "name": "Smdid",
       "short": "Debug ID",
@@ -30462,22 +30500,6 @@
       "instructions": {}
     },
     {
-      "id": "Smnpm",
-      "name": "Smnpm",
-      "short": "Pointer Masking (next mode)",
-      "tags": [],
-      "desc": "Machine-level control of pointer masking for the next privilege level down, S/HS, or U when S is absent.",
-      "use": "Pointer masking below M-mode",
-      "url": "https://docs.riscv.org/reference/isa/priv/machine.html",
-      "instructions": {},
-      "long_name": "Pointer masking for next privilege level less than M-mode",
-      "type": "privileged",
-      "state": "ratified",
-      "ratification_date": "2024-10",
-      "behavior": "A machine-level extension that provides pointer masking for the next lower privilege mode\n(S/HS if S-mode is implemented, or U-mode otherwise).",
-      "version": "1.0.0"
-    },
-    {
       "id": "Smpmpmt",
       "name": "Smpmpmt",
       "short": "PMP-Based Memory Types",
@@ -30493,32 +30515,12 @@
       "version": "0.6"
     },
     {
-      "id": "Smsdia",
-      "name": "Smsdia",
-      "short": "Soft Debug/Instr",
-      "tags": [],
-      "desc": "Assigns IMSIC interrupt files and APLIC domains to individual supervisor domains for isolated delivery.",
-      "use": "Soft-debug / diagnostics assist",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
-    },
-    {
       "id": "Smtdeleg",
       "name": "Smtdeleg",
       "short": "Trap Delegation",
       "tags": [],
       "desc": "Delegates Sdtrig debug triggers to S-mode and VS-mode through indirect CSRs, avoiding traps into M-mode.",
       "use": "Fine-grain trap delegation controls",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
-    },
-    {
-      "id": "Smvatag",
-      "name": "Smvatag",
-      "short": "VA Tagging (M)",
-      "tags": [],
-      "desc": "Holds M-mode memory-tagging tags in a virtually indexed table located by the new mvitt base register.",
-      "use": "Machine-level virtual-address tagging",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
     },

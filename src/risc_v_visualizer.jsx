@@ -34,6 +34,7 @@ import {
   CircuitBoard,
   Shuffle,
   Timer,
+  Gauge,
   ServerCrash,
   KeyRound,
   Trash2,
@@ -3094,7 +3095,7 @@ const RISCVExplorer = () => {
                         className="text-[12px] font-semibold uppercase tracking-widest"
                         style={{ color: '#f87171' }}
                       >
-                        Security & CFI (Zi*)
+                        Security & CFI
                       </h3>
                       <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>
                         {extensions.z_security.length}
@@ -3273,6 +3274,31 @@ const RISCVExplorer = () => {
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         {extensions.s_interrupt.map((item) => (
+                          <ExtensionTile
+                            key={item.id}
+                            data={item}
+                            searchIndex={extensionSearchIndexById.get(item.id)}
+                            {...tileProps}
+                            colorClass="border-cyan-900/50 bg-cyan-950/20 text-cyan-100"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div className="space-y-2.5">
+                      <div className="flex items-center gap-1.5">
+                        <Gauge size={11} style={{ color: 'var(--riscv-text-3)' }} />
+                        <h4
+                          className="text-[11px] uppercase tracking-widest font-semibold"
+                          style={{ color: 'var(--riscv-text-3)' }}
+                        >
+                          Counters & Profiling
+                        </h4>
+                        <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>
+                          {extensions.s_counters.length}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        {extensions.s_counters.map((item) => (
                           <ExtensionTile
                             key={item.id}
                             data={item}
