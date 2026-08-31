@@ -3241,7 +3241,7 @@ const RISCVExplorer = () => {
                           className="text-[11px] uppercase tracking-widest font-semibold"
                           style={{ color: 'var(--riscv-text-3)' }}
                         >
-                          Memory (Sv)
+                          Memory & Addressing
                         </h4>
                         <span className="text-[11px]" style={{ color: 'var(--riscv-text-3)' }}>
                           {extensions.s_mem.length}
