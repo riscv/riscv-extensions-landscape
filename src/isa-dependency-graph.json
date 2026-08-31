@@ -4,7 +4,7 @@
   "sources": {
     "udb": {
       "repo": "riscv/riscv-unified-db",
-      "commit": "4ccbd72ee3f5003e44f695ff0e5f80604481300a",
+      "commit": "45924b13080fa52cd6f2ff4d934332fa62ac77e0",
       "branch": "main",
       "path": "spec/std/isa/ext"
     },
@@ -956,16 +956,6 @@
         }
       ]
     },
-    "Ziccid": {
-      "requires": [
-        {
-          "ext": "Ziccif",
-          "src": "udb",
-          "ref": "Ziccid.yaml requirements.extension"
-        }
-      ],
-      "verified": "udb"
-    },
     "Zcd": {
       "requires": [
         {
@@ -1231,6 +1221,15 @@
     "Ziccamoc": {
       "requires": [],
       "verified": "udb"
+    },
+    "Ziccid": {
+      "requires": [
+        {
+          "ext": "Ziccif",
+          "src": "udb",
+          "ref": "Ziccid.yaml requirements.extension"
+        }
+      ]
     },
     "Ziccif": {
       "requires": [],
@@ -1667,8 +1666,7 @@
           "src": "udb",
           "ref": "Zvfofp8min.yaml requirements.extension"
         }
-      ],
-      "verified": "udb"
+      ]
     },
     "Zvk": {
       "requires": [],
