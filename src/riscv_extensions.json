@@ -3,11 +3,12 @@
     {
       "id": "RV32I",
       "name": "RV32I",
+      "short": "Standard Integer Base (32-bit)",
       "tags": [
         "rv_i"
       ],
-      "desc": "Standard Integer Base (32-bit)",
-      "use": "Microcontrollers, IoT",
+      "desc": "Core 32-bit integer instruction set of loads, stores, arithmetic and branches that every RV32 core implements.",
+      "use": "Deeply embedded cores with a 32-bit address space",
       "instructions": {
         "ADD": {
           "encoding": "0000000----------000-----0110011",
@@ -538,12 +539,13 @@
     {
       "id": "RV64I",
       "name": "RV64I",
+      "short": "Standard Integer Base (64-bit)",
       "tags": [
         "rv64_i",
         "rv_i"
       ],
-      "desc": "Standard Integer Base (64-bit)",
-      "use": "Servers, Mobile, PC",
+      "desc": "The 64-bit integer base, widening registers and addresses to 64 bits for large-memory application-class systems.",
+      "use": "General-purpose software with 64-bit pointers",
       "instructions": {
         "ADDIW": {
           "encoding": "-----------------000-----0011011",
@@ -1231,10 +1233,11 @@
     {
       "id": "RV32E",
       "name": "RV32E",
+      "short": "Embedded Base (16 regs)",
       "tags": [
         "rv_i"
       ],
-      "desc": "Embedded Base (16 regs)",
+      "desc": "Halves the integer register file to 16 registers, cutting area and power in the smallest embedded cores.",
       "use": "Tiny cores (Reduced silicon)",
       "instructions": {
         "ADD": {
@@ -1764,11 +1767,12 @@
     {
       "id": "RV64E",
       "name": "RV64E",
+      "short": "Embedded Base (64-bit, 16 regs)",
       "tags": [
         "rv64_i",
         "rv_i"
       ],
-      "desc": "Embedded Base (64-bit, 16 regs)",
+      "desc": "Embedded 64-bit base with only 16 integer registers, trading register count for smaller, cheaper cores.",
       "use": "Efficient 64-bit controllers",
       "instructions": {
         "ADDIW": {
@@ -2455,8 +2459,9 @@
     {
       "id": "RV128I",
       "name": "RV128I",
-      "desc": "128-bit Address Space",
-      "use": "Experimental/Research",
+      "short": "128-bit Address Space",
+      "desc": "Widens the integer registers and the address space to 128 bits for machines that outgrow 64-bit addressing.",
+      "use": "Address spaces beyond 64 bits; encoding not final",
       "instructions": {},
       "url": "https://docs.riscv.org/reference/isa/v20240411/unpriv/rv128.html",
       "state": "draft",
@@ -2467,11 +2472,12 @@
     {
       "id": "A",
       "name": "A",
+      "short": "Atomics Bundle",
       "tags": [
         "rv64_a",
         "rv_a"
       ],
-      "desc": "Atomics Bundle",
+      "desc": "Atomic read-modify-write and load-reserved/store-conditional instructions for synchronizing harts sharing memory.",
       "use": "LR/SC & AMO ops in hardware",
       "discontinued": 0,
       "instructions": {
@@ -2812,9 +2818,10 @@
     {
       "id": "B",
       "name": "B",
+      "short": "Bit-Manip Bundle",
       "tags": [],
-      "desc": "Bit-Manip Bundle",
-      "use": "Aggregates Zba/Zbb/Zbc/Zbs",
+      "desc": "Umbrella for the Zba, Zbb and Zbs bit-manipulation extensions, signaled to software by a single misa bit.",
+      "use": "Aggregates Zba/Zbb/Zbs",
       "discontinued": 0,
       "instructions": {
         "ADD.UW": {
@@ -3376,12 +3383,13 @@
     {
       "id": "C",
       "name": "C",
+      "short": "Compressed",
       "tags": [
         "rv32_c",
         "rv64_c",
         "rv_c"
       ],
-      "desc": "Compressed",
+      "desc": "Short 16-bit encodings of common instructions, typically cutting program size by 25 to 30 percent.",
       "use": "16-bit instruction encodings",
       "discontinued": 0,
       "instructions": {
@@ -3815,12 +3823,13 @@
     {
       "id": "D",
       "name": "D",
+      "short": "Double-Precision Float (64-bit)",
       "tags": [
         "rv64_d",
         "rv_d"
       ],
-      "desc": "Double-Precision Float (64-bit)",
-      "use": "General-purpose FP, HPC",
+      "desc": "Double-precision IEEE 754 arithmetic on 64-bit floating-point registers, building on the F extension.",
+      "use": "Numerical code that needs 64-bit precision",
       "discontinued": 0,
       "instructions": {
         "FCVT.D.L": {
@@ -4258,11 +4267,12 @@
     {
       "id": "F",
       "name": "F",
+      "short": "Single-Precision Float (32-bit)",
       "tags": [
         "rv64_f",
         "rv_f"
       ],
-      "desc": "Single-Precision Float (32-bit)",
+      "desc": "Single-precision IEEE 754 arithmetic with 32 floating-point registers and a status register for rounding modes.",
       "use": "Basic floating-point workloads",
       "discontinued": 0,
       "instructions": {
@@ -4695,12 +4705,13 @@
     {
       "id": "H",
       "name": "H",
+      "short": "Hypervisor",
       "tags": [
         "rv64_h",
         "rv_h",
         "rv_svinval_h"
       ],
-      "desc": "Hypervisor",
+      "desc": "A second stage of address translation and a guest privilege mode so hypervisors can host guest operating systems.",
       "use": "Virtualization / VMs",
       "discontinued": 0,
       "instructions": {
@@ -5097,6 +5108,7 @@
     {
       "id": "K",
       "name": "K",
+      "short": "Crypto Umbrella (Scalar + Vector)",
       "tags": [],
       "desc": "Crypto Umbrella (Scalar + Vector)",
       "use": "Top-level tag signaling bundled Zk*/Zvk* NIST & ShangMi crypto support",
@@ -5107,11 +5119,12 @@
     {
       "id": "M",
       "name": "M",
+      "short": "Integer Multiply/Divide",
       "tags": [
         "rv64_m",
         "rv_m"
       ],
-      "desc": "Integer Multiply/Divide",
+      "desc": "Integer multiply and divide instructions, kept out of the base so minimal cores can leave them out.",
       "use": "Hardware multiplication and division",
       "discontinued": 0,
       "instructions": {
@@ -5293,8 +5306,9 @@
     {
       "id": "N",
       "name": "N",
+      "short": "User-Level Interrupts",
       "tags": [],
-      "desc": "User-Level Interrupts",
+      "desc": "Delivers traps directly to user mode so a handler can run without entering supervisor or machine mode.",
       "use": "User-mode interrupt handling",
       "discontinued": 1,
       "url": "https://github.com/riscv/riscv-isa-manual",
@@ -5303,8 +5317,9 @@
     {
       "id": "P",
       "name": "P",
+      "short": "Packed-SIMD",
       "tags": [],
-      "desc": "Packed-SIMD",
+      "desc": "Packed fixed-point SIMD arithmetic in the integer registers, aimed at DSP kernels on cores with no vector unit.",
       "use": "Packed SIMD / DSP-style operations",
       "discontinued": 0,
       "url": "https://github.com/riscv/riscv-isa-manual",
@@ -5313,11 +5328,12 @@
     {
       "id": "Q",
       "name": "Q",
+      "short": "Quad-Precision Float (128-bit)",
       "tags": [
         "rv64_q",
         "rv_q"
       ],
-      "desc": "Quad-Precision Float (128-bit)",
+      "desc": "Quad-precision IEEE 754 arithmetic on 128-bit floating-point registers, for math needing more range than double.",
       "use": "High-precision scientific math",
       "discontinued": 0,
       "instructions": {
@@ -5782,11 +5798,12 @@
     {
       "id": "S",
       "name": "S",
+      "short": "Supervisor ISA",
       "tags": [
         "rv_s"
       ],
-      "desc": "Supervisor ISA",
-      "use": "Supervisor privilege level (Volume II)",
+      "desc": "Supervisor privilege level with its own CSRs and address translation, the level an operating system kernel runs in.",
+      "use": "Running an operating system kernel",
       "discontinued": 0,
       "instructions": {
         "SFENCE.VMA": {
@@ -5917,10 +5934,11 @@
     {
       "id": "U",
       "name": "U",
+      "short": "User ISA",
       "tags": [
         "rv_u"
       ],
-      "desc": "User ISA",
+      "desc": "Least privileged execution level, where application code runs isolated from the kernel and the platform.",
       "use": "User privilege level (Volume II)",
       "discontinued": 0,
       "instructions": {
@@ -5968,10 +5986,11 @@
     {
       "id": "V",
       "name": "V",
+      "short": "Vector (RVV)",
       "tags": [
         "rv_v"
       ],
-      "desc": "Vector (RVV)",
+      "desc": "Variable-length vector registers and data-parallel operations that scale across implementations without recompiling.",
       "use": "Full RVV 1.0 vector ISA",
       "discontinued": 0,
       "instructions": {
@@ -14572,11 +14591,12 @@
     {
       "id": "Sm",
       "name": "Sm",
+      "short": "Machine ISA",
       "tags": [
         "rv_system"
       ],
-      "desc": "Machine ISA",
-      "use": "Machine privilege level (Volume II)",
+      "desc": "Machine privilege level, the highest one, entered at reset and used for low-level control of the hardware platform.",
+      "use": "Firmware and boot code at the highest privilege",
       "instructions": {
         "MRET": {
           "encoding": "00110000001000000000000001110011",
@@ -15947,12 +15967,13 @@
     {
       "id": "Zba",
       "name": "Zba",
+      "short": "Address-Generation Bitmanip",
       "tags": [
         "rv64_zba",
         "rv_zba"
       ],
-      "desc": "Address-Generation Bitmanip",
-      "use": "Shift/add address generation",
+      "desc": "Shift-and-add instructions that compute an array element address in one operation instead of several.",
+      "use": "Array indexing and pointer arithmetic",
       "instructions": {
         "ADD.UW": {
           "encoding": "0000100----------000-----0111011",
@@ -16067,12 +16088,13 @@
     {
       "id": "Zbb",
       "name": "Zbb",
+      "short": "Basic Bitmanip",
       "tags": [
         "rv64_zbb",
         "rv_zbb"
       ],
-      "desc": "Basic Bitmanip",
-      "use": "CLZ/CTZ, popcnt, min/max, etc.",
+      "desc": "Common bit and word operations such as count leading zeros, population count, min/max, rotate and sign extend.",
+      "use": "Bit counting, min/max and byte swapping",
       "instructions": {
         "CLZW": {
           "encoding": "011000000000-----001-----0011011",
@@ -16420,11 +16442,12 @@
     {
       "id": "Zbc",
       "name": "Zbc",
+      "short": "Carry-less Multiply",
       "tags": [
         "rv_zbc"
       ],
-      "desc": "Carry-less Multiply",
-      "use": "CRC, Galois-field crypto",
+      "desc": "Carry-less multiplication over GF(2) polynomials, the primitive behind CRC and Galois-field cryptography.",
+      "use": "CRC and Galois-field arithmetic",
       "instructions": {
         "CLMUL": {
           "encoding": "0000101----------001-----0110011",
@@ -16482,12 +16505,13 @@
     {
       "id": "Zbs",
       "name": "Zbs",
+      "short": "Single-Bit Ops",
       "tags": [
         "rv64_zbs",
         "rv_zbs"
       ],
-      "desc": "Single-Bit Ops",
-      "use": "Set/clear/invert bit in word",
+      "desc": "Set, clear, invert or test a single bit at a computed index without a mask-and-shift sequence.",
+      "use": "Bitmap and flag manipulation",
       "instructions": {
         "BCLRI": {
           "encoding": "010010-----------001-----0010011",
@@ -16604,8 +16628,9 @@
     {
       "id": "Za128rs",
       "name": "Za128rs",
+      "short": "128B Reservation Set",
       "tags": [],
-      "desc": "128B Reservation Set",
+      "desc": "Guarantees the LR/SC reservation set is contiguous, naturally aligned and no larger than 128 bytes.",
       "use": "Reservation set granularity (128-byte)",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
@@ -16616,8 +16641,9 @@
     {
       "id": "Za64rs",
       "name": "Za64rs",
+      "short": "64B Reservation Set",
       "tags": [],
-      "desc": "64B Reservation Set",
+      "desc": "Guarantees the LR/SC reservation set is contiguous, naturally aligned and no larger than 64 bytes.",
       "use": "Reservation set granularity (64-byte)",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
@@ -16628,9 +16654,10 @@
     {
       "id": "Zaamo",
       "name": "Zaamo",
+      "short": "Atomic Memory Operations",
       "tags": [],
-      "desc": "Atomic Memory Operations",
-      "use": "Defines atomic granularity",
+      "desc": "Atomic read-modify-write operations on memory such as swap, add, logical, min and max, with no LR/SC pair.",
+      "use": "Lock-free counters and shared-memory updates",
       "url": "https://docs.riscv.org/reference/isa/unpriv/a-st-ext.html",
       "instructions": {
         "AMOSWAP.W": {
@@ -16911,10 +16938,11 @@
     {
       "id": "Zabha",
       "name": "Zabha",
+      "short": "Byte/Halfword AMO",
       "tags": [
         "rv_zabha"
       ],
-      "desc": "Byte/Halfword AMO",
+      "desc": "Byte and halfword widths for the atomic memory operations, useful for subword locks, flags and counters.",
       "use": "Subword AMO support",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zabha.html",
       "instructions": {
@@ -17196,13 +17224,14 @@
     {
       "id": "Zacas",
       "name": "Zacas",
+      "short": "Atomic Compare-and-Swap",
       "tags": [
         "rv64_zacas",
         "rv_zabha_zacas",
         "rv_zacas"
       ],
-      "desc": "Atomic Compare-and-Swap",
-      "use": "Lock-free algorithms (CAS)",
+      "desc": "Compare-and-swap on words, doublewords and quadwords, the primitive that lock-free data structures need.",
+      "use": "Compare-and-swap concurrency primitives",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zacas.html",
       "instructions": {
         "AMOCAS.Q": {
@@ -17288,11 +17317,12 @@
     {
       "id": "Zalasr",
       "name": "Zalasr",
+      "short": "Load-Acquire/Store-Release",
       "tags": [
         "rv_zalasr"
       ],
-      "desc": "LR/SC Alias Rules",
-      "use": "Alias rules for LR/SC sequences",
+      "desc": "Load-acquire and store-release memory instructions, giving ordered accesses without full fences.",
+      "use": "Acquire/release synchronization without fences",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zalasr.html",
       "instructions": {
         "LB.AQ": {
@@ -17407,8 +17437,9 @@
     {
       "id": "Zalrsc",
       "name": "Zalrsc",
+      "short": "LR/SC Extension",
       "tags": [],
-      "desc": "LR/SC Extension",
+      "desc": "Load-reserved and store-conditional pairs used to build read-modify-write atomic sequences.",
       "use": "Extended LR/SC semantics",
       "url": "https://docs.riscv.org/reference/isa/unpriv/a-st-ext.html",
       "instructions": {
@@ -17478,8 +17509,9 @@
     {
       "id": "Zama16b",
       "name": "Zama16b",
+      "short": "16B Misaligned Atomicity",
       "tags": [],
-      "desc": "16B Misaligned Atomicity",
+      "desc": "Misaligned loads, stores, and AMOs that stay within an aligned 16-byte block execute atomically.",
       "use": "Misaligned atomicity granule (16 bytes)",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
@@ -17490,10 +17522,11 @@
     {
       "id": "Zawrs",
       "name": "Zawrs",
+      "short": "Wait-on-Reservation-Set",
       "tags": [
         "rv_zawrs"
       ],
-      "desc": "Wait-on-Reservation-Set",
+      "desc": "Lets a hart idle in a low-power state while polling a memory location for another agent's update.",
       "use": "Low-power waiting on LR/SC reservations",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zawrs.html",
       "instructions": {
@@ -17523,8 +17556,9 @@
     {
       "id": "Ziccrse",
       "name": "Ziccrse",
+      "short": "LR/SC Forward Progress",
       "tags": [],
-      "desc": "LR/SC Forward Progress",
+      "desc": "Main memory must eventually let a load-reserved/store-conditional loop succeed, so locks make progress.",
       "use": "Guarantees LR/SC forward progress",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
@@ -17537,8 +17571,9 @@
     {
       "id": "Zca",
       "name": "Zca",
+      "short": "Base Compressed (no FP)",
       "tags": [],
-      "desc": "Base Compressed (no FP)",
+      "desc": "The C extension's 16-bit encodings minus the floating-point loads and stores, for cores without an FPU.",
       "use": "Compressed base integer ops",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zc.html",
       "instructions": {
@@ -17971,11 +18006,12 @@
     {
       "id": "Zcb",
       "name": "Zcb",
+      "short": "Extra Compressed Integer",
       "tags": [
         "rv64_zcb",
         "rv_zcb"
       ],
-      "desc": "Extra Compressed Integer",
+      "desc": "Short 16-bit encodings for common byte, halfword, sign-extend, and multiply operations to shrink code.",
       "use": "More 16-bit ALU/control ops",
       "url": "https://docs.riscv.org/reference/isa/unpriv/scalar-crypto.html",
       "instructions": {
@@ -18130,10 +18166,11 @@
     {
       "id": "Zcd",
       "name": "Zcd",
+      "short": "Compressed Double Float",
       "tags": [
         "rv_c_d"
       ],
-      "desc": "Compressed Double Float",
+      "desc": "Shrinks double-precision code by encoding its floating-point loads and stores in 16 bits.",
       "use": "16-bit encodings for 64-bit FP",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zc.html",
       "instructions": {
@@ -18198,8 +18235,9 @@
     {
       "id": "Zce",
       "name": "Zce",
+      "short": "Embedded Compressed",
       "tags": [],
-      "desc": "Embedded Compressed",
+      "desc": "Bundles the code-size-reduction Zc extensions that microcontroller-class cores are expected to implement.",
       "use": "RV32E/RV64E-focused compressed subset",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zc.html",
       "instructions": {},
@@ -18210,10 +18248,11 @@
     {
       "id": "Zcf",
       "name": "Zcf",
+      "short": "Compressed Float Load/Store",
       "tags": [
         "rv32_c_f"
       ],
-      "desc": "Compressed Float Load/Store",
+      "desc": "Shrinks single-precision code on RV32 by encoding its floating-point loads and stores in 16 bits.",
       "use": "16-bit encodings for FP LD/ST",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zc.html",
       "instructions": {
@@ -18278,10 +18317,11 @@
     {
       "id": "Zcmp",
       "name": "Zcmp",
+      "short": "Push/Pop & Reg Save/Restore",
       "tags": [
         "rv_zcmp"
       ],
-      "desc": "Push/Pop & Reg Save/Restore",
+      "desc": "Single instructions that push or pop a list of saved registers, collapsing prologues and epilogues.",
       "use": "Stack push/pop, frame save",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zc.html",
       "instructions": {
@@ -18365,10 +18405,11 @@
     {
       "id": "Zcmt",
       "name": "Zcmt",
+      "short": "Compressed Table Jumps",
       "tags": [
         "rv_zcmt"
       ],
-      "desc": "Compressed Table Jumps",
+      "desc": "Calls functions through an index into a jump table, replacing call sequences with two-byte instructions.",
       "use": "Switch/jumptable compression",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zc.html",
       "instructions": {
@@ -18399,10 +18440,11 @@
     {
       "id": "Zcmop",
       "name": "Zcmop",
+      "short": "Compressed May-Be-Ops",
       "tags": [
         "rv_zcmop"
       ],
-      "desc": "Compressed May-Be-Ops",
+      "desc": "Reserves eight 16-bit no-op encodings that future extensions can redefine without breaking older code.",
       "use": "Reserved 16-bit NOP/future ops",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zimop.html",
       "instructions": {
@@ -18486,8 +18528,9 @@
     {
       "id": "Zclsd",
       "name": "Zclsd",
+      "short": "Compressed LS-Pair",
       "tags": [],
-      "desc": "Compressed LS-Pair",
+      "desc": "Loads or stores a register pair in a single 16-bit RV32 instruction, cutting code size further.",
       "use": "Compressed load/store pairs",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zilsd.html",
       "instructions": {},
@@ -18498,6 +18541,7 @@
     {
       "id": "Zcmlsd",
       "name": "Zcmlsd",
+      "short": "Compressed Mem-Loop",
       "tags": [],
       "desc": "Compressed Mem-Loop",
       "use": "Compact memcpy/memset-style sequences",
@@ -18509,9 +18553,10 @@
     {
       "id": "Zdinx",
       "name": "Zdinx",
+      "short": "FP in Integer Regs (D)",
       "tags": [],
-      "desc": "FP in Integer Regs (D)",
-      "use": "Double-precision FP in x-regs",
+      "desc": "Double-precision arithmetic carried out in integer register pairs, so no separate FP register file is needed.",
+      "use": "Double precision with no separate FP register file",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zfinx.html",
       "instructions": {
         "FMADD.D": {
@@ -18897,6 +18942,7 @@
     {
       "id": "Zfa",
       "name": "Zfa",
+      "short": "Additional FP Instructions",
       "tags": [
         "rv32_d_zfa",
         "rv64_q_zfa",
@@ -18905,8 +18951,8 @@
         "rv_q_zfa",
         "rv_zfh_zfa"
       ],
-      "desc": "Additional FP Instructions",
-      "use": "Fused ops, sign inject, etc.",
+      "desc": "Immediate loads, IEEE 754-2019 min/max, round-to-integer, and quiet comparisons missing from base FP.",
+      "use": "IEEE operations missing from base F and D",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zfa.html",
       "instructions": {
         "FMVH.X.D": {
@@ -19339,10 +19385,11 @@
     {
       "id": "Zfbfmin",
       "name": "Zfbfmin",
+      "short": "Minimal BF16 FP",
       "tags": [
         "rv_zfbfmin"
       ],
-      "desc": "Minimal BF16 FP",
+      "desc": "Converts between BFloat16 and 32-bit floats, making BF16 usable as a compact interchange format.",
       "use": "BFloat16 conversions and storage",
       "url": "https://docs.riscv.org/reference/isa/unpriv/bfloat16.html",
       "instructions": {
@@ -19380,12 +19427,13 @@
     {
       "id": "Zfh",
       "name": "Zfh",
+      "short": "Half-Precision FP (16-bit)",
       "tags": [
         "rv64_zfh",
         "rv_zfh"
       ],
-      "desc": "Half-Precision FP (16-bit)",
-      "use": "Low-precision FP (AI/graphics)",
+      "desc": "IEEE 754-2008 16-bit arithmetic, for workloads where reduced precision saves memory and power.",
+      "use": "Reduced-precision inference and signal processing",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zfh.html",
       "instructions": {
         "FCVT.H.L": {
@@ -19745,12 +19793,13 @@
     {
       "id": "Zfhmin",
       "name": "Zfhmin",
+      "short": "Minimal Half-Precision FP",
       "tags": [
         "rv_d_zfhmin",
         "rv_q_zfhmin",
         "rv_zfhmin"
       ],
-      "desc": "Minimal Half-Precision FP",
+      "desc": "Half-precision load, store, and conversion only, for code that stores in 16 bits but computes wider.",
       "use": "Conversions, no arithmetic",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zfh.html",
       "instructions": {
@@ -19891,9 +19940,10 @@
     {
       "id": "Zfinx",
       "name": "Zfinx",
+      "short": "FP in Integer Regs (F)",
       "tags": [],
-      "desc": "FP in Integer Regs (F)",
-      "use": "Single-precision FP in x-regs",
+      "desc": "Single-precision arithmetic carried out in the integer registers, cutting the cost of small cores.",
+      "use": "Single precision with no separate FP register file",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zfinx.html",
       "instructions": {
         "FMADD.S": {
@@ -20253,9 +20303,10 @@
     {
       "id": "Zhinx",
       "name": "Zhinx",
+      "short": "FP in Integer Regs (Half)",
       "tags": [],
-      "desc": "FP in Integer Regs (Half)",
-      "use": "Half-precision FP in x-regs",
+      "desc": "Half-precision arithmetic carried out in the integer registers instead of a separate FP register file.",
+      "use": "Half precision with no separate FP register file",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zfinx.html",
       "instructions": {
         "FMADD.H": {
@@ -20641,8 +20692,9 @@
     {
       "id": "Zhinxmin",
       "name": "Zhinxmin",
+      "short": "Minimal Half-in-Int",
       "tags": [],
-      "desc": "Minimal Half-in-Int",
+      "desc": "Half-precision conversion instructions only, operating on the integer registers rather than FP ones.",
       "use": "Minimal half-precision in x-regs",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zfinx.html",
       "instructions": {
@@ -20680,8 +20732,9 @@
     {
       "id": "Zmmul",
       "name": "Zmmul",
+      "short": "Multiply-Only (no DIV)",
       "tags": [],
-      "desc": "Multiply-Only (no DIV)",
+      "desc": "Integer multiply without divide, for low-cost cores where divider hardware is not worth the area.",
       "use": "Cheaper M subset (mul only)",
       "url": "https://docs.riscv.org/reference/isa/unpriv/m-st-ext.html",
       "instructions": {
@@ -20760,9 +20813,10 @@
     {
       "id": "Zicclsm",
       "name": "Zicclsm",
+      "short": "Misaligned L/S Support",
       "tags": [],
-      "desc": "Misaligned L/S Support",
-      "use": "Misaligned loads/stores in cacheable+coherent regions",
+      "desc": "Requires misaligned loads and stores to work in cacheable coherent main memory, though possibly slowly.",
+      "use": "Software that assumes misaligned access works",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "state": "ratified",
@@ -20772,8 +20826,9 @@
     {
       "id": "Zilsd",
       "name": "Zilsd",
+      "short": "Load/Store Pair for RV32",
       "tags": [],
-      "desc": "Load/Store Pair for RV32",
+      "desc": "Loads or stores an even-odd register pair in one RV32 instruction instead of two separate accesses.",
       "use": "Streaming loads/stores (data)",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zilsd.html",
       "instructions": {},
@@ -20786,11 +20841,12 @@
     {
       "id": "Zicond",
       "name": "Zicond",
+      "short": "Integer Conditional Ops",
       "tags": [
         "rv_zicond"
       ],
-      "desc": "Integer Conditional Ops",
-      "use": "Branchless selects / cmov",
+      "desc": "Conditional zeroing operations that let compilers build branchless selects in two-instruction sequences.",
+      "use": "Branchless selection on a condition",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zicond.html",
       "instructions": {
         "CZERO.EQZ": {
@@ -20829,8 +20885,9 @@
     {
       "id": "Zve",
       "name": "Zve",
+      "short": "Embedded Vector Base",
       "tags": [],
-      "desc": "Embedded Vector Base",
+      "desc": "Umbrella name for the Zve32x through Zve64d embedded vector subsets rather than an extension in its own right.",
       "use": "Baseline V subset for MCUs",
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {}
@@ -20838,8 +20895,9 @@
     {
       "id": "Zve32x",
       "name": "Zve32x",
+      "short": "Vec Int (32-bit, embedded)",
       "tags": [],
-      "desc": "Vec Int (32-bit, embedded)",
+      "desc": "Integer, fixed-point, mask, and permute vector operations on elements up to 32 bits, with no floating-point needed.",
       "use": "Int-only embedded vectors",
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
@@ -20850,9 +20908,10 @@
     {
       "id": "Zve32f",
       "name": "Zve32f",
+      "short": "Vec FP32 (embedded)",
       "tags": [],
-      "desc": "Vec FP32 (embedded)",
-      "use": "Embedded FP32 vector compute",
+      "desc": "Single-precision vector floating-point on top of the Zve32x embedded subset, with elements still capped at 32 bits.",
+      "use": "Embedded DSP with single-precision vectors",
       "url": "https://docs.riscv.org/reference/isa/unpriv/bfloat16.html",
       "instructions": {},
       "state": "ratified",
@@ -20862,8 +20921,9 @@
     {
       "id": "Zve64x",
       "name": "Zve64x",
+      "short": "Vec Int (64-bit, embedded)",
       "tags": [],
-      "desc": "Vec Int (64-bit, embedded)",
+      "desc": "Integer and fixed-point vector operations on elements up to 64 bits, for embedded cores that need no floating-point.",
       "use": "64-bit int embedded vectors",
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
@@ -20874,8 +20934,9 @@
     {
       "id": "Zve64f",
       "name": "Zve64f",
+      "short": "Vec FP32+Int (64-bit, embedded)",
       "tags": [],
-      "desc": "Vec FP32+Int (64-bit, embedded)",
+      "desc": "Single-precision vector floating-point alongside 64-bit integer elements, for embedded cores that skip FP64.",
       "use": "FP32 + 64-bit int vectors",
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
@@ -20886,8 +20947,9 @@
     {
       "id": "Zve64d",
       "name": "Zve64d",
+      "short": "Vec FP64+FP32+Int",
       "tags": [],
-      "desc": "Vec FP64+FP32+Int",
+      "desc": "Double-precision vector floating-point on top of Zve64f, completing embedded FP support at 64-bit element width.",
       "use": "Full FP64 embedded vectors",
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
@@ -20898,6 +20960,7 @@
     {
       "id": "Zv",
       "name": "Zv",
+      "short": "Vector Alias for V",
       "tags": [],
       "desc": "Vector Alias for V",
       "use": "ISA alias for full RVV",
@@ -20907,9 +20970,10 @@
     {
       "id": "Zvl32b",
       "name": "Zvl32b",
+      "short": "Min VLEN ≥ 32b",
       "tags": [],
-      "desc": "Min VLEN ≥ 32b",
-      "use": "Vector length capability",
+      "desc": "Guarantees a vector register length of at least 32 bits, so LMUL=1 holds only four byte-sized elements.",
+      "use": "Code that requires VLEN of at least 32 bits",
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
       "state": "ratified",
@@ -20919,9 +20983,10 @@
     {
       "id": "Zvl64b",
       "name": "Zvl64b",
+      "short": "Min VLEN ≥ 64b",
       "tags": [],
-      "desc": "Min VLEN ≥ 64b",
-      "use": "Vector length capability",
+      "desc": "Guarantees a vector register length of at least 64 bits, so LMUL=1 holds eight byte-sized elements.",
+      "use": "Code that requires VLEN of at least 64 bits",
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
       "state": "ratified",
@@ -20931,9 +20996,10 @@
     {
       "id": "Zvl128b",
       "name": "Zvl128b",
+      "short": "Min VLEN ≥ 128b",
       "tags": [],
-      "desc": "Min VLEN ≥ 128b",
-      "use": "Vector length capability",
+      "desc": "Guarantees a vector register length of at least 128 bits, the minimum the full V extension requires.",
+      "use": "Code that requires VLEN of at least 128 bits",
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
       "state": "ratified",
@@ -20943,9 +21009,10 @@
     {
       "id": "Zvl256b",
       "name": "Zvl256b",
+      "short": "Min VLEN ≥ 256b",
       "tags": [],
-      "desc": "Min VLEN ≥ 256b",
-      "use": "Vector length capability",
+      "desc": "Guarantees a vector register length of at least 256 bits, so LMUL=1 holds 32 byte-sized elements.",
+      "use": "Code that requires VLEN of at least 256 bits",
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
       "state": "ratified",
@@ -20955,9 +21022,10 @@
     {
       "id": "Zvl512b",
       "name": "Zvl512b",
+      "short": "Min VLEN ≥ 512b",
       "tags": [],
-      "desc": "Min VLEN ≥ 512b",
-      "use": "Vector length capability",
+      "desc": "Guarantees a vector register length of at least 512 bits, so LMUL=1 holds 64 byte-sized elements.",
+      "use": "Code that requires VLEN of at least 512 bits",
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
       "state": "ratified",
@@ -20967,9 +21035,10 @@
     {
       "id": "Zvl1024b",
       "name": "Zvl1024b",
+      "short": "Min VLEN ≥ 1024b",
       "tags": [],
-      "desc": "Min VLEN ≥ 1024b",
-      "use": "Vector length capability",
+      "desc": "Guarantees a vector register length of at least 1024 bits, so LMUL=1 holds 128 byte-sized elements.",
+      "use": "Code that requires VLEN of at least 1024 bits",
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {},
       "state": "ratified",
@@ -20979,6 +21048,7 @@
     {
       "id": "Zvf",
       "name": "Zvf",
+      "short": "Vector FP minimal",
       "tags": [],
       "desc": "Vector FP minimal",
       "use": "Minimal scalar-like vector FP",
@@ -20988,9 +21058,10 @@
     {
       "id": "Zvfh",
       "name": "Zvfh",
+      "short": "Vector Half-Precision FP",
       "tags": [],
-      "desc": "Vector Half-Precision FP",
-      "use": "16-bit FP vector arithmetic",
+      "desc": "Full IEEE binary16 arithmetic on vector elements, including compares, reductions, and 8-bit integer conversions.",
+      "use": "Half-precision vector arithmetic",
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {
         "VFADD.VV": {
@@ -22383,8 +22454,9 @@
     {
       "id": "Zvfhmin",
       "name": "Zvfhmin",
+      "short": "Vector Half-Precision Minimal",
       "tags": [],
-      "desc": "Vector Half-Precision Minimal",
+      "desc": "Converts vector elements between binary16 and binary32 only, for cheap half-precision storage without FP16 math.",
       "use": "Conv/storage, minimal Zvfh",
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {
@@ -22422,10 +22494,11 @@
     {
       "id": "Zvfbfmin",
       "name": "Zvfbfmin",
+      "short": "Vector BF16 Minimal",
       "tags": [
         "rv_zvfbfmin"
       ],
-      "desc": "Vector BF16 Minimal",
+      "desc": "Converts vector elements between BF16 and FP32, just enough to use BF16 as a compact interchange format.",
       "use": "BF16 conversions in vectors",
       "url": "https://docs.riscv.org/reference/isa/unpriv/bfloat16.html",
       "instructions": {
@@ -22463,8 +22536,9 @@
     {
       "id": "Zvfbfa",
       "name": "Zvfbfa",
+      "short": "Vector BF16 Arithmetic",
       "tags": [],
-      "desc": "Vector BF16 Arithmetic",
+      "desc": "Extends vector floating-point arithmetic to work on BF16 elements directly, beyond conversion and widening multiply-add.",
       "use": "BF16 arithmetic in vectors",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
@@ -22474,10 +22548,11 @@
     {
       "id": "Zvfbfwma",
       "name": "Zvfbfwma",
+      "short": "Vector BF16 Widening MAC",
       "tags": [
         "rv_zvfbfwma"
       ],
-      "desc": "Vector BF16 Widening MAC",
+      "desc": "Widening multiply-add over BF16 vector elements accumulating into FP32, the inner loop of BF16 matrix math.",
       "use": "BF16 GEMM-style MAC",
       "url": "https://docs.riscv.org/reference/isa/unpriv/bfloat16.html",
       "instructions": {
@@ -22517,10 +22592,11 @@
     {
       "id": "Zvfofp8min",
       "name": "Zvfofp8min",
+      "short": "Vector FP8 Minimal",
       "tags": [
         "rv_zvfofp8min"
       ],
-      "desc": "Vector FP8 Minimal",
+      "desc": "Basic vector conversions for the 8-bit OFP8 E4M3 and E5M2 float formats used in low-precision machine learning.",
       "use": "Minimal FP8 vector support",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {
@@ -22569,11 +22645,12 @@
     {
       "id": "Zvabd",
       "name": "Zvabd",
+      "short": "Vector Abs-Diff",
       "tags": [
         "rv_zvabd"
       ],
-      "desc": "Vector Abs-Diff",
-      "use": "Absolute-difference operations",
+      "desc": "Element-wise absolute difference on integer vectors, with widening accumulate forms for video and imaging.",
+      "use": "Absolute-difference kernels such as SAD",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {
         "VABD.VV": {
@@ -22652,10 +22729,11 @@
     {
       "id": "Zvbb",
       "name": "Zvbb",
+      "short": "Vector Bitmanip Base",
       "tags": [
         "rv_zvbb"
       ],
-      "desc": "Vector Bitmanip Base",
+      "desc": "Bit-level operations on vector elements such as and-not, bit and byte reversal, zero counts, and rotations.",
       "use": "Vectorized scalar Zbb ops",
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {
@@ -22904,11 +22982,12 @@
     {
       "id": "Zvbc",
       "name": "Zvbc",
+      "short": "Vector Carryless Multiply",
       "tags": [
         "rv_zvbc"
       ],
-      "desc": "Vector Carryless Multiply",
-      "use": "Vector CRC / GF ops",
+      "desc": "Carryless multiply on 64-bit vector elements, the primitive behind GHASH, elliptic-curve math, and CRC.",
+      "use": "Vectorized carry-less multiply for GCM",
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {
         "VCLMUL.VV": {
@@ -22975,17 +23054,19 @@
     {
       "id": "Zvbc32e",
       "name": "Zvbc32e",
+      "short": "Vector CLMUL (32E)",
       "tags": [],
-      "desc": "Vector CLMUL (32E)",
-      "use": "Carryless multiply for embedded vectors",
+      "desc": "Carryless multiply on 32-bit vector elements, bringing GCM and CRC acceleration to ELEN=32 embedded cores.",
+      "use": "Carry-less multiply on 32-bit elements",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
     },
     {
       "id": "Zvbdota",
       "name": "Zvbdota",
+      "short": "Vector BF16 Dot-Acc",
       "tags": [],
-      "desc": "Vector BF16 Dot-Acc",
+      "desc": "Batched dot products of one vector against eight others, accumulating eight results for tiled matrix multiply.",
       "use": "BF16 dot-product accumulate",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -22993,8 +23074,9 @@
     {
       "id": "Zvdota",
       "name": "Zvdota",
+      "short": "Vector Dot-Acc",
       "tags": [],
-      "desc": "Vector Dot-Acc",
+      "desc": "Reduces two vector register groups to one accumulated dot-product scalar, over integer, BF16, or FP8 data.",
       "use": "Generic FP dot-product accumulate",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -23002,8 +23084,9 @@
     {
       "id": "Zvdot4a",
       "name": "Zvdot4a",
+      "short": "Vector 4-way Dot-Acc",
       "tags": [],
-      "desc": "Vector 4-way Dot-Acc",
+      "desc": "Four-way dot product of the packed 8-bit integers inside each 32-bit vector element, accumulated in place.",
       "use": "4-way dot-product accumulate",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -23011,6 +23094,7 @@
     {
       "id": "Zvw",
       "name": "Zvw",
+      "short": "Vector Wide Groups",
       "tags": [],
       "desc": "Vector Wide Groups",
       "use": "Wider element/vector width options",
@@ -23022,10 +23106,11 @@
     {
       "id": "Zicfilp",
       "name": "Zicfilp",
+      "short": "CFI Landing Pads",
       "tags": [
         "rv_zicfilp"
       ],
-      "desc": "CFI Landing Pads",
+      "desc": "Marks valid indirect-branch targets with landing pads, trapping calls and jumps that land anywhere else.",
       "use": "Forward-edge CFI for calls",
       "url": "https://docs.riscv.org/reference/isa/unpriv/unpriv-cfi.html",
       "instructions": {
@@ -23063,10 +23148,11 @@
     {
       "id": "Zicfiss",
       "name": "Zicfiss",
+      "short": "CFI Shadow Stacks",
       "tags": [
         "rv_zicfiss"
       ],
-      "desc": "CFI Shadow Stacks",
+      "desc": "Keeps return addresses on a protected shadow stack and checks them on return, blocking stack-smashing ROP.",
       "use": "Backward-edge CFI (returns)",
       "url": "https://docs.riscv.org/reference/isa/unpriv/unpriv-cfi.html",
       "instructions": {
@@ -23116,10 +23202,11 @@
     {
       "id": "Zimop",
       "name": "Zimop",
+      "short": "May-Be-Ops (NOP family)",
       "tags": [
         "rv_zimop"
       ],
-      "desc": "May-Be-Ops (NOP family)",
+      "desc": "Reserves encodings that simply write zero today, letting later extensions redefine them without breaking old code.",
       "use": "Reserved NOP encodings for future",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zimop.html",
       "instructions": {
@@ -23621,13 +23708,14 @@
     {
       "id": "Zbkb",
       "name": "Zbkb",
+      "short": "Crypto Bitmanip",
       "tags": [
         "rv64_zbkb",
         "rv_zbkb",
         "rv32_zbkb"
       ],
-      "desc": "Crypto Bitmanip (byte)",
-      "use": "Byte-wise crypto bit ops",
+      "desc": "Rotations, byte packing, and bit reversal used heavily inside cipher and hash implementations.",
+      "use": "Rotations, pack and byte-reverse for crypto",
       "url": "https://docs.riscv.org/reference/isa/unpriv/b-st-ext.html",
       "instructions": {
         "PACKW": {
@@ -23887,10 +23975,11 @@
     {
       "id": "Zbkc",
       "name": "Zbkc",
+      "short": "Crypto Bitmanip (carryless)",
       "tags": [
         "rv_zbkc"
       ],
-      "desc": "Crypto Bitmanip (carryless)",
+      "desc": "Carry-less multiplication over GF(2) polynomials, the core operation behind AES-GCM's GHASH.",
       "use": "Carryless ops for crypto",
       "url": "https://docs.riscv.org/reference/isa/unpriv/b-st-ext.html",
       "instructions": {
@@ -23936,10 +24025,11 @@
     {
       "id": "Zbkx",
       "name": "Zbkx",
+      "short": "Crypto Bitmanip (crossbar)",
       "tags": [
         "rv_zbkx"
       ],
-      "desc": "Crypto Bitmanip (crossbar)",
+      "desc": "Crossbar permutations that build 4- and 8-bit lookup tables in registers for constant-time S-boxes.",
       "use": "Bit/byte crossbar operations",
       "url": "https://docs.riscv.org/reference/isa/unpriv/b-st-ext.html",
       "instructions": {
@@ -23983,13 +24073,14 @@
     {
       "id": "Zk",
       "name": "Zk",
+      "short": "Scalar Crypto Base",
       "tags": [
         "rv32_zk",
         "rv64_zk",
         "rv_zk"
       ],
-      "desc": "Scalar Crypto Base",
-      "use": "Top-level scalar crypto bundle",
+      "desc": "Shorthand bundle for the NIST scalar crypto suite, the entropy source CSR, and timing-safety guarantees.",
+      "use": "Selecting the standard scalar crypto bundle",
       "url": "https://docs.riscv.org/reference/isa/unpriv/scalar-crypto.html",
       "instructions": {
         "PACKW": {
@@ -24771,12 +24862,13 @@
     {
       "id": "Zkn",
       "name": "Zkn",
+      "short": "NIST Suite (Scalar)",
       "tags": [
         "rv32_zkn",
         "rv64_zkn",
         "rv_zkn"
       ],
-      "desc": "NIST Suite (Scalar)",
+      "desc": "Shorthand for the NIST-algorithm scalar set: AES encryption and decryption, SHA-2, and crypto bitmanip.",
       "use": "AES/SHA NIST suite",
       "url": "https://docs.riscv.org/reference/isa/unpriv/scalar-crypto.html",
       "instructions": {
@@ -25483,11 +25575,12 @@
     {
       "id": "Zknd",
       "name": "Zknd",
+      "short": "NIST AES Decrypt",
       "tags": [
         "rv32_zknd",
         "rv64_zknd"
       ],
-      "desc": "NIST AES Decrypt",
+      "desc": "Accelerates AES decryption rounds and the inverse key schedule in the general-purpose registers.",
       "use": "AES decryption instructions",
       "url": "https://docs.riscv.org/reference/isa/unpriv/scalar-crypto.html",
       "instructions": {
@@ -25607,11 +25700,12 @@
     {
       "id": "Zkne",
       "name": "Zkne",
+      "short": "NIST AES Encrypt",
       "tags": [
         "rv32_zkne",
         "rv64_zkne"
       ],
-      "desc": "NIST AES Encrypt",
+      "desc": "Accelerates AES encryption rounds and key expansion in the general-purpose registers.",
       "use": "AES encryption instructions",
       "url": "https://docs.riscv.org/reference/isa/unpriv/scalar-crypto.html",
       "instructions": {
@@ -25717,12 +25811,13 @@
     {
       "id": "Zknh",
       "name": "Zknh",
+      "short": "NIST Hash",
       "tags": [
         "rv32_zknh",
         "rv64_zknh",
         "rv_zknh"
       ],
-      "desc": "NIST Hash",
+      "desc": "Accelerates the round and message-schedule functions of SHA-256 and SHA-512 from the SHA-2 family.",
       "use": "SHA-2 hash instructions",
       "url": "https://docs.riscv.org/reference/isa/unpriv/scalar-crypto.html",
       "instructions": {
@@ -25936,11 +26031,12 @@
     {
       "id": "Zkr",
       "name": "Zkr",
+      "short": "Entropy Source",
       "tags": [
         "rv64_zkr",
         "rv_zkr"
       ],
-      "desc": "Entropy Source",
+      "desc": "Defines the seed CSR, which returns physical entropy for seeding cryptographic random bit generators.",
       "use": "True random source interface",
       "url": "https://docs.riscv.org/reference/isa/unpriv/scalar-crypto.html",
       "instructions": {
@@ -25988,12 +26084,13 @@
     {
       "id": "Zks",
       "name": "Zks",
+      "short": "ShangMi Suite (Scalar)",
       "tags": [
         "rv64_zks",
         "rv_zks"
       ],
-      "desc": "ShangMi Suite (Scalar)",
-      "use": "Chinese SMx crypto bundle",
+      "desc": "Shorthand for the Chinese ShangMi scalar set: the SM4 block cipher, the SM3 hash, and crypto bitmanip.",
+      "use": "ShangMi algorithms required in China",
       "url": "https://docs.riscv.org/reference/isa/unpriv/scalar-crypto.html",
       "instructions": {
         "PACKW": {
@@ -26382,10 +26479,11 @@
     {
       "id": "Zksed",
       "name": "Zksed",
+      "short": "SM4 Block Cipher",
       "tags": [
         "rv_zksed"
       ],
-      "desc": "SM4 Block Cipher",
+      "desc": "Accelerates the SM4 block cipher, whose single core operation serves both encryption and decryption.",
       "use": "SM4 encrypt/decrypt",
       "url": "https://docs.riscv.org/reference/isa/unpriv/scalar-crypto.html",
       "instructions": {
@@ -26427,10 +26525,11 @@
     {
       "id": "Zksh",
       "name": "Zksh",
+      "short": "SM3 Hash",
       "tags": [
         "rv_zksh"
       ],
-      "desc": "SM3 Hash",
+      "desc": "Accelerates the SM3 cryptographic hash, the ShangMi counterpart to SHA-256.",
       "use": "SM3 hash operations",
       "url": "https://docs.riscv.org/reference/isa/unpriv/scalar-crypto.html",
       "instructions": {
@@ -26468,9 +26567,10 @@
     {
       "id": "Zkt",
       "name": "Zkt",
+      "short": "Timing-Safe Crypto",
       "tags": [],
-      "desc": "Timing-Safe Crypto",
-      "use": "Data-independent latency constraints",
+      "desc": "Guarantees data-independent execution latency for a listed subset of instructions, closing timing leaks.",
+      "use": "Constant-time cryptographic implementations",
       "url": "https://docs.riscv.org/reference/isa/unpriv/scalar-crypto.html",
       "instructions": {},
       "state": "ratified",
@@ -26482,6 +26582,7 @@
     {
       "id": "Zvk",
       "name": "Zvk",
+      "short": "Vector Crypto (umbrella)",
       "tags": [],
       "desc": "Vector Crypto (umbrella)",
       "use": "Top-level vector crypto suite",
@@ -26491,8 +26592,9 @@
     {
       "id": "Zvkb",
       "name": "Zvkb",
+      "short": "Vector Crypto Bitmanip",
       "tags": [],
-      "desc": "Vector Crypto Bitmanip",
+      "desc": "Vector rotations, byte reversal, and and-not operations that underpin cipher and hash kernels.",
       "use": "Vector crypto bit ops",
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {},
@@ -26503,10 +26605,11 @@
     {
       "id": "Zvkg",
       "name": "Zvkg",
+      "short": "Vector GCM/GMAC",
       "tags": [
         "rv_zvkg"
       ],
-      "desc": "Vector GCM/GMAC",
+      "desc": "Vector GHASH instructions for the Galois-field multiply behind AES-GCM and GMAC authentication.",
       "use": "AES-GCM/GMAC acceleration",
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {
@@ -26543,8 +26646,9 @@
     {
       "id": "Zvkgs",
       "name": "Zvkgs",
+      "short": "Vector GCM Shim",
       "tags": [],
-      "desc": "Vector GCM Shim",
+      "desc": "Vector-scalar forms of the GHASH instructions, letting one hash key drive many blocks of GCM at once.",
       "use": "Profile-specific GCM subset",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -26552,11 +26656,12 @@
     {
       "id": "Zvkn",
       "name": "Zvkn",
+      "short": "Vector NIST Suite",
       "tags": [
         "rv_zvkn"
       ],
-      "desc": "Vector NIST Suite",
-      "use": "Vector AES/SHA suite",
+      "desc": "Shorthand for the vector NIST suite: AES, SHA-2 up to SHA-512, crypto bitmanip, and timing safety.",
+      "use": "Vectorized NIST algorithm suite",
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {
         "VAESDF.VS": {
@@ -26900,9 +27005,10 @@
     {
       "id": "Zvknc",
       "name": "Zvknc",
+      "short": "Vector NIST + CLMUL",
       "tags": [],
-      "desc": "Vector NIST + CLMUL",
-      "use": "NIST crypto with carryless multiply",
+      "desc": "Vector NIST algorithm suite bundled with carry-less multiply for Galois-field arithmetic.",
+      "use": "NIST suite plus carry-less multiply",
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {},
       "state": "ratified",
@@ -26912,10 +27018,11 @@
     {
       "id": "Zvkned",
       "name": "Zvkned",
+      "short": "Vector AES",
       "tags": [
         "rv_zvkned"
       ],
-      "desc": "Vector AES",
+      "desc": "Vector AES rounds and key schedule over 128-bit element groups, with data-independent timing.",
       "use": "Vector AES-ECB/CTR/GCM cores",
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {
@@ -27072,8 +27179,9 @@
     {
       "id": "Zvknf",
       "name": "Zvknf",
+      "short": "Vector AES Finite-field",
       "tags": [],
-      "desc": "Vector AES Finite-field",
+      "desc": "Proposed full-round AES-128 and AES-256 encrypt, decrypt, and key-schedule vector instructions.",
       "use": "Vector AES finite-field helpers",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -27081,9 +27189,10 @@
     {
       "id": "Zvkng",
       "name": "Zvkng",
+      "short": "Vector NIST + GCM",
       "tags": [],
-      "desc": "Vector NIST + GCM",
-      "use": "NIST suite + GCM vector bundle",
+      "desc": "Vector NIST algorithm suite bundled with the GHASH instructions for complete AES-GCM coverage.",
+      "use": "NIST suite plus GCM authentication",
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {},
       "state": "ratified",
@@ -27093,10 +27202,11 @@
     {
       "id": "Zvknha",
       "name": "Zvknha",
+      "short": "Vector SHA-2 (subset)",
       "tags": [
         "rv_zvknha"
       ],
-      "desc": "Vector SHA-2 (subset)",
+      "desc": "Vector acceleration of the SHA-256 rounds and message schedule, the 256-bit half of SHA-2.",
       "use": "Vector SHA-256 subset",
       "url": "https://docs.riscv.org/reference/isa/unpriv/v-st-ext.html",
       "instructions": {
@@ -27153,11 +27263,12 @@
     {
       "id": "Zvknhb",
       "name": "Zvknhb",
+      "short": "Vector SHA-2 (full)",
       "tags": [
         "rv_zvknhb"
       ],
-      "desc": "Vector SHA-2 (full)",
-      "use": "Vector SHA-256/512",
+      "desc": "Vector SHA-2 acceleration covering both SHA-256 and SHA-512, unlike the SHA-256-only Zvknha.",
+      "use": "SHA-512 hashing on vectors",
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {
         "VSHA2CH.VV": {
@@ -27213,10 +27324,11 @@
     {
       "id": "Zvks",
       "name": "Zvks",
+      "short": "Vector ShangMi Suite",
       "tags": [
         "rv_zvks"
       ],
-      "desc": "Vector ShangMi Suite",
+      "desc": "Shorthand for the vector ShangMi suite: SM4, SM3, crypto bitmanip, and data-independent timing.",
       "use": "Vector SMx algorithms",
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {
@@ -27439,9 +27551,10 @@
     {
       "id": "Zvksc",
       "name": "Zvksc",
+      "short": "Vector ShangMi + CLMUL",
       "tags": [],
-      "desc": "Vector ShangMi + CLMUL",
-      "use": "SMx with carryless multiply",
+      "desc": "Vector ShangMi algorithm suite bundled with carry-less multiply for Galois-field arithmetic.",
+      "use": "ShangMi suite plus carry-less multiply",
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {},
       "state": "ratified",
@@ -27451,10 +27564,11 @@
     {
       "id": "Zvksed",
       "name": "Zvksed",
+      "short": "Vector SM4",
       "tags": [
         "rv_zvksed"
       ],
-      "desc": "Vector SM4",
+      "desc": "Vector SM4 encryption, decryption, and key-schedule steps over 128-bit element groups.",
       "use": "Vector SM4 cipher",
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {
@@ -27506,8 +27620,9 @@
     {
       "id": "Zvksg",
       "name": "Zvksg",
+      "short": "Vector ShangMi + GCM",
       "tags": [],
-      "desc": "Vector ShangMi + GCM",
+      "desc": "Vector ShangMi algorithm suite bundled with the GHASH instructions for GCM authentication.",
       "use": "ShangMi + GCM vectors",
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {},
@@ -27518,11 +27633,12 @@
     {
       "id": "Zvksh",
       "name": "Zvksh",
+      "short": "Vector SM3 Hash",
       "tags": [
         "rv_zvksh"
       ],
-      "desc": "Vector SM3 Hash",
-      "use": "Vector SM3",
+      "desc": "Vector SM3 acceleration covering message expansion and compression over 256-bit element groups.",
+      "use": "SM3 hashing on vectors",
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {
         "VSM3C.VI": {
@@ -27561,9 +27677,10 @@
     {
       "id": "Zvkt",
       "name": "Zvkt",
+      "short": "Vector Timing-Safe Crypto",
       "tags": [],
-      "desc": "Vector Timing-Safe Crypto",
-      "use": "Vector data-independent latency",
+      "desc": "Guarantees that a listed set of vector instructions runs in time independent of data values, closing timing side channels.",
+      "use": "Constant-time vector cryptography",
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {},
       "state": "ratified",
@@ -27573,22 +27690,29 @@
   ],
   "z_system": [
     {
-      "id": "Zccid",
-      "name": "Zccid",
+      "id": "Ziccid",
+      "name": "Ziccid",
+      "short": "Instruction/Data Coherence",
       "tags": [],
-      "desc": "Cache-Block ID",
-      "use": "Cache block identity / debugging",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
+      "desc": "Stricter consistency between instruction fetch and data accesses than the base ISA requires, easing run-time code patching.",
+      "use": "Self-modifying and dynamically generated code",
+      "url": "https://github.com/riscv/riscv-isa-manual/blob/main/src/unpriv/ziccid.adoc",
+      "instructions": {},
+      "state": "ratified",
+      "long_name": "Instruction/Data Coherence and Consistency",
+      "type": "unprivileged",
+      "version": "1.0.0",
+      "ratification_date": "2026-06"
     },
     {
       "id": "Zibi",
       "name": "Zibi",
+      "short": "Branch with Immediate",
       "tags": [
         "rv_zibi"
       ],
-      "desc": "Interruptible Mem Ops",
-      "use": "Interruptible load/store semantics",
+      "desc": "Conditional branches that compare a register against a small constant, avoiding a separate load of that constant.",
+      "use": "Loops and comparisons against small constants",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {
         "BEQI": {
@@ -27624,12 +27748,13 @@
     {
       "id": "Zicntr",
       "name": "Zicntr",
+      "short": "Base Counters/Timers",
       "tags": [
         "rv_zicntr",
         "rv32_zicntr"
       ],
-      "desc": "Base Counters/Timers",
-      "use": "cycle/instret + timers",
+      "desc": "Unprivileged read access to the CYCLE, TIME and INSTRET counters for cycle count, real time and instructions retired.",
+      "use": "Cycle and instruction counting for profiling",
       "url": "https://docs.riscv.org/reference/isa/unpriv/counters.html",
       "instructions": {
         "RDCYCLE": {
@@ -27756,6 +27881,7 @@
     {
       "id": "Zicntrpmf",
       "name": "Zicntrpmf",
+      "short": "Counter Filtering",
       "tags": [],
       "desc": "Counter Filtering",
       "use": "Mode-based filtering for counters",
@@ -27765,11 +27891,12 @@
     {
       "id": "Zicsr",
       "name": "Zicsr",
+      "short": "CSR Access",
       "tags": [
         "rv_zicsr"
       ],
-      "desc": "CSR Access",
-      "use": "Explicit CSR read/write",
+      "desc": "Instructions to read, write and atomically modify control and status registers, the interface to most machine state.",
+      "use": "Any code that reads or writes CSRs",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zicsr.html",
       "instructions": {
         "CSRRC": {
@@ -27858,10 +27985,11 @@
     {
       "id": "Zifencei",
       "name": "Zifencei",
+      "short": "Instruction-Fetch Fence",
       "tags": [
         "rv_zifencei"
       ],
-      "desc": "Instruction-Fetch Fence",
+      "desc": "FENCE.I synchronizes a hart's writes to instruction memory with its own instruction fetches, as JITs and loaders require.",
       "use": "Sync I-cache with writes",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zifencei.html",
       "instructions": {
@@ -27886,10 +28014,11 @@
     {
       "id": "Zihintntl",
       "name": "Zihintntl",
+      "short": "Non-Temporal Locality Hints",
       "tags": [
         "rv_zihintntl"
       ],
-      "desc": "Non-Temporal Locality Hints",
+      "desc": "Hints marking the next memory access as having poor temporal locality, so caches need not retain the data.",
       "use": "NT load/store hints",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zihintntl.html",
       "instructions": {
@@ -27941,10 +28070,11 @@
     {
       "id": "Zihintpause",
       "name": "Zihintpause",
+      "short": "Pause Hint",
       "tags": [
         "rv_zihintpause"
       ],
-      "desc": "Pause Hint",
+      "desc": "PAUSE hints that the hart should slow instruction retirement, cutting energy waste in spin-wait loops.",
       "use": "Power-friendly spin-wait",
       "url": "https://docs.riscv.org/reference/isa/unpriv/zihintpause.html",
       "instructions": {
@@ -27966,8 +28096,9 @@
     {
       "id": "Zihpm",
       "name": "Zihpm",
+      "short": "Perf Counters",
       "tags": [],
-      "desc": "Perf Counters",
+      "desc": "Up to 29 programmable event counters, hpmcounter3 through hpmcounter31, for profiling and performance tuning.",
       "use": "Hardware performance monitors",
       "url": "https://docs.riscv.org/reference/isa/unpriv/counters.html",
       "instructions": {},
@@ -28328,6 +28459,7 @@
     {
       "id": "Zilsm*",
       "name": "Zilsm*",
+      "short": "Streaming Mem (pattern)",
       "tags": [],
       "desc": "Streaming Mem (pattern)",
       "use": "Wildcard for Zilsm<x>b family",
@@ -28337,6 +28469,7 @@
     {
       "id": "Zilsm<x>b",
       "name": "Zilsm<x>b",
+      "short": "Streaming Mem (x-byte)",
       "tags": [],
       "desc": "Streaming Mem (x-byte)",
       "use": "Line-size specific streaming ops",
@@ -28346,6 +28479,7 @@
     {
       "id": "Zilsme",
       "name": "Zilsme",
+      "short": "Streaming Stores (exclusive)",
       "tags": [],
       "desc": "Streaming Stores (exclusive)",
       "use": "Streaming store hints",
@@ -28355,6 +28489,7 @@
     {
       "id": "Zilsmea",
       "name": "Zilsmea",
+      "short": "Streaming Stores (alloc)",
       "tags": [],
       "desc": "Streaming Stores (alloc)",
       "use": "Streaming store + allocate",
@@ -28364,6 +28499,7 @@
     {
       "id": "Zilsp",
       "name": "Zilsp",
+      "short": "Streaming LS (prefetch)",
       "tags": [],
       "desc": "Streaming LS (prefetch)",
       "use": "Streaming prefetch hints",
@@ -28373,6 +28509,7 @@
     {
       "id": "Zimt",
       "name": "Zimt",
+      "short": "Time Instructions",
       "tags": [],
       "desc": "Time Instructions",
       "use": "Extended time/TIMECMP instructions",
@@ -28382,6 +28519,7 @@
     {
       "id": "Zitagelide",
       "name": "Zitagelide",
+      "short": "Tag & ELIDE",
       "tags": [],
       "desc": "Tag & ELIDE",
       "use": "Tagged-memory / elide behaviors",
@@ -28391,8 +28529,9 @@
     {
       "id": "Zjid",
       "name": "Zjid",
+      "short": "ICache Coherence Alt",
       "tags": [],
-      "desc": "ICache Coherence Alt",
+      "desc": "Draft J-extension mechanism for instruction and data synchronization, offered as an alternative to Zifencei's FENCE.I.",
       "use": "Alternative to Zifencei for I-cache coherence",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -28400,8 +28539,9 @@
     {
       "id": "Zjpm",
       "name": "Zjpm",
+      "short": "Pointer-Mask Qualifier",
       "tags": [],
-      "desc": "Pointer-Mask Qualifier",
+      "desc": "Pointer masking lets a hart ignore upper address bits so software can keep tags there, as HWASAN-style checkers do.",
       "use": "Auxiliary pointer-masking semantics",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -28409,8 +28549,9 @@
     {
       "id": "Ztso",
       "name": "Ztso",
+      "short": "Total Store Ordering",
       "tags": [],
-      "desc": "Total Store Ordering",
+      "desc": "Stricter memory ordering in which every load and store carries implicit acquire or release semantics, as on x86.",
       "use": "x86-style TSO memory model",
       "url": "https://docs.riscv.org/reference/isa/unpriv/ztso-st-ext.html",
       "instructions": {},
@@ -28423,9 +28564,10 @@
     {
       "id": "Zic64b",
       "name": "Zic64b",
+      "short": "64B Cache Blocks",
       "tags": [],
-      "desc": "64B Cache Blocks",
-      "use": "Requires 64B naturally aligned cache lines",
+      "desc": "Asserts that cache blocks are exactly 64 bytes and naturally aligned, which cache-block instructions rely on.",
+      "use": "Software tuned to a 64-byte cache line",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "state": "ratified",
@@ -28435,9 +28577,10 @@
     {
       "id": "Zicbom",
       "name": "Zicbom",
+      "short": "Cache Management Operations",
       "tags": [],
-      "desc": "Cache Management Operations",
-      "use": "Invalidate/clean/flush blocks",
+      "desc": "Instructions to invalidate, clean or flush a cache block by address, for DMA and device-shared buffers.",
+      "use": "Keeping caches coherent with DMA and devices",
       "url": "https://docs.riscv.org/reference/isa/unpriv/cmo.html",
       "instructions": {
         "CBO.CLEAN": {
@@ -28481,11 +28624,12 @@
     {
       "id": "Zicbop",
       "name": "Zicbop",
+      "short": "Cache Prefetch",
       "tags": [
         "rv_zicbop"
       ],
-      "desc": "Cache Prefetch",
-      "use": "Prefetch cache blocks",
+      "desc": "Software-directed prefetch of a cache block for reading, writing or instruction fetch, to hide memory latency.",
+      "use": "Prefetching ahead of streaming access",
       "url": "https://docs.riscv.org/reference/isa/unpriv/cmo.html",
       "instructions": {
         "PREFETCH.I": {
@@ -28535,8 +28679,9 @@
     {
       "id": "Zicboz",
       "name": "Zicboz",
+      "short": "Cache Block Zero",
       "tags": [],
-      "desc": "Cache Block Zero",
+      "desc": "Zeroes a whole cache block in one instruction, speeding memset and bulk clearing of memory.",
       "use": "Fast memset-to-zero",
       "url": "https://docs.riscv.org/reference/isa/unpriv/cmo.html",
       "instructions": {
@@ -28559,8 +28704,9 @@
     {
       "id": "Ziccamoa",
       "name": "Ziccamoa",
+      "short": "Atomics PMA",
       "tags": [],
-      "desc": "Atomics PMA",
+      "desc": "Asserts that cacheable, coherent main memory supports every arithmetic atomic operation in the A extension.",
       "use": "PMA guarantees for A-extension atomics",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
@@ -28571,8 +28717,9 @@
     {
       "id": "Ziccamoc",
       "name": "Ziccamoc",
+      "short": "CAS PMA",
       "tags": [],
-      "desc": "CAS PMA",
+      "desc": "Asserts that cacheable, coherent main memory supports compare-and-swap atomics at the AMOCASQ level.",
       "use": "PMA guarantees for CAS-style atomics",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
@@ -28583,9 +28730,10 @@
     {
       "id": "Ziccif",
       "name": "Ziccif",
+      "short": "Inst-Fetch Atomicity",
       "tags": [],
-      "desc": "Inst-Fetch Atomicity",
-      "use": "Atomic I-fetch in cacheable+coherent regions",
+      "desc": "Asserts that cacheable, coherent main memory supports instruction fetch and that aligned fetches are atomic.",
+      "use": "Patching instructions at run time",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "state": "ratified",
@@ -28597,9 +28745,10 @@
     {
       "id": "Sv32",
       "name": "Sv32",
+      "short": "Virtual Memory, 32-bit",
       "tags": [],
-      "desc": "Virtual Memory, 32-bit",
-      "use": "2-level page tables (RV32 Linux)",
+      "desc": "Two-level page tables map 32-bit virtual addresses to 34-bit physical addresses on RV32 systems.",
+      "use": "Paged virtual memory on RV32",
       "url": "https://docs.riscv.org/reference/isa/priv/supervisor.html",
       "instructions": {},
       "long_name": "32-bit virtual address translation (2 level)",
@@ -28612,9 +28761,10 @@
     {
       "id": "Sv39",
       "name": "Sv39",
+      "short": "Virtual Memory, 39-bit VA",
       "tags": [],
-      "desc": "Virtual Memory, 39-bit VA",
-      "use": "3-level page tables (RV64 Linux)",
+      "desc": "Three-level page tables give RV64 harts a 39-bit virtual address space, the usual choice for Linux.",
+      "use": "Paged virtual memory with a 512 GB address space",
       "url": "https://docs.riscv.org/reference/isa/priv/supervisor.html",
       "instructions": {},
       "long_name": "39-bit virtual address translation (3 level)",
@@ -28627,9 +28777,10 @@
     {
       "id": "Sv48",
       "name": "Sv48",
+      "short": "Virtual Memory, 48-bit VA",
       "tags": [],
-      "desc": "Virtual Memory, 48-bit VA",
-      "use": "4-level page tables",
+      "desc": "Four-level page tables widen the RV64 virtual address space to 48 bits for larger memory footprints.",
+      "use": "Paged virtual memory with a 256 TB address space",
       "url": "https://docs.riscv.org/reference/isa/priv/supervisor.html",
       "instructions": {},
       "long_name": "48-bit virtual address translation (4 level)",
@@ -28642,9 +28793,10 @@
     {
       "id": "Sv57",
       "name": "Sv57",
+      "short": "Virtual Memory, 57-bit VA",
       "tags": [],
-      "desc": "Virtual Memory, 57-bit VA",
-      "use": "5-level page tables",
+      "desc": "Five-level page tables widen the RV64 virtual address space to 57 bits for very large memory footprints.",
+      "use": "Paged virtual memory with a 128 PB address space",
       "url": "https://docs.riscv.org/reference/isa/priv/supervisor.html",
       "instructions": {},
       "long_name": "57-bit virtual address translation (5 level)",
@@ -28656,9 +28808,10 @@
     {
       "id": "Svbare",
       "name": "Svbare",
+      "short": "Bare Mode",
       "tags": [],
-      "desc": "Bare Mode",
-      "use": "No address translation (satp bare)",
+      "desc": "Requires satp mode Bare, so supervisor software can run with address translation switched off.",
+      "use": "Systems that run without address translation",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "long_name": "Bare virtual addressing",
@@ -28671,8 +28824,9 @@
     {
       "id": "Svpbmt",
       "name": "Svpbmt",
+      "short": "Page-Based Memory Types",
       "tags": [],
-      "desc": "Page-Based Memory Types",
+      "desc": "Two PTE bits set a page's memory type as non-cacheable or I/O, overriding the region's default attributes.",
       "use": "Per-page memory types / cacheability",
       "url": "https://docs.riscv.org/reference/isa/priv/supervisor.html",
       "instructions": {},
@@ -28699,8 +28853,9 @@
     {
       "id": "Svnapot",
       "name": "Svnapot",
+      "short": "NAPOT Mappings",
       "tags": [],
-      "desc": "NAPOT Mappings",
+      "desc": "Marks a naturally aligned power-of-two run of pages as one translation, easing TLB pressure on large mappings.",
       "use": "Hugepages via NAPOT PTEs",
       "url": "https://docs.riscv.org/reference/isa/priv/supervisor.html",
       "instructions": {},
@@ -28714,10 +28869,11 @@
     {
       "id": "Svinval",
       "name": "Svinval",
+      "short": "Fine-Grained TLB Invalidate",
       "tags": [
         "rv_svinval"
       ],
-      "desc": "Fine-Grained TLB Invalidate",
+      "desc": "Splits the SFENCE.VMA family into finer invalidate and ordering operations that pipeline better on wide cores.",
       "use": "Fine-grain TLB shootdown instructions",
       "url": "https://docs.riscv.org/reference/isa/priv/supervisor.html",
       "instructions": {
@@ -28759,9 +28915,10 @@
     {
       "id": "Svade",
       "name": "Svade",
+      "short": "Access/Dirty Exceptions",
       "tags": [],
-      "desc": "Access/Dirty Exceptions",
-      "use": "Page-fault on A/D bit issues",
+      "desc": "Hardware never updates the accessed and dirty bits in a PTE; it raises a page fault so software can set them.",
+      "use": "Hardware that traps rather than sets A/D bits",
       "url": "https://docs.riscv.org/reference/isa/priv/hypervisor.html",
       "instructions": {},
       "long_name": "Exception on PTE A/D Bits",
@@ -28774,8 +28931,9 @@
     {
       "id": "Svadu",
       "name": "Svadu",
+      "short": "Access/Dirty Update",
       "tags": [],
-      "desc": "Access/Dirty Update",
+      "desc": "Hardware sets the accessed and dirty bits in page table entries, sparing software a fault on every update.",
       "use": "Hardware A/D-bit updates",
       "url": "https://docs.riscv.org/reference/isa/priv/supervisor.html",
       "instructions": {},
@@ -28802,8 +28960,9 @@
     {
       "id": "Svvptc",
       "name": "Svvptc",
+      "short": "Visible PTE Changes",
       "tags": [],
-      "desc": "Visible PTE Changes",
+      "desc": "Invalid-to-valid PTE updates become visible to the hart within bounded time, so no SFENCE.VMA is needed.",
       "use": "Bounded-time PTE visibility guarantees",
       "url": "https://docs.riscv.org/reference/isa/priv/supervisor.html",
       "instructions": {},
@@ -28817,8 +28976,9 @@
     {
       "id": "Svrsw60t59b",
       "name": "Svrsw60t59b",
+      "short": "PTE RSW Bits",
       "tags": [],
-      "desc": "PTE RSW Bits",
+      "desc": "Reserves PTE bits 60-59 for supervisor software, giving operating systems two more ignored metadata bits.",
       "use": "Standard RSW field behavior",
       "url": "https://docs.riscv.org/reference/isa/priv/supervisor.html",
       "instructions": {},
@@ -28832,8 +28992,9 @@
     {
       "id": "Svatag",
       "name": "Svatag",
+      "short": "Tagged Translations",
       "tags": [],
-      "desc": "Tagged Translations",
+      "desc": "Holds memory-tagging tags in a virtually indexed table, with supervisor CSRs giving that table's base address.",
       "use": "Address-tagged translation behavior",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -28841,9 +29002,10 @@
     {
       "id": "Svukte",
       "name": "Svukte",
+      "short": "Constant-Time User Faults",
       "tags": [],
-      "desc": "User-Keyed TLB Entries",
-      "use": "Per-user TLB tagging",
+      "desc": "Makes user-mode faults on supervisor addresses take constant time, hiding the kernel's address-space layout.",
+      "use": "Address-independent fault latency",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "long_name": "Address-Independent Latency of User-Mode Faults to Supervisor Addresses",
@@ -28868,9 +29030,10 @@
     {
       "id": "Supm",
       "name": "Supm",
+      "short": "User Pointer Masking",
       "tags": [],
-      "desc": "User Pointer Masking",
-      "use": "Mask user pointers",
+      "desc": "Makes hardware ignore tag bits in the upper part of user-mode addresses, so tagged pointers still dereference.",
+      "use": "Tagged pointers in user-mode software",
       "url": "https://docs.riscv.org/reference/isa/priv/zpm.html",
       "instructions": {},
       "long_name": "Pointer masking available in user mode",
@@ -28883,8 +29046,9 @@
     {
       "id": "Ssnpm",
       "name": "Ssnpm",
+      "short": "Supervisor Next-Pointer Mask",
       "tags": [],
-      "desc": "Supervisor Next-Pointer Mask",
+      "desc": "Supervisor-level control of pointer masking for the next lower privilege mode, U-mode and the virtualized modes.",
       "use": "Mask next-mode pointers (S)",
       "url": "https://docs.riscv.org/reference/isa/priv/hypervisor.html",
       "instructions": {},
@@ -28898,8 +29062,9 @@
     {
       "id": "Sspm",
       "name": "Sspm",
+      "short": "Supervisor Pointer Masking",
       "tags": [],
-      "desc": "Supervisor Pointer Masking",
+      "desc": "Asserts that pointer masking is available in supervisor mode, with its controls managed by the execution environment.",
       "use": "Supervisor pointer-mask policy",
       "url": "https://docs.riscv.org/reference/isa/priv/zpm.html",
       "instructions": {},
@@ -28915,9 +29080,10 @@
     {
       "id": "Smaia",
       "name": "Smaia",
+      "short": "AIA Machine Extension",
       "tags": [],
-      "desc": "AIA Machine Extension",
-      "use": "Advanced interrupt arch (M)",
+      "desc": "Machine-level half of the Advanced Interrupt Architecture, adding message-signaled interrupts and more causes.",
+      "use": "Scalable interrupt delivery at machine level",
       "url": "https://docs.riscv.org/reference/aia/index.html",
       "instructions": {},
       "long_name": "Advanced Interrupt Architecture, M-mode extension",
@@ -28930,9 +29096,10 @@
     {
       "id": "Ssaia",
       "name": "Ssaia",
+      "short": "AIA Supervisor Extension",
       "tags": [],
-      "desc": "AIA Supervisor Extension",
-      "use": "Advanced interrupt arch (S)",
+      "desc": "Supervisor-level half of the Advanced Interrupt Architecture, exposing its CSRs and behavior below M-mode.",
+      "use": "Scalable interrupt delivery to supervisor",
       "url": "https://docs.riscv.org/reference/aia/index.html",
       "instructions": {},
       "long_name": "Advanced Interrupt Architecture, S-mode extension",
@@ -28970,17 +29137,19 @@
     {
       "id": "Smclic",
       "name": "Smclic",
+      "short": "Machine CLIC",
       "tags": [],
-      "desc": "Machine CLIC",
-      "use": "Machine-level CLIC interrupt controller",
+      "desc": "Machine-mode core-local interrupt controller giving each interrupt its own level, priority and preemption.",
+      "use": "Low-latency vectored interrupt handling",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
     },
     {
       "id": "Smclicconfig",
       "name": "Smclicconfig",
+      "short": "Machine CLIC Config",
       "tags": [],
-      "desc": "Machine CLIC Config",
+      "desc": "Makes the CLIC's split between interrupt level and priority bits programmable rather than fixed in hardware.",
       "use": "MCLIC configuration CSRs",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -28988,8 +29157,9 @@
     {
       "id": "Smclicshv",
       "name": "Smclicshv",
+      "short": "Machine CLIC SHV",
       "tags": [],
-      "desc": "Machine CLIC SHV",
+      "desc": "Lets each CLIC interrupt pick hardware vectoring for lower latency or software vectoring for smaller code.",
       "use": "Selective hardware vectored interrupts",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -28997,8 +29167,9 @@
     {
       "id": "Ssclic",
       "name": "Ssclic",
+      "short": "Supervisor CLIC",
       "tags": [],
-      "desc": "Supervisor CLIC",
+      "desc": "Extends the core-local interrupt controller to S-mode, so supervisor interrupts are taken without M-mode.",
       "use": "Supervisor-level CLIC interface",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -29006,6 +29177,7 @@
     {
       "id": "Suclic",
       "name": "Suclic",
+      "short": "User CLIC",
       "tags": [],
       "desc": "User CLIC",
       "use": "User-level CLIC interface",
@@ -29015,8 +29187,9 @@
     {
       "id": "Sstc",
       "name": "Sstc",
+      "short": "Supervisor Timer Compare",
       "tags": [],
-      "desc": "Supervisor Timer Compare",
+      "desc": "Lets S-mode and VS-mode set their own timer deadlines directly, avoiding a call down to machine-mode firmware.",
       "use": "Per-hart timer interrupts",
       "url": "https://docs.riscv.org/reference/isa/priv/sstc.html",
       "instructions": {},
@@ -29043,8 +29216,9 @@
     {
       "id": "Smcdeleg",
       "name": "Smcdeleg",
+      "short": "M-Mode Counter Delegation",
       "tags": [],
-      "desc": "M-Mode Counter Delegation",
+      "desc": "Lets M-mode delegate performance counters and event selectors to S-mode, avoiding traps into machine mode.",
       "use": "Delegates HPM counters to S",
       "url": "https://docs.riscv.org/reference/isa/priv/smcdeleg.html",
       "instructions": {},
@@ -29057,9 +29231,10 @@
     {
       "id": "Smcntrpmf",
       "name": "Smcntrpmf",
+      "short": "M-Mode Counter Filtering",
       "tags": [],
-      "desc": "M-Mode Counter Filtering",
-      "use": "Filter counters by privilege",
+      "desc": "Stops the cycle and instret counters from counting in selected privilege modes, for cleaner measurements.",
+      "use": "Counting only selected privilege modes",
       "url": "https://docs.riscv.org/reference/isa/priv/smcntrpmf.html",
       "instructions": {},
       "long_name": "Cycle and Instret Privilege Mode Filtering",
@@ -29097,9 +29272,10 @@
     {
       "id": "Ssccfg",
       "name": "Ssccfg",
+      "short": "Counter Configuration (S)",
       "tags": [],
-      "desc": "Counter Configuration (S)",
-      "use": "S-mode control of delegated HPM",
+      "desc": "Supervisor-mode CSRs for configuring and inhibiting the performance counters that M-mode has delegated.",
+      "use": "Delegating counter configuration to supervisor",
       "url": "https://docs.riscv.org/reference/isa/priv/smcdeleg.html",
       "instructions": {},
       "long_name": "Supervisor-mode counter configuration",
@@ -29112,6 +29288,7 @@
     {
       "id": "Sscntrcfg",
       "name": "Sscntrcfg",
+      "short": "S-Mode Counter Config",
       "tags": [],
       "desc": "S-Mode Counter Config",
       "use": "Supervisor counter configuration",
@@ -29121,8 +29298,9 @@
     {
       "id": "Sscounterenw",
       "name": "Sscounterenw",
+      "short": "Writable scounteren",
       "tags": [],
-      "desc": "Writable scounteren",
+      "desc": "Every implemented hardware performance counter must have a writable enable bit in scounteren.",
       "use": "Writable enables for HPMs",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
@@ -29136,8 +29314,9 @@
     {
       "id": "Sscofpmf",
       "name": "Sscofpmf",
+      "short": "Counter Overflow & Filtering",
       "tags": [],
-      "desc": "Counter Overflow & Filtering",
+      "desc": "Fires a local interrupt when a performance counter overflows and filters counting by privilege mode.",
       "use": "Overflow + filtering in S-mode",
       "url": "https://docs.riscv.org/reference/isa/priv/sscofpmf.html",
       "instructions": {},
@@ -29158,9 +29337,10 @@
     {
       "id": "Ssccptr",
       "name": "Ssccptr",
+      "short": "Page-Table Reads in Main Memory",
       "tags": [],
-      "desc": "S Counter Pointer CSR",
-      "use": "Supervisor counter pointer CSR",
+      "desc": "Requires cacheable and coherent main memory to support hardware page-table reads during a walk.",
+      "use": "Hardware page-table walks in cacheable memory",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "long_name": "Cacheable and coherent main memory page table reads",
@@ -29173,8 +29353,9 @@
     {
       "id": "Ssqosid",
       "name": "Ssqosid",
+      "short": "QoS Identifiers",
       "tags": [],
-      "desc": "QoS Identifiers",
+      "desc": "Tags a hart's memory requests with workload IDs so shared caches and bandwidth can be allocated and monitored.",
       "use": "Per-thread QoS tagging",
       "url": "https://docs.riscv.org/reference/cbqri/index.html",
       "instructions": {},
@@ -29195,6 +29376,7 @@
     {
       "id": "Sshpmcfg",
       "name": "Sshpmcfg",
+      "short": "S-Mode HPM Config",
       "tags": [],
       "desc": "S-Mode HPM Config",
       "use": "Supervisor HPM configuration",
@@ -29204,10 +29386,11 @@
     {
       "id": "Smrnmi",
       "name": "Smrnmi",
+      "short": "Resumable NMI",
       "tags": [
         "rv_smrnmi"
       ],
-      "desc": "Resumable NMI",
+      "desc": "Saves the interrupted state in dedicated CSRs so a non-maskable interrupt handler can return with mnret.",
       "use": "Restartable non-maskable interrupts",
       "url": "https://docs.riscv.org/reference/isa/priv/rnmi.html",
       "instructions": {
@@ -29256,11 +29439,12 @@
     {
       "id": "Sdext",
       "name": "Sdext",
+      "short": "External Debug",
       "tags": [
         "rv_sdext"
       ],
-      "desc": "External Debug",
-      "use": "External debug architecture",
+      "desc": "Hart-side half of external debug: Debug Mode entry, halt and resume, and the dcsr and dpc registers.",
+      "use": "Attaching an external debugger",
       "url": "https://docs.riscv.org/reference/debug/index.html",
       "instructions": {
         "DRET": {
@@ -29306,9 +29490,10 @@
     {
       "id": "Sdtrig",
       "name": "Sdtrig",
+      "short": "Debug Triggers",
       "tags": [],
-      "desc": "Debug Triggers",
-      "use": "HW breakpoints / watchpoints",
+      "desc": "Hardware breakpoints and watchpoints that fire on instruction or load/store addresses without patching code.",
+      "use": "Breakpoints and watchpoints",
       "url": "https://docs.riscv.org/reference/debug/index.html",
       "instructions": {},
       "long_name": "Debug triggers",
@@ -29394,6 +29579,7 @@
     {
       "id": "Sdtrigepm",
       "name": "Sdtrigepm",
+      "short": "Debug Trigger EPM",
       "tags": [],
       "desc": "Debug Trigger EPM",
       "use": "Trigger matching for external PM",
@@ -29403,6 +29589,7 @@
     {
       "id": "Sdtrigpend",
       "name": "Sdtrigpend",
+      "short": "Debug Trigger Pending",
       "tags": [],
       "desc": "Debug Trigger Pending",
       "use": "Pending trigger cause reporting",
@@ -29412,8 +29599,9 @@
     {
       "id": "Smcsrind",
       "name": "Smcsrind",
+      "short": "Indirect CSR Access (M)",
       "tags": [],
-      "desc": "Indirect CSR Access (M)",
+      "desc": "Reaches arrays of machine-level registers by index through a select/data CSR pair, saving CSR address space.",
       "use": "CSR indirection at M-mode",
       "url": "https://docs.riscv.org/reference/isa/priv/indirect-csr.html",
       "instructions": {},
@@ -29554,8 +29742,9 @@
     {
       "id": "Sscsrind",
       "name": "Sscsrind",
+      "short": "Indirect CSR Access (S)",
       "tags": [],
-      "desc": "Indirect CSR Access (S)",
+      "desc": "Reaches large arrays of supervisor registers by index through a select and window CSR pair, saving CSR space.",
       "use": "CSR indirection at S-mode",
       "url": "https://docs.riscv.org/reference/isa/priv/indirect-csr.html",
       "instructions": {},
@@ -29594,8 +29783,9 @@
     {
       "id": "Smctr",
       "name": "Smctr",
+      "short": "Control Transfer Records (M)",
       "tags": [],
-      "desc": "Control Transfer Records (M)",
+      "desc": "Machine-mode half of control transfer records: logs recent branches, jumps, traps and returns for profiling.",
       "use": "Hardware CFI logs (M)",
       "url": "https://docs.riscv.org/reference/isa/priv/smctr.html",
       "instructions": {
@@ -29638,10 +29828,11 @@
     {
       "id": "Ssctr",
       "name": "Ssctr",
+      "short": "Control Transfer Records (S)",
       "tags": [
         "rv_ssctr"
       ],
-      "desc": "Control Transfer Records (S)",
+      "desc": "Records recent branches, jumps and traps in a hardware buffer that S-mode can read for profiling and debugging.",
       "use": "Hardware CFI logs (S)",
       "url": "https://docs.riscv.org/reference/isa/priv/smctr.html",
       "instructions": {
@@ -29676,6 +29867,7 @@
     {
       "id": "Sddbltrp",
       "name": "Sddbltrp",
+      "short": "Debug Double Trap",
       "tags": [],
       "desc": "Debug Double Trap",
       "use": "Debug-level nested traps",
@@ -29685,8 +29877,9 @@
     {
       "id": "Ssdbltrp",
       "name": "Ssdbltrp",
+      "short": "Supervisor Double Trap",
       "tags": [],
-      "desc": "Supervisor Double Trap",
+      "desc": "Escalates a trap that arrives before a supervisor handler is ready into a critical error at a higher privilege.",
       "use": "Recoverable nested traps (S)",
       "url": "https://docs.riscv.org/reference/isa/priv/ssdbltrp.html",
       "instructions": {},
@@ -29700,8 +29893,9 @@
     {
       "id": "Smdbltrp",
       "name": "Smdbltrp",
+      "short": "Machine Double Trap",
       "tags": [],
-      "desc": "Machine Double Trap",
+      "desc": "Turns a trap taken while M-mode is already handling a trap into an RNMI, Debug Mode entry or critical-error signal.",
       "use": "Recoverable nested traps (M)",
       "url": "https://docs.riscv.org/reference/isa/priv/smdbltrp.html",
       "instructions": {},
@@ -29734,8 +29928,9 @@
     {
       "id": "Smstateen",
       "name": "Smstateen",
+      "short": "M-Mode State Enable",
       "tags": [],
-      "desc": "M-Mode State Enable",
+      "desc": "Lets M-mode withhold access to state added by other extensions, so unaware software cannot leak or corrupt it.",
       "use": "Gate access to extension CSRs",
       "url": "https://docs.riscv.org/reference/isa/priv/smstateen.html",
       "instructions": {},
@@ -29870,9 +30065,10 @@
     {
       "id": "Ssstateen",
       "name": "Ssstateen",
+      "short": "S-Mode State Enable",
       "tags": [],
-      "desc": "S-Mode State Enable",
-      "use": "State-enable for S/VS/VU",
+      "desc": "Supplies the supervisor and hypervisor state-enable registers that gate lower-privilege access to extension state.",
+      "use": "Controlling access to new extension state",
       "url": "https://docs.riscv.org/reference/isa/priv/smstateen.html",
       "instructions": {},
       "long_name": "Supervisor-mode view of the state-enable extension",
@@ -29958,8 +30154,9 @@
     {
       "id": "Smepmp",
       "name": "Smepmp",
+      "short": "Enhanced PMP",
       "tags": [],
-      "desc": "Enhanced PMP",
+      "desc": "Machine-mode access and execution prevention built on PMP, so firmware cannot reach untrusted memory by default.",
       "use": "More flexible PMP rules",
       "url": "https://docs.riscv.org/reference/isa/priv/smepmp.html",
       "instructions": {},
@@ -29986,9 +30183,10 @@
     {
       "id": "Smmpm",
       "name": "Smmpm",
+      "short": "Pointer Masking (M-mode)",
       "tags": [],
-      "desc": "Machine PMP Mgmt",
-      "use": "Machine-level PMP management",
+      "desc": "Pointer masking in M-mode, so tags kept in the upper bits of a pointer are ignored when the address is used.",
+      "use": "Tagged pointers in machine-mode software",
       "url": "https://docs.riscv.org/reference/isa/priv/machine.html",
       "instructions": {},
       "long_name": "Pointer masking for M-mode",
@@ -30014,63 +30212,70 @@
     {
       "id": "Sm1p11",
       "name": "Sm1p11",
+      "short": "Priv Spec M v1.11",
       "tags": [],
-      "desc": "Priv Spec M v1.11",
-      "use": "Machine architecture tag",
+      "desc": "Marks conformance to version 1.11 of the machine-level privileged architecture rather than any single feature.",
+      "use": "Targeting machine architecture v1.11",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
     },
     {
       "id": "Ss1p11",
       "name": "Ss1p11",
+      "short": "Priv Spec S v1.11",
       "tags": [],
-      "desc": "Priv Spec S v1.11",
-      "use": "Supervisor architecture tag",
+      "desc": "Marks conformance to version 1.11 of the supervisor-level privileged architecture.",
+      "use": "Targeting supervisor architecture v1.11",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
     },
     {
       "id": "Sm1p12",
       "name": "Sm1p12",
+      "short": "Priv Spec M v1.12",
       "tags": [],
-      "desc": "Priv Spec M v1.12",
-      "use": "Machine architecture tag",
+      "desc": "Marks conformance to version 1.12 of the machine-level privileged architecture rather than any single feature.",
+      "use": "Targeting machine architecture v1.12",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
     },
     {
       "id": "Ss1p12",
       "name": "Ss1p12",
+      "short": "Priv Spec S v1.12",
       "tags": [],
-      "desc": "Priv Spec S v1.12",
-      "use": "Supervisor architecture tag",
+      "desc": "Marks conformance to version 1.12 of the supervisor-level privileged architecture, superseding 1.11.",
+      "use": "Targeting supervisor architecture v1.12",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
     },
     {
       "id": "Sm1p13",
       "name": "Sm1p13",
+      "short": "Priv Spec M v1.13",
       "tags": [],
-      "desc": "Priv Spec M v1.13",
-      "use": "Machine architecture tag",
+      "desc": "Marks conformance to version 1.13 of the machine-level privileged architecture rather than any single feature.",
+      "use": "Targeting machine architecture v1.13",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
     },
     {
       "id": "Ss1p13",
       "name": "Ss1p13",
+      "short": "Priv Spec S v1.13",
       "tags": [],
-      "desc": "Priv Spec S v1.13",
-      "use": "Supervisor architecture tag",
+      "desc": "Marks conformance to version 1.13 of the supervisor-level privileged architecture, superseding 1.12.",
+      "use": "Targeting supervisor architecture v1.13",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
     },
     {
       "id": "Sstvala",
       "name": "Sstvala",
+      "short": "stval Address Rule",
       "tags": [],
-      "desc": "stval Address Rule",
-      "use": "Precise faulting VA / instruction",
+      "desc": "Guarantees stval reports the faulting virtual address, or the faulting instruction for illegal-instruction traps.",
+      "use": "Trap handlers that read stval",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "long_name": "Supervisor Trap Value provides all needed values",
@@ -30083,9 +30288,10 @@
     {
       "id": "Sstvecd",
       "name": "Sstvecd",
+      "short": "stvec Direct Mode",
       "tags": [],
-      "desc": "stvec Direct Mode",
-      "use": "Direct-mode trap vector",
+      "desc": "Guarantees stvec can be set to Direct mode, sending every supervisor trap to a single handler address.",
+      "use": "Direct-mode trap vector configuration",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "long_name": "Direct exception vectoring",
@@ -30098,8 +30304,9 @@
     {
       "id": "Sstvecv",
       "name": "Sstvecv",
+      "short": "stvec Vectored Mode",
       "tags": [],
-      "desc": "stvec Vectored Mode",
+      "desc": "Guarantees stvec supports Vectored mode, so each interrupt cause can dispatch to its own entry point.",
       "use": "Vectored trap routing",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
@@ -30113,8 +30320,9 @@
     {
       "id": "Ssdtso",
       "name": "Ssdtso",
+      "short": "Supervisor TSO Opt-in",
       "tags": [],
-      "desc": "Supervisor TSO Opt-in",
+      "desc": "Lets supervisor software switch a hart between the RVWMO and TSO memory models at run time, per process.",
       "use": "Supervisors opt into TSO behavior",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -30122,8 +30330,9 @@
     {
       "id": "Sstcfg",
       "name": "Sstcfg",
+      "short": "Trap Config",
       "tags": [],
-      "desc": "Trap Config",
+      "desc": "Supervisor-side half of trigger delegation, giving S-mode and VS-mode debuggers direct access to Sdtrig triggers.",
       "use": "Per-trap configuration controls",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -30131,9 +30340,10 @@
     {
       "id": "Ssstrict",
       "name": "Ssstrict",
+      "short": "No Non-Conforming Exts",
       "tags": [],
-      "desc": "No Non-Conforming Exts",
-      "use": "Disallows non-conforming extensions",
+      "desc": "Guarantees that reserved standard encodings raise illegal-instruction traps and no non-conforming extensions exist.",
+      "use": "Rejecting non-conforming encodings",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "long_name": "Unimplemented reserved encodings trap and no non-conforming extensions",
@@ -30146,8 +30356,9 @@
     {
       "id": "Ssu32xl",
       "name": "Ssu32xl",
+      "short": "UXL=32 support",
       "tags": [],
-      "desc": "UXL=32 support",
+      "desc": "Lets U-mode run 32-bit code on a 64-bit machine by allowing sstatus.UXL to select UXLEN=32.",
       "use": "User XLEN=32 capability",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
@@ -30161,8 +30372,9 @@
     {
       "id": "Ssu64xl",
       "name": "Ssu64xl",
+      "short": "UXL=64 support",
       "tags": [],
-      "desc": "UXL=64 support",
+      "desc": "Requires 64-bit user mode to be supported, so sstatus.UXL can select UXLEN=64.",
       "use": "User XLEN=64 capability",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
@@ -30176,8 +30388,9 @@
     {
       "id": "Ssube",
       "name": "Ssube",
+      "short": "Big-Endian S",
       "tags": [],
-      "desc": "Big-Endian S",
+      "desc": "Lets U-mode data accesses use big-endian byte order while instruction fetch stays little-endian.",
       "use": "Supervisor big-endian/bi-endian",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
@@ -30191,6 +30404,7 @@
     {
       "id": "Ssvxscr",
       "name": "Ssvxscr",
+      "short": "VS CSR",
       "tags": [],
       "desc": "VS CSR",
       "use": "Vector state control at S-mode",
@@ -30200,8 +30414,9 @@
     {
       "id": "Ssptead",
       "name": "Ssptead",
+      "short": "Sup PTE A/D (legacy)",
       "tags": [],
-      "desc": "Sup PTE A/D (legacy)",
+      "desc": "Superseded name for Svade, where a page fault is raised so software must set page-table A and D bits.",
       "use": "Legacy name for Svade-style semantics",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -30209,8 +30424,9 @@
     {
       "id": "Smcfiss",
       "name": "Smcfiss",
+      "short": "M-Mode Shadow Stack",
       "tags": [],
-      "desc": "M-Mode Shadow Stack",
+      "desc": "Enables Zicfiss shadow stacks in machine mode through mseccfg.MSSE, protecting firmware return addresses.",
       "use": "Machine-level shadow stack config",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -30218,6 +30434,7 @@
     {
       "id": "Smdid",
       "name": "Smdid",
+      "short": "Debug ID",
       "tags": [],
       "desc": "Debug ID",
       "use": "Debug/trace identification",
@@ -30227,6 +30444,7 @@
     {
       "id": "Smrnpt",
       "name": "Smrnpt",
+      "short": "Non-Precise Traps",
       "tags": [],
       "desc": "Non-Precise Traps",
       "use": "Relaxed trap precision",
@@ -30236,6 +30454,7 @@
     {
       "id": "Smrntt",
       "name": "Smrntt",
+      "short": "Non-Taken Traps",
       "tags": [],
       "desc": "Non-Taken Traps",
       "use": "Trap behavior when not taken",
@@ -30245,9 +30464,10 @@
     {
       "id": "Smnpm",
       "name": "Smnpm",
+      "short": "Pointer Masking (next mode)",
       "tags": [],
-      "desc": "Non-Maskable PM",
-      "use": "Power-management/trap interactions",
+      "desc": "Machine-level control of pointer masking for the next privilege level down, S/HS, or U when S is absent.",
+      "use": "Pointer masking below M-mode",
       "url": "https://docs.riscv.org/reference/isa/priv/machine.html",
       "instructions": {},
       "long_name": "Pointer masking for next privilege level less than M-mode",
@@ -30260,9 +30480,10 @@
     {
       "id": "Smpmpmt",
       "name": "Smpmpmt",
+      "short": "PMP-Based Memory Types",
       "tags": [],
-      "desc": "PMP Machine Trap",
-      "use": "PMP-related trap behavior",
+      "desc": "A memory-type field in each PMP entry overrides the physical memory attributes for accesses that match it.",
+      "use": "Overriding memory attributes per PMP region",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "long_name": "PMP-based Memory Types Extension",
@@ -30274,8 +30495,9 @@
     {
       "id": "Smsdia",
       "name": "Smsdia",
+      "short": "Soft Debug/Instr",
       "tags": [],
-      "desc": "Soft Debug/Instr",
+      "desc": "Assigns IMSIC interrupt files and APLIC domains to individual supervisor domains for isolated delivery.",
       "use": "Soft-debug / diagnostics assist",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -30283,8 +30505,9 @@
     {
       "id": "Smtdeleg",
       "name": "Smtdeleg",
+      "short": "Trap Delegation",
       "tags": [],
-      "desc": "Trap Delegation",
+      "desc": "Delegates Sdtrig debug triggers to S-mode and VS-mode through indirect CSRs, avoiding traps into M-mode.",
       "use": "Fine-grain trap delegation controls",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -30292,8 +30515,9 @@
     {
       "id": "Smvatag",
       "name": "Smvatag",
+      "short": "VA Tagging (M)",
       "tags": [],
-      "desc": "VA Tagging (M)",
+      "desc": "Holds M-mode memory-tagging tags in a virtually indexed table located by the new mvitt base register.",
       "use": "Machine-level virtual-address tagging",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -30301,8 +30525,9 @@
     {
       "id": "RERI",
       "name": "RERI",
+      "short": "RAS Error Reporting",
       "tags": [],
-      "desc": "RAS Error Reporting",
+      "desc": "Common set of error-record registers through which hardware logs and reports RAS errors to software.",
       "use": "RAS error reporting arch tag",
       "url": "https://docs.riscv.org/reference/ras-eri/index.html",
       "instructions": {}
@@ -30310,8 +30535,9 @@
     {
       "id": "HTI",
       "name": "HTI",
+      "short": "Trace & Instrumentation",
       "tags": [],
-      "desc": "Trace & Instrumentation",
+      "desc": "Standard signal interface between a hart and an external trace encoder, split out of the E-Trace standard.",
       "use": "Trace / instrumentation spec tag",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
@@ -30319,8 +30545,9 @@
     {
       "id": "Sha",
       "name": "Sha",
+      "short": "Augmented hypervisor",
       "tags": [],
-      "desc": "Augmented hypervisor",
+      "desc": "Profile bundle requiring H plus Ssstateen and the Sh* rules on counters, trap values and guest translation.",
       "use": "Bundle of hypervisor augmentation requirements (profiles)",
       "url": "https://docs.riscv.org/reference/isa/unpriv/vector-crypto.html",
       "instructions": {},
@@ -30334,9 +30561,10 @@
     {
       "id": "Shcounterenw",
       "name": "Shcounterenw",
+      "short": "Hypervisor counter enable",
       "tags": [],
-      "desc": "Hypervisor counter enable",
-      "use": "Writable hcounteren for all supported counters",
+      "desc": "Every implemented hpmcounter must have a writable hcounteren bit, so a hypervisor can delegate counters to guests.",
+      "use": "Guests that need writable counter enables",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "long_name": "Hypervisor counter enable",
@@ -30349,9 +30577,10 @@
     {
       "id": "Shgatpa",
       "name": "Shgatpa",
+      "short": "SvNNx4 guest translation for all supported S-mode modes, plus Bare",
       "tags": [],
-      "desc": "SvNNx4 guest translation for all supported S-mode modes, plus Bare",
-      "use": "Guest-physical address translation requirement",
+      "desc": "Guest-physical translation must offer an SvNNx4 mode for every satp mode supported, plus Bare.",
+      "use": "Guest translation across all supported modes",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "long_name": "SvNNx4 mode supported for all modes supported by Supervisor Address Translation and Protection, as well as Bare",
@@ -30364,8 +30593,9 @@
     {
       "id": "Shtvala",
       "name": "Shtvala",
+      "short": "Hypervisor Trap Value (htval) provides all needed values",
       "tags": [],
-      "desc": "Hypervisor Trap Value (htval) provides all needed values",
+      "desc": "htval must record the faulting guest-physical address wherever the ISA allows, sparing the hypervisor from decoding it.",
       "use": "htval reporting requirement",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
@@ -30379,8 +30609,9 @@
     {
       "id": "Shvsatpa",
       "name": "Shvsatpa",
+      "short": "Virtual Supervisor address translation supports all supported S-mode modes",
       "tags": [],
-      "desc": "Virtual Supervisor address translation supports all supported S-mode modes",
+      "desc": "vsatp must support every translation mode that satp supports, so a guest OS sees the same paging choices.",
       "use": "VS-stage address translation requirement",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
@@ -30394,8 +30625,9 @@
     {
       "id": "Shvstvala",
       "name": "Shvstvala",
+      "short": "Virtual Supervisor Trap Value (vstval) provides all needed values",
       "tags": [],
-      "desc": "Virtual Supervisor Trap Value (vstval) provides all needed values",
+      "desc": "vstval must report the faulting address, or instruction, in every case stval does, but for VS-mode traps.",
       "use": "vstval reporting requirement",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
@@ -30409,9 +30641,10 @@
     {
       "id": "Shvstvecd",
       "name": "Shvstvecd",
+      "short": "Virtual Supervisor Trap Vector (vstvec) supports Direct mode",
       "tags": [],
-      "desc": "Virtual Supervisor Trap Vector (vstvec) supports Direct mode",
-      "use": "vstvec Direct mode requirement",
+      "desc": "vstvec must support Direct mode with any four-byte-aligned base, so a guest can use one trap entry point.",
+      "use": "Direct-mode trap vectors for virtual supervisor",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {},
       "long_name": "Virtual Supervisor Trap Vector Base Address supports Direct mode",

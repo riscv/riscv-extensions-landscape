@@ -972,9 +972,15 @@
         }
       ]
     },
-    "Zccid": {
-      "requires": [],
-      "verified": "none"
+    "Ziccid": {
+      "requires": [
+        {
+          "ext": "Ziccif",
+          "src": "udb",
+          "ref": "Ziccid.yaml requirements.extension"
+        }
+      ],
+      "verified": "udb"
     },
     "Zcd": {
       "requires": [
@@ -1691,8 +1697,14 @@
       ]
     },
     "Zvfofp8min": {
-      "requires": [],
-      "verified": "none"
+      "requires": [
+        {
+          "ext": "Zve32f",
+          "src": "udb",
+          "ref": "Zvfofp8min.yaml requirements.extension"
+        }
+      ],
+      "verified": "udb"
     },
     "Zvk": {
       "requires": [],

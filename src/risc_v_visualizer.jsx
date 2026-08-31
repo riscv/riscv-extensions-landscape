@@ -1462,7 +1462,7 @@ const RISCVExplorer = () => {
     for (const ext of allExts) {
       const parts = [];
 
-      for (const field of [ext.id, ext.name, ext.desc, ext.use]) {
+      for (const field of [ext.id, ext.name, ext.short, ext.desc, ext.use]) {
         if (field) parts.push(String(field));
       }
 
