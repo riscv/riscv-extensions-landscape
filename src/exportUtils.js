@@ -24,7 +24,7 @@ const INVALID_ISA_TOKENS = new Set(['K', 'P']);
 
 // Privilege / virtual-memory extension prefix patterns
 function isPrivilegeTag(id) {
-  return /^S[vms]/i.test(id) || id.toLowerCase().startsWith('sm') || id.toLowerCase().startsWith('ss');
+  return /^S[a-z0-9]/i.test(id);
 }
 
 /**
@@ -183,8 +183,7 @@ export function buildIsaConfigYaml(selectedIds, allExts, options = {}) {
   zExts.sort((a, b) => a.localeCompare(b));
 
   // 5. Build the ISA march-like string
-  const basePrefix = `RV${baseInfo.xlen}${baseInfo.base.toUpperCase()}`;
-  const singlesStr = filteredSingles.join('');
+  const basePrefix = `RV${baseInfo.xlen}${baseInfo.base.toUpperCase()}`;\n  const singlesStr = filteredSingles.join('');
   const zStr       = zExts.length > 0 ? zExts.join('_') : '';
   const isaString  = `${basePrefix}${singlesStr}${zStr ? (singlesStr ? '_' : '') + zStr : ''}`;
 
