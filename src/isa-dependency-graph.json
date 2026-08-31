@@ -92,10 +92,6 @@
       "requires": [],
       "verified": "none"
     },
-    "K": {
-      "requires": [],
-      "verified": "none"
-    },
     "M": {
       "requires": [
         {
@@ -447,10 +443,6 @@
       "requires": [],
       "verified": "none"
     },
-    "Sscntrcfg": {
-      "requires": [],
-      "verified": "none"
-    },
     "Sscofpmf": {
       "requires": [],
       "verified": "udb"
@@ -492,10 +484,6 @@
       "verified": "udb"
     },
     "Ssdtso": {
-      "requires": [],
-      "verified": "none"
-    },
-    "Sshpmcfg": {
       "requires": [],
       "verified": "none"
     },
@@ -1361,10 +1349,6 @@
       "verified": "udb"
     },
     "Zimt": {
-      "requires": [],
-      "verified": "none"
-    },
-    "Zitagelide": {
       "requires": [],
       "verified": "none"
     },

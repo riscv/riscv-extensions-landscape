@@ -5106,17 +5106,6 @@
       "version": "1.0.0"
     },
     {
-      "id": "K",
-      "name": "K",
-      "short": "Crypto Umbrella (Scalar + Vector)",
-      "tags": [],
-      "desc": "Crypto Umbrella (Scalar + Vector)",
-      "use": "Top-level tag signaling bundled Zk*/Zvk* NIST & ShangMi crypto support",
-      "discontinued": 0,
-      "instructions": {},
-      "url": "https://github.com/riscv/riscv-isa-manual"
-    },
-    {
       "id": "M",
       "name": "M",
       "short": "Integer Multiply/Divide",
@@ -28484,20 +28473,10 @@
     {
       "id": "Zimt",
       "name": "Zimt",
-      "short": "Time Instructions",
+      "short": "Memory Tagging",
       "tags": [],
-      "desc": "Time Instructions",
-      "use": "Extended time/TIMECMP instructions",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
-    },
-    {
-      "id": "Zitagelide",
-      "name": "Zitagelide",
-      "short": "Tag & ELIDE",
-      "tags": [],
-      "desc": "Tag & ELIDE",
-      "use": "Tagged-memory / elide behaviors",
+      "desc": "Tags 16-byte memory chunks and checks the tag on each pointer dereference, catching use-after-free and overruns.",
+      "use": "Detecting use-after-free and out-of-bounds accesses",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
     },
@@ -29319,16 +29298,6 @@
       "version": "1.0.0"
     },
     {
-      "id": "Sscntrcfg",
-      "name": "Sscntrcfg",
-      "short": "S-Mode Counter Config",
-      "tags": [],
-      "desc": "S-Mode Counter Config",
-      "use": "Supervisor counter configuration",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
-    },
-    {
       "id": "Sscofpmf",
       "name": "Sscofpmf",
       "short": "Counter Overflow & Filtering",
@@ -29373,16 +29342,6 @@
         }
       },
       "version": "1.0.0"
-    },
-    {
-      "id": "Sshpmcfg",
-      "name": "Sshpmcfg",
-      "short": "S-Mode HPM Config",
-      "tags": [],
-      "desc": "S-Mode HPM Config",
-      "use": "Supervisor HPM configuration",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
     },
     {
       "id": "Smrnmi",
