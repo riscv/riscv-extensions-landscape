@@ -5106,17 +5106,6 @@
       "version": "1.0.0"
     },
     {
-      "id": "K",
-      "name": "K",
-      "short": "Crypto Umbrella (Scalar + Vector)",
-      "tags": [],
-      "desc": "Crypto Umbrella (Scalar + Vector)",
-      "use": "Top-level tag signaling bundled Zk*/Zvk* NIST & ShangMi crypto support",
-      "discontinued": 0,
-      "instructions": {},
-      "url": "https://github.com/riscv/riscv-isa-manual"
-    },
-    {
       "id": "M",
       "name": "M",
       "short": "Integer Multiply/Divide",
@@ -18537,16 +18526,6 @@
       "state": "ratified",
       "ratification_date": "2025-02",
       "version": "1.0"
-    },
-    {
-      "id": "Zcmlsd",
-      "name": "Zcmlsd",
-      "short": "Compressed Mem-Loop",
-      "tags": [],
-      "desc": "Compressed Mem-Loop",
-      "use": "Compact memcpy/memset-style sequences",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
     }
   ],
   "z_float": [
@@ -27370,16 +27349,6 @@
       "version": "2.0.0"
     },
     {
-      "id": "Zicntrpmf",
-      "name": "Zicntrpmf",
-      "short": "Counter Filtering",
-      "tags": [],
-      "desc": "Counter Filtering",
-      "use": "Mode-based filtering for counters",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
-    },
-    {
       "id": "Zicsr",
       "name": "Zicsr",
       "short": "CSR Access",
@@ -27948,26 +27917,6 @@
       "version": "2.0.0"
     },
     {
-      "id": "Zilsm*",
-      "name": "Zilsm*",
-      "short": "Streaming Mem (pattern)",
-      "tags": [],
-      "desc": "Streaming Mem (pattern)",
-      "use": "Wildcard for Zilsm<x>b family",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
-    },
-    {
-      "id": "Zilsm<x>b",
-      "name": "Zilsm<x>b",
-      "short": "Streaming Mem (x-byte)",
-      "tags": [],
-      "desc": "Streaming Mem (x-byte)",
-      "use": "Line-size specific streaming ops",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
-    },
-    {
       "id": "Zilsme",
       "name": "Zilsme",
       "short": "Streaming Stores (exclusive)",
@@ -28504,20 +28453,10 @@
     {
       "id": "Zimt",
       "name": "Zimt",
-      "short": "Time Instructions",
+      "short": "Memory Tagging",
       "tags": [],
-      "desc": "Time Instructions",
-      "use": "Extended time/TIMECMP instructions",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
-    },
-    {
-      "id": "Zitagelide",
-      "name": "Zitagelide",
-      "short": "Tag & ELIDE",
-      "tags": [],
-      "desc": "Tag & ELIDE",
-      "use": "Tagged-memory / elide behaviors",
+      "desc": "Tags 16-byte memory chunks and checks the tag on each pointer dereference, catching use-after-free and overruns.",
+      "use": "Detecting use-after-free and out-of-bounds accesses",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
     },
@@ -29339,16 +29278,6 @@
       "version": "1.0.0"
     },
     {
-      "id": "Sscntrcfg",
-      "name": "Sscntrcfg",
-      "short": "S-Mode Counter Config",
-      "tags": [],
-      "desc": "S-Mode Counter Config",
-      "use": "Supervisor counter configuration",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
-    },
-    {
       "id": "Sscofpmf",
       "name": "Sscofpmf",
       "short": "Counter Overflow & Filtering",
@@ -29393,16 +29322,6 @@
         }
       },
       "version": "1.0.0"
-    },
-    {
-      "id": "Sshpmcfg",
-      "name": "Sshpmcfg",
-      "short": "S-Mode HPM Config",
-      "tags": [],
-      "desc": "S-Mode HPM Config",
-      "use": "Supervisor HPM configuration",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
     },
     {
       "id": "Smrnmi",
@@ -30471,16 +30390,6 @@
       "tags": [],
       "desc": "VS CSR",
       "use": "Vector state control at S-mode",
-      "url": "https://github.com/riscv/riscv-isa-manual",
-      "instructions": {}
-    },
-    {
-      "id": "Ssptead",
-      "name": "Ssptead",
-      "short": "Sup PTE A/D (legacy)",
-      "tags": [],
-      "desc": "Superseded name for Svade, where a page fault is raised so software must set page-table A and D bits.",
-      "use": "Legacy name for Svade-style semantics",
       "url": "https://github.com/riscv/riscv-isa-manual",
       "instructions": {}
     },

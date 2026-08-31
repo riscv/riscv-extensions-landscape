@@ -92,10 +92,6 @@
       "requires": [],
       "verified": "none"
     },
-    "K": {
-      "requires": [],
-      "verified": "none"
-    },
     "M": {
       "requires": [
         {
@@ -447,10 +443,6 @@
       "requires": [],
       "verified": "none"
     },
-    "Sscntrcfg": {
-      "requires": [],
-      "verified": "none"
-    },
     "Sscofpmf": {
       "requires": [],
       "verified": "udb"
@@ -495,10 +487,6 @@
       "requires": [],
       "verified": "none"
     },
-    "Sshpmcfg": {
-      "requires": [],
-      "verified": "none"
-    },
     "Ssnpm": {
       "requires": [],
       "verified": "udb"
@@ -516,10 +504,6 @@
           "ref": "Sspm.yaml requirements.extension"
         }
       ]
-    },
-    "Ssptead": {
-      "requires": [],
-      "verified": "none"
     },
     "Ssqosid": {
       "requires": [
@@ -1063,10 +1047,6 @@
         }
       ]
     },
-    "Zcmlsd": {
-      "requires": [],
-      "verified": "none"
-    },
     "Zcmop": {
       "requires": [
         {
@@ -1311,10 +1291,6 @@
         }
       ]
     },
-    "Zicntrpmf": {
-      "requires": [],
-      "verified": "none"
-    },
     "Zicond": {
       "requires": [],
       "verified": "udb"
@@ -1348,14 +1324,6 @@
       "requires": [],
       "verified": "udb"
     },
-    "Zilsm*": {
-      "requires": [],
-      "verified": "none"
-    },
-    "Zilsm<x>b": {
-      "requires": [],
-      "verified": "none"
-    },
     "Zilsme": {
       "requires": [],
       "verified": "none"
@@ -1373,10 +1341,6 @@
       "verified": "udb"
     },
     "Zimt": {
-      "requires": [],
-      "verified": "none"
-    },
-    "Zitagelide": {
       "requires": [],
       "verified": "none"
     },
