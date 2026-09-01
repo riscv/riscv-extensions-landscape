@@ -138,3 +138,16 @@ test('the UDB export is reproducible', () => {
   assert.equal(a, b);
   assert.ok(!/Generated:/.test(a), 'no timestamp');
 });
+
+test('privileged extensions across all S-mode families appear under privilege_extensions', () => {
+  const selected = ['RV64I', 'Sdext', 'Sdtrig', 'Sddbltrp', 'Supm', 'Smepmp', 'Sv39'];
+  const { yaml } = buildIsaConfigYaml(resolve(selected), ALL, { format: 'landscape' });
+  assert.match(yaml, /privilege_extensions:/);
+  for (const ext of ['Sdext', 'Sdtrig', 'Sddbltrp', 'Supm', 'Smepmp', 'Sv39']) {
+    assert.match(
+      yaml,
+      new RegExp(`^ {2}- ${ext}$`, 'm'),
+      `${ext} must be listed under privilege_extensions in YAML export`,
+    );
+  }
+});

@@ -24,7 +24,7 @@ const INVALID_ISA_TOKENS = new Set(['K', 'P']);
 
 // Privilege / virtual-memory extension prefix patterns
 function isPrivilegeTag(id) {
-  return /^S[vms]/i.test(id) || id.toLowerCase().startsWith('sm') || id.toLowerCase().startsWith('ss');
+  return /^S[a-z0-9]/i.test(id);
 }
 
 /**
