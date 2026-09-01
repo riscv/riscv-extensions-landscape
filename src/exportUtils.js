@@ -183,7 +183,8 @@ export function buildIsaConfigYaml(selectedIds, allExts, options = {}) {
   zExts.sort((a, b) => a.localeCompare(b));
 
   // 5. Build the ISA march-like string
-  const basePrefix = `RV${baseInfo.xlen}${baseInfo.base.toUpperCase()}`;\n  const singlesStr = filteredSingles.join('');
+  const basePrefix = `RV${baseInfo.xlen}${baseInfo.base.toUpperCase()}`;
+  const singlesStr = filteredSingles.join('');
   const zStr       = zExts.length > 0 ? zExts.join('_') : '';
   const isaString  = `${basePrefix}${singlesStr}${zStr ? (singlesStr ? '_' : '') + zStr : ''}`;
 
