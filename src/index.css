@@ -1187,6 +1187,23 @@ pre,
   transform: translateX(-50%) translateY(0);
 }
 
+/* A tooltip carrying a sentence rather than a label. The base rule is
+   white-space: nowrap, which is right for "Switch to light theme" and useless
+   for prose: the About text would run off the viewport as a single line.
+   Higher specificity than the base rule, so it wins without !important.
+   Pair it with tooltip-bottom-right on anything in the header row: the default
+   tooltip sits above its trigger, and a control 34px from the top of the
+   viewport has nothing above it to sit in. */
+.tooltip-wide[data-tooltip]:hover::after {
+  white-space: normal;
+  width: max-content;
+  max-width: 330px;
+  text-align: left;
+  line-height: 1.55;
+  font-weight: 400;
+  padding: 8px 10px;
+}
+
 .tooltip-align-right[data-tooltip]:hover::after {
   left: auto;
   right: 0;

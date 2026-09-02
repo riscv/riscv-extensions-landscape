@@ -2055,9 +2055,9 @@ const RISCVExplorer = () => {
                     type="button"
                     ref={aboutTriggerRef}
                     onClick={() => setAboutOpen(true)}
-                    className="riscv-report-btn ml-3 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap"
+                    className="riscv-btn tooltip-wide tooltip-bottom-right ml-3 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap"
                     aria-haspopup="dialog"
-                    title="What this tool is and how to drive it"
+                    data-tooltip="Browse every ratified RISC-V extension, its instructions and their encodings. Select a tile for details, filter by profile or manual volume, and turn on ISA Builder to assemble a configuration and get a validated -march string. Compare puts extensions, instructions or profiles side by side."
                   >
                     <Info size={12} />
                     About
