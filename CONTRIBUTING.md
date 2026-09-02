@@ -114,6 +114,58 @@ Each of these exists because it was once broken:
 - If you found something surprising along the way, put it in the description.
   Several of the sharpest bugs here were found while fixing something else.
 
+## Releasing
+
+Releases are cut by hand. There is no release bot, and the version lives in one
+place: `package.json` (with `package-lock.json` following it).
+
+### Choosing the number
+
+The catalogue in `src/riscv_extensions.json` is the product, so **a release that
+changes what the catalogue contains is a minor bump even when no code changed**.
+An entry that disappears takes any saved selection or `-march` string that
+referenced it with it, and a reader should not have to open the diff to discover
+that. Reserve a patch for fixes that leave the entry set intact.
+
+### Steps
+
+```bash
+git checkout -b chore/release-X.Y.Z
+npm version --no-git-tag-version X.Y.Z      # package.json + package-lock.json
+```
+
+Add the release section to `CHANGELOG.md`. CI will reject the pull request if the
+version moved and no `## [X.Y.Z]` heading appeared, so this is not optional. The
+Changelog workflow also prints which catalogue entry ids were added or removed
+against the base — take that list, do not retype it from memory. It was written
+because hand-counting produced two wrong numbers in a row.
+
+Then verify, open the pull request, and merge it once CI is green:
+
+```bash
+npm run lint && npm run build && npm test
+```
+
+After the release commit is on `main`:
+
+```bash
+git checkout main && git pull
+git tag -a vX.Y.Z <sha> -m "vX.Y.Z"
+git push origin vX.Y.Z
+gh release create vX.Y.Z --verify-tag --title "vX.Y.Z" --notes-file <notes>
+```
+
+Use the changelog section as the release notes, so the tag and the file cannot
+disagree.
+
+### What a release entry carries
+
+- The catalogue size, as `before -> after`, whenever it moved
+- Every entry id added or removed, named individually. A rename is stated as a
+  rename, with both ids, so nobody reads it as an extension disappearing
+- Any change to exported output, since that breaks consumers silently
+- The pull request number against each line
+
 ## Reporting problems
 
 Open an issue with what you did, what you expected, and what happened. For
