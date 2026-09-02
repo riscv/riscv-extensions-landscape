@@ -20,6 +20,10 @@ someone silently. Each release below records its catalogue size.
   followed by "ISA Explorer". Geometry and colours come from the RISC-V brand
   kit's primary horizontal logo: the Color variant on light, White / Yellow on
   dark, each used verbatim rather than one tinted to imitate the other
+- "ISA Explorer" in the header is now a flat Berkeley Blue on light and
+  California Gold on dark, the two UC Berkeley colours, in place of the previous
+  gold gradient. The wordmark beside it is sized so the words never stand taller
+  than the mark
 
 ## [1.4.0] - 2026-09-01
 
