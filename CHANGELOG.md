@@ -15,6 +15,11 @@ someone silently. Each release below records its catalogue size.
 
 ### Changed
 
+- Comparing extensions now lists every instruction each one carries, not just a
+  count. The chips container is bounded so the list wraps instead of stretching
+  its column: an unbounded 30-chip row grew the column to 2000px and pushed the
+  second extension off the viewport entirely
+
 - The usage blurb is now behind an **About** button in the header row, between
   the counts and Report an issue, instead of three lines of prose above the
   grid. It cost roughly 100px above the fold to say something a returning

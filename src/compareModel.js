@@ -103,6 +103,17 @@ const EXTENSION_FIELDS = [
     render: 'mono',
     get: (e) => countOf(e.instructions),
   },
+  // The count answers "how many", which is the wrong question when the reason
+  // for putting two extensions side by side is to see what each one actually
+  // gives you. Mnemonics are the keys of the instructions object, the same
+  // shape encodingMap.js and marchUtils.js read. Sorted so the two columns line
+  // up for the eye; the diff highlight then does the rest.
+  {
+    key: 'instruction_list',
+    label: 'Instruction list',
+    render: 'chips',
+    get: (e) => listOrNull(Object.keys(e.instructions || {}).sort()),
+  },
   { key: 'csr_count', label: 'CSRs', render: 'mono', get: (e) => countOf(e.csrs) },
   { key: 'members', label: 'Members', render: 'chips', get: (e) => listOrNull(e.members) },
   {
