@@ -570,6 +570,12 @@ const RISCVExplorer = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchMatches, setSearchMatches] = useState(null);
   const [encoderValidatorOpen, setEncoderValidatorOpen] = useState(false);
+
+  // What the tool is, moved off the page into a dialog (#209 put it inline; it
+  // cost three lines of vertical space above the fold to say something a
+  // returning visitor already knows). The trigger keeps it one click away.
+  const [aboutOpen, setAboutOpen] = useState(false);
+  const aboutTriggerRef = React.useRef(null);
   const [encodingMapOpen, setEncodingMapOpen] = useState(false);
   const [encoderValidatorInput, setEncoderValidatorInput] = useState({
     mnemonic: '',
@@ -585,6 +591,24 @@ const RISCVExplorer = () => {
   const restoreModalFocusRef = React.useRef(null);
   const onCloseExpandedModalRef = React.useRef(() => setInstructionExpandOpen(false));
   onCloseExpandedModalRef.current = () => setInstructionExpandOpen(false);
+
+  // About dialog: Escape closes, and focus goes back to the trigger. Lighter
+  // than the encoder dialog's full trap because this one holds no fields, only
+  // prose and a close button.
+  React.useEffect(() => {
+    if (!aboutOpen) return undefined;
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setAboutOpen(false);
+      }
+    };
+    document.addEventListener('keydown', onKeyDown, true);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown, true);
+      aboutTriggerRef.current?.focus();
+    };
+  }, [aboutOpen]);
 
   // Expanded instruction modal: focus trap and Escape, in one listener.
   //
@@ -2024,6 +2048,21 @@ const RISCVExplorer = () => {
                     </span>
                   ))}
 
+                  {/* Sits between the counts and Report an issue: the three
+                      things a first-time visitor wants from the header row are
+                      what this is, how big it is, and where to complain. */}
+                  <button
+                    type="button"
+                    ref={aboutTriggerRef}
+                    onClick={() => setAboutOpen(true)}
+                    className="riscv-report-btn ml-3 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap"
+                    aria-haspopup="dialog"
+                    title="What this tool is and how to drive it"
+                  >
+                    <Info size={12} />
+                    About
+                  </button>
+
                   {/* A preview needs somewhere for the findings to go, and it
                       should be reachable from the caveat rather than buried in
                       a footer nobody scrolls to. */}
@@ -2041,30 +2080,6 @@ const RISCVExplorer = () => {
                 </div>
               </div>
 
-              {/* What the tool is, and what to do with it (#209). The front page
-                  named the subject and showed counts, but never said what the
-                  page was for or how to drive it — a visitor had to infer the
-                  whole interaction from the controls. Two lines, above the
-                  controls they describe, rather than a tour nobody reads. */}
-              <p
-                className="riscv-usage mt-3 mb-1 text-[12.5px] leading-relaxed"
-                style={{ color: 'var(--riscv-text-2)', maxWidth: '76ch' }}
-              >
-                Browse every ratified RISC-V extension, its instructions and their encodings.{' '}
-                <span style={{ color: 'var(--riscv-text-3)' }}>
-                  Select a tile for details, filter by profile or manual volume, and turn on{' '}
-                  <strong style={{ color: 'var(--riscv-text-2)', fontWeight: 600 }}>
-                    ISA Builder
-                  </strong>{' '}
-                  to assemble a configuration and get a validated{' '}
-                  <code style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.95em' }}>
-                    -march
-                  </code>{' '}
-                  string.{' '}
-                  <strong style={{ color: 'var(--riscv-text-2)', fontWeight: 600 }}>Compare</strong>{' '}
-                  puts extensions, instructions or profiles side by side.
-                </span>
-              </p>
 
               {/* Controls Area.
                   items-end right-aligns children, so a child wider than this
@@ -4182,6 +4197,71 @@ const RISCVExplorer = () => {
         expandDeps={compareExpandDeps}
         onToggleExpandDeps={setCompareExpandDeps}
       />
+
+      {aboutOpen && (
+        <div className="fixed inset-0 z-50">
+          <div
+            className="absolute inset-0"
+            style={{ background: 'rgba(7,7,14,0.85)', backdropFilter: 'blur(4px)' }}
+            onClick={() => setAboutOpen(false)}
+            role="presentation"
+          />
+
+          <div className="absolute inset-0 p-3 md:p-8 flex items-start justify-center overflow-y-auto">
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="about-title"
+              className="animate-scale-in w-full max-w-xl riscv-card overflow-hidden"
+              style={{ boxShadow: '0 0 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(139,124,248,0.15)' }}
+            >
+              <div
+                className="p-4 flex items-start justify-between gap-3"
+                style={{ borderBottom: '1px solid var(--riscv-border)' }}
+              >
+                <h3
+                  id="about-title"
+                  className="font-bold flex items-center gap-2"
+                  style={{ color: 'var(--riscv-text)', fontSize: '14px' }}
+                >
+                  <Info size={15} style={{ color: 'var(--riscv-violet)' }} />
+                  <span>About RISC-V ISA Explorer</span>
+                </h3>
+                <button
+                  type="button"
+                  className="riscv-btn p-1.5"
+                  onClick={() => setAboutOpen(false)}
+                  aria-label="Close"
+                  autoFocus
+                >
+                  <X size={14} />
+                </button>
+              </div>
+
+              <div className="p-4 text-[13px] leading-relaxed" style={{ color: 'var(--riscv-text-2)' }}>
+                <p>
+                  Browse every ratified RISC-V extension, its instructions and their encodings.{' '}
+                  <span style={{ color: 'var(--riscv-text-3)' }}>
+                    Select a tile for details, filter by profile or manual volume, and turn on{' '}
+                    <strong style={{ color: 'var(--riscv-text-2)', fontWeight: 600 }}>
+                      ISA Builder
+                    </strong>{' '}
+                    to assemble a configuration and get a validated{' '}
+                    <code style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.95em' }}>
+                      -march
+                    </code>{' '}
+                    string.{' '}
+                    <strong style={{ color: 'var(--riscv-text-2)', fontWeight: 600 }}>
+                      Compare
+                    </strong>{' '}
+                    puts extensions, instructions or profiles side by side.
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {encoderValidatorOpen && (
         <div className="fixed inset-0 z-50">
