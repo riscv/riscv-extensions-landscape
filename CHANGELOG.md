@@ -15,6 +15,11 @@ someone silently. Each release below records its catalogue size.
 
 ### Changed
 
+- The usage blurb is now behind an **About** button in the header row, between
+  the counts and Report an issue, instead of three lines of prose above the
+  grid. It cost roughly 100px above the fold to say something a returning
+  visitor already knows
+
 - The header and footer now carry the official RISC-V wordmark in place of the
   generic circuit icon and the words "RISC-V", so the title reads as the mark
   followed by "ISA Explorer". Geometry and colours come from the RISC-V brand
