@@ -74,6 +74,7 @@ import {
   buildCombinedCatalog,
 } from './marchUtils.js';
 import { resolveSelection } from './isaGraph.js';
+import RiscvLogo from './RiscvLogo.jsx';
 import { PROFILES } from './profiles.js';
 import PROFILE_OPTIONAL from './profile-optional.json';
 import { buildIsaConfigYaml } from './exportUtils.js';
@@ -1976,9 +1977,13 @@ const RISCVExplorer = () => {
                   earned a line of its own above the grid. */}
               <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1">
                 <div className="flex items-center gap-3">
-                  <CircuitBoard size={22} style={{ color: 'var(--riscv-gold)' }} />
+                  {/* The wordmark stands in for the words "RISC-V", so the
+                      heading reads "RISC-V ISA Explorer" with the mark doing
+                      the first half. Sized in em so it tracks the h1 across
+                      the md breakpoint instead of needing its own step. */}
+                  <RiscvLogo height="0.82em" className="text-2xl md:text-3xl" />
                   <h1
-                    className="text-2xl md:text-3xl font-black tracking-tight"
+                    className="text-2xl md:text-3xl font-black tracking-tight whitespace-nowrap"
                     style={{
                       background:
                         'linear-gradient(90deg, var(--riscv-title-a) 0%, var(--riscv-title-b) 50%, var(--riscv-title-a) 100%)',
@@ -1986,7 +1991,7 @@ const RISCVExplorer = () => {
                       WebkitTextFillColor: 'transparent',
                     }}
                   >
-                    RISC-V ISA Explorer
+                    ISA Explorer
                     {/* Rides the title like an exponent. Inside the h1 on
                         purpose, so it tracks the title's last letter at any
                         size instead of being positioned against a width that
@@ -4114,9 +4119,9 @@ const RISCVExplorer = () => {
           }}
         >
           <div className="flex items-center gap-2">
-            <CircuitBoard size={14} style={{ color: 'var(--riscv-gold)' }} />
+            <RiscvLogo height="14px" />
             <span className="font-semibold" style={{ color: 'var(--riscv-text-2)' }}>
-              RISC-V ISA Explorer
+              ISA Explorer
             </span>
             <span style={{ color: 'var(--riscv-border-2)' }}>·</span>
             <span>

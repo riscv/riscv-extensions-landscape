@@ -82,9 +82,16 @@ test('the header, the counts and the builder control are present', () => {
   // is "Extensions", not "EXTENSIONS". Assert the rendered text, not the styled
   // appearance.
   const text = dom.window.document.body.textContent;
-  for (const expected of ['RISC-V ISA Explorer', 'Extensions', 'ISA Configuration Builder']) {
+  for (const expected of ['ISA Explorer', 'Extensions', 'ISA Configuration Builder']) {
     assert.ok(text.includes(expected), `page text is missing "${expected}"`);
   }
+
+  // "RISC-V" is the wordmark rather than text, so it is not in textContent as
+  // part of the title. Assert the accessible name instead: a screen reader
+  // still announces "RISC-V ISA Explorer", and this catches the mark being
+  // dropped or losing its label, which a text search never would.
+  const marks = dom.window.document.querySelectorAll('svg[aria-label="RISC-V"]');
+  assert.ok(marks.length >= 1, 'the RISC-V wordmark should be present with an accessible name');
 
   // The count comes from the catalogue, so this proves the data loaded rather
   // than merely that a shell painted.

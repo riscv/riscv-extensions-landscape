@@ -17,6 +17,9 @@
   --riscv-muted: #414157;
 
   --riscv-gold: #f5c542;
+  /* The RISC-V wordmark's lettering. White on dark, official navy on light,
+     matching the two official logo variants. The gold in the mark is fixed. */
+  --riscv-logo-ink: #ffffff;
   --riscv-gold-dim: rgba(245, 197, 66, 0.12);
   --riscv-gold-glow: rgba(245, 197, 66, 0.2);
 
@@ -523,6 +526,7 @@ pre,
      gold    #8f6408   4.86:1   AA body
    ────────────────────────────────────────────────────────────────────────── */
 :root[data-theme='light'] {
+  --riscv-logo-ink: #283272;
   --riscv-bg: #f7f5fb;
   /* Catalogue chip accents, one step down the ramp from their dark
      counterparts. Measured on white: 4.75:1 (orange) through 6.55:1 (violet),

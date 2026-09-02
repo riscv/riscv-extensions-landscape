@@ -11,6 +11,17 @@ no code changed. An entry that disappears takes any saved selection or `-march`
 string referencing it with it, and that is the change most likely to affect
 someone silently. Each release below records its catalogue size.
 
+## [Unreleased]
+
+### Changed
+
+- The header and footer now carry the official RISC-V wordmark in place of the
+  generic circuit icon and the words "RISC-V", so the title reads as the mark
+  followed by "ISA Explorer". The mark is inlined from
+  `riscv/docs-resources/images/risc-v_logo.svg`; its gold is fixed and its
+  lettering follows the theme, navy on light and white on dark, matching the two
+  official variants
+
 ## [1.4.0] - 2026-09-01
 
 Data release. Catalogue **228 → 219 entries**, 17 → 18 groups.
