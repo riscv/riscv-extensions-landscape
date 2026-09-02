@@ -18,7 +18,8 @@ someone silently. Each release below records its catalogue size.
 - The usage blurb is now behind an **About** button in the header row, between
   the counts and Report an issue, instead of three lines of prose above the
   grid. It cost roughly 100px above the fold to say something a returning
-  visitor already knows
+  visitor already knows. Hovering the button shows the same text without
+  opening anything
 
 - The header and footer now carry the official RISC-V wordmark in place of the
   generic circuit icon and the words "RISC-V", so the title reads as the mark
