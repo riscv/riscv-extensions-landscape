@@ -28,8 +28,11 @@
 
   /* Wordmark gradient. Bright amber reads on black and disappears on white, so
      the light theme swaps in a deeper pair. */
-  --riscv-title-a: #f5c542;
-  --riscv-title-b: #fde68a;
+  /* "ISA Explorer" in the header. California Gold on dark, Berkeley Blue on
+     light: the two UC Berkeley colours, where RISC-V started. A flat colour
+     rather than the previous gradient, so the words sit beside the wordmark
+     as type instead of competing with it. */
+  --riscv-title: #fdb515;
 
   --riscv-violet: #8b7cf8;
   --riscv-violet-dim: rgba(139, 124, 248, 0.12);
@@ -574,8 +577,7 @@ pre,
   --riscv-violet: #6d5bd0;
   --riscv-violet-dim: rgba(109, 91, 208, 0.1);
 
-  --riscv-title-a: #8a5a00;
-  --riscv-title-b: #b8860b;
+  --riscv-title: #003262;
 
   --riscv-success: #14866a;
   --riscv-danger: #c2334d;

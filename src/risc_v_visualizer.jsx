@@ -1981,24 +1981,19 @@ const RISCVExplorer = () => {
                       heading reads "RISC-V ISA Explorer" with the mark doing
                       the first half. Sized in em so it tracks the h1 across
                       the md breakpoint instead of needing its own step. */}
-                  <RiscvLogo height="0.82em" className="text-2xl md:text-3xl" />
+                  <RiscvLogo height="1.15em" className="text-2xl md:text-3xl" />
                   <h1
                     className="text-2xl md:text-3xl font-black tracking-tight whitespace-nowrap"
-                    style={{
-                      background:
-                        'linear-gradient(90deg, var(--riscv-title-a) 0%, var(--riscv-title-b) 50%, var(--riscv-title-a) 100%)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                    }}
+                    style={{ color: 'var(--riscv-title)' }}
                   >
                     ISA Explorer
                     {/* Rides the title like an exponent. Inside the h1 on
                         purpose, so it tracks the title's last letter at any
                         size instead of being positioned against a width that
-                        changes with the viewport. The h1 paints its text with
-                        a clipped gradient and a transparent fill, which a
-                        child inherits — so the class re-declares
-                        -webkit-text-fill-color or this would render invisible. */}
+                        changes with the viewport. The class keeps its own
+                        -webkit-text-fill-color: harmless now the title is a
+                        flat colour, and it is what kept this readable back
+                        when the h1 painted itself with a clipped gradient. */}
                     <sup
                       className="riscv-preview-sup"
                       title="This site is a technical preview — verify anything load-bearing against the ratified specification."
