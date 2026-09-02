@@ -1,42 +1,42 @@
 import React from 'react';
 
-// The official RISC-V wordmark, from riscv/docs-resources/images/risc-v_logo.svg.
+// The official RISC-V primary horizontal wordmark, from the RISC-V brand kit
+// (Primary Logo_RISC-V Horizontal). Geometry is verbatim from
+// RISC-V_Horizontal_Color.svg, which is byte-identical to the White / Yellow
+// variant apart from its two fills, so one set of shapes serves both themes.
 //
-// Inlined rather than imported: webpack here only has an asset rule for .png,
-// and inlining lets the wordmark follow the theme without shipping two files.
-// The gold is the brand gold and does not move. The lettering is `currentColor`
-// so it can be navy on light and white on dark, which is what the official
-// colour and white variants do; `--riscv-logo-ink` carries that swap.
+//   light  ink #2C356D  mark #E6AC2C   (Color)
+//   dark   ink #FFFFFF  mark #F4B01B   (White / Yellow)
 //
-// The two nested transforms come from the source file and must be kept: the
-// path data is in a 3800-unit space that the matrix flips and the scale
-// reduces into the 483x76.6 viewBox.
+// Those live in --riscv-logo-ink and --riscv-logo-mark rather than being
+// recoloured here, so each theme gets a real brand variant instead of one
+// variant tinted to approximate the other.
+//
+// Inlined rather than imported because webpack here has an asset rule for .png
+// only, and inlining is what lets the fills follow the theme.
 export default function RiscvLogo({ height = '1em', className = '', title = 'RISC-V' }) {
-  // Width comes from CSS, not the attribute: width="auto" is not a valid SVG
-  // length, so as an attribute it falls back to 100% and the mark claims the
-  // whole row, which pushed the title into a wrap. As CSS on a replaced element
-  // with an intrinsic ratio, `width: auto` resolves from the height and viewBox.
+  // Width must come from CSS: width="auto" is not a valid SVG length, so as an
+  // attribute it falls back to 100% and the mark claims its whole row. As CSS on
+  // a replaced element with an intrinsic ratio it resolves from height + viewBox.
   return (
     <svg
-      viewBox="0 0 483.01334 76.599998"
+      viewBox="0 0 1000 175.4"
       role="img"
       aria-label={title}
       className={className}
-      style={{ height, width: 'auto', color: 'var(--riscv-logo-ink)', display: 'block', flex: 'none' }}
+      style={{ height, width: 'auto', display: 'block', flex: 'none' }}
     >
       <title>{title}</title>
-      <g transform="matrix(1.3333333,0,0,-1.3333333,0,76.6)">
-        <g transform="scale(0.1)">
-        <path fill="#F3AB0D" d="m 321.398,394.781 c 0,-83.511 -50.644,-159.398 -149.281,-177.176 L 311.27,53.1445 323.859,70.7969 574.465,425.184 V 574.461 H 167.051 c 103.703,-10.125 154.347,-96.133 154.347,-179.68" />
-        <path fill="currentColor" d="M 392.188,25.3398 576.926,283.469 V 0 H 373.672 Z M 35.4609,293.59 h 96.1331 c 70.801,0 106.289,50.547 106.289,101.191 0,50.68 -35.488,98.731 -106.289,98.731 L 0,493.512 V 0 H 245.535 L 35.4609,253.066 v 40.524" />
-        <path fill="currentColor" d="m 1419.67,478.328 h 83.54 V 86.0117 h -83.54 V 478.328" />
-        <path fill="currentColor" d="m 2000.97,171.859 -434.5,0.254 V 86.0117 h 437.78 c 32.87,0 60.8,12.7149 83.54,35.4613 22.75,22.715 35.46,50.64 35.46,83.507 0,32.872 -12.71,60.676 -35.46,83.547 -22.74,22.743 -50.67,35.336 -83.54,35.336 l -318.47,2.379 c -18.78,0.141 -33.96,15.332 -34.1,34.106 v 0 0 c 0.14,18.867 15.46,34.097 34.33,34.113 l 437.24,0.32 v 83.547 h -437.8 c -32.99,0 -60.8,-12.719 -83.51,-35.461 -22.74,-22.746 -35.47,-50.679 -35.47,-83.547 0,-32.863 12.73,-60.672 35.47,-83.507 22.71,-22.747 50.52,-32.868 83.51,-32.868 l 318.11,-0.015 c 18.9,0 34.19,-15.352 34.12,-34.242 v 0 0 c 0.07,-20.329 -16.39,-36.836 -36.71,-36.829" />
-        <path fill="currentColor" d="m 2358.55,478.328 h 361.91 v -83.547 h -361.91 c -30.28,0 -55.62,-9.996 -78.49,-32.867 -22.75,-22.742 -32.86,-48.051 -32.86,-78.445 0,-30.274 10.11,-55.617 32.86,-78.489 22.87,-22.707 48.21,-32.867 78.49,-32.867 h 361.91 l -0.02,-86.1013 h -361.71 c -53.14,0 -98.82,20.3713 -136.87,58.3013 -37.93,37.96 -55.62,83.539 -55.62,136.683 0,53.117 17.69,98.731 55.62,136.656 38.05,40.395 83.54,60.676 136.69,60.676" />
-        <path fill="currentColor" d="M 1358.99,86.0117 1247.65,240.445 c 30.27,2.5 55.61,12.621 75.89,35.368 22.74,22.835 35.45,50.644 35.45,83.507 0,32.868 -12.71,60.801 -35.45,83.547 -22.75,22.742 -50.68,35.461 -83.55,35.461 H 802.188 V 86.0117 h 83.546 V 240.445 H 1143.86 L 1255.21,86.0117 Z m -124,234.7613 -349.256,0.622 v 70.793 l 352.726,0.718 c 19.01,0.039 34.47,-15.316 34.56,-34.332 v 0 0 c -0.09,-20.926 -17.1,-37.836 -38.03,-37.801" />
-        <path fill="#F3AB0D" d="M 3137.99,86.0117 2908.74,478.328 h 98.13 l 179.19,-311.269 179.3,311.269 h 96.62 L 3234.12,86.0117" />
-        <path fill="#F3AB0D" d="m 2771.13,318.926 h 164.47 v -75.981 h -164.47 v 75.981" />
-        <path fill="currentColor" d="m 3551.73,418.332 h 6.6 c 7.72,0 13.96,2.566 13.96,8.809 0,5.507 -4.04,9.179 -12.85,9.179 -3.68,0 -6.24,-0.367 -7.71,-0.734 z m -0.37,-34.144 h -13.95 v 60.207 c 5.51,1.097 13.22,1.835 23.13,1.835 11.38,0 16.52,-1.835 20.93,-4.402 3.3,-2.574 5.86,-7.344 5.86,-13.219 0,-6.613 -5.13,-11.75 -12.48,-13.949 v -0.738 c 5.88,-2.195 9.18,-6.606 11.02,-14.684 1.84,-9.179 2.94,-12.851 4.4,-15.05 h -15.05 c -1.83,2.199 -2.93,7.707 -4.77,14.683 -1.1,6.609 -4.77,9.547 -12.48,9.547 h -6.61 z m -37.08,31.57 c 0,-26.797 19.82,-48.09 46.99,-48.09 26.44,0 45.89,21.293 45.89,47.723 0,26.8 -19.45,48.464 -46.25,48.464 -26.81,0 -46.63,-21.664 -46.63,-48.097 z m 108.3,0 c 0,-34.141 -26.8,-60.938 -61.67,-60.938 -34.51,0 -62.05,26.797 -62.05,60.938 0,33.406 27.54,60.211 62.05,60.211 34.87,0 61.67,-26.805 61.67,-60.211" />
-        </g>
+      <g>
+        <path fill="var(--riscv-logo-mark)" d="M91.6,58.2c0,22.9-13.9,43.7-40.9,48.6l38.1,45.1l3.4-4.8L161,49.9V9H49.3C77.7,11.7,91.6,35.3,91.6,58.2z" />
+        <path fill="var(--riscv-logo-ink)" d="M13.2,85.9h26.4C59,85.9,68.7,72,68.7,58.2c0-13.9-9.7-27.1-29.1-27.1H3.5v135.3h67.3L13.2,97.1V85.9z M111,159.5l50.6-70.8v77.7H106L111,159.5z" />
+        <rect fill="var(--riscv-logo-ink)" x="392.7" y="35.3" width="22.9" height="107.5" />
+        <path fill="var(--riscv-logo-ink)" d="M552,119.3l-119.1-0.1v23.6h120c9,0,16.7-3.5,22.9-9.7s9.7-13.9,9.7-22.9s-3.5-16.6-9.7-22.9 c-6.2-6.2-13.9-9.7-22.9-9.7L465.6,77c-5.1,0-9.3-4.2-9.4-9.3l0,0l0,0c0-5.2,4.2-9.3,9.4-9.3l119.9-0.1v-23h-120 c-9,0-16.7,3.5-22.9,9.7c-6.2,6.2-9.7,13.9-9.7,22.9s3.5,16.6,9.7,22.9c6.2,6.2,13.9,9,22.9,9h87.2c5.2,0,9.4,4.2,9.3,9.4l0,0l0,0 C562.1,114.8,557.6,119.3,552,119.3z" />
+        <path fill="var(--riscv-logo-ink)" d="M650,35.3h99.2v22.9H650c-8.3,0-15.2,2.7-21.5,9c-6.2,6.2-9,13.2-9,21.5s2.8,15.2,9,21.5 c6.3,6.2,13.2,9,21.5,9h99.2v23.6H650c-14.6,0-27.1-5.6-37.5-16s-15.2-22.9-15.2-37.5s4.8-27.1,15.2-37.5 C623,40.9,635.4,35.3,650,35.3z" />
+        <path fill="var(--riscv-logo-ink)" d="M342,78.5l-95.7-0.2V58.9l96.7-0.2c5.2,0,9.5,4.2,9.5,9.4l0,0l0,0C352.4,73.9,347.8,78.5,342,78.5z M376,142.8l-30.5-42.3c8.3-0.7,15.2-3.5,20.8-9.7c6.2-6.3,9.7-13.9,9.7-22.9s-3.5-16.7-9.7-22.9s-13.9-9.7-22.9-9.7h-120v107.5 h22.9v-42.3h70.8l30.5,42.3H376z" />
+        <polyline fill="var(--riscv-logo-mark)" points="863.7,142.8 800.8,35.3 827.7,35.3 876.8,120.6 926,35.3 952.5,35.3 890,142.8" />
+        <rect fill="var(--riscv-logo-mark)" x="763.1" y="79" width="45.1" height="20.8" />
+        <path fill="var(--riscv-logo-ink)" d="M996.5,52.5c0,9.4-7.3,16.7-16.9,16.7c-9.5,0-17-7.3-17-16.7c0-9.2,7.5-16.5,17-16.5 C989.1,36,996.5,43.3,996.5,52.5z M966.8,52.5c0,7.3,5.4,13.2,12.9,13.2c7.2,0,12.6-5.8,12.6-13.1s-5.3-13.3-12.7-13.3 S966.8,45.2,966.8,52.5z M977,61.1h-3.8V44.6c1.5-0.3,3.6-0.5,6.3-0.5c3.1,0,4.5,0.5,5.7,1.2c0.9,0.7,1.6,2,1.6,3.6 c0,1.8-1.4,3.2-3.4,3.8V53c1.6,0.6,2.5,1.8,3,4c0.5,2.5,0.8,3.5,1.2,4.1h-4.1c-0.5-0.6-0.8-2.1-1.3-4c-0.3-1.8-1.3-2.6-3.4-2.6 H977V61.1L977,61.1z M977,51.8h1.8c2.1,0,3.8-0.7,3.8-2.4c0-1.5-1.1-2.5-3.5-2.5c-1,0-1.7,0.1-2.1,0.2V51.8z" />
       </g>
     </svg>
   );
