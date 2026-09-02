@@ -1,0 +1,113 @@
+name: Changelog
+
+# Two jobs in one, both cheap:
+#
+#   1. A release must carry its changelog entry. If a PR bumps the version in
+#      package.json, CHANGELOG.md must gain a matching `## [x.y.z]` heading.
+#      This is the whole point of the file: a changelog nobody is forced to
+#      update is worse than none, because it looks authoritative while it rots.
+#
+#   2. A catalogue change reports which entry ids moved. Not a failure — the
+#      weekly UDB sync bot changes the catalogue on its own schedule and has no
+#      business writing prose. It is printed so whoever writes the release entry
+#      has the list without diffing two tags by hand, which is exactly the step
+#      that produced two wrong counts while CHANGELOG.md was being written.
+#
+# Deliberately a plain script, for the same reason dco.yml is one: a gate of
+# this size is not worth granting a token to code we do not control.
+
+on:
+  pull_request:
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: A version bump carries its changelog entry
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -uo pipefail
+
+          base_ver=$(git show "$BASE_SHA:package.json" 2>/dev/null \
+            | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{console.log(JSON.parse(s).version)}catch{console.log("")}})')
+          head_ver=$(node -e 'console.log(require("./package.json").version)')
+
+          echo "base version: ${base_ver:-unknown}"
+          echo "head version: $head_ver"
+
+          if [ "$base_ver" = "$head_ver" ]; then
+            echo "no version change; nothing to enforce"
+            exit 0
+          fi
+
+          echo "version bumped $base_ver -> $head_ver"
+
+          if [ ! -f CHANGELOG.md ]; then
+            echo "FAIL: the version was bumped but CHANGELOG.md does not exist"
+            exit 1
+          fi
+
+          # The heading format is Keep a Changelog: "## [1.4.0] - 2026-09-01".
+          if grep -qE "^## \[${head_ver}\]" CHANGELOG.md; then
+            echo "ok: CHANGELOG.md has a section for $head_ver"
+          else
+            echo ""
+            echo "---"
+            echo "FAIL: package.json is at $head_ver but CHANGELOG.md has no"
+            echo "      '## [$head_ver]' section."
+            echo ""
+            echo "Add one before merging. See the Releasing section of"
+            echo "CONTRIBUTING.md for what a release entry is expected to carry."
+            echo "---"
+            exit 1
+          fi
+
+      - name: Report catalogue entries added or removed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -uo pipefail
+          CAT=src/riscv_extensions.json
+
+          if git diff --quiet "$BASE_SHA" -- "$CAT"; then
+            echo "catalogue unchanged"
+            exit 0
+          fi
+
+          git show "$BASE_SHA:$CAT" > /tmp/base_catalogue.json 2>/dev/null || echo '{}' > /tmp/base_catalogue.json
+
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const ids = (p) => {
+            try {
+              const d = JSON.parse(fs.readFileSync(p, 'utf8'));
+              return new Set(Object.values(d).flat().map((e) => e.id));
+            } catch {
+              return new Set();
+            }
+          };
+          const before = ids('/tmp/base_catalogue.json');
+          const after = ids('src/riscv_extensions.json');
+          const removed = [...before].filter((i) => !after.has(i)).sort();
+          const added = [...after].filter((i) => !before.has(i)).sort();
+
+          console.log(`entries: ${before.size} -> ${after.size}`);
+          if (removed.length) console.log(`removed (${removed.length}): ${removed.join(', ')}`);
+          if (added.length) console.log(`added   (${added.length}): ${added.join(', ')}`);
+          if (!removed.length && !added.length) {
+            console.log('no entry ids added or removed; content changed only');
+          }
+          if (removed.length) {
+            console.log('');
+            console.log('A removed entry invalidates any saved selection or -march');
+            console.log('string that referenced it. Record these in CHANGELOG.md');
+            console.log('under the release that ships them.');
+          }
+          NODE
