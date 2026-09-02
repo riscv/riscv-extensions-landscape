@@ -19,6 +19,12 @@ name: Changelog
 on:
   pull_request:
 
+# The job only reads the repository: it checks out the head, reads package.json
+# and CHANGELOG.md on both sides, and prints a diff of catalogue entry ids. It
+# never writes, so the token gets nothing beyond read.
+permissions:
+  contents: read
+
 jobs:
   changelog:
     runs-on: ubuntu-latest
