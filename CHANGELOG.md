@@ -17,10 +17,9 @@ someone silently. Each release below records its catalogue size.
 
 - The header and footer now carry the official RISC-V wordmark in place of the
   generic circuit icon and the words "RISC-V", so the title reads as the mark
-  followed by "ISA Explorer". The mark is inlined from
-  `riscv/docs-resources/images/risc-v_logo.svg`; its gold is fixed and its
-  lettering follows the theme, navy on light and white on dark, matching the two
-  official variants
+  followed by "ISA Explorer". Geometry and colours come from the RISC-V brand
+  kit's primary horizontal logo: the Color variant on light, White / Yellow on
+  dark, each used verbatim rather than one tinted to imitate the other
 
 ## [1.4.0] - 2026-09-01
 
