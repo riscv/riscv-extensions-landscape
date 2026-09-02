@@ -1291,6 +1291,17 @@ pre,
   display: grid;
   min-width: max-content;
 }
+
+/* The grid is min-width: max-content so several columns scroll rather than
+   squash. That works while every cell is short. An instruction list is not:
+   30 chips laid out on one line give the cell a max-content width of about
+   2000px, which the column then takes, pushing the second extension off the
+   viewport entirely. flex-wrap never fires because the column grew to fit.
+   Bounding the chips container caps what it contributes to max-content, so the
+   chips wrap and the columns stay comparable side by side. */
+.compare-chips {
+  max-width: 30rem;
+}
 .compare-head {
   position: sticky;
   top: 0;

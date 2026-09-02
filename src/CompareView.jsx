@@ -54,7 +54,7 @@ function Cell({ row, value, bitDiff }) {
 
   if (row.render === 'chips') {
     return (
-      <div className="flex flex-wrap gap-1">
+      <div className="compare-chips flex flex-wrap gap-1">
         {value.map((item) => (
           <span
             key={item}
