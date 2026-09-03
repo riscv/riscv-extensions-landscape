@@ -45,6 +45,31 @@
  *   check is a floor rather than full coverage — that is the remaining gap.
  */
 
+/**
+ * The compiler-compatibility summary, condensed, as the single source of truth.
+ *
+ * This prose used to live in three hand-maintained copies: the scope block
+ * above, the header of exportUtils.js, and the comment exportUtils.js emits
+ * into every exported file. They had drifted apart — the export header named
+ * Zvkg where the emitted copy omitted it, while the block above lists the
+ * fuller Zvk family — so a reader comparing an exported file against the
+ * source got two different answers to one question. The emitted copy is
+ * generated from here now, and the export header points at this rather than
+ * restating it.
+ *
+ * The vector-crypto family is named by prefix deliberately. Enumerating a
+ * handful of its members is exactly what went stale, and riscv_extensions.json
+ * carries 21 of them; `Zvk*` cannot drift.
+ */
+export const COMPILER_COMPAT_NOTES = [
+  'Scalar crypto (Zk, Zkn, Zks, Zbkb, etc.): supported since ~GCC 12-13 / LLVM 14-15.',
+  'Vector crypto (the Zvk* family, plus Zvbb and Zvbc): requires GCC 14+ / non-experimental LLVM 18+.',
+  'Zve/Zvl sub-profile tokens: exact min version unconfirmed — verify with your toolchain:',
+  '  gcc: riscv64-unknown-elf-gcc -march=help',
+  '  clang: clang --target=riscv64-unknown-elf --print-supported-extensions',
+  'Non-ISA extensions excluded from this string.',
+];
+
 // ============================================================================
 // Canonical single-letter extension ordering
 // ============================================================================
