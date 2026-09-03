@@ -11,6 +11,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildIsaConfigYaml } from '../src/exportUtils.js';
+import { COMPILER_COMPAT_NOTES } from '../src/marchUtils.js';
 import { resolveSelection } from '../src/isaGraph.js';
 import { PROFILES } from '../src/profiles.js';
 
@@ -196,4 +197,43 @@ test('mutually exclusive base letters (I and E) are not emitted as extensions in
   assert.ok(!/rv32ei/i.test(isa), `mutually exclusive base letters must not be combined: ${isa}`);
   assert.match(isa, /^RV32EM/);
   assert.ok(warnings.some((w) => /mutually exclusive/i.test(w)));
+});
+
+test('the compiler compatibility comment is emitted from marchUtils, not a local copy', () => {
+  // The same prose lived in three hand-maintained places and drifted: the
+  // export header claimed the vector-crypto family included Zvkg, the comment
+  // written into every export omitted it, and marchUtils listed a fuller set.
+  // Reading it from one export is what stops that recurring, so assert the
+  // emitted block really is that export rather than a copy that matches today.
+  const { yaml } = buildIsaConfigYaml(resolve(['RV64I', 'M', 'C']), ALL, { format: 'landscape' });
+  assert.ok(COMPILER_COMPAT_NOTES.length > 0, 'the notes should not be empty');
+  for (const note of COMPILER_COMPAT_NOTES) {
+    assert.ok(
+      yaml.includes(`#   ${note}`),
+      `export must carry the note verbatim from marchUtils: ${note}`,
+    );
+  }
+
+  // Carrying the text is not the same as reading it from one place: a local
+  // copy that happens to match today would satisfy the loop above and then
+  // drift, which is the exact failure this change exists to end. So also
+  // assert exportUtils.js keeps no copy of its own.
+  const exportSrc = fs.readFileSync(
+    path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'src', 'exportUtils.js'),
+    'utf8',
+  );
+  for (const note of COMPILER_COMPAT_NOTES) {
+    assert.ok(
+      !exportSrc.includes(note),
+      `exportUtils.js must not hold its own copy of: ${note}`,
+    );
+  }
+});
+
+test('the vector crypto note names its family by prefix, not by enumeration', () => {
+  // Naming four of the 21 Zvk* entries in riscv_extensions.json is what went
+  // stale. A prefix cannot.
+  const note = COMPILER_COMPAT_NOTES.find((n) => /vector crypto/i.test(n));
+  assert.ok(note, 'a vector crypto note should exist');
+  assert.match(note, /Zvk\*/, 'name the family by prefix so it cannot drift as members are added');
 });

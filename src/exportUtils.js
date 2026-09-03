@@ -7,14 +7,19 @@
  * successor carries an explicit "work-in-progress" caution).
  *
  * COMPILER COMPATIBILITY SCOPE (per extension family):
- *   Scalar crypto (Zk, Zkn, Zks, Zbkb, etc.): supported since ~GCC 12-13 / LLVM 14-15.
- *   Vector crypto (Zvkned, Zvbb, Zvbc family): requires GCC 14+ / non-experimental LLVM 18+.
- *   Zve/Zvl sub-profile tokens: exact min version unconfirmed; verify with your toolchain.
- *   Base/gc extensions: universally stable.
- *   Full details and CI gap: see marchUtils.js COMPILER VERIFICATION SCOPE.
+ *   Not restated here. The summary this file emits into every export comes from
+ *   COMPILER_COMPAT_NOTES in marchUtils.js, and the reasoning behind each entry
+ *   is in that file's COMPILER VERIFICATION SCOPE block. A third hand-maintained
+ *   copy of the same prose is how the previous one went stale.
  */
 
-import { buildMarchString, BASE_ISA_IDS, BASE_ISA_PREFIX_MAP, SHORTHAND_BUNDLES } from './marchUtils.js';
+import {
+  buildMarchString,
+  BASE_ISA_IDS,
+  BASE_ISA_PREFIX_MAP,
+  SHORTHAND_BUNDLES,
+  COMPILER_COMPAT_NOTES,
+} from './marchUtils.js';
 import { buildCombinedCatalog } from './marchUtils.js';
 import { resolveParams } from './isaGraph.js';
 import { DEPENDENCY_GRAPH } from './isaGraph.js';
@@ -477,12 +482,7 @@ export function buildIsaConfigYaml(selectedIds, allExts, options = {}) {
   lines.push(`xlen: ${baseInfo.xlen}`);
   lines.push(``);
   lines.push(`# Compiler -march flag. Toolchain compatibility varies by extension family:`);
-  lines.push(`#   Scalar crypto (Zk, Zkn, Zks, Zbkb, etc.): supported since ~GCC 12-13 / LLVM 14-15.`);
-  lines.push(`#   Vector crypto (Zvkned, Zvbb, Zvbc family): requires GCC 14+ / non-experimental LLVM 18+.`);
-  lines.push(`#   Zve/Zvl sub-profile tokens: exact min version unconfirmed — verify with your toolchain:`);
-  lines.push(`#     gcc: riscv64-unknown-elf-gcc -march=help`);
-  lines.push(`#     clang: clang --target=riscv64-unknown-elf --print-supported-extensions`);
-  lines.push(`#   Non-ISA extensions excluded from this string.`);
+  for (const note of COMPILER_COMPAT_NOTES) lines.push(`#   ${note}`);
   lines.push(`march: ${marchString}`);
   lines.push(``);
   lines.push(`# INFERRED, not chosen. Derived from which extensions are present`);
