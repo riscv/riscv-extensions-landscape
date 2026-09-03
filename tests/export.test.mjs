@@ -176,3 +176,24 @@ test('every S-mode privileged family reaches privilege_extensions', () => {
     );
   }
 });
+
+test('shorthand bundles (Zkn, Zks, Zk) absorb their member subsets in the riscv-config format', () => {
+  // riscv-config: "In presence of Zkn the subsets must be ignored in the ISA string".
+  // clang tolerates the redundant form, but riscv-config rejects it outright.
+  // Same absorption rule as V folding its Zve* and Zvl* vector members.
+  const { yaml } = buildIsaConfigYaml(resolve(['RV64I', 'Zkn']), ALL, { format: 'riscv-config' });
+  const isa = yaml.match(/^ {2}ISA: (\S+)/m)[1];
+  assert.ok(isa.includes('Zkn'), `Zkn should be present in ISA string: ${isa}`);
+  for (const member of ['Zbkb', 'Zbkc', 'Zbkx', 'Zknd', 'Zkne', 'Zknh']) {
+    assert.ok(!isa.includes(member), `Zkn should absorb ${member} in riscv-config format: ${isa}`);
+  }
+  assert.match(yaml, /folded into Zkn/, 'the shorthand absorption should be stated in the file');
+});
+
+test('mutually exclusive base letters (I and E) are not emitted as extensions in export', () => {
+  const { yaml, warnings } = buildIsaConfigYaml(['RV32E', 'I', 'M'], ALL, { format: 'landscape' });
+  const isa = yaml.match(/^isa_string: (\S+)/m)[1];
+  assert.ok(!/rv32ei/i.test(isa), `mutually exclusive base letters must not be combined: ${isa}`);
+  assert.match(isa, /^RV32EM/);
+  assert.ok(warnings.some((w) => /mutually exclusive/i.test(w)));
+});
