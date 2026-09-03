@@ -8,13 +8,13 @@
  *
  * COMPILER COMPATIBILITY SCOPE (per extension family):
  *   Scalar crypto (Zk, Zkn, Zks, Zbkb, etc.): supported since ~GCC 12-13 / LLVM 14-15.
- *   Vector crypto (Zvkned, Zvbb, Zvbc, Zvkg family): GCC 14+ / LLVM 18+ (stable).
+ *   Vector crypto (Zvkned, Zvbb, Zvbc family): GCC 14+ / LLVM 18+ (stable).
  *   Zve/Zvl sub-profile tokens: exact min version unconfirmed; verify with your toolchain.
  *   Base/gc extensions: universally stable.
  *   Full details and CI gap: see marchUtils.js COMPILER VERIFICATION SCOPE.
  */
 
-import { buildMarchString, BASE_ISA_IDS, BASE_ISA_PREFIX_MAP } from './marchUtils.js';
+import { buildMarchString, BASE_ISA_IDS, BASE_ISA_PREFIX_MAP, SHORTHAND_BUNDLES } from './marchUtils.js';
 import { buildCombinedCatalog } from './marchUtils.js';
 import { resolveParams } from './isaGraph.js';
 import { DEPENDENCY_GRAPH } from './isaGraph.js';
@@ -161,6 +161,14 @@ export function buildIsaConfigYaml(selectedIds, allExts, options = {}) {
     }
 
     if (id.length === 1) {
+      if (idUpper === 'I' || idUpper === 'E') {
+        if (idUpper !== baseInfo.base.toUpperCase()) {
+          warnings.push(
+            `"${id}" was dropped: it names a base ISA that is mutually exclusive with ${baseInfo.id}.`,
+          );
+        }
+        continue;
+      }
       singleLetters.push(idUpper);
       allExtTokens.push(idUpper);
     } else {
@@ -374,7 +382,17 @@ export function buildIsaConfigYaml(selectedIds, allExts, options = {}) {
       .sort((a, b) => RC_LETTER_ORDER.indexOf(a) - RC_LETTER_ORDER.indexOf(b))
       .join('');
     const vPresent = rcSingles.includes('V');
-    const rcCandidates = vPresent ? zExts.filter((z) => !/^Zv(e|l)/i.test(z)) : zExts;
+    const shorthandAbsorbed = new Map();
+    for (const [shorthand, members] of Object.entries(SHORTHAND_BUNDLES)) {
+      if (selectedIds.includes(shorthand)) {
+        for (const member of members) shorthandAbsorbed.set(member, shorthand);
+      }
+    }
+    const rcCandidates = zExts.filter((z) => {
+      if (vPresent && /^Zv(e|l)/i.test(z)) return false;
+      if (shorthandAbsorbed.has(z)) return false;
+      return true;
+    });
     const rcKnown = rcCandidates.filter((z) => RISCV_CONFIG_SUB_EXTENSIONS.has(z)).sort(riscvConfigSort);
     const rcDropped = rcCandidates.filter((z) => !RISCV_CONFIG_SUB_EXTENSIONS.has(z)).sort();
     const rcAbsorbed = vPresent ? zExts.filter((z) => /^Zv(e|l)/i.test(z)).sort() : [];
@@ -395,6 +413,17 @@ export function buildIsaConfigYaml(selectedIds, allExts, options = {}) {
       rc.push(`# ${rcAbsorbed.length} vector sub-extension(s) folded into V, which is a shorthand`);
       rc.push(`# for Zve64d plus a 128-bit VLEN floor. riscv-config rejects a string`);
       rc.push(`# carrying both: ${rcAbsorbed.join(', ')}`);
+    }
+
+    for (const [shorthand, members] of Object.entries(SHORTHAND_BUNDLES)) {
+      if (!selectedIds.includes(shorthand)) continue;
+      const covered = members.filter((m) => zExts.includes(m)).sort();
+      if (covered.length) {
+        rc.push(``);
+        rc.push(`# ${covered.length} sub-extension(s) folded into ${shorthand}, which is a shorthand`);
+        rc.push(`# for its member subsets. riscv-config rejects a string`);
+        rc.push(`# carrying both: ${covered.join(', ')}`);
+      }
     }
 
     if (rcDropped.length) {
