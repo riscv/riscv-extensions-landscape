@@ -11,16 +11,24 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildIsaConfigYaml } from '../src/exportUtils.js';
-import { COMPILER_COMPAT_NOTES } from '../src/marchUtils.js';
+import { COMPILER_COMPAT_NOTES, SHORTHAND_BUNDLES } from '../src/marchUtils.js';
 import { resolveSelection } from '../src/isaGraph.js';
 import { PROFILES } from '../src/profiles.js';
 
 const ALL = (() => {
-  const file = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'src', 'riscv_extensions.json');
-  return Object.values(JSON.parse(fs.readFileSync(file, 'utf8'))).flat().filter(Boolean);
+  const file = path.join(
+    path.dirname(fileURLToPath(import.meta.url)),
+    '..',
+    'src',
+    'riscv_extensions.json',
+  );
+  return Object.values(JSON.parse(fs.readFileSync(file, 'utf8')))
+    .flat()
+    .filter(Boolean);
 })();
 const IDS = new Set(ALL.map((e) => e.id));
-const resolve = (sel) => resolveSelection({ selected: sel, base: 'RV64I' }).resolved.filter((i) => IDS.has(i));
+const resolve = (sel) =>
+  resolveSelection({ selected: sel, base: 'RV64I' }).resolved.filter((i) => IDS.has(i));
 const RVA23 = resolve(PROFILES.RVA23);
 
 test('the instruction catalogue is opt-in', () => {
@@ -42,8 +50,15 @@ test('the same selection exports byte-identically', () => {
 
 test('isa_string holds everything march does', () => {
   const { yaml } = buildIsaConfigYaml(RVA23, ALL);
-  const isa = yaml.match(/^isa_string: (\S+)/m)[1].toLowerCase().split('_').slice(1);
-  const march = yaml.match(/^march: (\S+)/m)[1].split('_').slice(1);
+  const isa = yaml
+    .match(/^isa_string: (\S+)/m)[1]
+    .toLowerCase()
+    .split('_')
+    .slice(1);
+  const march = yaml
+    .match(/^march: (\S+)/m)[1]
+    .split('_')
+    .slice(1);
   const missing = march.filter((t) => !isa.includes(t));
   assert.deepEqual(missing, [], 'isa_string must not omit extensions march carries');
 });
@@ -65,7 +80,13 @@ test('inferred fields are labelled as inferred', () => {
 test('the riscv-config format carries its required fields', () => {
   // Its schema requires exactly these five per hart, plus Vendor and Device.
   const { yaml } = buildIsaConfigYaml(RVA23, ALL, { format: 'riscv-config' });
-  for (const field of ['ISA:', 'User_Spec_Version:', 'Privilege_Spec_Version:', 'supported_xlen:', 'physical_addr_sz:']) {
+  for (const field of [
+    'ISA:',
+    'User_Spec_Version:',
+    'Privilege_Spec_Version:',
+    'supported_xlen:',
+    'physical_addr_sz:',
+  ]) {
     assert.ok(yaml.includes(field), `riscv-config requires ${field}`);
   }
   assert.ok(yaml.includes('Vendor:') && yaml.includes('Device:'));
@@ -73,7 +94,9 @@ test('the riscv-config format carries its required fields', () => {
 });
 
 test('the riscv-config ISA string follows their spelling, not ours', () => {
-  const { yaml } = buildIsaConfigYaml(resolve(['RV64I', 'M', 'A', 'F', 'D', 'C']), ALL, { format: 'riscv-config' });
+  const { yaml } = buildIsaConfigYaml(resolve(['RV64I', 'M', 'A', 'F', 'D', 'C']), ALL, {
+    format: 'riscv-config',
+  });
   const isa = yaml.match(/^ {2}ISA: (\S+)/m)[1];
   // First sub-extension attaches directly; theirs is not an underscore-led list.
   assert.match(isa, /^RV64I[A-Z]*Z[a-z]/, `first sub-extension must attach directly: ${isa}`);
@@ -110,7 +133,7 @@ test('the UDB format separates what it knows from what it cannot', () => {
   assert.match(yaml, /THIS FILE IS NOT COMPLETE/, 'the file must not read as ready to run');
   assert.ok(
     warnings.some((w) => /must be filled from your design document/.test(w)),
-    'the caller should be warned, not only the file'
+    'the caller should be warned, not only the file',
   );
 });
 
@@ -127,7 +150,9 @@ test('the UDB format flags unratified pins rather than hiding them', () => {
   // moving target. Both are legitimate, but only one is safe to forget about.
   const draft = ALL.find((e) => e.version && e.state && e.state !== 'ratified');
   if (!draft) return;
-  const { yaml, warnings } = buildIsaConfigYaml(resolve(['RV64I', draft.id]), ALL, { format: 'udb' });
+  const { yaml, warnings } = buildIsaConfigYaml(resolve(['RV64I', draft.id]), ALL, {
+    format: 'udb',
+  });
   if (!yaml.includes(`name: ${draft.id},`)) return;
   assert.match(yaml, new RegExp(`name: ${draft.id},.*version may still change`));
   assert.ok(warnings.some((w) => /not ratified/.test(w)));
@@ -178,17 +203,57 @@ test('every S-mode privileged family reaches privilege_extensions', () => {
   }
 });
 
-test('shorthand bundles (Zkn, Zks, Zk) absorb their member subsets in the riscv-config format', () => {
+/** The Z-extension tokens in a riscv-config ISA string, as exact names.
+ *
+ * Substring checks cannot do this job: `isa.includes('Zkn')` is satisfied by a
+ * stray `Zknd`, so it passes in exactly the case the assertion exists to catch.
+ */
+const isaZTokens = (yaml) => yaml.match(/^ {2}ISA: (\S+)/m)[1].match(/Z[a-z][a-z0-9]*/g) || [];
+
+test('every shorthand bundle absorbs its member subsets in the riscv-config format', () => {
   // riscv-config: "In presence of Zkn the subsets must be ignored in the ISA string".
   // clang tolerates the redundant form, but riscv-config rejects it outright.
   // Same absorption rule as V folding its Zve* and Zvl* vector members.
-  const { yaml } = buildIsaConfigYaml(resolve(['RV64I', 'Zkn']), ALL, { format: 'riscv-config' });
-  const isa = yaml.match(/^ {2}ISA: (\S+)/m)[1];
-  assert.ok(isa.includes('Zkn'), `Zkn should be present in ISA string: ${isa}`);
-  for (const member of ['Zbkb', 'Zbkc', 'Zbkx', 'Zknd', 'Zkne', 'Zknh']) {
-    assert.ok(!isa.includes(member), `Zkn should absorb ${member} in riscv-config format: ${isa}`);
+  for (const [shorthand, members] of Object.entries(SHORTHAND_BUNDLES)) {
+    const { yaml } = buildIsaConfigYaml(resolve(['RV64I', shorthand]), ALL, {
+      format: 'riscv-config',
+    });
+    const tokens = isaZTokens(yaml);
+    assert.ok(tokens.includes(shorthand), `${shorthand} should survive: ${tokens.join('_')}`);
+    for (const member of members) {
+      assert.ok(
+        !tokens.includes(member),
+        `${shorthand} should absorb ${member}: ${tokens.join('_')}`,
+      );
+    }
+    assert.match(
+      yaml,
+      new RegExp(`folded into ${shorthand}`),
+      `${shorthand} absorption should be stated`,
+    );
   }
-  assert.match(yaml, /folded into Zkn/, 'the shorthand absorption should be stated in the file');
+});
+
+test('an overlapping shorthand yields to the wider one, but a sibling suite survives', () => {
+  // Zk lists Zkn among its members, so selecting both must leave Zk alone. Which
+  // one wins depends on Object.entries order over SHORTHAND_BUNDLES, so this
+  // regresses silently if that object is ever reordered.
+  const nested = isaZTokens(
+    buildIsaConfigYaml(resolve(['RV64I', 'Zk', 'Zkn']), ALL, { format: 'riscv-config' }).yaml,
+  );
+  assert.ok(nested.includes('Zk'), `Zk should survive: ${nested.join('_')}`);
+  assert.ok(!nested.includes('Zkn'), `Zk should absorb Zkn: ${nested.join('_')}`);
+
+  // Zks is the ShangMi suite and is NOT a member of Zk, so over-absorbing it
+  // would silently drop crypto from the string rather than merely shorten it.
+  const sibling = isaZTokens(
+    buildIsaConfigYaml(resolve(['RV64I', 'Zk', 'Zks']), ALL, { format: 'riscv-config' }).yaml,
+  );
+  assert.ok(sibling.includes('Zk'), `Zk should survive: ${sibling.join('_')}`);
+  assert.ok(
+    sibling.includes('Zks'),
+    `Zks is not a Zk member and must survive: ${sibling.join('_')}`,
+  );
 });
 
 test('mutually exclusive base letters (I and E) are not emitted as extensions in export', () => {
@@ -223,10 +288,7 @@ test('the compiler compatibility comment is emitted from marchUtils, not a local
     'utf8',
   );
   for (const note of COMPILER_COMPAT_NOTES) {
-    assert.ok(
-      !exportSrc.includes(note),
-      `exportUtils.js must not hold its own copy of: ${note}`,
-    );
+    assert.ok(!exportSrc.includes(note), `exportUtils.js must not hold its own copy of: ${note}`);
   }
 });
 
