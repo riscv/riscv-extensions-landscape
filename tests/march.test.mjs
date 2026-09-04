@@ -121,3 +121,30 @@ test('[defect] F implies Zicsr', () => {
     'SMART_DEPENDENCIES has no F -> Zicsr entry',
   );
 });
+
+test('decoder handles extension version suffixes on base and sub-extensions (RISC-V §27)', () => {
+  // Single-letter extensions with versions (e.g. GCC/Clang rv64i2p0)
+  const p1 = parseMarchString('rv64i2p0', ALL);
+  assert.equal(p1.xlen, 64);
+  assert.deepEqual(p1.resolvedIds, ['RV64I']);
+  assert.deepEqual(p1.unknownTokens, []);
+  assert.equal(p1.warnings.length, 0);
+
+  // Single-letter multi-extension head with versions
+  const p2 = parseMarchString('rv32i2p1m2p0c2p0', ALL);
+  assert.equal(p2.xlen, 32);
+  assert.deepEqual(p2.resolvedIds, ['RV32I', 'M', 'C']);
+  assert.deepEqual(p2.unknownTokens, []);
+
+  // Multi-letter extensions with versions
+  const p3 = parseMarchString('rv64i2p1_zba1p0_zbb1p0_zicsr2p0', ALL);
+  assert.equal(p3.xlen, 64);
+  assert.deepEqual(p3.resolvedIds, ['RV64I', 'Zba', 'Zbb', 'Zicsr']);
+  assert.deepEqual(p3.unknownTokens, []);
+
+  // Unrecognized extensions retain version suffix in unknownTokens
+  const p4 = parseMarchString('rv64i_unknown1p0', ALL);
+  assert.equal(p4.xlen, 64);
+  assert.deepEqual(p4.resolvedIds, ['RV64I']);
+  assert.deepEqual(p4.unknownTokens, ['unknown1p0']);
+});
