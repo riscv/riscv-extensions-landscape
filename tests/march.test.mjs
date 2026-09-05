@@ -7,7 +7,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import {
@@ -18,6 +18,7 @@ import {
   NON_MARCH_IDS,
   SHORTHAND_BUNDLES,
   absorbedByShorthand,
+  DATA_PROVENANCE,
 } from '../src/marchUtils.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -212,4 +213,53 @@ test('nothing is absorbed without a shorthand, and the input may be empty', () =
   assert.equal(absorbedByShorthand(['RV64I', 'Zbkb']).size, 0, 'a bare member absorbs nothing');
   assert.equal(absorbedByShorthand([]).size, 0);
   assert.equal(absorbedByShorthand(undefined).size, 0, 'must not throw on no selection');
+});
+
+test('DATA_PROVENANCE is an array of rows, because a consumer maps over it', () => {
+  // WorkspacePanel renders DATA_PROVENANCE.map(...). It was briefly replaced by
+  // an object of prose strings, which threw "DATA_PROVENANCE.map is not a
+  // function" and unmounted the entire app the moment the builder panel opened.
+  assert.ok(Array.isArray(DATA_PROVENANCE), 'a consumer calls .map on this');
+  assert.ok(DATA_PROVENANCE.length > 0);
+  for (const row of DATA_PROVENANCE) {
+    for (const key of ['label', 'source', 'url']) {
+      assert.equal(
+        typeof row[key],
+        'string',
+        `provenance row is missing ${key}: ${JSON.stringify(row)}`,
+      );
+      assert.ok(row[key].length > 0, `provenance row has an empty ${key}`);
+    }
+  }
+});
+
+/**
+ * The general form of the bug above.
+ *
+ * Neither build nor lint nor any unit test noticed that an exported constant
+ * changed shape under a consumer that maps over it, because no test opens the
+ * builder panel. Rather than add one test per constant, read the JSX for
+ * `X.map(` where X is imported from marchUtils, and require X to be an array.
+ */
+test('every marchUtils export a component maps over is actually an array', async () => {
+  const mod = await import('../src/marchUtils.js');
+  const srcDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'src');
+  const jsx = readdirSync(srcDir).filter((f) => f.endsWith('.jsx'));
+  const checked = [];
+  for (const file of jsx) {
+    const text = readFileSync(join(srcDir, file), 'utf8');
+    if (!/from '\.\/marchUtils\.js'/.test(text)) continue;
+    for (const [, name] of text.matchAll(/\b([A-Z][A-Z0-9_]+)\.map\(/g)) {
+      if (!(name in mod)) continue;
+      checked.push(`${file}:${name}`);
+      assert.ok(
+        Array.isArray(mod[name]),
+        `${file} calls ${name}.map(...) but marchUtils exports it as ${typeof mod[name]}`,
+      );
+    }
+  }
+  assert.ok(
+    checked.length > 0,
+    'this guard found nothing to check — has the import shape changed?',
+  );
 });
