@@ -860,7 +860,8 @@ const RISCVExplorer = () => {
         instructionExpandOpen ||
         compareOpen ||
         quickExportOpen ||
-        profileMenuOpen
+        profileMenuOpen ||
+        workspacePanelOpen
       ) {
         return;
       }
@@ -877,6 +878,7 @@ const RISCVExplorer = () => {
     compareOpen,
     quickExportOpen,
     profileMenuOpen,
+    workspacePanelOpen,
   ]);
 
   const [quickExportIncludeInstr, setQuickExportIncludeInstr] = useState(true);
@@ -3435,12 +3437,25 @@ const RISCVExplorer = () => {
             )}
           </div>
 
+          {/*
+            The announcement lives out here, not on the panel.
+
+            The panel is display:none until something is selected, and a node
+            that is display:none is not in the accessibility tree, so an
+            aria-live region on it would be created and populated in the same
+            render. Screen readers only announce changes to live regions that
+            already existed, so that combination announces nothing. This node
+            is always mounted and only its text changes.
+          */}
+          <div className="sr-only" role="status" aria-live="polite">
+            {selectedExt ? `${selectedExt.id} details opened` : ''}
+          </div>
+
           {/* ─── Sidebar ─────────────────────────────────────────────────── */}
           <div
             id="detail-panel"
             role="region"
             aria-label="Selected extension details"
-            aria-live="polite"
             className={`lg:col-span-4 mt-6 lg:mt-0 ${
               selectedExt ? 'panel-open' : 'hidden'
             }`}
