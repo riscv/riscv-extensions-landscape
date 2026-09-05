@@ -221,15 +221,32 @@ export const NON_MARCH_IDS = new Set([
 // ============================================================================
 // Data provenance — displayed in ISA Workspace footer
 // ============================================================================
-export const DATA_PROVENANCE = {
-  spec_reference: 'RISC-V Unprivileged ISA Specification, Chapter 27 (v20240411)',
-  compiler_docs:  'GCC 14.1 / LLVM 18.1 RISC-V Target Architecture Documentation',
-  validation:     'Automated schema-validation against riscv_extensions.json',
-  live_ci_testing:
-    'CI does compile-check the generated -march strings against clang. Rows that ' +
-    'need a newer clang than the job provides are skipped and reported, so the ' +
-    'check is a floor rather than full coverage — that is the remaining gap.',
-};
+/**
+ * Where the catalogue's facts come from, rendered as links by WorkspacePanel.
+ *
+ * This is an array of {label, source, url} rows because a consumer maps over
+ * it. It was briefly replaced by an object of prose strings, which threw
+ * "DATA_PROVENANCE.map is not a function" and unmounted the whole app the
+ * moment the builder panel opened. The prose duplicated the DATA SOURCES block
+ * at the top of this file; the rows do not, so the rows are what belongs here.
+ */
+export const DATA_PROVENANCE = [
+  {
+    label: 'Instruction Encodings',
+    source: 'riscv/riscv-opcodes',
+    url: 'https://github.com/riscv/riscv-opcodes',
+  },
+  {
+    label: 'Extension Metadata & Profiles',
+    source: 'RISC-V ISA Manual',
+    url: 'https://github.com/riscv/riscv-isa-manual',
+  },
+  {
+    label: '-march Naming Rules',
+    source: 'RISC-V ISA Spec §27 · GCC 12+ / LLVM convention',
+    url: 'https://github.com/riscv/riscv-isa-manual',
+  },
+];
 
 // ============================================================================
 // G expansion components
