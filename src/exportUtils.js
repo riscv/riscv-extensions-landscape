@@ -415,10 +415,9 @@ export function buildIsaConfigYaml(selectedIds, allExts, options = {}) {
       rc.push(`# carrying both: ${rcAbsorbed.join(', ')}`);
     }
 
-    // Report the fold from the same map that performed it. Grouping
-    // SHORTHAND_BUNDLES independently used to contradict it: with Zk and Zkn
-    // both selected, Zbkb was absorbed once, by Zk, but was reported twice —
-    // as folded into Zkn and again into Zk.
+    // Report the fold from the map that performed it. Grouping the bundles
+    // separately contradicted it: with Zk and Zkn both selected, Zbkb was
+    // absorbed once, by Zk, yet reported as folded into Zkn and again into Zk.
     const foldedBy = new Map(); // shorthand -> the members it actually absorbed
     for (const z of zExts) {
       const shorthand = shorthandAbsorbed.get(z);
