@@ -840,6 +840,47 @@ const RISCVExplorer = () => {
     return () => window.removeEventListener('resize', clamp);
   }, [profileMenuOpen]);
   const [quickExportOpen, setQuickExportOpen] = useState(false);
+
+  // Escape dismisses the Selected Details panel, matching the button's tooltip.
+  //
+  // Deliberately last in line: every dialog that can sit above the panel is
+  // checked first, so Escape closes the topmost thing rather than quietly
+  // clearing the selection underneath an open modal. Those dialogs each stop
+  // propagation on their own listener, but they are mounted conditionally and
+  // this one is not, so the guard is what keeps the ordering honest rather
+  // than relying on listener registration order.
+  React.useEffect(() => {
+    if (!selectedExt) return undefined;
+    const onKeyDown = (e) => {
+      if (e.key !== 'Escape') return;
+      if (
+        aboutOpen ||
+        encoderValidatorOpen ||
+        encodingMapOpen ||
+        instructionExpandOpen ||
+        compareOpen ||
+        quickExportOpen ||
+        profileMenuOpen ||
+        workspacePanelOpen
+      ) {
+        return;
+      }
+      setSelectedExt(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [
+    selectedExt,
+    aboutOpen,
+    encoderValidatorOpen,
+    encodingMapOpen,
+    instructionExpandOpen,
+    compareOpen,
+    quickExportOpen,
+    profileMenuOpen,
+    workspacePanelOpen,
+  ]);
+
   const [quickExportIncludeInstr, setQuickExportIncludeInstr] = useState(true);
 
   // Smart lock: live reverse-lookup of dependencies, plus the seeding profile's
@@ -1973,7 +2014,7 @@ const RISCVExplorer = () => {
 
   return (
     <div
-      className="min-h-screen relative overflow-x-hidden"
+      className="min-h-screen relative overflow-x-clip"
       style={{ background: 'var(--riscv-bg)', color: 'var(--riscv-text)' }}
     >
       {/* Skip link. First thing in the tab order, visible only once focused.
@@ -2027,7 +2068,7 @@ const RISCVExplorer = () => {
                   </h1>
                 </div>
                 {/* Counts. Wrappable on purpose: this sits inside an
-                    overflow-x-hidden root that clips rather than scrolls, so on
+                    overflow-x-clip root that clips rather than scrolls, so on
                     a narrow screen they drop below the title instead of off the
                     edge. */}
                 <div className="flex flex-wrap items-center gap-x-2 text-[11px]">
@@ -2085,7 +2126,7 @@ const RISCVExplorer = () => {
                   items-end right-aligns children, so a child wider than this
                   column is pushed off the LEFT edge rather than overflowing the
                   right. At 390px that put the controls at left:-179 inside an
-                  overflow-x-hidden root, which clips rather than scrolls, so the
+                  overflow-x-clip root, which clips rather than scrolls, so the
                   profile buttons and the builder toggle could not be reached at
                   all. Stretch until there is room to right-align.
                   min-w-0 because a flex item defaults to min-width:auto and
@@ -2799,7 +2840,9 @@ const RISCVExplorer = () => {
             tabIndex={-1}
             role="region"
             aria-label="Extension catalogue"
-            className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-min"
+            className={`${
+              selectedExt ? 'lg:col-span-8' : 'lg:col-span-12'
+            } grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-min`}
           >
             {/* Search Bar */}
             <div className="col-span-full mb-2 flex items-center gap-3">
@@ -2925,10 +2968,10 @@ const RISCVExplorer = () => {
 
                 {/* 3. Z-Extensions */}
                 <div
-                  className="col-span-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 pt-5"
+                  className="col-span-full columns-1 md:columns-2 xl:columns-3 gap-4 pt-5"
                   style={{ borderTop: '1px solid var(--riscv-border)' }}
                 >
-                  <div className="space-y-2.5">
+                  <div className="space-y-2.5 break-inside-avoid mb-4">
                     <div className="flex items-center gap-2">
                       <Binary size={12} style={{ color: '#a78bfa' }} />
                       <h3
@@ -2954,7 +2997,7 @@ const RISCVExplorer = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2.5">
+                  <div className="space-y-2.5 break-inside-avoid mb-4">
                     <div className="flex items-center gap-2">
                       <Shuffle size={12} style={{ color: '#fbbf24' }} />
                       <h3
@@ -2980,7 +3023,7 @@ const RISCVExplorer = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2.5">
+                  <div className="space-y-2.5 break-inside-avoid mb-4">
                     <div className="flex items-center gap-2">
                       <Layers size={12} style={{ color: '#818cf8' }} />
                       <h3
@@ -3006,7 +3049,7 @@ const RISCVExplorer = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2.5">
+                  <div className="space-y-2.5 break-inside-avoid mb-4">
                     <div className="flex items-center gap-2">
                       <FlaskConical size={12} style={{ color: '#f472b6' }} />
                       <h3
@@ -3032,7 +3075,7 @@ const RISCVExplorer = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2.5">
+                  <div className="space-y-2.5 break-inside-avoid mb-4">
                     <div className="flex items-center gap-2">
                       <Database size={12} style={{ color: '#38bdf8' }} />
                       <h3
@@ -3058,7 +3101,7 @@ const RISCVExplorer = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2.5">
+                  <div className="space-y-2.5 break-inside-avoid mb-4">
                     <div className="flex items-center gap-2">
                       <Activity size={12} style={{ color: '#e879f9' }} />
                       <h3
@@ -3084,7 +3127,7 @@ const RISCVExplorer = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2.5">
+                  <div className="space-y-2.5 break-inside-avoid mb-4">
                     <div className="flex items-center gap-2">
                       <Zap size={12} style={{ color: '#2dd4bf' }} />
                       <h3
@@ -3110,7 +3153,7 @@ const RISCVExplorer = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2.5">
+                  <div className="space-y-2.5 break-inside-avoid mb-4">
                     <div className="flex items-center gap-2">
                       <Shield size={12} style={{ color: '#f87171' }} />
                       <h3
@@ -3136,7 +3179,7 @@ const RISCVExplorer = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2.5">
+                  <div className="space-y-2.5 break-inside-avoid mb-4">
                     <div className="flex items-center gap-2">
                       <KeyRound size={12} style={{ color: '#94a3b8' }} />
                       <h3
@@ -3162,7 +3205,7 @@ const RISCVExplorer = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2.5">
+                  <div className="space-y-2.5 break-inside-avoid mb-4">
                     <div className="flex items-center gap-2">
                       <Lock size={12} style={{ color: '#c4b5fd' }} />
                       <h3
@@ -3188,7 +3231,7 @@ const RISCVExplorer = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2.5">
+                  <div className="space-y-2.5 break-inside-avoid mb-4">
                     <div className="flex items-center gap-2">
                       <Settings2 size={12} style={{ color: '#fb923c' }} />
                       <h3
@@ -3214,7 +3257,7 @@ const RISCVExplorer = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-2.5">
+                  <div className="space-y-2.5 break-inside-avoid mb-4">
                     <div className="flex items-center gap-2">
                       <MemoryStick size={12} style={{ color: '#fdba74' }} />
                       <h3
@@ -3394,13 +3437,28 @@ const RISCVExplorer = () => {
             )}
           </div>
 
+          {/*
+            The announcement lives out here, not on the panel.
+
+            The panel is display:none until something is selected, and a node
+            that is display:none is not in the accessibility tree, so an
+            aria-live region on it would be created and populated in the same
+            render. Screen readers only announce changes to live regions that
+            already existed, so that combination announces nothing. This node
+            is always mounted and only its text changes.
+          */}
+          <div className="sr-only" role="status" aria-live="polite">
+            {selectedExt ? `${selectedExt.id} details opened` : ''}
+          </div>
+
           {/* ─── Sidebar ─────────────────────────────────────────────────── */}
           <div
             id="detail-panel"
             role="region"
             aria-label="Selected extension details"
-            aria-live="polite"
-            className={`lg:col-span-4 mt-6 lg:mt-0 ${selectedExt ? 'panel-open' : ''}`}
+            className={`lg:col-span-4 mt-6 lg:mt-0 ${
+              selectedExt ? 'panel-open' : 'hidden'
+            }`}
           >
             <div
               className="sticky top-6 riscv-card backdrop-blur-sm min-h-[400px] max-h-[calc(100vh-3rem)] flex flex-col overflow-hidden"
@@ -3419,12 +3477,21 @@ const RISCVExplorer = () => {
                     Selected Details
                   </h2>
                 </div>
-                {/* Mobile Close Button */}
+                {/*
+                  Dismiss. Was lg:hidden, from when the panel was permanently
+                  open on desktop and there was nothing to dismiss it to. Now
+                  that it collapses and the catalogue reclaims the width, a
+                  desktop reader needs the same way out as a mobile one.
+
+                  Themed rather than slate-*: those literals only ever resolved
+                  correctly against the dark surface it used to sit on.
+                */}
                 <button
                   type="button"
                   onClick={() => setSelectedExt(null)}
                   aria-label="Close details panel"
-                  className="lg:hidden p-1 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+                  title="Close (Esc)"
+                  className="p-1 rounded-md transition-colors riscv-panel-dismiss"
                 >
                   <X size={16} />
                 </button>
