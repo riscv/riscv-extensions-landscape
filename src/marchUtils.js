@@ -183,6 +183,13 @@ export const SHORTHAND_BUNDLES = {
  * a bundle containing another lists it and then some -- Zk has nine members and
  * lists Zkn, which has six.
  *
+ * That reasoning covers containment. Siblings that overlap without containing
+ * each other -- Zk and Zks both claim Zbkb, neither contains the other -- have
+ * no natural winner, and the rule simply picks the larger. That is fine and
+ * deliberate: both bundles are in the string, both legitimately cover Zbkb, and
+ * what matters is that it is omitted exactly once and attributed the same way
+ * every run. The rule is chosen for determinism there, not correctness.
+ *
  * `bundles` is injectable only so the order-independence claim is testable:
  * pass the same bundles in a different key order and the result must match.
  * Production callers omit it.
