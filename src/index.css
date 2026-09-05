@@ -1350,7 +1350,7 @@ pre,
 /* Header toolbar. A full-width plate holding filters on the left and actions
    on the right. Full width on purpose: every clipping bug in this header came
    from packing thirteen controls into a right-hand column narrower than they
-   needed, where an overflow-x-hidden root cut the surplus off instead of
+   needed, where an overflow-x-clip root cut the surplus off instead of
    wrapping it. A full-width row wraps. */
 .riscv-toolbar {
   padding: 8px 12px;
@@ -1915,4 +1915,27 @@ pre,
   .ask-ai-btn {
     animation: none;
   }
+}
+
+/* Selected Details dismiss.
+   Previously styled with slate-* literals because it only appeared on mobile,
+   over a dark surface. It is visible in both themes now, so it takes its
+   colours from the tokens like everything else.
+
+   It borrows the report palette rather than a new red: those tokens are already
+   theme-aware and already read as "this removes/reports something". Red suits a
+   dismiss in a way it did not suit the About control, which is informational. */
+.riscv-panel-dismiss {
+  color: var(--riscv-report-fg);
+  background: var(--riscv-report-tint);
+  border: 1px solid transparent;
+}
+.riscv-panel-dismiss:hover {
+  color: var(--riscv-report-fg);
+  background: var(--riscv-report-tint-hover);
+  border-color: var(--riscv-report-edge);
+}
+.riscv-panel-dismiss:focus-visible {
+  outline: 2px solid var(--riscv-report-fg);
+  outline-offset: 2px;
 }
