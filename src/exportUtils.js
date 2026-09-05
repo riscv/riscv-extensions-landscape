@@ -17,7 +17,7 @@ import {
   buildMarchString,
   BASE_ISA_IDS,
   BASE_ISA_PREFIX_MAP,
-  SHORTHAND_BUNDLES,
+  absorbedByShorthand,
   COMPILER_COMPAT_NOTES,
 } from './marchUtils.js';
 import { buildCombinedCatalog } from './marchUtils.js';
@@ -387,12 +387,7 @@ export function buildIsaConfigYaml(selectedIds, allExts, options = {}) {
       .sort((a, b) => RC_LETTER_ORDER.indexOf(a) - RC_LETTER_ORDER.indexOf(b))
       .join('');
     const vPresent = rcSingles.includes('V');
-    const shorthandAbsorbed = new Map();
-    for (const [shorthand, members] of Object.entries(SHORTHAND_BUNDLES)) {
-      if (selectedIds.includes(shorthand)) {
-        for (const member of members) shorthandAbsorbed.set(member, shorthand);
-      }
-    }
+    const shorthandAbsorbed = absorbedByShorthand(selectedIds);
     const rcCandidates = zExts.filter((z) => {
       if (vPresent && /^Zv(e|l)/i.test(z)) return false;
       if (shorthandAbsorbed.has(z)) return false;
@@ -420,15 +415,23 @@ export function buildIsaConfigYaml(selectedIds, allExts, options = {}) {
       rc.push(`# carrying both: ${rcAbsorbed.join(', ')}`);
     }
 
-    for (const [shorthand, members] of Object.entries(SHORTHAND_BUNDLES)) {
-      if (!selectedIds.includes(shorthand)) continue;
-      const covered = members.filter((m) => zExts.includes(m)).sort();
-      if (covered.length) {
-        rc.push(``);
-        rc.push(`# ${covered.length} sub-extension(s) folded into ${shorthand}, which is a shorthand`);
-        rc.push(`# for its member subsets. riscv-config rejects a string`);
-        rc.push(`# carrying both: ${covered.join(', ')}`);
-      }
+    // Report the fold from the same map that performed it. Grouping
+    // SHORTHAND_BUNDLES independently used to contradict it: with Zk and Zkn
+    // both selected, Zbkb was absorbed once, by Zk, but was reported twice —
+    // as folded into Zkn and again into Zk.
+    const foldedBy = new Map(); // shorthand -> the members it actually absorbed
+    for (const z of zExts) {
+      const shorthand = shorthandAbsorbed.get(z);
+      if (!shorthand) continue;
+      if (!foldedBy.has(shorthand)) foldedBy.set(shorthand, []);
+      foldedBy.get(shorthand).push(z);
+    }
+    for (const [shorthand, covered] of [...foldedBy].sort((a, b) => a[0].localeCompare(b[0]))) {
+      covered.sort();
+      rc.push(``);
+      rc.push(`# ${covered.length} sub-extension(s) folded into ${shorthand}, which is a shorthand`);
+      rc.push(`# for its member subsets. riscv-config rejects a string`);
+      rc.push(`# carrying both: ${covered.join(', ')}`);
     }
 
     if (rcDropped.length) {

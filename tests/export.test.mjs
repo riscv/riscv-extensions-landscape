@@ -299,3 +299,24 @@ test('the vector crypto note names its family by prefix, not by enumeration', ()
   assert.ok(note, 'a vector crypto note should exist');
   assert.match(note, /Zvk\*/, 'name the family by prefix so it cannot drift as members are added');
 });
+
+test('an absorbed extension is reported once, by the bundle that absorbed it', () => {
+  // The fold and the comment describing it used to be computed separately, so
+  // with Zk and Zkn both selected Zbkb was absorbed once, by Zk, and reported
+  // twice: as folded into Zkn and again into Zk. Two answers, one question.
+  const { yaml } = buildIsaConfigYaml(
+    ['RV64I', 'Zk', 'Zkn', 'Zbkb', 'Zbkc', 'Zbkx', 'Zknd', 'Zkne', 'Zknh', 'Zkr', 'Zkt'],
+    ALL,
+    { format: 'riscv-config' },
+  );
+  const blocks = [...yaml.matchAll(/folded into (\w+)[\s\S]*?carrying both: ([^\n]+)/g)];
+  assert.equal(
+    blocks.length,
+    1,
+    `overlapping bundles must yield one fold comment, got ${blocks.length}`,
+  );
+  assert.equal(blocks[0][1], 'Zk', 'the wider bundle is the one that absorbed them');
+  const listed = blocks[0][2].split(',').map((t) => t.trim());
+  assert.equal(new Set(listed).size, listed.length, 'no extension listed twice');
+  assert.ok(listed.includes('Zbkb'), `Zbkb should be reported as folded: ${listed.join(', ')}`);
+});
