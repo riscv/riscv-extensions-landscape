@@ -16,6 +16,8 @@ import {
   SMART_DEPENDENCIES,
   INCOMPATIBLE_WITH,
   NON_MARCH_IDS,
+  SHORTHAND_BUNDLES,
+  absorbedByShorthand,
 } from '../src/marchUtils.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -83,7 +85,11 @@ test('every dependency target exists in the catalog', () => {
   for (const [ext, deps] of Object.entries(SMART_DEPENDENCIES)) {
     for (const d of deps) if (!ids.has(d)) missing.push(`${ext} -> ${d}`);
   }
-  assert.deepEqual(missing, [], `dependencies pointing at non-existent extensions:\n  ${missing.join('\n  ')}`);
+  assert.deepEqual(
+    missing,
+    [],
+    `dependencies pointing at non-existent extensions:\n  ${missing.join('\n  ')}`,
+  );
 });
 
 // ---------------------------------------------------------------------------
@@ -106,20 +112,14 @@ test('[defect] I and E cannot both be selected', () => {
   // buildMarchString filters only the base's own letter, so an E base with I
   // also selected yields rv32ei..., which no toolchain accepts.
   const r = march(['RV32E', 'I']);
-  assert.ok(
-    !/^rv32ei/.test(r.march ?? ''),
-    `produced mutually exclusive base letters: ${r.march}`,
-  );
+  assert.ok(!/^rv32ei/.test(r.march ?? ''), `produced mutually exclusive base letters: ${r.march}`);
 });
 
 test('[defect] F implies Zicsr', () => {
   // F defines fcsr/frm/fflags, so it depends on Zicsr; GCC's riscv_ext_info
   // encodes the same implication. Absent here, a config with F but no Zicsr
   // resolves without complaint.
-  assert.ok(
-    SMART_DEPENDENCIES.F?.includes('Zicsr'),
-    'SMART_DEPENDENCIES has no F -> Zicsr entry',
-  );
+  assert.ok(SMART_DEPENDENCIES.F?.includes('Zicsr'), 'SMART_DEPENDENCIES has no F -> Zicsr entry');
 });
 
 // ---------------------------------------------------------------------------
@@ -169,4 +169,47 @@ test('suffix-stripping does not resolve naming-prefix/umbrella typos (e.g. zve32
   const p4 = parseMarchString('rv64i_sm1p11', ALL);
   assert.deepEqual(p4.resolvedIds, ['RV64I', 'Sm1p11']);
   assert.deepEqual(p4.unknownTokens, []);
+});
+
+test('a shared member is absorbed by the widest bundle that claims it', () => {
+  // Zbkb and Zknd belong to both Zkn and Zk, and Zk lists Zkn among its own
+  // members, so Zk is the wider claim and has to win. This used to be decided
+  // by whichever entry Object.entries reached last, which made it a property of
+  // how SHORTHAND_BUNDLES happens to be declared rather than of the ISA.
+  const absorbed = absorbedByShorthand(['Zk', 'Zkn', 'Zks']);
+  assert.equal(absorbed.get('Zbkb'), 'Zk');
+  assert.equal(absorbed.get('Zknd'), 'Zk');
+  assert.equal(absorbed.get('Zkn'), 'Zk', 'Zk lists Zkn, so it absorbs it');
+  assert.equal(absorbed.get('Zksed'), 'Zks', 'Zksed is claimed only by Zks');
+});
+
+test('absorption does not depend on the order SHORTHAND_BUNDLES is declared in', () => {
+  // The declared order happens to put Zk last, so simply iterating the object
+  // gives the right answer today and a test that only checks the outcome would
+  // pass even if the rule were deleted. Feed the same bundles in a different
+  // key order instead: widest-wins has to survive that, key order cannot.
+  const selected = Object.keys(SHORTHAND_BUNDLES);
+  const reversed = Object.fromEntries(Object.entries(SHORTHAND_BUNDLES).reverse());
+  const asDeclared = absorbedByShorthand(selected);
+  const asReversed = absorbedByShorthand(selected, reversed);
+  assert.ok(asDeclared.size > 0, 'the fixture should absorb something');
+  assert.deepEqual(
+    [...asDeclared].sort(),
+    [...asReversed].sort(),
+    'reordering SHORTHAND_BUNDLES must not change which shorthand absorbs a member',
+  );
+  // and the surviving answer is the widest claimant, not merely a stable one
+  for (const [member, shorthand] of asDeclared) {
+    const claimants = selected.filter((s) => SHORTHAND_BUNDLES[s].includes(member));
+    const widest = claimants.reduce((a, b) =>
+      SHORTHAND_BUNDLES[b].length > SHORTHAND_BUNDLES[a].length ? b : a,
+    );
+    assert.equal(shorthand, widest, `${member} should be absorbed by ${widest}, not ${shorthand}`);
+  }
+});
+
+test('nothing is absorbed without a shorthand, and the input may be empty', () => {
+  assert.equal(absorbedByShorthand(['RV64I', 'Zbkb']).size, 0, 'a bare member absorbs nothing');
+  assert.equal(absorbedByShorthand([]).size, 0);
+  assert.equal(absorbedByShorthand(undefined).size, 0, 'must not throw on no selection');
 });

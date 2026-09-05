@@ -165,6 +165,51 @@ export const SHORTHAND_BUNDLES = {
   Zk:  ['Zbkb', 'Zbkc', 'Zbkx', 'Zknd', 'Zkne', 'Zknh', 'Zkn', 'Zkr', 'Zkt'],
 };
 
+/**
+ * Which shorthand, if any, covers each selected sub-extension.
+ *
+ * A shorthand must not sit in an ISA string beside its own members, so both the
+ * -march encoder and the riscv-config export need to know which members a given
+ * selection absorbs, and by what. That was answered by three copies of the same
+ * loop, which is a correctness risk rather than untidiness: the bundles overlap,
+ * so the answer depended on which copy assigned a shared member last.
+ *
+ * Zbkb and Zknd belong to both Zkn and Zk. Iterating SHORTHAND_BUNDLES in
+ * declaration order gives them to Zk; iterating it reversed gives them to Zkn.
+ * Reordering that object would have silently changed the output, untested.
+ *
+ * The rule is therefore stated here rather than emerging from key order: the
+ * widest bundle wins. Assigning in ascending member count achieves it, because
+ * a bundle containing another lists it and then some -- Zk has nine members and
+ * lists Zkn, which has six.
+ *
+ * That reasoning covers containment. Siblings that overlap without containing
+ * each other -- Zk and Zks both claim Zbkb, neither contains the other -- have
+ * no natural winner, and the rule simply picks the larger. That is fine and
+ * deliberate: both bundles are in the string, both legitimately cover Zbkb, and
+ * what matters is that it is omitted exactly once and attributed the same way
+ * every run. The rule is chosen for determinism there, not correctness.
+ *
+ * `bundles` is injectable only so the order-independence claim is testable:
+ * pass the same bundles in a different key order and the result must match.
+ * Production callers omit it.
+ *
+ * @param {string[]} selectedIds
+ * @param {Record<string, string[]>} [bundles=SHORTHAND_BUNDLES]
+ * @returns {Map<string, string>} member id -> the shorthand that absorbs it
+ */
+export function absorbedByShorthand(selectedIds, bundles = SHORTHAND_BUNDLES) {
+  const selected = new Set(selectedIds || []);
+  const absorbed = new Map();
+  const entries = Object.entries(bundles)
+    .filter(([shorthand]) => selected.has(shorthand))
+    .sort((a, b) => a[1].length - b[1].length);
+  for (const [shorthand, members] of entries) {
+    for (const member of members) absorbed.set(member, shorthand);
+  }
+  return absorbed;
+}
+
 /** The satp MODE values, kept separate so the exclusion reason can be accurate. */
 export const SATP_MODE_IDS = new Set(['Sv32', 'Sv39', 'Sv48', 'Sv57']);
 
@@ -449,11 +494,7 @@ export function buildMarchString(selectedIds, _allExts) {
   // Deliberately narrow. It is NOT "drop anything implied by something else" —
   // D implies F and both belong in the string. Only these three shorthands
   // absorb their members.
-  const absorbed = new Map(); // member -> shorthand that covers it
-  for (const [shorthand, members] of Object.entries(SHORTHAND_BUNDLES)) {
-    if (!selectedIds.includes(shorthand)) continue;
-    for (const member of members) absorbed.set(member, shorthand);
-  }
+  const absorbed = absorbedByShorthand(selectedIds); // member -> shorthand covering it
 
   for (const id of selectedIds) {
     if (BASE_ISA_IDS.has(id)) continue;
