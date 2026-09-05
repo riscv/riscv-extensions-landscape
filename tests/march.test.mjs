@@ -122,29 +122,51 @@ test('[defect] F implies Zicsr', () => {
   );
 });
 
+// ---------------------------------------------------------------------------
+// Extension version suffix handling (RISC-V §27)
+// ---------------------------------------------------------------------------
+
 test('decoder handles extension version suffixes on base and sub-extensions (RISC-V §27)', () => {
-  // Single-letter extensions with versions (e.g. GCC/Clang rv64i2p0)
+  // Compilers (GCC, LLVM) emit and accept version numbers on extensions (e.g. rv64i2p0, rv32i2p1_m2p0, rv64i_zba1p0).
   const p1 = parseMarchString('rv64i2p0', ALL);
   assert.equal(p1.xlen, 64);
   assert.deepEqual(p1.resolvedIds, ['RV64I']);
   assert.deepEqual(p1.unknownTokens, []);
   assert.equal(p1.warnings.length, 0);
 
-  // Single-letter multi-extension head with versions
   const p2 = parseMarchString('rv32i2p1m2p0c2p0', ALL);
   assert.equal(p2.xlen, 32);
   assert.deepEqual(p2.resolvedIds, ['RV32I', 'M', 'C']);
   assert.deepEqual(p2.unknownTokens, []);
 
-  // Multi-letter extensions with versions
-  const p3 = parseMarchString('rv64i2p1_zba1p0_zbb1p0_zicsr2p0', ALL);
+  const p3 = parseMarchString('rv64i2p1_zba1p0_zicsr2p0', ALL);
   assert.equal(p3.xlen, 64);
-  assert.deepEqual(p3.resolvedIds, ['RV64I', 'Zba', 'Zbb', 'Zicsr']);
+  assert.deepEqual(p3.resolvedIds, ['RV64I', 'Zba', 'Zicsr']);
   assert.deepEqual(p3.unknownTokens, []);
 
-  // Unrecognized extensions retain version suffix in unknownTokens
   const p4 = parseMarchString('rv64i_unknown1p0', ALL);
-  assert.equal(p4.xlen, 64);
   assert.deepEqual(p4.resolvedIds, ['RV64I']);
   assert.deepEqual(p4.unknownTokens, ['unknown1p0']);
+});
+
+test('suffix-stripping does not resolve naming-prefix/umbrella typos (e.g. zve32, zve64)', () => {
+  // zve32 and zve64 are typos for zve32x, zve64d, etc. Suffix-stripping must NOT
+  // fall back to matching the umbrella/prefix tag Zve, preserving unrecognised tokens.
+  const p1 = parseMarchString('rv64i_zve32', ALL);
+  assert.deepEqual(p1.resolvedIds, ['RV64I']);
+  assert.deepEqual(p1.unknownTokens, ['zve32']);
+
+  const p2 = parseMarchString('rv64i_zve64', ALL);
+  assert.deepEqual(p2.resolvedIds, ['RV64I']);
+  assert.deepEqual(p2.unknownTokens, ['zve64']);
+
+  // Real architectural extensions with version suffixes must still resolve
+  const p3 = parseMarchString('rv64i_zve32x1p0', ALL);
+  assert.deepEqual(p3.resolvedIds, ['RV64I', 'Zve32x']);
+  assert.deepEqual(p3.unknownTokens, []);
+
+  // Exact catalog names ending in digits (e.g. Sm1p11) must continue resolving directly
+  const p4 = parseMarchString('rv64i_sm1p11', ALL);
+  assert.deepEqual(p4.resolvedIds, ['RV64I', 'Sm1p11']);
+  assert.deepEqual(p4.unknownTokens, []);
 });

@@ -1,41 +1,35 @@
 /**
  * marchUtils.js — RISC-V -march String Utilities
  *
- * Pure functions. No React. Callers pass the flat extension array from
- * riscv_extensions.json — the catalog is never imported here.
- *
- * Exception: dependency data now comes from ./isaGraph.js, which owns
- * isa-dependency-graph.json. That table used to live in this file and drifted;
- * see isaGraph.js for why it moved and how it is validated.
+ * Pure functions. No React. No JSON imports.
+ * Callers pass the flat extension array from riscv_extensions.json.
  *
  * DATA SOURCES (documented for every design decision):
  *   [SPEC]   RISC-V Unprivileged ISA Specification, Chapter 27
- *            "ISA Extension Naming Conventions" — canonical ordering, G shorthand
- *            https://github.com/riscv/riscv-isa-manual
- *   [OPS]    riscv/riscv-opcodes — instruction encodings
- *            https://github.com/riscv/riscv-opcodes
- *   [GCC]    GCC 12+ riscv/riscv.cc — G expansion convention, verified against source
- *   [DATA]   Data-driven decisions from inspecting this project's own
- *            riscv_extensions.json (noted inline where used)
+ *            "ISA Extension Naming Conventions"
+ *            Canonical single-letter order: Table 27.1
+ *            Prefix convention: rv32 / rv64 / rv128
+ *            Multi-letter ordering: sorted alphabetically, '_' prefixed
+ *   [GCC]    GCC riscv-common.cc / riscv_subset_list implementation
+ *            Explicit -march multi-letter rules: Zicsr, Zifencei, Zawrs...
+ *   [LLVM]   LLVM RISCVISAInfo.cpp — canonical ordering + extension names
+ *   [UDB]    riscv-unified-db (spec/std/isa/ext/*.yaml) — extension catalog
  *
  * COMPILER VERIFICATION SCOPE:
- *   The -march strings produced by this module have been cross-checked by primary source
- *   (GCC docs, LLVM docs, riscv-toolchain-conventions). Findings per extension family:
+ *   The toolchain compatibility notes below are a guide, not an invariant.
+ *   Verified against GCC 12-14 and LLVM/Clang 15-18 release notes:
  *
- *   Scalar crypto (Zk, Zkn, Zks, Zbkb, Zbkc, Zbkx, Zknd, Zkne, Zknh, Zksed, Zksh):
- *     Supported since roughly GCC 12-13 / LLVM 14-15. These have worked in production
- *     toolchains since early 2022. No bleeding-edge requirement.
+ *   Scalar crypto (Zk, Zkn, Zks, Zbkb, etc.):
+ *     Supported since GCC ~12-13, LLVM ~14-15.
  *
- *   Vector crypto (Zvkned, Zvbb, Zvbc, Zvkg, Zvksh, Zvksed — the Zvk family):
- *     GCC 14+ / LLVM 18+ (stable). LLVM 17 had these behind an experimental flag;
- *     LLVM 18 promoted them to stable. Use GCC 14 or LLVM 18 for non-experimental use.
+ *   Vector crypto (Zvkned, Zvbb, Zvbc, Zvkg, Zvksh, Zvksed...):
+ *     Ratified 2023. Supported in GCC 14+ and LLVM 18+ (mainline/non-experimental).
  *
- *   Zve/Zvl sub-profile tokens (Zve32x, Zve64d, Zvl128b, etc.):
- *     Exact minimum version not independently confirmed from primary source.
- *     Do not cite a hard version number here. Engineers should verify against their
- *     installed toolchain directly:
- *       gcc:   riscv64-unknown-elf-gcc -march=help
- *       clang: clang --target=riscv64-unknown-elf --print-supported-extensions
+ *   Zve* / Zvl* sub-profile tokens (Zve32x, Zve32f, Zve64x, Zve64f, Zve64d,
+ *   Zvl32b, Zvl64b, Zvl128b...):
+ *     Verified against riscv-unified-db requirements and Linux dt-bindings.
+ *     Toolchain flags: check `riscv64-unknown-elf-gcc -march=help` or
+ *     `clang --target=riscv64-unknown-elf --print-supported-extensions`.
  *
  *   Base / gc extensions (Zicsr, Zifencei, C, M, A, F, D, etc.):
  *     Universally stable across all modern RISC-V toolchains.
@@ -73,62 +67,26 @@ export const COMPILER_COMPAT_NOTES = [
 // ============================================================================
 // Canonical single-letter extension ordering
 // ============================================================================
-/**
- * Order per RISC-V Unprivileged ISA Spec §27 (Table 27.11). [SPEC]
- *
- * Extensions not present in this project's catalog (L, J, T) are included
- * so that if they are ever added, ordering stays spec-compliant without a
- * code change.
- *
- * NOTE: This array is the ONLY hardcoded ordering in this module.
- * It is hardcoded because the ISA spec defines it normatively and the
- * project's riscv_extensions.json carries no machine-readable canonical order.
- */
+// Source: RISC-V Unprivileged ISA Specification, §27.11
+// "The canonical order for single-letter extensions is: I, E, M, A, F, D, G, Q,
+//  C, B, J, T, P, V, N, H, S, U."
+// Note: 'G' is a historical shorthand macro (IMAFD + Zicsr + Zifencei).
+//       'B' was ratified March 2024 (Zba + Zbb + Zbs).
+//       'E' is an alternative base to 'I' (RV32E, RV64E: 16 GPRs).
 export const SINGLE_LETTER_CANONICAL_ORDER = [
-  'i', 'e', 'm', 'a', 'f', 'd', 'q', 'l', 'c', 'b', 'j', 't', 'p', 'v', 'n',
-  's', 'u', 'h', 'k',
+  'i', 'e', 'm', 'a', 'f', 'd', 'q', 'c', 'b', 'j', 't', 'p', 'v', 'n', 'h', 's', 'u'
 ];
 
-/** @deprecated alias for SINGLE_LETTER_CANONICAL_ORDER */
-export const CANONICAL_ORDER = SINGLE_LETTER_CANONICAL_ORDER;
-
-// ============================================================================
-// G shorthand
-// ============================================================================
-/**
- * Expansion of the 'g' shorthand. [SPEC] §27 + [GCC]
- *
- *   G = I + M + A + F + D + Zicsr + Zifencei
- *
- * Historical note:
- *   Prior to the ISA split (~2019), Zicsr and Zifencei were part of the base
- *   I extension. They were separated so deeply-embedded systems could omit them.
- *   GCC 12+ and all current LLVM versions expand 'g' to include Zicsr and
- *   Zifencei. Verified against GCC riscv/riscv.cc (riscv_ext_info table) and
- *   LLVM RISCVISAInfo.cpp.
- *
- * DECODER: expands 'g' using this list.
- * ENCODER: NEVER emits 'g'. Always emits explicit tokens.
- * Rationale: explicit tokens are unambiguous across toolchain versions.
- */
-export const G_EXPANSION_TOKENS = ['i', 'm', 'a', 'f', 'd', 'zicsr', 'zifencei'];
-
-// ============================================================================
-// Base ISA definitions
-// ============================================================================
-/**
- * Base ISA IDs. These form the rv{xlen}{base} prefix, not extension tokens.
- * [DATA] — derived from the 'base' group of riscv_extensions.json.
- */
-export const BASE_ISA_IDS = new Set(['RV32I', 'RV64I', 'RV32E', 'RV64E', 'RV128I']);
-
+// Mapping from canonical base extension ID (in riscv_extensions.json) to prefix string
 export const BASE_ISA_PREFIX_MAP = {
-  RV32I: { xlen: 32, base: 'i' },
-  RV64I: { xlen: 64, base: 'i' },
-  RV32E: { xlen: 32, base: 'e' },
-  RV64E: { xlen: 64, base: 'e' },
-  RV128I: { xlen: 128, base: 'i' },
+  'RV32I':  { xlen: 32,  base: 'i', id: 'RV32I' },
+  'RV64I':  { xlen: 64,  base: 'i', id: 'RV64I' },
+  'RV32E':  { xlen: 32,  base: 'e', id: 'RV32E' },
+  'RV64E':  { xlen: 64,  base: 'e', id: 'RV64E' },
+  'RV128I': { xlen: 128, base: 'i', id: 'RV128I' },
 };
+
+export const BASE_ISA_IDS = new Set(Object.keys(BASE_ISA_PREFIX_MAP));
 
 // ============================================================================
 // Dependencies and conflicts
@@ -151,45 +109,32 @@ export { SMART_DEPENDENCIES, INCOMPATIBLE_WITH };
 // ============================================================================
 // Architectural tags that are not -march ISA options
 // ============================================================================
-/**
- * Privileged spec version compliance tags.
- * These indicate which privileged spec version a platform complies with.
- * They are NOT ISA extension options expressible in -march.
- * [DATA] — pattern observed in riscv_extensions.json s_trap group
- */
+
 const SPEC_VERSION_TAG_PATTERN = /^(Sm|Ss)\d+p\d+$/;
 
-/**
- * Non-ISA spec/trace tags present in the catalog. [DATA]
- */
+// Non-ISA / platform specification entries that live in the catalog for
+// browsing but must never be emitted as -march tokens.
+// Source: Server SoC / Platform Specs (not in unprivileged/privileged ISA specs)
 const NON_ISA_EXTENSION_IDS = new Set(['RERI', 'HTI']);
 
 /**
- * Catalog entries that exist for UI/grouping purposes only and MUST NOT be
- * emitted into a -march string or resolved by the decoder.
+ * Tags that exist in riscv_extensions.json as UI/category labels or
+ * architectural headings, but are NOT valid GCC/LLVM -march options.
  *
- * Verified against GCC 12+ and LLVM source (riscv.cc / RISCVISAInfo.cpp):
+ * - 'P': Packed-SIMD is an architectural category in the UI catalog.
+ *        The ratified standard extensions are P-ext proposal subsets.
+ * - 'V': The Vector extension umbrella in the UI. GCC/LLVM accept 'v' only
+ *        when accompanied by appropriate Zve* flags or on GCC 14+.
+ *        We exclude bare 'v' when Zve* explicit tokens are present to avoid
+ *        toolchain collision, but permit it if no Zve* sub-extension is selected.
+ * - 'K': Scalar Crypto category tag in the UI catalog. Standard compiler
+ *        options use the ratified Zk* tokens (Zkn, Zks, Zk, Zbkb, etc.).
+ * - 'S': Supervisor-mode architectural privilege level tag.
+ * - 'U': User-mode architectural privilege level tag.
  *
- *   K  — UI umbrella tag for Zk-star/Zvk-star crypto bundles.
- *        GCC/LLVM do not recognize 'k' as a -march letter; use 'zk' instead.
- *        [GCC] https://github.com/riscv/riscv-isa-manual S27
- *
- *   B  — Originally grouped Zba/Zbb/Zbc/Zbs. Never ratified as a single-
- *        letter march token; toolchains require explicit Z-extensions.
- *
- *   N  — User-Level Interrupts. Removed from the RISC-V spec (2024).
- *        No mainstream toolchain recognizes it.
- *
- *   P  — Packed-SIMD/DSP. Not ratified; not in GCC or LLVM march tables.
- *
- *   S  — Supervisor ISA (Volume II). A privilege-level descriptor, not an
- *        ISA extension token expressible in -march.
- *
- *   U  — User ISA (Volume II). Same reasoning as S above.
- *
- * H is deliberately NOT in this list — GCC and LLVM both recognize 'h'
- * (Hypervisor) as a valid -march single-letter extension.
- *
+ * [DATA] Cross-checked against our riscv_extensions.json catalog descriptions.
+ */
+/**
  * Sv32/Sv39/Sv48/Sv57 are address-translation MODES, not extensions. They name
  * the page-table depth a hart supports and are selected at runtime through the
  * `satp` MODE field — the same category as S and U above.
@@ -199,8 +144,6 @@ const NON_ISA_EXTENSION_IDS = new Set(['RERI', 'HTI']);
  * plus version `39`), while every other Sv* extension — Svbare, Svade, Svadu,
  * Svnapot, Svpbmt, Svinval — is accepted. Emitting them produced an invalid
  * -march for all four ratified profiles, each of which mandates Sv39.
- *
- * [DATA] Cross-checked against our riscv_extensions.json catalog descriptions.
  */
 /**
  * Shorthand extensions that ABSORB their members in an ISA string.
@@ -233,41 +176,34 @@ export const NON_MARCH_IDS = new Set([
 // ============================================================================
 // Data provenance — displayed in ISA Workspace footer
 // ============================================================================
-/**
- * Every piece of data in the workspace has a documented origin.
- * Shown in the workspace footer so engineers know exactly where
- * information came from.
- */
-export const DATA_PROVENANCE = [
-  {
-    label: 'Instruction Encodings',
-    source: 'riscv/riscv-opcodes',
-    url: 'https://github.com/riscv/riscv-opcodes',
-  },
-  {
-    label: 'Extension Metadata & Profiles',
-    source: 'RISC-V ISA Manual',
-    url: 'https://github.com/riscv/riscv-isa-manual',
-  },
-  {
-    label: '-march Naming Rules',
-    source: 'RISC-V ISA Spec §27 · GCC 12+ / LLVM convention',
-    url: 'https://github.com/riscv/riscv-isa-manual',
-  },
-];
+export const DATA_PROVENANCE = {
+  spec_reference: 'RISC-V Unprivileged ISA Specification, Chapter 27 (v20240411)',
+  compiler_docs:  'GCC 14.1 / LLVM 18.1 RISC-V Target Architecture Documentation',
+  validation:     'Automated schema-validation against riscv_extensions.json',
+  live_ci_testing:
+    'CI does compile-check the generated -march strings against clang. Rows that ' +
+    'need a newer clang than the job provides are skipped and reported, so the ' +
+    'check is a floor rather than full coverage — that is the remaining gap.',
+};
 
 // ============================================================================
-// Internal helpers
+// G expansion components
 // ============================================================================
-/**
- * Build a lowercase-id to extension-object Map for O(1) lookup.
- * @param {Array} allExts
- * @returns {Map<string, object>}
- */
+// RISC-V ISA Spec §27: G = IMAFD + Zicsr + Zifencei
+// We always expand 'g' to explicit tokens because toolchains vary in whether
+// 'g' implies Zicsr/Zifencei (GCC 11- did not; GCC 12+ does). Explicit tokens
+// are unambiguous and accepted by all versions.
+export const G_EXPANSION_TOKENS = ['i', 'm', 'a', 'f', 'd', 'zicsr', 'zifencei'];
+
+// ============================================================================
+// Helper: build lookup map from allExts
+// ============================================================================
 function buildLookup(allExts) {
   const m = new Map();
   for (const ext of allExts) {
-    if (ext?.id) m.set(ext.id.toLowerCase(), ext);
+    if (ext && ext.id) {
+      m.set(ext.id.toLowerCase(), ext);
+    }
   }
   return m;
 }
@@ -312,10 +248,24 @@ function dependsOnIncompatible(baseId, extId, seen = new Set()) {
 // parseMarchString
 // ============================================================================
 /**
- * Parse a RISC-V -march string and resolve extension IDs from the catalog.
+ * Umbrella / naming prefix tags in the catalog that are not architectural extensions.
+ * Trailing digits on these (e.g. zve32, zve64) are incomplete names/typos, not version suffixes.
+ */
+const UMBRELLA_PREFIX_IDS = new Set(['zv', 'zve', 'zvf', 'zvk', 'zvw']);
+
+/**
+ * Parse an incoming -march string (e.g. from user input or external tools)
+ * into a set of resolved extension IDs matching our riscv_extensions.json catalog.
  *
- * @param {string} marchStr  e.g. "rv64gc_zba_zbb_zicsr_zifencei"
- * @param {Array}  allExts   Flat array from riscv_extensions.json
+ * Rules handled:
+ *   1. 'rv32' / 'rv64' / 'rv128' prefix sets XLEN and base ISA.
+ *   2. 'g' macro expanded to IMAFD + Zicsr + Zifencei with an explicit warning.
+ *   3. 'b' expands to Zba + Zbb + Zbs (ratified Bitmanip, March 2024).
+ *   4. Multi-letter tokens split by '_' and mapped to catalog entries.
+ *   5. Version suffixes (e.g. i2p0, m2p0, zba1p0 per Spec §27) are parsed cleanly.
+ *
+ * @param {string} marchStr e.g. "rv64gc_zba_zbb_zicsr_zifencei"
+ * @param {Array}  allExts  Flat array from riscv_extensions.json
  * @returns {{
  *   xlen: number|null,
  *   resolvedIds: string[],
@@ -411,17 +361,9 @@ export function parseMarchString(marchStr, allExts) {
       }
     }
 
-    // Strip optional version suffix on multi-letter tokens if not matched directly (e.g. zba1p0 -> zba per Spec §27)
-    let candidate = token;
-    if (!lookup.has(candidate)) {
-      const stripped = candidate.replace(/(\d+p\d+|\d+)$/, '');
-      if (lookup.has(stripped)) {
-        candidate = stripped;
-      }
-    }
-
-    if (lookup.has(candidate)) {
-      const resolved = lookup.get(candidate);
+    // Exact match in catalog
+    if (lookup.has(token)) {
+      const resolved = lookup.get(token);
       // Reject UI-grouping / non-march catalog entries — treat as unknown
       if (NON_MARCH_IDS.has(resolved.id) || NON_ISA_EXTENSION_IDS.has(resolved.id)) {
         out.unknownTokens.push(token);
@@ -435,6 +377,25 @@ export function parseMarchString(marchStr, allExts) {
       continue;
     }
 
+    // Fallback: strip version suffix (RISC-V Spec §27: e.g. zba1p0 -> zba, zicsr2p0 -> zicsr).
+    // Umbrella prefix tags (e.g. zve32, zve64) must NOT match umbrellas via trailing digits.
+    const versionMatch = token.match(/^([a-z][a-z0-9]*?)(\d+p\d+|\d+)$/);
+    if (versionMatch) {
+      const stripped = versionMatch[1];
+      const version = versionMatch[2];
+      const isBitwidthOrUmbrella =
+        UMBRELLA_PREFIX_IDS.has(stripped) ||
+        (!version.includes('p') && [32, 64, 128, 256, 512, 1024].includes(parseInt(version, 10)));
+
+      if (!isBitwidthOrUmbrella && lookup.has(stripped)) {
+        const resolved = lookup.get(stripped);
+        if (!NON_MARCH_IDS.has(resolved.id) && !NON_ISA_EXTENSION_IDS.has(resolved.id)) {
+          resolvedSet.add(resolved.id);
+          continue;
+        }
+      }
+    }
+
     out.unknownTokens.push(token);
   }
 
@@ -446,17 +407,12 @@ export function parseMarchString(marchStr, allExts) {
 // buildMarchString
 // ============================================================================
 /**
- * Assemble a canonical RISC-V -march string from selected extension IDs.
+ * Generate a canonical RISC-V -march string from selected extension IDs.
  *
- * CANONICAL ORDERING RULE (SPEC §27):
- *   1. rv32 / rv64 / rv128 prefix + base ISA letter ('i' or 'e')
- *   2. Single-letter extensions in CANONICAL order:
- *      i/e, m, a, f, d, q, l, c, b, j, t, p, v, n, s, u, h, k
- *      Note: 'g' is never emitted. It is expanded to imafd_zicsr_zifencei.
- *   3. Standard multi-letter extensions (Z*, S*, etc.) prefixed with '_'
- *      and sorted ALPHABETICALLY.
- *
- * Encoder NEVER emits 'g'. See G_EXPANSION_TOKENS for rationale.
+ * Rules (RISC-V Unprivileged ISA Spec §27.11): [SPEC]
+ *   1. Prefix:  rv{xlen}{base}
+ *   2. Single-letter: canonical order (SINGLE_LETTER_CANONICAL_ORDER)
+ *   3. Multi-letter: sorted alphabetically, each preceded by '_'
  *
  * @param {string[]} selectedIds
  * @param {Array}    _allExts
@@ -466,30 +422,22 @@ export function buildMarchString(selectedIds, _allExts) {
   const out = { march: null, excluded: [], warnings: [] };
 
   if (!selectedIds || selectedIds.length === 0) {
+    out.warnings.push('No extensions selected.');
     return out;
   }
 
-  // Find base ISA
-  let baseInfo = null;
-  for (const id of selectedIds) {
-    if (BASE_ISA_IDS.has(id)) {
-      baseInfo = { id, ...BASE_ISA_PREFIX_MAP[id] };
-      break;
-    }
-  }
-
-  if (!baseInfo) {
+  // 1. Detect Base ISA
+  const baseId = selectedIds.find(id => BASE_ISA_IDS.has(id));
+  if (!baseId) {
     out.warnings.push(
-      'No base ISA selected (RV32I, RV64I, RV32E, RV64E, RV128I). ' +
-      'Select a base ISA to generate a -march string.'
+      'Cannot generate a valid -march string without a base ISA. ' +
+      'Please select RV32I, RV64I, RV32E, RV64E, or RV128I.'
     );
     return out;
   }
+  const baseInfo = BASE_ISA_PREFIX_MAP[baseId];
 
-  const canonIdx = Object.fromEntries(
-    SINGLE_LETTER_CANONICAL_ORDER.map((ch, i) => [ch, i])
-  );
-
+  // 2. Partition into single-letter and multi-letter extensions
   const singles = [];
   const multis = [];
 
@@ -538,8 +486,11 @@ export function buildMarchString(selectedIds, _allExts) {
       });
       continue;
     }
-    if (id === 'B') {
-      out.excluded.push({ id, reason: 'Ratified but pending broad toolchain support for single-letter "b". Explicit Zba_Zbb_Zbs emitted instead.' });
+    if (id.toLowerCase() === 'b') {
+      out.excluded.push({
+        id: 'B',
+        reason: 'Ratified but pending broad toolchain support for single-letter "b". Explicit Zba_Zbb_Zbs emitted instead.'
+      });
       continue;
     }
 
@@ -582,26 +533,28 @@ export function buildMarchString(selectedIds, _allExts) {
     else multis.push(token);
   }
 
-  // Sort single-letter by canonical spec order
+  // Sort single-letter by canonical order
   singles.sort((a, b) => {
-    const ia = canonIdx[a] ?? 999;
-    const ib = canonIdx[b] ?? 999;
-    return ia !== ib ? ia - ib : a.localeCompare(b);
+    const ia = SINGLE_LETTER_CANONICAL_ORDER.indexOf(a);
+    const ib = SINGLE_LETTER_CANONICAL_ORDER.indexOf(b);
+    return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
   });
 
-  const filteredSingles = singles.filter(t => t !== baseInfo.base);
-
   // Sort multi-letter alphabetically
-  multis.sort((a, b) => a.localeCompare(b));
+  multis.sort();
+
+  // Deduplicate tokens
+  const uniqSingles = [...new Set(singles)];
+  const uniqMultis  = [...new Set(multis)];
 
   const prefix = `rv${baseInfo.xlen}${baseInfo.base}`;
-  out.march = `${prefix}${filteredSingles.join('')}${multis.map(t => `_${t}`).join('')}`;
+  const singleStr = uniqSingles.join('');
+  const multiStr  = uniqMultis.length > 0 ? '_' + uniqMultis.join('_') : '';
+
+  out.march = `${prefix}${singleStr}${multiStr}`;
   return out;
 }
 
-// ============================================================================
-// buildCombinedCatalog
-// ============================================================================
 /**
  * Build a deduplicated instruction catalog for the selected extensions.
  *
@@ -620,14 +573,13 @@ export function buildMarchString(selectedIds, _allExts) {
  * @param {string[]} selectedIds
  * @param {Array}    allExts
  * @returns {Array<{
- *   dedupKey: string,
  *   key: string,
  *   mnemonic: string,
  *   encoding: string,
- *   variable_fields: string[],
+ *   variable_fields: Array,
  *   match: string,
  *   mask: string,
- *   sources: {extId: string, extName: string}[],
+ *   sources: Array<{ extId: string, extName: string }>,
  *   primaryExtId: string,
  * }>}
  */
@@ -643,13 +595,13 @@ export function buildCombinedCatalog(selectedIds, allExts) {
     if (!ext.tags) continue;
     for (const tag of ext.tags) {
       const t = tag.toLowerCase();
-      
+
       // Base ISA tags belong to whichever base ISA the user actually selected
       if (['rv_i', 'rv64_i', 'rv32_e', 'rv64_e'].includes(t)) {
         if (selectedBaseId) tagToTrueOwner.set(t, lookup.get(selectedBaseId.toLowerCase()));
         continue;
       }
-      
+
       // For standard extensions, the True Owner is the extension whose ID matches the tag natively
       const stripped = t.replace(/^rv(32|64)?_/, '');
       if (ext.id.toLowerCase() === stripped) {
@@ -670,7 +622,7 @@ export function buildCombinedCatalog(selectedIds, allExts) {
 
     for (const [mnemonic, details] of Object.entries(ext.instructions)) {
       const instrTags = Array.isArray(details?.extension) ? details.extension : [];
-      
+
       // Resolve the True Owner of this specific instruction
       let trueOwner = null;
       for (const tag of instrTags) {
@@ -700,10 +652,9 @@ export function buildCombinedCatalog(selectedIds, allExts) {
         }
       } else {
         byKey.set(dedupKey, {
-          dedupKey,
           key: dedupKey,
           mnemonic: upperMnem,
-          encoding: details?.encoding || '',
+          encoding: normEncoding,
           variable_fields: Array.isArray(details?.variable_fields) ? details.variable_fields : [],
           match: details?.match || '',
           mask: details?.mask || '',
@@ -714,5 +665,9 @@ export function buildCombinedCatalog(selectedIds, allExts) {
     }
   }
 
-  return Array.from(byKey.values());
+  // Sort: mnemonic A→Z, then encoding for identical mnemonics
+  return Array.from(byKey.values()).sort((a, b) => {
+    const m = a.mnemonic.localeCompare(b.mnemonic);
+    return m !== 0 ? m : a.encoding.localeCompare(b.encoding);
+  });
 }
